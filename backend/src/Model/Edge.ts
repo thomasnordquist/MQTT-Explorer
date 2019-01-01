@@ -1,7 +1,7 @@
-import { Hashable, TreeNode, TopicProperties } from './'
+import { Hashable, TreeNode } from './'
 const sha1 = require('sha1')
 
-export class Edge {
+export class Edge implements Hashable {
   public name: string
 
   public node!: TreeNode

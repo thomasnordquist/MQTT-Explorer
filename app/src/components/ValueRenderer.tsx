@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as q from '../../../src/Model'
+import * as q from '../../../backend/src/Model'
 import ReactJson from 'react-json-view'
 
 interface Props {

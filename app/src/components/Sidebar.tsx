@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as q from '../../../src/Model'
+import * as q from '../../../backend/src/Model'
 import Drawer from '@material-ui/core/Drawer';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';

@@ -12,7 +12,7 @@ export class TreeNode extends EventEmitter {
 
     if (sourceEdge) {
       this.sourceEdge = sourceEdge
-      sourceEdge.target = this
+      sourceEdge.node = this
     }
     this.value = value
   }

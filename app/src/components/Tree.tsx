@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as io from 'socket.io-client';
-import * as q from '../../../src/Model'
+import * as q from '../../../backend/src/Model'
 import { TreeNode } from './TreeNode'
 import List from '@material-ui/core/List';
 
