@@ -1,13 +1,15 @@
 {
-  "name": "mqtt-explorer",
+  "name": "mqtt-explorer-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "build/index.js",
   "scripts": {
     "test": "mocha",
+    "build": "tsc",
     "test-inspect": "mocha --inspect-brk",
     "coverage": "nyc mocha",
-    "debug": "ts-node --inspect ./src/index.ts"
+    "debug": "ts-node --inspect ./src/index.ts",
+    "postinstall": "npm run build"
   },
   "author": "",
   "license": "ISC",
@@ -34,23 +36,23 @@
     "instrument": true
   },
   "dependencies": {
-    "@types/sha1": "^1.1.1",
-    "@types/socket.io": "^2.1.2",
     "mqtt": "^2.18.8",
     "sha1": "^1.1.1",
-    "socket.io": "^2.2.0",
-    "tslint": "^5.12.0",
-    "typescript": "^3.2.2"
+    "socket.io": "^2.2.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.18",
+    "@types/sha1": "^1.1.1",
+    "@types/socket.io": "^2.1.2",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
     "nyc": "^13.1.0",
     "source-map-support": "^0.5.9",
     "ts-node": "^7.0.1",
-    "tslint-strict-null-checks": "^1.0.1"
+    "tslint": "^5.12.0",
+    "tslint-strict-null-checks": "^1.0.1",
+    "typescript": "^3.2.2"
   }
 }

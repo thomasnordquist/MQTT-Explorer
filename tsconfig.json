@@ -1,0 +1,11 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "outDir": "./build",
+    "strict": true,
+    "lib": ["es2017"],
+    "sourceMap": true
+  }
+}

@@ -1,17 +1,38 @@
 {
-  "name": "mqtt-explorer-electron",
-  "version": "1.0.0",
-  "description": "",
+  "name": "MQ(TT)-Explorer",
+  "version": "0.0.1",
+  "description": "Explore your message queues",
   "main": "electron.js",
   "scripts": {
     "start": "electron .",
-    "build-app": "cd app && npm run build",
-    "build-backend": "cd backend && tsc",
-    "build": "npm run build-app && npm run build-backend"
+    "release": "./release.sh"
   },
-  "author": "",
+  "build": {
+    "appId": "mq-explorer",
+    "mac": {
+      "category": "de.t7n.apps.mq-explorer"
+    },
+    "linux": {
+      "category": "Development",
+      "maintainer": "Thomas Nordquist"
+    },
+    "directories": {
+      "app": "./",
+      "buildResources": "res",
+      "output": "build"
+    }
+  },
+  "author": "Thomas Nordquist",
+  "email": "xxnerowingerxx@gmail.com",
+  "homepage": "https://github.com",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^4.0.0"
+    "electron": "^4.0.0",
+    "electron-builder": "^20.38.4",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.2.2"
+  },
+  "dependencies": {
+    "mqtt-explorer-backend": "file:backend"
   }
 }

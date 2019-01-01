@@ -4,6 +4,11 @@ module.exports = {
         filename: "bundle.js",
         path: __dirname + "/build"
     },
+    optimization: {
+      removeAvailableModules: false,
+      removeEmptyChunks: false,
+      splitChunks: false,
+    },
 
     mode: 'production',
 

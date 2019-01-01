@@ -1,11 +1,13 @@
-interface InternalState {
+import { EventEmitter } from 'events'
+
+export interface DataSourceState {
   connecting: boolean
   connected: boolean
   error?: Error
 }
 
-export class DataSourceState {
-  private state: InternalState = {
+export class DataSourceStateMachine extends EventEmitter {
+  private state: DataSourceState = {
     error: undefined,
     connected: false,
     connecting: false

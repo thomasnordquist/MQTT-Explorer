@@ -1,5 +1,5 @@
 import { Client, connect as mqttConnect } from 'mqtt'
-import { DataSource, DataSourceState } from './'
+import { DataSource, DataSourceStateMachine } from './'
 
 export interface MqttOptions {
   url: string
@@ -15,8 +15,8 @@ export class MqttSource implements DataSource<MqttOptions> {
     this.messageCallback = messageCallback
   }
 
-  public connect(options: MqttOptions): DataSourceState {
-    const state = new DataSourceState()
+  public connect(options: MqttOptions): DataSourceStateMachine {
+    const state = new DataSourceStateMachine()
 
     const client = mqttConnect(options.url, {
       resubscribe: false

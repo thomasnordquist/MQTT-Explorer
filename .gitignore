@@ -1,7 +1,7 @@
 node_modules
-coverage
+backend/coverage
+backend/.nyc_output
 build
-.nyc_output
 .DS_Store
 test.dot
 test.png

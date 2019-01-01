@@ -3,15 +3,13 @@ import { MqttSource, DataSource } from './DataSource'
 
 import * as socketIO from 'socket.io'
 
-const server = require('http').createServer();
-
-let tree = new Tree()
+const http = require('http')
 let options = {url: 'mqtt://nodered'}
 let dataSource = new MqttSource()
-let count = 200
 
 const a: Array<any> = []
 
+const server = http.createServer()
 const io = socketIO(server)
 io.on('connection', client => {
   console.log('connection')
