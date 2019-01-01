@@ -5,8 +5,8 @@ export class Edge {
   public name: string
 
   public node!: TreeNode
-  public source: TreeNode | undefined
-  public target: TreeNode | undefined
+  public source?: TreeNode | undefined
+  private cachedHash?: string
 
   constructor(name: string) {
     this.name = name
@@ -17,12 +17,16 @@ export class Edge {
   }
 
   public hash(): string {
-    let previousHash = this.source ? this.source.sourceEdge.hash() : ''
-    return 'H' + sha1(previousHash + this.name)
+    if (!this.cachedHash) {
+      let previousHash = (this.source && this.source.sourceEdge) ? this.source.sourceEdge.hash() : ''
+      this.cachedHash = 'H' + sha1(previousHash + this.name)
+    }
+
+    return this.cachedHash
   }
 
   public firstEdge(): Edge {
-    if (this.source) {
+    if (this.source && this.source.sourceEdge) {
       return this.source.sourceEdge.firstEdge()
     } else {
       return this

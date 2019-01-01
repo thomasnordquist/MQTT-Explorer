@@ -3,15 +3,17 @@ import { EventEmitter } from 'events'
 
 export class TreeNode extends EventEmitter {
   public sourceEdge?: Edge
-  public value: any | null | undefined = undefined
+  public value?: any | null
   public edges: {[s: string]: Edge} = {}
   public collapsed = false
 
-  constructor(sourceEdge: Edge, value: any) {
+  constructor(sourceEdge?: Edge, value?: any) {
     super()
 
-    this.sourceEdge = sourceEdge
-    sourceEdge.target = this
+    if (sourceEdge) {
+      this.sourceEdge = sourceEdge
+      sourceEdge.target = this
+    }
     this.value = value
   }
 

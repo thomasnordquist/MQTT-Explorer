@@ -25,7 +25,7 @@ export abstract class TreeNodeFactory {
     let leaf = reversed[0].node
 
     let sourceTree = new Tree()
-    sourceTree.addEdge(leaf.firstNode().sourceEdge)
+    sourceTree.updateWithNode(leaf.firstNode())
 
     return leaf
   }
