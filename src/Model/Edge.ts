@@ -28,10 +28,4 @@ export class Edge {
       return this
     }
   }
-
-  // public merge(edge: Edge) {
-  //   if (this.node && edge.node) {
-  //     this.node.updateWithNode(edge.node)
-  //   }
-  // }
 }

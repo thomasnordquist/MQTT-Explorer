@@ -1,41 +1,62 @@
-import { connect as mqttConnect } from 'mqtt'
 import { TopicProperties, Tree, TreeNodeFactory } from './Model'
+import { MqttSource, DataSource } from './DataSource'
 import { DotExport } from './DotExport'
+// import { CytoscapeExport } from './CytoscapeExport'
+// import { VisExport } from './VisExport'
 import { writeFileSync } from 'fs'
 import { spawn } from 'child_process'
+import * as socketIO from 'socket.io'
 
-var client = mqttConnect('mqtt://test.mosquitto.org')
-const topicSeparator = '/'
-
-client.on('connect', function () {
-  console.log('connected')
-  client.subscribe('#', (err: Error) => {
-    if (!err) {}
-  })
-})
+const server = require('http').createServer();
 
 let tree = new Tree()
+let dataSource: DataSource = new MqttSource({url: 'mqtt://iot.eclipse.org', subscription: '#'})
+let count = 200
 
-client.on('message', function (topic, message) {
-  // message is Buffer
-  const edges = topic.split(topicSeparator)
-  let value = message.toString()
-  let node = TreeNodeFactory.fromEdgesAndValue(edges, value)
-  tree.updateWithNode(node.firstNode())
+const a: Array<any> = []
+
+const io = socketIO(server)
+io.on('connection', client => {
+  console.log('connection')
+  a.forEach(b => {
+    io.emit('message', b)
+  })
+  client.on('event', data => { /* … */ });
+  client.on('disconnect', () => { /* … */ });
+});
+server.listen(3000);
+
+
+dataSource.connect({
+  readyCallback: () => {
+    console.log('connected')
+  },
+  messageCallback: (topic, payload) => {
+    // a.push({topic, payload})
+    if (payload.length > 10000) {
+      payload = payload.slice(0, 10000)
+    }
+
+    io.emit('message', {topic, payload: payload.toString('base64')})
+    // console.log(topic)
+    const edges = topic.split('/')
+    let value = payload.toString()
+    let node = TreeNodeFactory.fromEdgesAndValue(edges, value)
+    tree.updateWithNode(node.firstNode())
+  }
 })
 
-function writeTree() {
-  writeFileSync('./test.dot', DotExport.toDot(tree))
-  let p = spawn('dot', '-Tpng test.dot -o test.png'.split(' '))
-}
-
-setInterval(() => {
-  writeTree()
-  console.log(tree)
-}, 2000)
+// function writeTree() {
+//   // writeFileSync('./test.dot', DotExport.toDot(tree))
+//   // writeFileSync('./test.json', CytoscapeExport.toDot(tree))
+//   // writeFileSync('./vis.json', VisExport.toDot(tree))
+//   // let p = spawn('dot', '-Tpng test.dot -o test2.png'.split(' '))
+// }
+//
+// setInterval(() => {
+//   writeTree()
+// }, 2000)
 
 setTimeout(() => {
-  console.log(tree)
-
-  client.end()
+  dataSource.disconnect()
 }, 1000000)

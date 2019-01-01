@@ -1,27 +1,43 @@
 import { Edge } from './'
+import { EventEmitter } from 'events'
 
-export class TreeNode {
-  public sourceEdge: Edge
+export class TreeNode extends EventEmitter {
+  public sourceEdge?: Edge
   public value: any | null | undefined = undefined
   public edges: {[s: string]: Edge} = {}
+  public collapsed = false
 
   constructor(sourceEdge: Edge, value: any) {
+    super()
+
     this.sourceEdge = sourceEdge
     sourceEdge.target = this
     this.value = value
   }
 
+  public hash(): string {
+    return 'N' + (this.sourceEdge ? this.sourceEdge.hash() : '')
+  }
+
   public firstNode(): TreeNode {
-    return this.sourceEdge.firstEdge().node
+    return this.sourceEdge ? this.sourceEdge.firstEdge().node : this
+  }
+
+  public path(): string {
+    return this.branch()
+      .map(node => (node.sourceEdge && node.sourceEdge.name))
+      .filter(name => name !== undefined)
+      .join('/')
   }
 
   private previous(): TreeNode | undefined {
-    return this.sourceEdge.source || undefined
+    return this.sourceEdge ? this.sourceEdge.source || undefined : undefined
   }
 
   public addEdge(edge: Edge) {
     this.edges[edge.name] = edge
     edge.source = this
+    this.emit('update')
   }
 
   public branch(): Array<TreeNode> {
@@ -34,20 +50,20 @@ export class TreeNode {
   }
 
   public updateWithNode(node: TreeNode) {
-    debugger
     if (node.value !== undefined) {
       this.value = node.value
     }
     this.mergeEdges(node)
+    this.emit('update')
   }
 
-  public leaves(): Array<TreeNode> {
+  public leafes(): Array<TreeNode> {
     if (Object.values(this.edges).length === 0) {
       return [this]
     }
 
     return Object.values(this.edges)
-      .map(e => e.node.leaves())
+      .map(e => e.node.leafes())
       .reduce((a, b) => a.concat(b), [])
   }
 

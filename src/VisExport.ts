@@ -1,8 +1,11 @@
 import { Tree, TreeNode } from './Model'
 
-export class DotExport {
-  public static renderNodeInformation(node: TreeNode): string {
-      return `\t${node.sourceEdge.hash()} [label=${this.renderLabel(node.value)}]`
+export class VisExport {
+  public static renderNodeInformation(node: TreeNode): any {
+    return {
+      id: node.sourceEdge.hash(),
+      label: this.renderLabel(node.value)
+    }
   }
   public static toDot(tree: Tree): string {
     let i = 1
@@ -12,25 +15,27 @@ export class DotExport {
       .reduce((a, b) => a.concat(b), [])
       .map(leave => leave.branch())
 
-    const allEdges: Array<string> = []
-    const nodeInformation: {[s: string]: string} = {}
+    const allEdges: {[s: string]: any} = {}
+    const nodeInformation: {[s: string]: any} = {}
     leaveEdges.map(edges => edges.reduce( (prev, current) => {
         let currentHash = current.sourceEdge.hash()
         nodeInformation[currentHash] = this.renderNodeInformation(current)
         if (current && prev) {
-          allEdges.push(`\t${prev.sourceEdge.hash()} -> ${currentHash} [label=${this.renderLabel(current.sourceEdge.name)}]`)
+          let edgeId = prev.sourceEdge.hash()+currentHash
+          allEdges[prev.sourceEdge.hash()+currentHash] = {
+            id: prev.sourceEdge.hash()+currentHash,
+            from: prev.sourceEdge.hash(),
+            to: currentHash,
+            label: this.renderLabel(current.sourceEdge.name)
+          }
         }
         return current
     }))
 
-    return `strict digraph ethane {
-      ${
-        [this.renderNodeInformation(tree)]
-          .concat(Object.values(nodeInformation))
-          .concat(allEdges)
-          .join('\n')
-      }
-    }`;
+    return JSON.stringify({
+      nodes: [this.renderNodeInformation(tree)].concat(Object.values(nodeInformation)),
+      edges: Object.values(allEdges)
+    }, undefined, '  ')
   }
 
   private static renderLabel(value: any): string {
@@ -45,15 +50,11 @@ export class DotExport {
     }
 
     if (!str) {
-      return '""'
+      return ""
     }
 
     if(str.length > 20) {
       str = str.slice(0, 20)+'…'
-    }
-
-    if (str[0] !== '"') {
-      str = `"${str}"`
     }
 
     return str

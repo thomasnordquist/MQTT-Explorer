@@ -1,0 +1,37 @@
+{
+  "name": "mqtt-explorer-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "awesome-typescript-loader": "^5.2.1",
+    "source-map-loader": "^0.2.4",
+    "typescript": "^3.2.2",
+    "webpack": "^4.28.2",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.14"
+  },
+  "dependencies": {
+    "@material-ui/core": "^3.7.1",
+    "@types/react": "^16.7.18",
+    "@types/react-dom": "^16.0.11",
+    "@types/socket.io-client": "^1.4.32",
+    "@types/vis": "^4.21.9",
+    "cytoscape": "^3.3.1",
+    "cytoscape-dagre": "^2.2.2",
+    "cytoscape-expand-collapse": "^3.1.2",
+    "jquery": "^3.3.1",
+    "lodash.throttle": "^4.1.1",
+    "react": "^16.3.2",
+    "react-cytoscape": "^1.0.6",
+    "react-dom": "^16.3.3",
+    "react-json-view": "^1.19.1",
+    "socket.io-client": "^2.2.0",
+    "vis": "^4.21.0"
+  }
+}

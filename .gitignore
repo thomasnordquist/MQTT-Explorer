@@ -2,6 +2,7 @@ node_modules
 coverage
 build
 .nyc_output
-
+.DS_Store
 test.dot
 test.png
+.awcache

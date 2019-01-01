@@ -7,5 +7,13 @@
     "strict": true,
     "lib": ["es2017"],
     "sourceMap": true
-  }
+  },
+  "includes": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+      "app",
+      "node_modules",
+      "**/*.spec.ts"
+  ]
 }

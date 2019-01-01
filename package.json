@@ -35,8 +35,10 @@
   },
   "dependencies": {
     "@types/sha1": "^1.1.1",
+    "@types/socket.io": "^2.1.2",
     "mqtt": "^2.18.8",
     "sha1": "^1.1.1",
+    "socket.io": "^2.2.0",
     "tslint": "^5.12.0",
     "typescript": "^3.2.2"
   },
