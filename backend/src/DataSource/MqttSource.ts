@@ -19,7 +19,7 @@ export class MqttSource implements DataSource<MqttOptions> {
     const state = new DataSourceStateMachine()
 
     const client = mqttConnect(options.url, {
-      resubscribe: false
+      resubscribe: false,
     })
 
     this.client = client

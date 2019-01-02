@@ -1,10 +1,10 @@
-import * as React from "react";
-import * as io from 'socket.io-client';
+import * as React from 'react'
+import * as io from 'socket.io-client'
 import * as q from '../../../backend/src/Model'
 import { TreeNode } from './TreeNode'
-import List from '@material-ui/core/List';
+import List from '@material-ui/core/List'
 
-var throttle = require('lodash.throttle');
+const throttle = require('lodash.throttle')
 
 class TreeState {
   public tree: q.Tree
@@ -24,10 +24,10 @@ export class Tree extends React.Component<TreeNodeProps, TreeState> {
   private renderDuration: number = 300
 
   constructor(props: any) {
-    super(props);
-    let tree = new q.Tree()
+    super(props)
+    const tree = new q.Tree()
     this.state = new TreeState(tree, {})
-    this.socket = io('http://localhost:3000');
+    this.socket = io('http://localhost:3000')
   }
 
   public componentDidMount() {
@@ -36,15 +36,15 @@ export class Tree extends React.Component<TreeNodeProps, TreeState> {
       updateState.cancel()
       updateState = throttle(() => {
         this.setState(state)
-      }, Math.max(this.renderDuration * 5, 300), {trailing: true})
+      }, Math.max(this.renderDuration * 5, 300), { trailing: true })
     }, 1000)
 
     this.socket.on('message', (msg: any) => {
       const edges = msg.topic.split('/')
-      const node = q.TreeNodeFactory.fromEdgesAndValue(edges, Buffer.from(msg.payload, "base64").toString())
+      const node = q.TreeNodeFactory.fromEdgesAndValue(edges, Buffer.from(msg.payload, 'base64').toString())
       this.state.tree.updateWithNode(node.firstNode())
 
-      updateState({tree: this.state.tree, msg: msg})
+      updateState({ msg, tree: this.state.tree })
     })
   }
 
@@ -59,9 +59,9 @@ export class Tree extends React.Component<TreeNodeProps, TreeState> {
           didSelectNode={this.props.didSelectNode}
           treeNode={this.state.tree}
           name="/" collapsed={false}
-          performanceCallback={(ms) => this.renderDuration = ms}
+          performanceCallback={ms => this.renderDuration = ms}
         />
       </List>
-    </div>;
+    </div>
   }
 }

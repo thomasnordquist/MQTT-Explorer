@@ -1,5 +1,10 @@
 {
+  "extends": "tslint-config-airbnb",
   "rules": {
-    "member-access": true
+    "semicolon": [true, "never"],
+    "max-line-length": [true, 200],
+    "member-access": true,
+    "no-else-after-return": false,
+    "align": false
   }
 }

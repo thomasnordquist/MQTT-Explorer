@@ -1,13 +1,13 @@
-import * as React from "react";
+import * as React from 'react'
 import * as q from '../../../backend/src/Model'
 
-import SearchIcon from '@material-ui/icons/Search';
+import Search from '@material-ui/icons/Search'
 
-import { AppBar, Toolbar, Typography, InputBase } from '@material-ui/core';
-import { withStyles, StyleRulesCallback } from '@material-ui/core/styles';
-import { fade } from '@material-ui/core/styles/colorManipulator';
+import { AppBar, Toolbar, Typography, InputBase } from '@material-ui/core'
+import { withStyles, StyleRulesCallback } from '@material-ui/core/styles'
+import { fade } from '@material-ui/core/styles/colorManipulator'
 
-const styles: StyleRulesCallback = (theme) => ({
+const styles: StyleRulesCallback = theme => ({
   title: {
     display: 'none',
     [theme.breakpoints.up('sm')]: {
@@ -52,8 +52,8 @@ const styles: StyleRulesCallback = (theme) => ({
     [theme.breakpoints.up('md')]: {
       width: 200,
     },
-  }
-});
+  },
+})
 
 interface Props {
   classes: any
@@ -61,21 +61,21 @@ interface Props {
 
 class TitleBar extends React.Component<Props, {}> {
   constructor(props: any) {
-    super(props);
+    super(props)
     this.state = {
-      selectedNode: undefined
+      selectedNode: undefined,
     }
   }
 
   public render() {
-    const { classes } = this.props;
+    const { classes } = this.props
 
     return <AppBar position="static">
         <Toolbar>
           <Typography className={classes.title} variant="h6" color="inherit">MQTT-Xplorer</Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
-              <SearchIcon />
+              <Search />
             </div>
             <InputBase
               placeholder="Search…"

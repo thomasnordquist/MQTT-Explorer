@@ -12,7 +12,7 @@ describe('Tree', () => {
     const leaf = TreeNodeFactory.fromEdgesAndValue(topics, 3)
 
     tree.updateWithNode(leaf.firstNode())
-    let expectedNode = tree.findNode('foo/bar')
+    const expectedNode = tree.findNode('foo/bar')
     expect(expectedNode).to.eq(leaf)
   })
-});
+})

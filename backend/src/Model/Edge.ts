@@ -18,8 +18,8 @@ export class Edge implements Hashable {
 
   public hash(): string {
     if (!this.cachedHash) {
-      let previousHash = (this.source && this.source.sourceEdge) ? this.source.sourceEdge.hash() : ''
-      this.cachedHash = 'H' + sha1(previousHash + this.name)
+      const previousHash = (this.source && this.source.sourceEdge) ? this.source.sourceEdge.hash() : ''
+      this.cachedHash = `H${sha1(previousHash + this.name)}`
     }
 
     return this.cachedHash
@@ -28,8 +28,8 @@ export class Edge implements Hashable {
   public firstEdge(): Edge {
     if (this.source && this.source.sourceEdge) {
       return this.source.sourceEdge.firstEdge()
-    } else {
-      return this
     }
+
+    return this
   }
 }

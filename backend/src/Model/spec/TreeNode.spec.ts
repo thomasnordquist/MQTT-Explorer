@@ -17,7 +17,7 @@ describe('TreeNode', () => {
     expect(leaf.message && leaf.message.value).to.eq(3)
     const updateLeave = TreeNodeFactory.fromEdgesAndValue(topics, 5)
 
-    let root = leaf.firstNode()
+    const root = leaf.firstNode()
     root.updateWithNode(updateLeave.firstNode())
 
     expect(root.sourceEdge).to.eq(undefined)
@@ -33,7 +33,7 @@ describe('TreeNode', () => {
     const updateLeave = TreeNodeFactory.fromEdgesAndValue(topics2, 5)
     leaf.firstNode().updateWithNode(updateLeave.firstNode())
 
-    let barNode = leaf.firstNode().findNode('foo/bar')
+    const barNode = leaf.firstNode().findNode('foo/bar')
     expect(barNode && barNode.sourceEdge && barNode.sourceEdge.name).to.eq('bar')
     expect(barNode && barNode.message && barNode.message.value).to.eq(5)
 
@@ -50,10 +50,10 @@ describe('TreeNode', () => {
 
     leaf1.firstNode().updateWithNode(leaf2.firstNode())
 
-    let expectedNode = leaf1.firstNode().findNode('foo/bar/baz')
+    const expectedNode = leaf1.firstNode().findNode('foo/bar/baz')
     if (!expectedNode) {
       expect.fail('merge seems to have failed')
       return
     }
   })
-});
+})

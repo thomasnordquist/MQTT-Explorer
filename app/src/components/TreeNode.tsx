@@ -1,11 +1,11 @@
-import * as React from "react";
+import * as React from 'react'
 import * as q from '../../../backend/src/Model'
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Collapse from '@material-ui/core/Collapse';
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import Collapse from '@material-ui/core/Collapse'
 
 export interface TreeNodeProps {
-  treeNode: q.TreeNode,
+  treeNode: q.TreeNode
   name?: string | undefined
   collapsed?: boolean | undefined
   performanceCallback?: ((ms: number) => void) | undefined
@@ -13,13 +13,13 @@ export interface TreeNodeProps {
 }
 
 interface TreeNodeState {
-  title: string | undefined,
-  collapsed: boolean,
-  collapsedOverride: boolean | undefined,
+  title: string | undefined
+  collapsed: boolean
+  collapsedOverride: boolean | undefined
   edgeCount: number
 }
 
-let collapseLimit = 0
+const collapseLimit = 0
 declare var performance: any
 
 export class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
@@ -29,14 +29,14 @@ export class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
   constructor(props: TreeNodeProps, state: TreeNodeState) {
     super(props, state)
 
-    let edgeCount = Object.keys(props.treeNode.edges).length
-    let collapsed = edgeCount > collapseLimit
+    const edgeCount = Object.keys(props.treeNode.edges).length
+    const collapsed = edgeCount > collapseLimit
 
     this.props.treeNode.on('update', () => {
       this.dirty = true
     })
 
-    this.state = {collapsed, edgeCount: edgeCount, collapsedOverride: props.collapsed, title: props.name}
+    this.state = { collapsed, edgeCount, collapsedOverride: props.collapsed, title: props.name }
   }
 
   public setState(state: any) {
@@ -51,7 +51,7 @@ export class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
   public componentDidUpdate() {
     this.dirty = false
     if (this.props.performanceCallback) {
-      let renderTime = performance.now()-this.willUpdateTime
+      const renderTime = performance.now() - this.willUpdateTime
       this.props.performanceCallback(renderTime)
     }
   }
@@ -73,10 +73,10 @@ export class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
   private renderNodes() {
     const edges = Object.values(this.props.treeNode.edges)
     const listItemStyle = {
-      padding: '3px 8px 3px 8px'
+      padding: '3px 8px 3px 8px',
     }
     const listStyle = {
-      padding: '3px 8px 3px 16px'
+      padding: '3px 8px 3px 16px',
     }
 
     if (edges.length > 0) {
@@ -94,11 +94,11 @@ export class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
 
   private renderSourceEdge() {
     const style: React.CSSProperties = {
-      fontWeight: "bold",
+      fontWeight: 'bold',
       overflow: 'hidden',
       display: 'inline-block',
     }
-    let name = this.state.title || (this.props.treeNode.sourceEdge && this.props.treeNode.sourceEdge.name)
+    const name = this.state.title || (this.props.treeNode.sourceEdge && this.props.treeNode.sourceEdge.name)
 
     return <span style={style} onClick={() => this.toggle()}>{name}</span>
   }
@@ -110,13 +110,13 @@ export class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
   }
 
   public componentWillReceiveProps() {
-    let edgeCount = Object.keys(this.props.treeNode.edges).length
-    this.setState({collapsed: edgeCount > collapseLimit, edgeCount: edgeCount})
+    const edgeCount = Object.keys(this.props.treeNode.edges).length
+    this.setState({ edgeCount, collapsed: edgeCount > collapseLimit })
   }
 
   private renderValue() {
     const style: React.CSSProperties = {
-      width: "15em",
+      width: '15em',
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
@@ -133,12 +133,12 @@ export class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
   }
 
   private clear() {
-    return <div style={{clear: 'both'}} />
+    return <div style={{ clear: 'both' }} />
   }
 
   private renderTitleLine() {
     const style = {
-      lineHeight: '1em'
+      lineHeight: '1em',
     }
     return <div style={style}>{this.renderExpander()} {this.renderSourceEdge()} {this.renderCollapsedSubnodes()} {this.renderValue()}</div>
   }
@@ -160,7 +160,7 @@ export class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
   }
 
   private toggle() {
-    this.setState({collapsedOverride: !this.collapsed()})
+    this.setState({ collapsedOverride: !this.collapsed() })
   }
 
   private renderExpander() {
@@ -178,8 +178,8 @@ export class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
       return null
     }
 
-    let style = {
-      color: '#333'
+    const style = {
+      color: '#333',
     }
     return <span style={style}>({this.props.treeNode.leafes().length} nodes)</span>
   }

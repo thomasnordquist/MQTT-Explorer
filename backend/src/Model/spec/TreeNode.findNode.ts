@@ -1,14 +1,14 @@
 import { TreeNode } from  '../'
 declare module  '../' {
     interface TreeNode {
-        findNode(path: String): TreeNode | undefined
+      findNode(path: String): TreeNode | undefined
     }
 }
 
-TreeNode.prototype.findNode = function(path: String): TreeNode | undefined {
+TreeNode.prototype.findNode = function (path: String): TreeNode | undefined {
   const topics = path.split('/')
-  let edge = this.edges[topics[0]]
-  let remainingTopics = topics.slice(1, topics.length)
+  const edge = this.edges[topics[0]]
+  const remainingTopics = topics.slice(1, topics.length)
   if (edge && remainingTopics.length === 0) {
     return edge.target
   } else if (edge) {

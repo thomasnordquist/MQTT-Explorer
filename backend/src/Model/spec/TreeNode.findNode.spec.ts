@@ -9,17 +9,17 @@ describe('TreeNode.findNode', () => {
     const topics = 'foo/bar/baz'.split('/')
     const leaf = TreeNodeFactory.fromEdgesAndValue(topics, 5)
 
-    let root = leaf.firstNode()
+    const root = leaf.firstNode()
     expect(root.sourceEdge).to.eq(undefined)
 
-    let barNode = root.findNode('foo/bar')
+    const barNode = root.findNode('foo/bar')
     if (!barNode) {
       expect.fail('did not find node')
       return
     }
     expect(barNode.sourceEdge && barNode.sourceEdge.name).to.eq('bar')
 
-    let bazNode = root.findNode('foo/bar/baz')
+    const bazNode = root.findNode('foo/bar/baz')
     if (!bazNode) {
       expect.fail('did not find node')
       return

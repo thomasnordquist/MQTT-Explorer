@@ -1,8 +1,8 @@
-import * as React from "react";
+import * as React from 'react'
 import * as q from '../../../backend/src/Model'
-import Drawer from '@material-ui/core/Drawer';
-import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
+import Drawer from '@material-ui/core/Drawer'
+import TextField from '@material-ui/core/TextField'
+import Paper from '@material-ui/core/Paper'
 import { ValueRenderer } from './ValueRenderer'
 
 interface Props {
@@ -16,13 +16,13 @@ interface State {
 export class Sidebar extends React.Component<Props, State> {
   private updateNode: (node?: q.TreeNode | undefined) => void
   constructor(props: any) {
-    super(props);
+    super(props)
     this.state = {}
     this.updateNode = (node) => {
       if (!node) {
         this.setState(this.state)
       } else {
-        this.setState({node: node})
+        this.setState({ node })
       }
     }
   }
@@ -44,11 +44,11 @@ export class Sidebar extends React.Component<Props, State> {
   }
 
   private renderNode() {
-    let style: React.CSSProperties = {display: 'block', width: '40vw'}
-    let topicStyle: React.CSSProperties = {width: '100%'}
+    const style: React.CSSProperties = { display: 'block', width: '40vw' }
+    const topicStyle: React.CSSProperties = { width: '100%' }
 
     if (!this.state.node) {
-        return null
+      return null
     }
 
     return <div style={style}>

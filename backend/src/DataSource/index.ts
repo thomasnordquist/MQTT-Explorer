@@ -1,11 +1,3 @@
-import { DataSource } from './DataSource'
-import { DataSourceState, DataSourceStateMachine } from './DataSourceState'
-import { MqttOptions, MqttSource } from './MqttSource'
-
-export {
-  DataSource,
-  DataSourceState,
-  DataSourceStateMachine,
-  MqttOptions,
-  MqttSource,
-}
+export { DataSource } from './DataSource'
+export { DataSourceState, DataSourceStateMachine } from './DataSourceState'
+export { MqttOptions, MqttSource } from './MqttSource'

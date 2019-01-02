@@ -10,22 +10,22 @@ export class DataSourceStateMachine extends EventEmitter {
   private state: DataSourceState = {
     error: undefined,
     connected: false,
-    connecting: false
+    connecting: false,
   }
 
   public setConnected(connected: boolean) {
     this.state = {
+      connected,
       error: undefined,
-      connected: connected,
-      connecting: false
+      connecting: false,
     }
   }
 
   public setError(error: Error) {
     this.state = {
-      error: error,
+      error,
       connected: false,
-      connecting: false
+      connecting: false,
     }
   }
 
@@ -33,7 +33,7 @@ export class DataSourceStateMachine extends EventEmitter {
     this.state = {
       error: undefined,
       connected: false,
-      connecting: true
+      connecting: true,
     }
   }
 

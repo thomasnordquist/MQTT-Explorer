@@ -25,7 +25,7 @@ export class TreeNode extends EventEmitter {
   }
 
   public hash(): string {
-    return 'N' + (this.sourceEdge ? this.sourceEdge.hash() : '')
+    return `N${(this.sourceEdge ? this.sourceEdge.hash() : '')}`
   }
 
   public firstNode(): TreeNode {
@@ -49,8 +49,8 @@ export class TreeNode extends EventEmitter {
     this.emit('update')
   }
 
-  public branch(): Array<TreeNode> {
-    let previous = this.previous()
+  public branch(): TreeNode[] {
+    const previous = this.previous()
     if (!previous) {
       return [this]
     }
@@ -67,7 +67,7 @@ export class TreeNode extends EventEmitter {
     this.emit('update')
   }
 
-  public leafes(): Array<TreeNode> {
+  public leafes(): TreeNode[] {
     if (Object.values(this.edges).length === 0) {
       return [this]
     }
@@ -78,9 +78,9 @@ export class TreeNode extends EventEmitter {
   }
 
   private mergeEdges(node: TreeNode) {
-    let edgeKeys = Object.keys(node.edges)
-    for (let edgeKey of edgeKeys) {
-      let matchingEdge = this.edges[edgeKey]
+    const edgeKeys = Object.keys(node.edges)
+    for (const edgeKey of edgeKeys) {
+      const matchingEdge = this.edges[edgeKey]
       if (matchingEdge) {
         matchingEdge.target.updateWithNode(node.edges[edgeKey].target)
       } else {
