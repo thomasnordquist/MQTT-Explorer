@@ -5,7 +5,9 @@
   "main": "electron.js",
   "scripts": {
     "start": "electron .",
-    "release": "./release.sh"
+    "test": "npm run test-backend",
+    "test-backend": "cd backend && npm run test && cd ..",
+    "release": "npm run test && ./release.sh"
   },
   "build": {
     "appId": "mq-explorer",

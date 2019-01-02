@@ -16,13 +16,13 @@ io.on('connection', client => {
   a.forEach(b => {
     io.emit('message', b)
   })
-  client.on('event', data => { /* … */ });
   client.on('disconnect', () => { /* … */ });
 });
 server.listen(3000);
 
 let state = dataSource.connect(options)
 dataSource.onMessage((topic: string, payload: Buffer) => {
+  a.push({ topic, payload: payload.toString('base64') })
   if (payload.length > 10000) {
     payload = payload.slice(0, 10000)
   }

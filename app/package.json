@@ -9,7 +9,9 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {},
+  "devDependencies": {
+    "@material-ui/icons": "^3.0.1"
+  },
   "dependencies": {
     "@types/node": "^10.12.18",
     "awesome-typescript-loader": "^5.2.1",

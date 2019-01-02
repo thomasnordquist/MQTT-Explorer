@@ -4,7 +4,7 @@ const sha1 = require('sha1')
 export class Edge implements Hashable {
   public name: string
 
-  public node!: TreeNode
+  public target!: TreeNode
   public source?: TreeNode | undefined
   private cachedHash?: string
 
@@ -13,7 +13,7 @@ export class Edge implements Hashable {
   }
 
   public edges() {
-    return this.node ? Object.values(this.node.edges) : []
+    return this.target ? Object.values(this.target.edges) : []
   }
 
   public hash(): string {

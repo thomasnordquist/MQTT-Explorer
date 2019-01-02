@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as io from 'socket.io-client';
 import * as q from '../../../backend/src/Model'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -82,7 +81,7 @@ export class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
 
     if (edges.length > 0) {
       const listItems = edges
-        .map(edge => edge.node)
+        .map(edge => edge.target)
         .map(node => <ListItem style={listItemStyle} button key={node.hash()}>
           <TreeNode didSelectNode={this.props.didSelectNode} treeNode={node} />
         </ListItem>)
@@ -125,11 +124,11 @@ export class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
       paddingLeft: '5px',
       display: 'inline-block',
     }
-    return this.props.treeNode.value
+    return this.props.treeNode.message
       ? <span
           style={style}
           onMouseOver={() => this.props.didSelectNode && this.props.didSelectNode(this.props.treeNode)}
-          > = {this.props.treeNode.value.toString()}</span>
+          > = {this.props.treeNode.message.toString()}</span>
       : null
   }
 
@@ -146,7 +145,6 @@ export class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
 
   public render() {
     const nodeStyle: React.CSSProperties = {
-      //marginLeft: '10px',
       display: 'block',
     }
 

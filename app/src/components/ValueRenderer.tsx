@@ -32,21 +32,21 @@ export class ValueRenderer extends React.Component<Props, State> {
 
   public render() {
     let node = this.props.node
-    if (!node) {
+    if (!node || !node.message) {
       return null
     }
 
     let json
     try {
-      json = JSON.parse(node.value)
+      json = JSON.parse(node.message.value)
     } catch(error) {
-      return this.renderRawValue(node.value)
+      return this.renderRawValue(node.message.value)
     }
 
     if (typeof json === 'string') {
-      return this.renderRawValue(node.value)
+      return this.renderRawValue(node.message.value)
     } else if (typeof json === 'number') {
-      return this.renderRawValue(node.value)
+      return this.renderRawValue(node.message.value)
     } else {
       return <ReactJson src={json} />
     }

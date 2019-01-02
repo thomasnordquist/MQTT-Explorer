@@ -1,6 +1,5 @@
-import { TreeNode } from '../'
-
-declare module "../" {
+import { TreeNode } from  '../'
+declare module  '../' {
     interface TreeNode {
         findNode(path: String): TreeNode | undefined
     }
@@ -11,9 +10,9 @@ TreeNode.prototype.findNode = function(path: String): TreeNode | undefined {
   let edge = this.edges[topics[0]]
   let remainingTopics = topics.slice(1, topics.length)
   if (edge && remainingTopics.length === 0) {
-    return edge.node
+    return edge.target
   } else if (edge) {
-    return edge.node.findNode(remainingTopics.join('/'))
+    return edge.target.findNode(remainingTopics.join('/'))
   }
 
   return undefined

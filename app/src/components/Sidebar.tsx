@@ -27,12 +27,6 @@ export class Sidebar extends React.Component<Props, State> {
     }
   }
 
-  private getStyle(): {[s: string]: any} {
-    return {
-      marginTop: '64px'
-    }
-  }
-
   public componentWillReceiveProps(nextProps: Props) {
     this.props.node && this.props.node.removeListener('update', this.updateNode)
     nextProps.node && nextProps.node.on('update', this.updateNode)
@@ -69,6 +63,4 @@ export class Sidebar extends React.Component<Props, State> {
         </Paper>
     </div>
   }
-
-
 }

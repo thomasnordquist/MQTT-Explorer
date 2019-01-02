@@ -52,21 +52,15 @@ export class Tree extends React.Component<TreeNodeProps, TreeState> {
     this.socket.removeAllListeners()
   }
 
-  private getStyle(): {[s: string]: any} {
-    return {
-      marginTop: '64px'
-    }
-  }
-
   public render() {
-    return <div {...this.props}>
-        <List style={this.getStyle()}>
-          <TreeNode
-            didSelectNode={this.props.didSelectNode}
-            treeNode={this.state.tree}
-            name="/" collapsed={false}
-            performanceCallback={(ms) => this.renderDuration = ms}
-            />
+    return <div>
+      <List>
+        <TreeNode
+          didSelectNode={this.props.didSelectNode}
+          treeNode={this.state.tree}
+          name="/" collapsed={false}
+          performanceCallback={(ms) => this.renderDuration = ms}
+        />
       </List>
     </div>;
   }

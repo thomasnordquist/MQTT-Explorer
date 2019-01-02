@@ -1,20 +1,27 @@
-import { Edge } from './'
+import { Edge, Message } from './'
 import { EventEmitter } from 'events'
 
 export class TreeNode extends EventEmitter {
   public sourceEdge?: Edge
-  public value?: any | null
+  public message?: Message
   public edges: {[s: string]: Edge} = {}
   public collapsed = false
+  public messages: number = 0
 
-  constructor(sourceEdge?: Edge, value?: any) {
+  constructor(sourceEdge?: Edge, message?: Message) {
     super()
 
     if (sourceEdge) {
       this.sourceEdge = sourceEdge
-      sourceEdge.node = this
+      sourceEdge.target = this
     }
-    this.value = value
+
+    this.setMessage(message)
+  }
+
+  public setMessage(value: any) {
+    this.message = value
+    this.messages += 1
   }
 
   public hash(): string {
@@ -22,7 +29,7 @@ export class TreeNode extends EventEmitter {
   }
 
   public firstNode(): TreeNode {
-    return this.sourceEdge ? this.sourceEdge.firstEdge().node : this
+    return this.sourceEdge && this.sourceEdge.source ? this.sourceEdge.source.firstNode() : this
   }
 
   public path(): string {
@@ -52,9 +59,10 @@ export class TreeNode extends EventEmitter {
   }
 
   public updateWithNode(node: TreeNode) {
-    if (node.value !== undefined) {
-      this.value = node.value
+    if (node.message) {
+      this.setMessage(node.message)
     }
+
     this.mergeEdges(node)
     this.emit('update')
   }
@@ -65,7 +73,7 @@ export class TreeNode extends EventEmitter {
     }
 
     return Object.values(this.edges)
-      .map(e => e.node.leafes())
+      .map(e => e.target.leafes())
       .reduce((a, b) => a.concat(b), [])
   }
 
@@ -74,7 +82,7 @@ export class TreeNode extends EventEmitter {
     for (let edgeKey of edgeKeys) {
       let matchingEdge = this.edges[edgeKey]
       if (matchingEdge) {
-        matchingEdge.node.updateWithNode(node.edges[edgeKey].node)
+        matchingEdge.target.updateWithNode(node.edges[edgeKey].target)
       } else {
         this.addEdge(node.edges[edgeKey])
       }
