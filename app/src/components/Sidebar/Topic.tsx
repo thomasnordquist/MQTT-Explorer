@@ -6,8 +6,9 @@ import Button from '@material-ui/core/Button'
 interface Props {
   classes: any
   theme: Theme
-  node: q.TreeNode
+  node?: q.TreeNode
   selected?: q.TreeNode
+  didSelectNode: (node: q.TreeNode) => void
 }
 
 class Topic extends React.Component<Props, {}> {
@@ -21,7 +22,11 @@ class Topic extends React.Component<Props, {}> {
 
   public render() {
     const { node } = this.props
-    let i = 0
+    if (!node) {
+      return null
+    }
+
+    let key = 0
     const breadCrumps = node.branch()
       .map(node => node.sourceEdge)
       .filter(edge => Boolean(edge))
@@ -42,7 +47,7 @@ class Topic extends React.Component<Props, {}> {
     }
 
     const joinedBreadCrumps = breadCrumps.reduce((prev, current) =>
-      prev.concat([<span key={i += 1}>/</span>]).concat(current),
+      prev.concat([<span key={key += 1}>/</span>]).concat(current),
     )
 
     return <span style={{ lineHeight: '2.2em' }}>{joinedBreadCrumps}</span>

@@ -1,10 +1,8 @@
 import * as React from 'react'
 import * as io from 'socket.io-client'
-import * as q from '../../../backend/src/Model'
+import * as q from '../../../../backend/src/Model'
 import TreeNode from './TreeNode'
 import List from '@material-ui/core/List'
-
-const throttle = require('lodash.throttle')
 
 class TreeState {
   public tree: q.Tree
@@ -22,7 +20,7 @@ declare const performance: any
 
 export class Tree extends React.Component<TreeNodeProps, TreeState> {
   private socket: SocketIOClient.Socket
-  private renderDuration: number = 200
+  private renderDuration: number = 300
   private updateTimer?: any
   private lastUpdate: number = 0
   private perf:number = 0
@@ -46,7 +44,7 @@ export class Tree extends React.Component<TreeNodeProps, TreeState> {
       return
     }
 
-    const updateInterval = Math.max(this.renderDuration * 5, 200)
+    const updateInterval = Math.max(this.renderDuration * 5, 300)
     const timeUntilNextUpdate = updateInterval - (performance.now() - this.lastUpdate)
 
     this.updateTimer = setTimeout(() => {
@@ -75,6 +73,8 @@ export class Tree extends React.Component<TreeNodeProps, TreeState> {
     return <div>
       <List>
         <TreeNode
+          animateChages={true}
+          autoExpandLimit={3}
           isRoot={true}
           didSelectNode={this.props.didSelectNode}
           treeNode={this.state.tree}

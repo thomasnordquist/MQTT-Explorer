@@ -22,17 +22,17 @@ interface State {
 }
 
 class Sidebar extends React.Component<Props, State> {
-  private updateNode: (node?: q.TreeNode | undefined) => void
+  private updateNode = (node: q.TreeNode) => {
+    if (!node) {
+      this.setState(this.state)
+    } else {
+      this.setState({ node })
+    }
+  }
+
   constructor(props: any) {
     super(props)
-    this.state = {}
-    this.updateNode = (node) => {
-      if (!node) {
-        this.setState(this.state)
-      } else {
-        this.setState({ node })
-      }
-    }
+    this.state = { node: new q.Tree() }
   }
 
   public static styles: StyleRulesCallback<string> = (theme: Theme) => {
@@ -52,9 +52,19 @@ class Sidebar extends React.Component<Props, State> {
   }
 
   public componentWillReceiveProps(nextProps: Props) {
-    this.props.node && this.props.node.removeListener('update', this.updateNode)
-    nextProps.node && nextProps.node.on('update', this.updateNode)
-    nextProps.node && this.updateNode(nextProps.node)
+    this.props.node && this.removeUpdateListener(this.props.node)
+    nextProps.node && this.registerUpdateListener(nextProps.node)
+    this.props.node && this.setState({ node: this.props.node })
+  }
+
+  private registerUpdateListener(node: q.TreeNode) {
+    node.on(q.TreeNodeUpdateEvents.merge, this.updateNode)
+    node.on(q.TreeNodeUpdateEvents.message, this.updateNode)
+  }
+
+  private removeUpdateListener(node: q.TreeNode) {
+    node.removeListener(q.TreeNodeUpdateEvents.merge, this.updateNode)
+    node.removeListener(q.TreeNodeUpdateEvents.message, this.updateNode)
   }
 
   private open(): boolean {
@@ -79,7 +89,7 @@ class Sidebar extends React.Component<Props, State> {
           <Typography className={classes.heading}>Topic</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <Topic node={this.state.node} />
+          <Topic node={this.props.node} didSelectNode={this.updateNode} />
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel key="value" defaultExpanded={true}>
@@ -90,7 +100,7 @@ class Sidebar extends React.Component<Props, State> {
           <ValueRenderer node={this.state.node} />
         </ExpansionPanelDetails>
       </ExpansionPanel>
-      <ExpansionPanel key="stats" defaultExpanded={true}>
+      <ExpansionPanel defaultExpanded={true}>
         <ExpansionPanelSummary expandIcon={<ExpandMore />}>
           <Typography className={classes.heading}>Stats</Typography>
         </ExpansionPanelSummary>

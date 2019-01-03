@@ -4,7 +4,7 @@ const http = require('http')
 import { TopicProperties, Tree, TreeNodeFactory } from './Model'
 import { MqttSource, DataSource } from './DataSource'
 
-const options = { url: 'mqtt://test.mosquitto.org' }
+const options = { url: 'mqtt://nodered' }
 const dataSource = new MqttSource()
 
 const a: any[] = []

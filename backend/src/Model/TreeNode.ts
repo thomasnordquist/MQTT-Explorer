@@ -1,6 +1,12 @@
 import { Edge, Message } from './'
 import { EventEmitter } from 'events'
 
+export enum TreeNodeUpdateEvents {
+  edges = 'edges',
+  message = 'message',
+  merge = 'merge',
+}
+
 export class TreeNode extends EventEmitter {
   public sourceEdge?: Edge
   public message?: Message
@@ -17,6 +23,10 @@ export class TreeNode extends EventEmitter {
     }
 
     this.setMessage(message)
+  }
+
+  private propagateUpdate(event: TreeNodeUpdateEvents) {
+    this.emit(event)
   }
 
   public setMessage(value: any) {
@@ -43,10 +53,13 @@ export class TreeNode extends EventEmitter {
     return this.sourceEdge ? this.sourceEdge.source || undefined : undefined
   }
 
-  public addEdge(edge: Edge) {
+  public addEdge(edge: Edge, emitUpdate: boolean = false) {
     this.edges[edge.name] = edge
     edge.source = this
-    this.emit('update')
+
+    if (emitUpdate) {
+      this.propagateUpdate(TreeNodeUpdateEvents.edges)
+    }
   }
 
   public branch(): TreeNode[] {
@@ -61,10 +74,11 @@ export class TreeNode extends EventEmitter {
   public updateWithNode(node: TreeNode) {
     if (node.message) {
       this.setMessage(node.message)
+      this.propagateUpdate(TreeNodeUpdateEvents.message)
     }
 
     this.mergeEdges(node)
-    this.emit('update')
+    this.propagateUpdate(TreeNodeUpdateEvents.merge)
   }
 
   public leafes(): TreeNode[] {
@@ -79,13 +93,20 @@ export class TreeNode extends EventEmitter {
 
   private mergeEdges(node: TreeNode) {
     const edgeKeys = Object.keys(node.edges)
+    let edgesDidUpdate = false
+
     for (const edgeKey of edgeKeys) {
       const matchingEdge = this.edges[edgeKey]
       if (matchingEdge) {
         matchingEdge.target.updateWithNode(node.edges[edgeKey].target)
       } else {
-        this.addEdge(node.edges[edgeKey])
+        this.addEdge(node.edges[edgeKey], false)
+        edgesDidUpdate = true
       }
+    }
+
+    if (edgesDidUpdate) {
+      this.propagateUpdate(TreeNodeUpdateEvents.edges)
     }
   }
 }

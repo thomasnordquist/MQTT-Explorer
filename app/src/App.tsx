@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as q from '../../backend/src/Model'
 
-import { Tree } from './components/Tree'
+import { Tree } from './components/Tree/Tree'
 import TitleBar from './components/TitleBar'
 import Sidebar from './components/Sidebar/Sidebar'
 
