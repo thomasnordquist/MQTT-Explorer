@@ -1,10 +1,10 @@
+import * as socketIO from 'socket.io'
+const http = require('http')
+
 import { TopicProperties, Tree, TreeNodeFactory } from './Model'
 import { MqttSource, DataSource } from './DataSource'
 
-import * as socketIO from 'socket.io'
-
-const http = require('http')
-const options = { url: 'mqtt://nodered' }
+const options = { url: 'mqtt://test.mosquitto.org' }
 const dataSource = new MqttSource()
 
 const a: any[] = []
@@ -23,7 +23,9 @@ server.listen(3000)
 const state = dataSource.connect(options)
 dataSource.onMessage((topic: string, payload: Buffer) => {
   let buffer = payload
-  a.push({ topic, payload: buffer.toString('base64') })
+  if (a.length < 30) {
+    a.push({ topic, payload: buffer.toString('base64') })
+  }
   if (buffer.length > 10000) {
     buffer = buffer.slice(0, 10000)
   }

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as io from 'socket.io-client'
 import * as q from '../../../backend/src/Model'
-import { TreeNode } from './TreeNode'
+import TreeNode from './TreeNode'
 import List from '@material-ui/core/List'
 
 const throttle = require('lodash.throttle')
@@ -18,10 +18,14 @@ class TreeState {
 export interface TreeNodeProps {
   didSelectNode?: (node: q.TreeNode) => void
 }
+declare const performance: any
 
 export class Tree extends React.Component<TreeNodeProps, TreeState> {
   private socket: SocketIOClient.Socket
-  private renderDuration: number = 300
+  private renderDuration: number = 200
+  private updateTimer?: any
+  private lastUpdate: number = 0
+  private perf:number = 0
 
   constructor(props: any) {
     super(props)
@@ -30,21 +34,36 @@ export class Tree extends React.Component<TreeNodeProps, TreeState> {
     this.socket = io('http://localhost:3000')
   }
 
-  public componentDidMount() {
-    let updateState = throttle((state: any) => {
-      this.setState(state)
-      updateState.cancel()
-      updateState = throttle(() => {
-        this.setState(state)
-      }, Math.max(this.renderDuration * 5, 300), { trailing: true })
-    }, 1000)
+  public time(): number {
+    const time = performance.now() - this.perf
+    this.perf = performance.now()
 
+    return time
+  }
+
+  public throttledStateUpdate(state: any) {
+    if (this.updateTimer) {
+      return
+    }
+
+    const updateInterval = Math.max(this.renderDuration * 5, 200)
+    const timeUntilNextUpdate = updateInterval - (performance.now() - this.lastUpdate)
+
+    this.updateTimer = setTimeout(() => {
+      this.lastUpdate = performance.now()
+      this.updateTimer && clearTimeout(this.updateTimer)
+      this.updateTimer = undefined
+      this.setState(state)
+    }, Math.max(0, timeUntilNextUpdate))
+  }
+
+  public componentDidMount() {
     this.socket.on('message', (msg: any) => {
       const edges = msg.topic.split('/')
       const node = q.TreeNodeFactory.fromEdgesAndValue(edges, Buffer.from(msg.payload, 'base64').toString())
       this.state.tree.updateWithNode(node.firstNode())
 
-      updateState({ msg, tree: this.state.tree })
+      this.throttledStateUpdate({ msg, tree: this.state.tree })
     })
   }
 
@@ -56,10 +75,14 @@ export class Tree extends React.Component<TreeNodeProps, TreeState> {
     return <div>
       <List>
         <TreeNode
+          isRoot={true}
           didSelectNode={this.props.didSelectNode}
           treeNode={this.state.tree}
           name="/" collapsed={false}
-          performanceCallback={ms => this.renderDuration = ms}
+          key="rootNode"
+          performanceCallback={(ms: number) => {
+            this.renderDuration = ms
+          }}
         />
       </List>
     </div>

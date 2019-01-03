@@ -1,3 +1,5 @@
+var LiveReloadPlugin = require('webpack-livereload-plugin');
+
 module.exports = {
     entry: "./src/index.tsx",
     output: {
@@ -29,6 +31,10 @@ module.exports = {
             { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
         ]
     },
+
+    plugins: [
+      new LiveReloadPlugin({})
+    ],
 
     // When importing a module whose path matches one of the following, just
     // assume a corresponding global variable exists and use that instead.

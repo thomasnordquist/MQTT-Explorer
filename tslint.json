@@ -5,6 +5,7 @@
     "max-line-length": [true, 200],
     "member-access": true,
     "no-else-after-return": false,
-    "align": false
+    "align": false,
+    "variable-name": false
   }
 }
