@@ -4,6 +4,7 @@ import * as q from '../../backend/src/Model'
 import { Tree } from './components/Tree/Tree'
 import TitleBar from './components/TitleBar'
 import Sidebar from './components/Sidebar/Sidebar'
+import Connection from './components/ConnectionSetup/Connection'
 
 import { withTheme, Theme } from '@material-ui/core/styles'
 
@@ -62,6 +63,7 @@ class App extends React.Component<Props, State> {
             <Sidebar node={this.state.selectedNode} />
           </div>
       </div>
+      <Connection />
     </div >
   }
 }
