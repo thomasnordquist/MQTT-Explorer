@@ -30,11 +30,11 @@ class NodeStats extends React.Component<Props, State> {
       .map(leaf => leaf.messages)
       .reduce((a, b) => a + b)
 
-    return <Typography>
-      <p>Messages: #{this.props.node.messages}</p>
-      <p>Subtopics: {leafes.length}</p>
-      <p>Messages Subtopics: #{leafMessages}</p>
-    </Typography>
+    return <div>
+      <Typography>Messages: #{this.props.node.messages}</Typography>
+      <Typography>Subtopics: {leafes.length}</Typography>
+      <Typography>Messages Subtopics: #{leafMessages}</Typography>
+    </div>
   }
 }
 
