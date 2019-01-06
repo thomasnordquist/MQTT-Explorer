@@ -5,7 +5,7 @@
     "strictNullChecks": true,
     "outDir": "./build",
     "strict": true,
-    "lib": ["es2017"],
+    "lib": ["es2017", "dom"],
     "sourceMap": true
   },
   "includes": [
@@ -14,6 +14,8 @@
   "exclude": [
     "app",
     "node_modules",
-    "src/**/*.spec.ts"
+    "src/**/*.spec.ts",
+    "**/*.d.ts",
+    "typings"
   ]
 }

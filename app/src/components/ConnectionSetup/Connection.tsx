@@ -1,12 +1,15 @@
 import * as React from 'react'
-
 import { Typography, Toolbar, Modal, MenuItem, Button, Grid, Paper, TextField, Switch, FormControlLabel } from '@material-ui/core'
 import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
+import { MqttOptions, DataSourceState } from '../../../../backend/src/DataSource'
+import { addMqttConnectionEvent, makeConnectionStateEvent, rendererEvents } from '../../../../events'
+import sha1 = require('sha1')
 
 interface Props {
   classes: {[s: string]: string}
   theme: Theme
-  onAbort: () => void
+  onAbort: () => void,
+  onConnection: (connectionId: string) => void
 }
 
 const protocols = [
@@ -16,7 +19,6 @@ const protocols = [
 
 interface State {
   visible: boolean
-  name: string
   host: string
   protocol: string
   port: number
@@ -27,13 +29,22 @@ interface State {
   password: string
 }
 
+declare var window: any
+
 class Connection extends React.Component<Props, State> {
   constructor(props: any) {
     super(props)
-    this.state = {
+    const storedSettingsString = window.localStorage.getItem('connectionSettings')
+    let storedSettings
+    try {
+      storedSettings = storedSettingsString ? JSON.parse(storedSettingsString) : undefined
+    } catch {
+      window.localStorage.setItem('connectionSettings', undefined)
+    }
+
+    const defaultState = {
       visible: true,
-      name: '',
-      host: '',
+      host: 'nodered',
       protocol: protocols[0],
       port: 1883,
       ssl: false,
@@ -42,6 +53,38 @@ class Connection extends React.Component<Props, State> {
       username: '',
       password: '',
     }
+
+    this.state = Object.assign({}, defaultState, storedSettings)
+  }
+
+  private saveConnectionSettings() {
+    window.localStorage.setItem('connectionSettings', JSON.stringify(this.state))
+  }
+
+  private optionsFromState(): MqttOptions {
+    const protocol = this.state.protocol === 'tcp://' ? 'mqtt://' : this.state.protocol
+    const url = `${protocol}${this.state.host}:${this.state.port}`
+
+    return {
+      url,
+      username: this.state.username || undefined,
+      password: this.state.username || undefined,
+      ssl: this.state.ssl,
+      sslValidation: this.state.sslValidation,
+    }
+  }
+
+  private connect() {
+    const options = this.optionsFromState()
+    const connectionId = (sha1(Math.random() + JSON.stringify(options)).slice(0, 8)) as string
+    rendererEvents.emit(addMqttConnectionEvent, { options, id: connectionId })
+    rendererEvents.subscribe(makeConnectionStateEvent(connectionId), (state: DataSourceState) => {
+      console.log(state)
+      if (state.connected) {
+        this.props.onConnection(connectionId)
+        this.setState({ visible: false })
+      }
+    })
   }
 
   public static styles: StyleRulesCallback<string> = (theme: Theme) => {
@@ -91,46 +134,6 @@ class Connection extends React.Component<Props, State> {
           <form className={classes.container} noValidate autoComplete="off">
 
             <Grid container spacing={24}>
-              <Grid item xs={5}>
-                <TextField
-                  label="Name"
-                  className={classes.textField}
-                  value={this.state.name}
-                  onChange={this.handleChange('name')}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={1}></Grid>
-              <Grid item xs={3}>
-                <div className={classes.switch}>
-                  <FormControlLabel
-                    control={(
-                      <Switch
-                        checked={this.state.sslValidation}
-                        onChange={() => this.setState({ sslValidation: !this.state.sslValidation })}
-                        color="primary"
-                      />
-                    )}
-                    label="Validate certificate"
-                    labelPlacement="bottom"
-                  />
-                </div>
-              </Grid>
-              <Grid item xs={3}>
-                <div className={classes.switch}>
-                  <FormControlLabel
-                    control={(
-                      <Switch
-                        checked={this.state.ssl}
-                        onChange={() => this.setState({ ssl: !this.state.ssl })}
-                        color="primary"
-                      />
-                    )}
-                    label="Encryption"
-                    labelPlacement="bottom"
-                  />
-                </div>
-              </Grid>
               <Grid item xs={2}>
                 <TextField
                   select
@@ -184,18 +187,48 @@ class Connection extends React.Component<Props, State> {
                   margin="normal"
                 />
               </Grid>
-              <Grid item xs={4}></Grid>
+              <Grid item xs={3}>
+                <div className={classes.switch}>
+                  <FormControlLabel
+                    control={(
+                      <Switch
+                        checked={this.state.sslValidation}
+                        onChange={() => this.setState({ sslValidation: !this.state.sslValidation })}
+                        color="primary"
+                      />
+                    )}
+                    label="Validate certificate"
+                    labelPlacement="bottom"
+                  />
+                </div>
+              </Grid>
+              <Grid item xs={3}>
+                <div className={classes.switch}>
+                  <FormControlLabel
+                    control={(
+                      <Switch
+                        checked={this.state.ssl}
+                        onChange={() => this.setState({ ssl: !this.state.ssl })}
+                        color="primary"
+                      />
+                    )}
+                    label="Encryption"
+                    labelPlacement="bottom"
+                  />
+                </div>
+              </Grid>
+              <Grid item xs={6}></Grid>
             </Grid>
             <br />
             <div style={{ textAlign: 'right' }}>
               <Button variant="contained" className={classes.button}>
                 Test Connection
               </Button>
-              <Button variant="contained" color="secondary" className={classes.button} onClick={() => this.setState({ visible: false })}>
-                Cancel
-              </Button>
-              <Button variant="contained" color="primary" className={classes.button}>
+              <Button variant="contained" color="secondary" className={classes.button} onClick={() => this.saveConnectionSettings()}>
                 Save
+              </Button>
+              <Button variant="contained" color="primary" className={classes.button} onClick={() => this.connect()}>
+                Connect
               </Button>
             </div>
           </form>

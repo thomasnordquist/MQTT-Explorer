@@ -29,7 +29,11 @@ class TreeNodeSubnodes extends React.Component<Props, {}> {
       const listItems = edges
         .map(edge => edge.target)
         .map(node => (
-          <ListItem key={node.hash()} style={listItemStyle} button>
+          <ListItem
+            key={node.hash()}
+            style={listItemStyle}
+            button
+          >
             <TreeNode
               animateChages={this.props.animateChanges}
               treeNode={node}

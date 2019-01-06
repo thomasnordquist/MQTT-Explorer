@@ -1,13 +1,11 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 import { withTheme, Theme } from '@material-ui/core/styles'
-const throttle = require('lodash.throttle')
 import { isElementInViewport } from '../helper/isElementInViewport'
 import TreeNodeTitle from './TreeNodeTitle'
 import TreeNodeSubnodes from './TreeNodeSubnodes'
 
 declare var performance: any
-declare var window: any
 
 export interface TreeNodeProps {
   animateChages: boolean
@@ -37,7 +35,7 @@ class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
   private cssAnimationWasSetAt?: number
 
   private willUpdateTime: number = performance.now()
-  private titleRef = React.createRef<HTMLElement>()
+  private titleRef = React.createRef<HTMLDivElement>()
 
   private subnodesDidchange = () => {
     this.dirtySubnodes = true
@@ -139,7 +137,7 @@ class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
     this.dirtyState = this.dirtyEdges = this.dirtyMessage = this.dirtySubnodes = false
 
     return <div key={this.props.treeNode.hash()} style={ displayBlock }>
-      <div style={animationStyle} ref={this.titleRef}>
+      <div style={animationStyle} ref={this.titleRef} onClick={() => this.toggle()}>
         <TreeNodeTitle
           edgeCount={this.state.edgeCount}
           collapsed={this.collapsed()}

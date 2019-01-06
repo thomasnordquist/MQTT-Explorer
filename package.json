@@ -6,6 +6,7 @@
   "scripts": {
     "start": "electron .",
     "test": "npm run test-backend",
+    "build": "cd app; npm run build; cd ..; cd backend; npm run build; cd ..",
     "test-backend": "cd backend && npm run test && cd ..",
     "release": "npm run test && ./release.sh"
   },
@@ -38,6 +39,9 @@
     "typescript": "^3.2.2"
   },
   "dependencies": {
-    "mqtt-explorer-backend": "file:backend"
+    "@types/electron": "^1.6.10",
+    "@types/socket.io": "^2.1.2",
+    "mqtt-explorer-backend": "file:backend",
+    "socket.io": "^2.2.0"
   }
 }

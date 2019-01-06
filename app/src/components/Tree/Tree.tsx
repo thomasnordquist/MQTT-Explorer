@@ -1,25 +1,22 @@
 import * as React from 'react'
-import * as io from 'socket.io-client'
 import * as q from '../../../../backend/src/Model'
 import TreeNode from './TreeNode'
 import List from '@material-ui/core/List'
-
-class TreeState {
-  public tree: q.Tree
-  public msg: any
-  constructor(tree: q.Tree, msg: any) {
-    this.tree = tree
-    this.msg = msg
-  }
-}
-
-export interface TreeNodeProps {
-  didSelectNode?: (node: q.TreeNode) => void
-}
+import { makeConnectionMessageEvent, rendererEvents } from '../../../../events'
+import {  } from '../../../../events/Events'
 declare const performance: any
 
-export class Tree extends React.Component<TreeNodeProps, TreeState> {
-  private socket: SocketIOClient.Socket
+interface Props{
+  didSelectNode?: (node: q.TreeNode) => void
+  connectionId?: string
+}
+
+interface TreeState {
+  tree: q.Tree
+  msg: any
+}
+
+export class Tree extends React.Component<Props, TreeState> {
   private renderDuration: number = 300
   private updateTimer?: any
   private lastUpdate: number = 0
@@ -28,8 +25,7 @@ export class Tree extends React.Component<TreeNodeProps, TreeState> {
   constructor(props: any) {
     super(props)
     const tree = new q.Tree()
-    this.state = new TreeState(tree, {})
-    this.socket = io('http://localhost:3000')
+    this.state = { tree, msg: {} }
   }
 
   public time(): number {
@@ -55,18 +51,37 @@ export class Tree extends React.Component<TreeNodeProps, TreeState> {
     }, Math.max(0, timeUntilNextUpdate))
   }
 
-  public componentDidMount() {
-    this.socket.on('message', (msg: any) => {
-      const edges = msg.topic.split('/')
-      const node = q.TreeNodeFactory.fromEdgesAndValue(edges, Buffer.from(msg.payload, 'base64').toString())
-      this.state.tree.updateWithNode(node.firstNode())
+  public componentWillReceiveProps(nextProps: Props) {
+    if (this.props.connectionId) {
+      const event = makeConnectionMessageEvent(this.props.connectionId)
+      rendererEvents.unsubscribeAll(event)
+    }
+    if (nextProps.connectionId) {
+      const event = makeConnectionMessageEvent(nextProps.connectionId)
+      rendererEvents.subscribe(event, this.handleNewData)
+    }
+  }
 
-      this.throttledStateUpdate({ msg, tree: this.state.tree })
-    })
+  public componentDidMount() {
+    if (this.props.connectionId) {
+      const event = makeConnectionMessageEvent(this.props.connectionId)
+      rendererEvents.subscribe(event, this.handleNewData)
+    }
   }
 
   public componentWillUnmount() {
-    this.socket.removeAllListeners()
+    if (this.props.connectionId) {
+      const event = makeConnectionMessageEvent(this.props.connectionId)
+      rendererEvents.unsubscribeAll(event)
+    }
+  }
+
+  private handleNewData = (msg: any) => {
+    const edges = msg.topic.split('/')
+    const node = q.TreeNodeFactory.fromEdgesAndValue(edges, Buffer.from(msg.payload, 'base64').toString())
+    this.state.tree.updateWithNode(node.firstNode())
+
+    this.throttledStateUpdate({ msg, tree: this.state.tree })
   }
 
   public render() {
@@ -74,7 +89,7 @@ export class Tree extends React.Component<TreeNodeProps, TreeState> {
       <List>
         <TreeNode
           animateChages={true}
-          autoExpandLimit={3}
+          autoExpandLimit={0}
           isRoot={true}
           didSelectNode={this.props.didSelectNode}
           treeNode={this.state.tree}

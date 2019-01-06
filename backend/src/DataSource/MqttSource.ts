@@ -3,9 +3,14 @@ import { DataSource, DataSourceStateMachine } from './'
 
 export interface MqttOptions {
   url: string
+  username?: string
+  password?: string
+  ssl: boolean
+  sslValidation: boolean
 }
 
 export class MqttSource implements DataSource<MqttOptions> {
+  public stateMachine: DataSourceStateMachine = new DataSourceStateMachine()
   private client: Client | undefined
   private messageCallback?: (topic: string, message: Buffer) => void
   private rootSubscription = '#'
@@ -16,8 +21,7 @@ export class MqttSource implements DataSource<MqttOptions> {
   }
 
   public connect(options: MqttOptions): DataSourceStateMachine {
-    const state = new DataSourceStateMachine()
-
+    this.stateMachine.setConnecting()
     const client = mqttConnect(options.url, {
       resubscribe: false,
     })
@@ -25,19 +29,19 @@ export class MqttSource implements DataSource<MqttOptions> {
     this.client = client
 
     client.on('error', (error: Error) => {
-      state.setError(error)
+      this.stateMachine.setError(error)
     })
 
     client.on('close', () => {
-      state.setConnected(false)
+      this.stateMachine.setConnected(false)
     })
 
     client.on('reconnect', () => {
-      state.setConnecting()
+      this.stateMachine.setConnecting()
     })
 
     client.on('connect', () => {
-      state.setConnected(true)
+      this.stateMachine.setConnected(true)
       client.subscribe(this.rootSubscription, (err: Error) => {
         if (err) {
           throw new Error('mqtt subscription failed')
@@ -49,7 +53,7 @@ export class MqttSource implements DataSource<MqttOptions> {
       this.messageCallback && this.messageCallback(topic, message)
     })
 
-    return state
+    return this.stateMachine
   }
 
   public disconnect() {

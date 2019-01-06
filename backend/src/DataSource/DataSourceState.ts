@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events'
+import { EventDispatcher } from '../../../events'
 
 export interface DataSourceState {
   connecting: boolean
@@ -6,7 +6,8 @@ export interface DataSourceState {
   error?: Error
 }
 
-export class DataSourceStateMachine extends EventEmitter {
+export class DataSourceStateMachine {
+  public onUpdate = new EventDispatcher<DataSourceState, DataSourceStateMachine>(this)
   private state: DataSourceState = {
     error: undefined,
     connected: false,
@@ -19,6 +20,7 @@ export class DataSourceStateMachine extends EventEmitter {
       error: undefined,
       connecting: false,
     }
+    this.onUpdate.dispatch(this.state)
   }
 
   public setError(error: Error) {
@@ -27,6 +29,7 @@ export class DataSourceStateMachine extends EventEmitter {
       connected: false,
       connecting: false,
     }
+    this.onUpdate.dispatch(this.state)
   }
 
   public setConnecting() {
@@ -35,6 +38,7 @@ export class DataSourceStateMachine extends EventEmitter {
       connected: false,
       connecting: true,
     }
+    this.onUpdate.dispatch(this.state)
   }
 
   public toJSON() {

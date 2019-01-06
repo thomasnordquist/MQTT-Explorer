@@ -8,6 +8,7 @@ interface DataSource<DataSourceOptions> {
   disconnect(): void
   onMessage(messageCallback: MessageCallback): void
   topicSeparator: string
+  stateMachine: DataSourceStateMachine
 }
 
 export { DataSource, MessageCallback }

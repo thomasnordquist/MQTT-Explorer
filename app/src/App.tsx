@@ -5,11 +5,13 @@ import { Tree } from './components/Tree/Tree'
 import TitleBar from './components/TitleBar'
 import Sidebar from './components/Sidebar/Sidebar'
 import Connection from './components/ConnectionSetup/Connection'
+// import { default as EventBus } from '../../events'
 
 import { withTheme, Theme } from '@material-ui/core/styles'
 
-class State {
-  public selectedNode?: q.TreeNode | undefined
+interface State {
+  selectedNode?: q.TreeNode,
+  connectionId?: string
 }
 
 interface Props {
@@ -55,7 +57,7 @@ class App extends React.Component<Props, State> {
       <TitleBar />
       <div>
           <div style={this.getStyles().left}>
-            <Tree didSelectNode={(node: q.TreeNode) => {
+            <Tree connectionId={this.state.connectionId} didSelectNode={(node: q.TreeNode) => {
               this.setState({ selectedNode: node })
             }} />
           </div>
@@ -63,7 +65,7 @@ class App extends React.Component<Props, State> {
             <Sidebar node={this.state.selectedNode} />
           </div>
       </div>
-      <Connection />
+      <Connection onConnection={(connectionId: string) => this.setState({ connectionId })}/>
     </div >
   }
 }

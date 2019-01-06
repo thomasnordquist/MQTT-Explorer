@@ -53,6 +53,8 @@ class ValueRenderer extends React.Component<Props, State> {
       return this.renderRawValue(node.message.value)
     } else if (typeof json === 'number') {
       return this.renderRawValue(node.message.value)
+    } else if (typeof json === 'boolean') {
+      return this.renderRawValue(node.message.value)
     } else {
       const theme = this.props.theme.palette.type === 'dark' ? 'monokai' : 'bright:inverted'
       return <ReactJson

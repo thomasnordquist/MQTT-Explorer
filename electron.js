@@ -1,6 +1,6 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
-require('mqtt-explorer-backend')
+require('./backend/build/backend/src/index.js')
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -27,6 +27,7 @@ function createWindow () {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null
+    app.quit()
   })
 }
 

@@ -12,6 +12,8 @@ module.exports = {
       splitChunks: false,
     },
 
+    target: 'electron-renderer',
+
     mode: 'production',
 
     // Enable sourcemaps for debugging webpack's output.
