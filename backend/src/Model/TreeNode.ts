@@ -1,32 +1,24 @@
 import { Edge, Message } from './'
-import { EventEmitter } from 'events'
+import { EventDispatcher } from '../../../events'
 
-export enum TreeNodeUpdateEvents {
-  edges = 'edges',
-  message = 'message',
-  merge = 'merge',
-}
-
-export class TreeNode extends EventEmitter {
+export class TreeNode {
   public sourceEdge?: Edge
   public message?: Message
   public edges: {[s: string]: Edge} = {}
   public collapsed = false
   public messages: number = 0
 
-  constructor(sourceEdge?: Edge, message?: Message) {
-    super()
+  public onMerge = new EventDispatcher<void, TreeNode>(this)
+  public onEdgesChange = new EventDispatcher<void, TreeNode>(this)
+  public onMessage = new EventDispatcher<Message, TreeNode>(this)
 
+  constructor(sourceEdge?: Edge, message?: Message) {
     if (sourceEdge) {
       this.sourceEdge = sourceEdge
       sourceEdge.target = this
     }
 
     this.setMessage(message)
-  }
-
-  private propagateUpdate(event: TreeNodeUpdateEvents) {
-    this.emit(event)
   }
 
   public setMessage(value: any) {
@@ -58,7 +50,7 @@ export class TreeNode extends EventEmitter {
     edge.source = this
 
     if (emitUpdate) {
-      this.propagateUpdate(TreeNodeUpdateEvents.edges)
+      this.onEdgesChange.dispatch()
     }
   }
 
@@ -74,11 +66,11 @@ export class TreeNode extends EventEmitter {
   public updateWithNode(node: TreeNode) {
     if (node.message) {
       this.setMessage(node.message)
-      this.propagateUpdate(TreeNodeUpdateEvents.message)
+      this.onMessage.dispatch(node.message)
     }
 
     this.mergeEdges(node)
-    this.propagateUpdate(TreeNodeUpdateEvents.merge)
+    this.onMerge.dispatch()
   }
 
   public leafes(): TreeNode[] {
@@ -106,7 +98,7 @@ export class TreeNode extends EventEmitter {
     }
 
     if (edgesDidUpdate) {
-      this.propagateUpdate(TreeNodeUpdateEvents.edges)
+      this.onEdgesChange.dispatch()
     }
   }
 }

@@ -13,23 +13,18 @@ interface State {
 }
 
 class ValueRenderer extends React.Component<Props, State> {
-  private updateNode: (node?: q.TreeNode | undefined) => void
+  private updateNode: () => void
   constructor(props: any) {
     super(props)
     this.state = {}
-    this.updateNode = (node) => {
-      if (!node) {
-        this.setState(this.state)
-      } else {
-        this.setState({ node })
-      }
+    this.updateNode = () => {
+      this.setState(this.state)
     }
   }
 
   public componentWillReceiveProps(nextProps: Props) {
-    this.props.node && this.props.node.removeListener('update', this.updateNode)
-    nextProps.node && nextProps.node.on('update', this.updateNode)
-    nextProps.node && this.updateNode(nextProps.node)
+    this.props.node && this.props.node.onMessage.unsubscribe(this.updateNode)
+    nextProps.node && nextProps.node.onMessage.subscribe(this.updateNode)
   }
 
   private style = (theme: Theme) => {

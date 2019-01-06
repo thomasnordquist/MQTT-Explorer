@@ -22,12 +22,8 @@ interface State {
 }
 
 class Sidebar extends React.Component<Props, State> {
-  private updateNode = (node: q.TreeNode) => {
-    if (!node) {
-      this.setState(this.state)
-    } else {
-      this.setState({ node })
-    }
+  private updateNode = () => {
+    this.setState(this.state)
   }
 
   constructor(props: any) {
@@ -58,17 +54,13 @@ class Sidebar extends React.Component<Props, State> {
   }
 
   private registerUpdateListener(node: q.TreeNode) {
-    node.on(q.TreeNodeUpdateEvents.merge, this.updateNode)
-    node.on(q.TreeNodeUpdateEvents.message, this.updateNode)
+    node.onMerge.subscribe(this.updateNode)
+    node.onMessage.subscribe(this.updateNode)
   }
 
   private removeUpdateListener(node: q.TreeNode) {
-    node.removeListener(q.TreeNodeUpdateEvents.merge, this.updateNode)
-    node.removeListener(q.TreeNodeUpdateEvents.message, this.updateNode)
-  }
-
-  private open(): boolean {
-    return true
+    node.onMerge.unsubscribe(this.updateNode)
+    node.onMessage.unsubscribe(this.updateNode)
   }
 
   public render() {

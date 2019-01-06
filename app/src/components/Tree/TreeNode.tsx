@@ -57,15 +57,17 @@ class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
   }
 
   public componentDidMount() {
-    this.props.treeNode.on(q.TreeNodeUpdateEvents.merge, this.subnodesDidchange)
-    this.props.treeNode.on(q.TreeNodeUpdateEvents.edges, this.edgesDidChange)
-    this.props.treeNode.on(q.TreeNodeUpdateEvents.message, this.messageDidChange)
+    const { treeNode } = this.props
+    treeNode.onMerge.subscribe(this.subnodesDidchange)
+    treeNode.onEdgesChange.subscribe(this.edgesDidChange)
+    treeNode.onMessage.subscribe(this.messageDidChange)
   }
 
   public componentWillUnmount() {
-    this.props.treeNode.removeListener(q.TreeNodeUpdateEvents.merge, this.subnodesDidchange)
-    this.props.treeNode.removeListener(q.TreeNodeUpdateEvents.edges, this.edgesDidChange)
-    this.props.treeNode.removeListener(q.TreeNodeUpdateEvents.message, this.messageDidChange)
+    const { treeNode } = this.props
+    treeNode.onMerge.unsubscribe(this.subnodesDidchange)
+    treeNode.onEdgesChange.unsubscribe(this.edgesDidChange)
+    treeNode.onMessage.unsubscribe(this.messageDidChange)
   }
 
   private getStyles() {
