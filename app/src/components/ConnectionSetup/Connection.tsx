@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Typography, Toolbar, Modal, MenuItem, Button, Grid, Paper, TextField, Switch, FormControlLabel } from '@material-ui/core'
 import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
+import Notification from './Notification'
 import { MqttOptions, DataSourceState } from '../../../../backend/src/DataSource'
 import { addMqttConnectionEvent, makeConnectionStateEvent, rendererEvents } from '../../../../events'
 import sha1 = require('sha1')
@@ -18,6 +19,7 @@ const protocols = [
 ]
 
 interface State {
+  error?: Error
   visible: boolean
   host: string
   protocol: string
@@ -79,10 +81,11 @@ class Connection extends React.Component<Props, State> {
     const connectionId = (sha1(Math.random() + JSON.stringify(options)).slice(0, 8)) as string
     rendererEvents.emit(addMqttConnectionEvent, { options, id: connectionId })
     rendererEvents.subscribe(makeConnectionStateEvent(connectionId), (state: DataSourceState) => {
-      console.log(state)
       if (state.connected) {
         this.props.onConnection(connectionId)
         this.setState({ visible: false })
+      } else if (state.error) {
+        this.setState({ error: state.error })
       }
     })
   }
@@ -132,7 +135,6 @@ class Connection extends React.Component<Props, State> {
             <Typography className={classes.title} variant="h6" color="inherit">MQTT Connection</Typography>
           </Toolbar>
           <form className={classes.container} noValidate autoComplete="off">
-
             <Grid container spacing={24}>
               <Grid item xs={2}>
                 <TextField
@@ -221,9 +223,9 @@ class Connection extends React.Component<Props, State> {
             </Grid>
             <br />
             <div style={{ textAlign: 'right' }}>
-              <Button variant="contained" className={classes.button}>
-                Test Connection
-              </Button>
+              // <Button variant="contained" className={classes.button}>
+              //   Test Connection
+              // </Button>
               <Button variant="contained" color="secondary" className={classes.button} onClick={() => this.saveConnectionSettings()}>
                 Save
               </Button>
