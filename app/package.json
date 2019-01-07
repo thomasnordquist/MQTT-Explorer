@@ -11,13 +11,18 @@
   "license": "ISC",
   "devDependencies": {
     "@material-ui/icons": "^3.0.1",
+    "@material-ui/lab": "^3.0.0-alpha.27",
+    "@types/react": "^16.7.18",
+    "@types/react-dom": "^16.0.11",
+    "@types/react-redux": "^6.0.12",
+    "react-redux": "^6.0.0",
+    "react-transition-group": "^2.5.2",
+    "redux": "^4.0.1",
     "webpack-livereload-plugin": "^2.2.0"
   },
   "dependencies": {
     "@material-ui/core": "^3.7.1",
     "@types/node": "^10.12.18",
-    "@types/react": "^16.7.18",
-    "@types/react-dom": "^16.0.11",
     "@types/sha1": "^1.1.1",
     "@types/socket.io-client": "^1.4.32",
     "@types/vis": "^4.21.9",

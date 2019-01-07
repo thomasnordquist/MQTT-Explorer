@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR=build/topackage
+DIR=build/clean
 
 rm -rf "$DIR"
 mkdir -p "$DIR"
@@ -14,6 +14,8 @@ npm run build
 rm -rf app/node_modules
 cd "$ORIGINAL_DIR"
 
+node_modules/.bin/ts-node build.ts
+exit 0
 docker run --rm -ti \
  --env ELECTRON_CACHE="/root/.cache/electron" \
  --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder" \

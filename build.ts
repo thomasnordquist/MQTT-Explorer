@@ -6,7 +6,7 @@ const linux: builder.CliOptions = {
   armv7l: true,
   arm64: true,
   linux: ['snap', 'AppImage', 'deb', 'pacman'],
-  prepackaged: './build/topackage',
+  projectDir: './build/clean',
 }
 
 const win: builder.CliOptions = {
@@ -15,7 +15,7 @@ const win: builder.CliOptions = {
   armv7l: false,
   arm64: false,
   win: ['portable'],
-  prepackaged: './build/topackage',
+  projectDir: './build/clean',
 }
 
 const mac: builder.CliOptions = {
@@ -24,12 +24,13 @@ const mac: builder.CliOptions = {
   armv7l: false,
   arm64: false,
   mac: ['dmg'],
+  projectDir: './build/clean',
 }
 
 async function buildAll() {
-  await builder.build(linux)
+  // await builder.build(linux)
   await builder.build(mac)
-  await builder.build(win)
+  // await builder.build(win)
 }
 
 buildAll()

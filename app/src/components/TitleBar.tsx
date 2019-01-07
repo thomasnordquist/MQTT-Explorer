@@ -2,6 +2,22 @@ import * as React from 'react'
 import * as q from '../../../backend/src/Model'
 
 import Search from '@material-ui/icons/Search'
+import Drawer from '@material-ui/core/Drawer'
+import IconButton from '@material-ui/core/IconButton'
+import Menu from '@material-ui/icons/Menu'
+
+import List from '@material-ui/core/List'
+import Divider from '@material-ui/core/Divider'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
+import Slider from '@material-ui/lab/Slider'
+
+import { settingsActions } from '../actions'
+import { AppState, SettingsModel } from '../reducers'
+
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 
 import { AppBar, Toolbar, Typography, InputBase } from '@material-ui/core'
 import { withStyles, StyleRulesCallback } from '@material-ui/core/styles'
@@ -53,17 +69,30 @@ const styles: StyleRulesCallback = theme => ({
       width: 200,
     },
   },
+  menuButton: {
+    marginLeft: -12,
+    marginRight: 20,
+  },
 })
 
 interface Props {
   classes: any
+  actions: any
 }
 
-class TitleBar extends React.Component<Props, {}> {
+interface State {
+  selectedNode?: q.TreeNode
+  settingsVisible: boolean
+  autoExpandLimit: number
+}
+
+class TitleBar extends React.Component<Props, State> {
   constructor(props: any) {
     super(props)
     this.state = {
       selectedNode: undefined,
+      settingsVisible: false,
+      autoExpandLimit: 0,
     }
   }
 
@@ -72,6 +101,9 @@ class TitleBar extends React.Component<Props, {}> {
 
     return <AppBar position="static">
         <Toolbar>
+          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={this.props.actions.toggleSettingsVisibility}>
+            <Menu />
+          </IconButton>
           <Typography className={classes.title} variant="h6" color="inherit">MQTT-Xplorer</Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
@@ -90,4 +122,10 @@ class TitleBar extends React.Component<Props, {}> {
   }
 }
 
-export default withStyles(styles)(TitleBar)
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: bindActionCreators(settingsActions, dispatch),
+  }
+}
+
+export default withStyles(styles)(connect(null, mapDispatchToProps)(TitleBar))

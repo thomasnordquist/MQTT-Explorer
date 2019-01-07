@@ -13,13 +13,13 @@ import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
 import Copy from '../Copy'
 
 interface Props {
-  node?: q.TreeNode | undefined,
+  node?: q.TreeNode,
   classes: any,
-  theme: Theme
+  theme: Theme,
 }
 
 interface State {
-  node?: q.TreeNode | undefined
+  node?: q.TreeNode
 }
 
 class Sidebar extends React.Component<Props, State> {

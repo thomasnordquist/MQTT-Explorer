@@ -11,9 +11,14 @@
     "release": "npm run test && ./release.sh"
   },
   "build": {
-    "appId": "mq-explorer",
+    "appId": "mqtt-explorer",
     "mac": {
-      "category": "de.t7n.apps.mq-explorer"
+      "category": "de.t7n.apps.mq-explorer",
+      "files": [
+        "**/*",
+        "!**/*.ts",
+        "!app/node_modules"
+      ]
     },
     "linux": {
       "category": "Development",
@@ -36,11 +41,23 @@
     "tslint": "^5.12.0",
     "tslint-config-airbnb": "^5.11.1",
     "tslint-react": "^3.6.0",
-    "typescript": "^3.2.2"
+    "typescript": "^3.2.2",
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.12.18",
+    "@types/sha1": "^1.1.1",
+    "@types/socket.io": "^2.1.2",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0",
+    "source-map-support": "^0.5.9",
+    "tslint-strict-null-checks": "^1.0.1"
   },
   "dependencies": {
     "@types/electron": "^1.6.10",
     "@types/socket.io": "^2.1.2",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.2.0",
+    "mqtt": "^2.18.8",
+    "sha1": "^1.1.1"
   }
 }

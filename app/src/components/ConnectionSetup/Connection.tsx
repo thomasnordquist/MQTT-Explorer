@@ -85,6 +85,7 @@ class Connection extends React.Component<Props, State> {
         this.props.onConnection(connectionId)
         this.setState({ visible: false })
       } else if (state.error) {
+        console.log('error', state.error)
         this.setState({ error: state.error })
       }
     })

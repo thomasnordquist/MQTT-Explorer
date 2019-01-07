@@ -5,13 +5,16 @@ import { Typography } from '@material-ui/core'
 import { makeConnectionMessageEvent, rendererEvents } from '../../../../events'
 import {  } from '../../../../events/Events'
 const MovingAvaerage = require('moving-average')
+import { connect } from 'react-redux'
+import { AppState } from '../../reducers'
 
 declare const performance: any
 
 const timeInterval = 10 * 1000
 const average = MovingAvaerage(timeInterval)
 
-interface Props{
+interface Props {
+  autoExpandLimit: number
   didSelectNode?: (node: q.TreeNode) => void
   connectionId?: string
 }
@@ -21,7 +24,7 @@ interface TreeState {
   msg: any
 }
 
-export class Tree extends React.Component<Props, TreeState> {
+class Tree extends React.Component<Props, TreeState> {
   private renderDuration: number = 300
   private updateTimer?: any
   private lastUpdate: number = 0
@@ -98,12 +101,13 @@ export class Tree extends React.Component<Props, TreeState> {
 
     return <Typography style={ style }>
         <TreeNode
-          animateChages={true}
-          autoExpandLimit={3000}
-          isRoot={true}
-          didSelectNode={this.props.didSelectNode}
-          treeNode={this.state.tree}
-          name="/" collapsed={false}
+          animateChages = { true }
+          autoExpandLimit = { this.props.autoExpandLimit }
+          isRoot = { true }
+          didSelectNode = { this.props.didSelectNode }
+          treeNode = { this.state.tree }
+          name = "/"
+          collapsed = { false }
           key="rootNode"
           performanceCallback={(ms: number) => {
             average.push(Date.now(), ms)
@@ -113,3 +117,11 @@ export class Tree extends React.Component<Props, TreeState> {
     </Typography>
   }
 }
+
+const mapStateToProps = (state: AppState) => {
+  return {
+    autoExpandLimit: state.settings.autoExpandLimit,
+  }
+}
+
+export default connect(mapStateToProps)(Tree)

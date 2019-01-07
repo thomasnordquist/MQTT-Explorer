@@ -1,13 +1,33 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
-import { withTheme, Theme } from '@material-ui/core/styles'
+import { withStyles, Theme } from '@material-ui/core/styles'
 import { isElementInViewport } from '../helper/isElementInViewport'
 import TreeNodeTitle from './TreeNodeTitle'
 import TreeNodeSubnodes from './TreeNodeSubnodes'
 
 declare var performance: any
 
-export interface TreeNodeProps {
+const styles = (theme: Theme) => {
+  return {
+    collapsedSubnodes: {
+      color: theme.palette.text.secondary,
+    },
+    displayBlock: {
+      display: 'block',
+    },
+    node: {
+      display: 'block',
+      marginLeft: '10px',
+    },
+    hover: {
+      '&:hover': {
+        backgroundColor: 'rgba(80, 80, 80, 0.35)',
+      },
+    },
+  }
+}
+
+interface Props {
   animateChages: boolean
   isRoot?: boolean
   treeNode: q.TreeNode
@@ -15,20 +35,16 @@ export interface TreeNodeProps {
   collapsed?: boolean | undefined
   performanceCallback?: ((ms: number) => void) | undefined
   didSelectNode?: (node: q.TreeNode) => void
-  theme: Theme
+  classes: any
   autoExpandLimit: number
 }
 
-interface TreeNodeState {
-  title: string | undefined
-  collapsed: boolean
+interface State {
   collapsedOverride: boolean | undefined
-  edgeCount: number
 }
 
-class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
+class TreeNode extends React.Component<Props, State> {
   private dirtySubnodes: boolean = true
-  private dirtyState: boolean = true
   private dirtyEdges: boolean = true
   private dirtyMessage: boolean = true
 
@@ -49,11 +65,12 @@ class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
     this.dirtyMessage = true
   }
 
-  constructor(props: TreeNodeProps) {
+  constructor(props: Props) {
     super(props)
-    const edgeCount = Object.keys(props.treeNode.edges).length
-    const collapsed = edgeCount > this.props.autoExpandLimit
-    this.state = { collapsed, edgeCount, collapsedOverride: props.collapsed, title: props.name }
+
+    this.state = {
+      collapsedOverride: props.collapsed,
+    }
   }
 
   public componentDidMount() {
@@ -70,32 +87,18 @@ class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
     treeNode.onMessage.unsubscribe(this.messageDidChange)
   }
 
-  private getStyles() {
-    return {
-      collapsedSubnodes: {
-        color: this.props.theme.palette.text.secondary,
-      },
-      displayBlock: {
-        display: 'block',
-      },
-    }
+  private stateHasChanged(newState: State) {
+    return this.state.collapsedOverride !== newState.collapsedOverride
   }
 
-  public setState(newState: any) {
-    this.dirtyState = this.stateHasChanged(newState)
-
-    super.setState(newState)
+  private propsHasChanged(newProps: Props) {
+    return this.props.autoExpandLimit !== newProps.autoExpandLimit
   }
 
-  private stateHasChanged(newState: any) {
-    return this.state.collapsed !== newState.collapsed
-      || this.state.collapsedOverride !== newState.collapsedOverride
-      || this.state.edgeCount !== newState.edgeCount
-  }
-
-  public shouldComponentUpdate() {
+  public shouldComponentUpdate(nextProps: Props, nextState: State) {
     const shouldRenderToRemoveCssAnimation = this.cssAnimationWasSetAt !== undefined
-    return this.dirtyState
+    return this.stateHasChanged(nextState)
+      || this.propsHasChanged(nextProps)
       || this.dirtyEdges
       || this.dirtyMessage
       || this.dirtySubnodes
@@ -124,25 +127,26 @@ class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
       return this.state.collapsedOverride
     }
 
-    return this.state.collapsed
-  }
-
-  public componentWillReceiveProps() {
-    const edgeCount = Object.keys(this.props.treeNode.edges).length
-    this.setState({ edgeCount, collapsed: edgeCount > this.props.autoExpandLimit })
+    return this.props.treeNode.edgeCount() > this.props.autoExpandLimit
   }
 
   public render() {
-    const { displayBlock } = this.getStyles()
     const animationStyle = this.indicatingChangeAnimationStyle()
+    const { classes } = this.props
+    this.dirtyEdges = this.dirtyMessage = this.dirtySubnodes = false
 
-    this.dirtyState = this.dirtyEdges = this.dirtyMessage = this.dirtySubnodes = false
-
-    return <div key={this.props.treeNode.hash()} style={ { display: 'block', marginLeft: '10px' } }>
+    return <div
+      key={this.props.treeNode.hash()}
+      className={`${classes.node} ${!this.props.isRoot ? classes.hover : ''}`}
+      onClick={(event) => {
+        event.stopPropagation()
+        this.toggle()
+        this.props.didSelectNode && this.props.didSelectNode(this.props.treeNode)
+      }}
+    >
       <span ref={this.titleRef} style={animationStyle}>
         <TreeNodeTitle
           onClick={() => this.toggle()}
-          edgeCount={this.state.edgeCount}
           collapsed={this.collapsed()}
           treeNode={this.props.treeNode}
           name={this.props.name}
@@ -186,4 +190,4 @@ class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
   }
 }
 
-export default withTheme()(TreeNode)
+export default withStyles(styles)(TreeNode)

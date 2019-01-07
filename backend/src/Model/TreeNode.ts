@@ -93,6 +93,10 @@ export class TreeNode {
     return this.leafes().length
   }
 
+  public edgeCount(): number {
+    return Object.values(this.edges).length
+  }
+
   public leafes(): TreeNode[] {
     if (this.cachedLeafes === undefined) {
       if (Object.values(this.edges).length === 0) {

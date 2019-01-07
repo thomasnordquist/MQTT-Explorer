@@ -1,16 +1,13 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
-import { Typography } from '@material-ui/core'
 import { withTheme, Theme } from '@material-ui/core/styles'
 
 export interface TreeNodeProps extends React.HTMLAttributes<HTMLElement> {
   treeNode: q.TreeNode
-  // ref: React.Ref<HTMLElement>
   name?: string | undefined
   collapsed?: boolean | undefined
   toggleCollapsed: () => void
   didSelectNode?: (node: q.TreeNode) => void
-  edgeCount: number
   theme: Theme
 }
 
@@ -81,7 +78,7 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
   }
 
   private renderExpander() {
-    if (this.props.edgeCount === 0) {
+    if (this.props.treeNode.edgeCount() === 0) {
       return null
     }
 
@@ -89,7 +86,7 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
   }
 
   private renderCollapsedSubnodes() {
-    if (this.props.edgeCount === 0 || !this.props.collapsed) {
+    if (this.props.treeNode.edgeCount() === 0 || !this.props.collapsed) {
       return null
     }
 
