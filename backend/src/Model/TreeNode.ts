@@ -11,6 +11,8 @@ export class TreeNode {
   public onMerge = new EventDispatcher<void, TreeNode>(this)
   public onEdgesChange = new EventDispatcher<void, TreeNode>(this)
   public onMessage = new EventDispatcher<Message, TreeNode>(this)
+  private cachedLeafes?: TreeNode[]
+  private cachedLeafMessageCount?: number
 
   constructor(sourceEdge?: Edge, message?: Message) {
     if (sourceEdge) {
@@ -19,6 +21,10 @@ export class TreeNode {
     }
 
     this.setMessage(message)
+    this.onMerge.subscribe(() => {
+      this.cachedLeafes = undefined
+      this.cachedLeafMessageCount = undefined
+    })
   }
 
   public setMessage(value: any) {
@@ -73,14 +79,32 @@ export class TreeNode {
     this.onMerge.dispatch()
   }
 
-  public leafes(): TreeNode[] {
-    if (Object.values(this.edges).length === 0) {
-      return [this]
+  public leafMessageCount() {
+    if (this.cachedLeafMessageCount === undefined) {
+      this.cachedLeafMessageCount = this.leafes()
+        .map(leaf => leaf.messages)
+        .reduce((a, b) => a + b)
     }
 
-    return Object.values(this.edges)
-      .map(e => e.target.leafes())
-      .reduce((a, b) => a.concat(b), [])
+    return this.cachedLeafMessageCount
+  }
+
+  public leafCount(): number {
+    return this.leafes().length
+  }
+
+  public leafes(): TreeNode[] {
+    if (this.cachedLeafes === undefined) {
+      if (Object.values(this.edges).length === 0) {
+        return [this]
+      }
+
+      this.cachedLeafes = Object.values(this.edges)
+        .map(e => e.target.leafes())
+        .reduce((a, b) => a.concat(b), [])
+    }
+
+    return this.cachedLeafes
   }
 
   private mergeEdges(node: TreeNode) {

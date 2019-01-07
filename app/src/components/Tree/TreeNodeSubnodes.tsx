@@ -29,10 +29,9 @@ class TreeNodeSubnodes extends React.Component<Props, {}> {
       const listItems = edges
         .map(edge => edge.target)
         .map(node => (
-          <ListItem
+          <div
             key={node.hash()}
             style={listItemStyle}
-            button
           >
             <TreeNode
               animateChages={this.props.animateChanges}
@@ -40,12 +39,14 @@ class TreeNodeSubnodes extends React.Component<Props, {}> {
               didSelectNode={this.props.didSelectNode}
               autoExpandLimit={this.props.autoExpandLimit}
             />
-          </ListItem>
+          </div>
         ))
 
-      return <Collapse in={!this.props.collapsed} timeout="auto" unmountOnExit>
-        <List style={listStyle}>{listItems}</List>
-      </Collapse>
+      return <span
+        style={{ display: 'block', clear: 'both' }}
+      >
+        {this.props.collapsed ? null : listItems}
+      </span>
     }
 
     return null

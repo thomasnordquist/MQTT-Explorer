@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
+const copy = require('copy-text-to-clipboard')
 
 interface Props {
   classes: any
@@ -50,7 +51,10 @@ class Topic extends React.Component<Props, {}> {
       prev.concat([<span key={key += 1}>/</span>]).concat(current),
     )
 
-    return <span style={{ lineHeight: '2.2em' }}>{joinedBreadCrumps}</span>
+    return <span style={{ lineHeight: '2.2em' }}>
+      <a onClick={() => copy(this.props.node && this.props.node.path())}>📋</a>
+      {joinedBreadCrumps}
+    </span>
   }
 }
 

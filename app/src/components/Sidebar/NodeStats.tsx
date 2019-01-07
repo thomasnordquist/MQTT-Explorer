@@ -25,15 +25,12 @@ class NodeStats extends React.Component<Props, State> {
   }
 
   public render() {
-    const leafes = this.props.node.leafes()
-    const leafMessages = leafes
-      .map(leaf => leaf.messages)
-      .reduce((a, b) => a + b)
+    const { node } = this.props
 
     return <div>
-      <Typography>Messages: #{this.props.node.messages}</Typography>
-      <Typography>Subtopics: {leafes.length}</Typography>
-      <Typography>Messages Subtopics: #{leafMessages}</Typography>
+      <Typography>Messages: #{node.messages}</Typography>
+      <Typography>Subtopics: {node.leafCount()}</Typography>
+      <Typography>Messages Subtopics: #{node.leafMessageCount()}</Typography>
     </div>
   }
 }

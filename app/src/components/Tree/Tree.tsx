@@ -1,10 +1,15 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 import TreeNode from './TreeNode'
-import List from '@material-ui/core/List'
+import { Typography } from '@material-ui/core'
 import { makeConnectionMessageEvent, rendererEvents } from '../../../../events'
 import {  } from '../../../../events/Events'
+const MovingAvaerage = require('moving-average')
+
 declare const performance: any
+
+const timeInterval = 10 * 1000
+const average = MovingAvaerage(timeInterval)
 
 interface Props{
   didSelectNode?: (node: q.TreeNode) => void
@@ -20,7 +25,7 @@ export class Tree extends React.Component<Props, TreeState> {
   private renderDuration: number = 300
   private updateTimer?: any
   private lastUpdate: number = 0
-  private perf:number = 0
+  private perf: number = 0
 
   constructor(props: any) {
     super(props)
@@ -40,7 +45,8 @@ export class Tree extends React.Component<Props, TreeState> {
       return
     }
 
-    const updateInterval = Math.max(this.renderDuration * 5, 300)
+    const expectedRenderTime = average.forecast()
+    const updateInterval = Math.max(expectedRenderTime * 5, 300)
     const timeUntilNextUpdate = updateInterval - (performance.now() - this.lastUpdate)
 
     this.updateTimer = setTimeout(() => {
@@ -85,21 +91,20 @@ export class Tree extends React.Component<Props, TreeState> {
   }
 
   public render() {
-    return <div>
-      <List>
+    return <Typography>
         <TreeNode
           animateChages={true}
-          autoExpandLimit={0}
+          autoExpandLimit={3000}
           isRoot={true}
           didSelectNode={this.props.didSelectNode}
           treeNode={this.state.tree}
           name="/" collapsed={false}
           key="rootNode"
           performanceCallback={(ms: number) => {
+            average.push(Date.now(), ms)
             this.renderDuration = ms
           }}
         />
-      </List>
-    </div>
+    </Typography>
   }
 }

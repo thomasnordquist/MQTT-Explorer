@@ -138,9 +138,10 @@ class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
 
     this.dirtyState = this.dirtyEdges = this.dirtyMessage = this.dirtySubnodes = false
 
-    return <div key={this.props.treeNode.hash()} style={ displayBlock }>
-      <div style={animationStyle} ref={this.titleRef} onClick={() => this.toggle()}>
+    return <div key={this.props.treeNode.hash()} style={ { display: 'block', marginLeft: '10px' } }>
+      <span ref={this.titleRef} style={animationStyle}>
         <TreeNodeTitle
+          onClick={() => this.toggle()}
           edgeCount={this.state.edgeCount}
           collapsed={this.collapsed()}
           treeNode={this.props.treeNode}
@@ -148,17 +149,9 @@ class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
           didSelectNode={this.props.didSelectNode}
           toggleCollapsed={() => this.toggle()}
         />
-      </div>
-
-      { this.clear() }
-      <div style = { displayBlock }>
-        {this.renderNodes()}
-      </div>
+      </span>
+      { this.renderNodes() }
     </div>
-  }
-
-  private clear() {
-    return <div style={{ clear: 'both' }} />
   }
 
   private renderNodes() {
@@ -172,7 +165,7 @@ class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
     />
   }
 
-  private indicatingChangeAnimationStyle() {
+  private indicatingChangeAnimationStyle(): React.CSSProperties {
     if (this.props.isRoot) {
       return {}
     }
@@ -188,6 +181,8 @@ class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
       }
       return { animation: 'example 0.5s' }
     }
+
+    return {}
   }
 }
 

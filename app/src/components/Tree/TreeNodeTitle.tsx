@@ -3,8 +3,9 @@ import * as q from '../../../../backend/src/Model'
 import { Typography } from '@material-ui/core'
 import { withTheme, Theme } from '@material-ui/core/styles'
 
-export interface TreeNodeProps {
+export interface TreeNodeProps extends React.HTMLAttributes<HTMLElement> {
   treeNode: q.TreeNode
+  // ref: React.Ref<HTMLElement>
   name?: string | undefined
   collapsed?: boolean | undefined
   toggleCollapsed: () => void
@@ -31,9 +32,14 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
       lineHeight: '1em',
       whiteSpace: 'nowrap',
     }
-    return <Typography style={style}>
+    return <span
+      style={style}
+      onClick={() => {
+        this.toggle()
+        this.props.didSelectNode && this.props.didSelectNode(this.props.treeNode)
+      }}>
       {this.renderExpander()} {this.renderSourceEdge()} {this.renderCollapsedSubnodes()} {this.renderValue()}
-    </Typography>
+    </span>
   }
 
   private renderSourceEdge() {
@@ -44,10 +50,7 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
     }
     const name = this.props.name || (this.props.treeNode.sourceEdge && this.props.treeNode.sourceEdge.name)
 
-    return <span style={style} onClick={() => {
-      this.toggle()
-      this.props.didSelectNode && this.props.didSelectNode(this.props.treeNode)
-    }}>{name}</span>
+    return <span style={style}>{name}</span>
   }
 
   private renderValue() {
@@ -77,9 +80,7 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
       return null
     }
 
-    return this.props.collapsed
-      ? <span onClick={() => this.toggle()}>▶</span>
-      : <span onClick={() => this.toggle()}>▼</span>
+    return this.props.collapsed ? '▶' : '▼'
   }
 
   private renderCollapsedSubnodes() {
@@ -87,8 +88,8 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
       return null
     }
 
-    const messages = this.props.treeNode.leafes().map(leaf => leaf.messages).reduce((a, b) => a + b)
-    return <span style={this.getStyles().collapsedSubnodes}>({this.props.treeNode.leafes().length} nodes, {messages} messages)</span>
+    const messages = this.props.treeNode.leafMessageCount()
+    return <span style={this.getStyles().collapsedSubnodes}>({this.props.treeNode.leafCount()} nodes, {messages} messages)</span>
   }
 }
 
