@@ -41,7 +41,6 @@
   "dependencies": {
     "@types/electron": "^1.6.10",
     "@types/socket.io": "^2.1.2",
-    "mqtt-explorer-backend": "file:backend",
     "socket.io": "^2.2.0"
   }
 }

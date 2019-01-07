@@ -6,6 +6,7 @@ const linux: builder.CliOptions = {
   armv7l: true,
   arm64: true,
   linux: ['snap', 'AppImage', 'deb', 'pacman'],
+  prepackaged: './build/topackage',
 }
 
 const win: builder.CliOptions = {
@@ -14,6 +15,7 @@ const win: builder.CliOptions = {
   armv7l: false,
   arm64: false,
   win: ['portable'],
+  prepackaged: './build/topackage',
 }
 
 const mac: builder.CliOptions = {

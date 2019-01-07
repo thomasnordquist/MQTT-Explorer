@@ -223,9 +223,6 @@ class Connection extends React.Component<Props, State> {
             </Grid>
             <br />
             <div style={{ textAlign: 'right' }}>
-              // <Button variant="contained" className={classes.button}>
-              //   Test Connection
-              // </Button>
               <Button variant="contained" color="secondary" className={classes.button} onClick={() => this.saveConnectionSettings()}>
                 Save
               </Button>
