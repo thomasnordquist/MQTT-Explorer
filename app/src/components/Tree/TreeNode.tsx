@@ -174,7 +174,7 @@ class TreeNode extends React.Component<TreeNodeProps, TreeNodeState> {
       return {}
     }
     const isInViewPort = this.titleRef.current && isElementInViewport(this.titleRef.current)
-    const isDirty = this.dirtyMessage || this.dirtyEdges || this.collapsed()
+    const isDirty = this.dirtyMessage || this.dirtyEdges
     if (this.props.animateChages && isDirty && isInViewPort) {
       if (!this.cssAnimationWasSetAt) {
         this.cssAnimationWasSetAt = performance.now()

@@ -91,7 +91,12 @@ export class Tree extends React.Component<Props, TreeState> {
   }
 
   public render() {
-    return <Typography>
+    const style: React.CSSProperties = {
+      lineHeight: '1.1',
+      cursor: 'default',
+    }
+
+    return <Typography style={ style }>
         <TreeNode
           animateChages={true}
           autoExpandLimit={3000}

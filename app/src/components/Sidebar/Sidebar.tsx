@@ -10,6 +10,7 @@ import NodeStats from './NodeStats'
 import Topic from './Topic'
 import { Typography } from '@material-ui/core'
 import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
+import Copy from '../Copy'
 
 interface Props {
   node?: q.TreeNode | undefined,
@@ -70,15 +71,15 @@ class Sidebar extends React.Component<Props, State> {
   }
 
   private renderNode() {
-    const { classes } = this.props
-    if (!this.state.node) {
-      return null
-    }
+    const { classes, node } = this.props
+
+    const copyTopic = node ? <Copy value={node.path()} /> : null
+    const copyValue = node && node.message ? <Copy value={node.message.value} /> : null
 
     return <div>
       <ExpansionPanel key="topic" defaultExpanded={true}>
         <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-          <Typography className={classes.heading}>Topic</Typography>
+          <Typography className={classes.heading}>Topic {copyTopic}</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <Topic node={this.props.node} didSelectNode={this.updateNode} />
@@ -86,7 +87,7 @@ class Sidebar extends React.Component<Props, State> {
       </ExpansionPanel>
       <ExpansionPanel key="value" defaultExpanded={true}>
         <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-          <Typography className={classes.heading}>Value</Typography>
+          <Typography className={classes.heading}>Value {copyValue}</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <ValueRenderer node={this.state.node} />

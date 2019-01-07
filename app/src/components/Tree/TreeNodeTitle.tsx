@@ -37,7 +37,13 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
       onClick={() => {
         this.toggle()
         this.props.didSelectNode && this.props.didSelectNode(this.props.treeNode)
-      }}>
+      }}
+      onMouseOver={() => {
+        if (this.props.treeNode.message) {
+          this.props.didSelectNode && this.props.didSelectNode(this.props.treeNode)
+        }
+      }}
+    >
       {this.renderExpander()} {this.renderSourceEdge()} {this.renderCollapsedSubnodes()} {this.renderValue()}
     </span>
   }
@@ -66,7 +72,6 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
     return this.props.treeNode.message
       ? <span
           style={style}
-          onMouseOver={() => this.props.didSelectNode && this.props.didSelectNode(this.props.treeNode)}
           > = {this.props.treeNode.message.value.toString()}</span>
       : null
   }
