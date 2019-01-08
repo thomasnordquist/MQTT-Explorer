@@ -7,6 +7,7 @@ import { AppState, NodeOrder } from '../../reducers'
 import TreeNode from './TreeNode'
 
 export interface Props {
+  lastUpdate: number
   nodeOrder?: NodeOrder
   animateChanges: boolean
   treeNode: q.TreeNode
@@ -54,6 +55,7 @@ class TreeNodeSubnodes extends React.Component<Props, {}> {
             treeNode={node}
             didSelectNode={this.props.didSelectNode}
             autoExpandLimit={this.props.autoExpandLimit}
+            lastUpdate={node.lastUpdate}
           />
         </div>
       ))

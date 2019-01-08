@@ -54,7 +54,6 @@ class Tree extends React.Component<Props, TreeState> {
 
     this.updateTimer = setTimeout(() => {
       window.requestAnimationFrame(() => {
-        console.log('doRender')
         this.lastUpdate = performance.now()
         this.updateTimer && clearTimeout(this.updateTimer)
         this.updateTimer = undefined
@@ -97,12 +96,19 @@ class Tree extends React.Component<Props, TreeState> {
   }
 
   public render() {
+    console.log('render called')
+
     const style: React.CSSProperties = {
       lineHeight: '1.1',
       cursor: 'default',
     }
 
-    return <Typography style={style}>
+    const performanceCallback = (ms: number) => {
+      average.push(Date.now(), ms)
+    }
+
+    return (
+      <Typography style={style}>
         <TreeNode
           animateChages={true}
           autoExpandLimit={this.props.autoExpandLimit}
@@ -112,11 +118,11 @@ class Tree extends React.Component<Props, TreeState> {
           name="/"
           collapsed={false}
           key="rootNode"
-          performanceCallback={(ms: number) => {
-            average.push(Date.now(), ms)
-          }}
+          lastUpdate={0}
+          performanceCallback={this.performanceCallback}
         />
-    </Typography>
+      </Typography>
+    )
   }
 }
 

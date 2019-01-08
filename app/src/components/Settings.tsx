@@ -118,9 +118,7 @@ class Settings extends React.Component<Props, {}> {
       <Select
           value={nodeOrder}
           onChange={ (e: React.ChangeEvent<HTMLSelectElement>) => {
-            window.requestAnimationFrame(() => {
-              actions.setNodeOrder(e.target.value)
-            })
+            actions.setNodeOrder(e.target.value)
           }}
           input={<Input name="node-order" id="node-order-label-placeholder" />}
           displayEmpty={true}

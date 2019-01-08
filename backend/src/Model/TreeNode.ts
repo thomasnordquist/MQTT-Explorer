@@ -7,6 +7,7 @@ export class TreeNode {
   public edges: {[s: string]: Edge} = {}
   public collapsed = false
   public messages: number = 0
+  public lastUpdate: number = Date.now()
 
   public onMerge = new EventDispatcher<void, TreeNode>(this)
   public onEdgesChange = new EventDispatcher<void, TreeNode>(this)
@@ -24,6 +25,13 @@ export class TreeNode {
     this.onMerge.subscribe(() => {
       this.cachedLeafes = undefined
       this.cachedLeafMessageCount = undefined
+      this.lastUpdate = Date.now()
+    })
+    this.onEdgesChange.subscribe(() => {
+      this.lastUpdate = Date.now()
+    })
+    this.onMessage.subscribe(() => {
+      this.lastUpdate = Date.now()
     })
   }
 

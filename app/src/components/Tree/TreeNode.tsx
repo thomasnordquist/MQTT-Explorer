@@ -29,6 +29,7 @@ const styles = (theme: Theme) => {
 }
 
 interface Props {
+  lastUpdate: number
   animateChages: boolean
   isRoot?: boolean
   treeNode: q.TreeNode
@@ -48,6 +49,7 @@ class TreeNode extends React.Component<Props, State> {
   private dirtySubnodes: boolean = true
   private dirtyEdges: boolean = true
   private dirtyMessage: boolean = true
+  private animationDirty: boolean = false
 
   private cssAnimationWasSetAt?: number
 
@@ -103,6 +105,7 @@ class TreeNode extends React.Component<Props, State> {
       || this.dirtyEdges
       || this.dirtyMessage
       || this.dirtySubnodes
+      || this.animationDirty
       || shouldRenderToRemoveCssAnimation
   }
 
@@ -111,6 +114,12 @@ class TreeNode extends React.Component<Props, State> {
       const renderTime = performance.now() - this.willUpdateTime
       this.props.performanceCallback(renderTime)
     }
+    // setTimeout(() => {
+    //   this.setState(this.state)
+    // }, 500)
+    // this.addCssAnimation()
+    // setTimeout(this.removeCssAnimation, 500)
+
   }
 
   public componentWillUpdate() {
@@ -131,10 +140,28 @@ class TreeNode extends React.Component<Props, State> {
     return this.props.treeNode.edgeCount() > this.props.autoExpandLimit
   }
 
+  // private addCssAnimation = () => {
+  //   const element = this.titleRef.current
+  //   if ((this.dirtyEdges || this.dirtyMessage || this.dirtySubnodes) && element && isElementInViewport(element)) {
+  //     element.style.animation = 'example 0.5s'
+  //   }
+  // }
+  //
+  // private removeCssAnimation = () => {
+  //   const element = this.titleRef.current
+  //   if (element && element.style.animation) {
+  //     element.style.animation = ''
+  //   }
+  // }
+
   public render() {
-    const animationStyle = this.indicatingChangeAnimationStyle()
     const { classes } = this.props
+    const isDirty = this.dirtyEdges || this.dirtyMessage || this.dirtySubnodes
     this.dirtyEdges = this.dirtyMessage = this.dirtySubnodes = false
+
+    const shouldStartAnimation = (isDirty && !this.animationDirty) && !this.props.isRoot
+    const animation = shouldStartAnimation ? { animation: 'example 0.5s' } : {}
+    this.animationDirty = shouldStartAnimation
 
     return (
       <div
@@ -142,7 +169,7 @@ class TreeNode extends React.Component<Props, State> {
         className={`${classes.node} ${!this.props.isRoot ? classes.hover : ''}`}
         onClick={this.didClickNode}
       >
-        <span ref={this.titleRef} style={animationStyle}>
+        <span ref={this.titleRef} style={animation}>
           <TreeNodeTitle
             collapsed={this.collapsed()}
             treeNode={this.props.treeNode}
@@ -169,28 +196,9 @@ class TreeNode extends React.Component<Props, State> {
         autoExpandLimit={this.props.autoExpandLimit}
         didSelectNode={this.props.didSelectNode}
         treeNode={this.props.treeNode}
+        lastUpdate={this.props.treeNode.lastUpdate}
       />
     )
-  }
-
-  private indicatingChangeAnimationStyle(): React.CSSProperties {
-    if (this.props.isRoot) {
-      return {}
-    }
-    if (this.cssAnimationWasSetAt && (performance.now() - this.cssAnimationWasSetAt) > 500) {
-      this.cssAnimationWasSetAt = undefined
-      return {}
-    }
-    const isInViewPort = this.titleRef.current && isElementInViewport(this.titleRef.current)
-    const isDirty = this.dirtyMessage || this.dirtyEdges
-    if (this.props.animateChages && isDirty && isInViewPort) {
-      if (!this.cssAnimationWasSetAt) {
-        this.cssAnimationWasSetAt = performance.now()
-      }
-      return { animation: 'example 0.5s' }
-    }
-
-    return {}
   }
 }
 
