@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 import { withStyles, Theme } from '@material-ui/core/styles'
+
 import { isElementInViewport } from '../helper/isElementInViewport'
 import TreeNodeTitle from './TreeNodeTitle'
 import TreeNodeSubnodes from './TreeNodeSubnodes'

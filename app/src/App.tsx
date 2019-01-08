@@ -1,17 +1,14 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { AppState } from './reducers'
-
-import { withStyles, Theme } from '@material-ui/core/styles'
-import CssBaseline from '@material-ui/core/CssBaseline'
-
 import * as q from '../../backend/src/Model'
-
+import CssBaseline from '@material-ui/core/CssBaseline'
+import { withStyles, Theme } from '@material-ui/core/styles'
 import Tree from './components/Tree/Tree'
 import TitleBar from './components/TitleBar'
 import Sidebar from './components/Sidebar/Sidebar'
 import Connection from './components/ConnectionSetup/Connection'
 import Settings from './components/Settings'
+import { AppState } from './reducers'
 
 interface State {
   selectedNode?: q.TreeNode,
@@ -81,7 +78,7 @@ class App extends React.Component<Props, State> {
 
   public render() {
     const { settingsVisible } = this.props
-    const { content, contentShift, settings, centerContent } = this.getStyles()
+    const { content, contentShift, centerContent } = this.getStyles()
     return <div style={centerContent}>
       <CssBaseline />
       <Settings />

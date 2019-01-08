@@ -4,6 +4,7 @@ import FileCopy from '@material-ui/icons/FileCopy'
 import Check from '@material-ui/icons/Check'
 import green from '@material-ui/core/colors/green'
 import { withStyles, Theme } from '@material-ui/core/styles'
+
 const copy = require('copy-text-to-clipboard')
 
 interface Props {
@@ -16,18 +17,18 @@ interface State {
   snackBarOpen: boolean
 }
 
+const styles = (theme: Theme) => ({
+  snackbar: {
+    backgroundColor: green[600],
+    color: theme.typography.button.color,
+  },
+})
+
 class Copy extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = { didCopy: false, snackBarOpen: false }
   }
-
-  public static styles = (theme: Theme) => ({
-    snackbar: {
-      backgroundColor: green[600],
-      color: theme.typography.button.color,
-    },
-  })
 
   public render() {
     const icon = !this.state.didCopy
@@ -66,4 +67,4 @@ class Copy extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(Copy.styles)(Copy)
+export default withStyles(styles)(Copy)

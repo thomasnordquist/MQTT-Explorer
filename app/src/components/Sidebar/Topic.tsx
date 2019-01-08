@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
-import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
+import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
 
 interface Props {
   classes: any
@@ -11,15 +11,15 @@ interface Props {
   didSelectNode: (node: q.TreeNode) => void
 }
 
-class Topic extends React.Component<Props, {}> {
-  public static styles: StyleRulesCallback<string> = (theme: Theme) => ({
-    button: {
-      textTransform: 'none',
-      padding: '3px 5px 3px 5px',
-      minWidth: '30px',
-    },
-  })
+const styles: StyleRulesCallback<string> = (theme: Theme) => ({
+  button: {
+    textTransform: 'none',
+    padding: '3px 5px 3px 5px',
+    minWidth: '30px',
+  },
+})
 
+class Topic extends React.Component<Props, {}> {
   public render() {
     const { node } = this.props
     if (!node) {
@@ -54,4 +54,4 @@ class Topic extends React.Component<Props, {}> {
   }
 }
 
-export default withStyles(Topic.styles, { withTheme: true })(Topic)
+export default withStyles(styles, { withTheme: true })(Topic)

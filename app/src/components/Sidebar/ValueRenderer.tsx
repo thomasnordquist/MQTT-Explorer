@@ -27,10 +27,6 @@ class ValueRenderer extends React.Component<Props, State> {
     nextProps.node && nextProps.node.onMessage.subscribe(this.updateNode)
   }
 
-  private style = (theme: Theme) => {
-
-  }
-
   public render() {
     const node = this.props.node
     if (!node || !node.message) {

@@ -121,7 +121,7 @@ class Connection extends React.Component<Props, State> {
         minWidth: 550,
         maxWidth: 650,
         backgroundColor: theme.palette.background.default,
-        margin: '20vh auto auto auto',
+        margin: '14vh auto auto auto',
         padding: `${2 * theme.spacing.unit}px`,
         outline: 'none',
       },

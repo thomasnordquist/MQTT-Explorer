@@ -33,7 +33,8 @@ const styles: StyleRulesCallback = theme => ({
     ...theme.mixins.toolbar,
   },
   input: {
-    margin: `auto ${theme.spacing.unit}px auto ${theme.spacing.unit}px`,
+    minWidth: '150px',
+    margin: `auto ${theme.spacing.unit}px auto ${2 * theme.spacing.unit}px`,
   },
 })
 
@@ -86,7 +87,7 @@ class Settings extends React.Component<Props, State> {
   private renderAutoExpand() {
     const { classes, actions, autoExpandLimit } = this.props
 
-    return <span>
+    return <div style={{ padding: '8px' }}>
       <InputLabel htmlFor="auto-expand">Auto Expand</InputLabel>
       <Select
           value = { autoExpandLimit }
@@ -97,11 +98,12 @@ class Settings extends React.Component<Props, State> {
           className = {classes.input}
       >
         <MenuItem value = {0}><em>Disabled</em></MenuItem>
+        <MenuItem value = {2}>Few</MenuItem>
         <MenuItem value = {3}>Some</MenuItem>
         <MenuItem value = {10}>Most</MenuItem>
         <MenuItem value = {1E6}>All</MenuItem>
       </Select>
-    </span>
+    </div>
   }
 }
 

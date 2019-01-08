@@ -13,10 +13,6 @@ export const addMqttConnectionEvent: Event<AddMqttConnection> = {
   topic: 'connection/add/mqtt',
 }
 
-interface RemoveConnection {
-  connectionId: string,
-}
-
 export const removeConnection: Event<string> = {
   topic: 'connection/remove',
 }

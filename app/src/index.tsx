@@ -1,21 +1,13 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
-import reducers, { AppState } from './reducers'
-import App from './App'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 
-const theme = createMuiTheme({
-  palette: {
-    type: 'dark', // Switching the dark mode on is a single property value change.
-  },
-  typography: { useNextVariants: true },
-})
+import reducers from './reducers'
+import App from './App'
 
 declare var document: any
-declare var window: any
 
 const initialAppState = {
   settings: {
@@ -23,9 +15,14 @@ const initialAppState = {
     visible: false,
   },
 }
-
 const store = createStore(reducers, initialAppState)
-window.reduxStore = store
+
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+  },
+  typography: { useNextVariants: true },
+})
 
 ReactDOM.render(
     <MuiThemeProvider theme={theme}>

@@ -1,27 +1,15 @@
 import * as React from 'react'
-import * as q from '../../../backend/src/Model'
-
-import Search from '@material-ui/icons/Search'
-import Drawer from '@material-ui/core/Drawer'
-import IconButton from '@material-ui/core/IconButton'
-import Menu from '@material-ui/icons/Menu'
-
-import List from '@material-ui/core/List'
-import Divider from '@material-ui/core/Divider'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
-import Slider from '@material-ui/lab/Slider'
-
-import { settingsActions } from '../actions'
-import { AppState, SettingsModel } from '../reducers'
-
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import * as q from '../../../backend/src/Model'
 
-import { AppBar, Toolbar, Typography, InputBase } from '@material-ui/core'
+import { AppBar, IconButton, InputBase, Toolbar, Typography } from '@material-ui/core'
+import Search from '@material-ui/icons/Search'
+import Menu from '@material-ui/icons/Menu'
 import { withStyles, StyleRulesCallback } from '@material-ui/core/styles'
 import { fade } from '@material-ui/core/styles/colorManipulator'
+
+import { settingsActions } from '../actions'
 
 const styles: StyleRulesCallback = theme => ({
   title: {
@@ -105,20 +93,25 @@ class TitleBar extends React.Component<Props, State> {
             <Menu />
           </IconButton>
           <Typography className={classes.title} variant="h6" color="inherit">MQTT-Xplorer</Typography>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <Search />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-            />
-          </div>
         </Toolbar>
       </AppBar>
+  }
+
+  private renderSearch() {
+    const { classes } = this.props
+
+    return <div className={classes.search}>
+      <div className={classes.searchIcon}>
+        <Search />
+      </div>
+      <InputBase
+        placeholder="Search…"
+        classes={{
+          root: classes.inputRoot,
+          input: classes.inputInput,
+        }}
+      />
+    </div>
   }
 }
 

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 import { withTheme, Theme } from '@material-ui/core/styles'
-import { List, ListItem, Collapse } from '@material-ui/core'
+
 import TreeNode from './TreeNode'
 
 export interface Props {
@@ -18,10 +18,6 @@ class TreeNodeSubnodes extends React.Component<Props, {}> {
   public render() {
     const edges = Object.values(this.props.treeNode.edges)
     const listItemStyle = {
-      padding: '3px 8px 0px 8px',
-    }
-
-    const listStyle = {
       padding: '3px 8px 0px 8px',
     }
 

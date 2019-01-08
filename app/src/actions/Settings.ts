@@ -1,4 +1,3 @@
-import { Action } from 'redux'
 import { ActionTypes } from '../reducers'
 
 export const setAutoExpandLimit = (autoExpandLimit: number = 0) => {

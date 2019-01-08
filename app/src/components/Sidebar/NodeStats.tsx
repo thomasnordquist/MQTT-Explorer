@@ -2,26 +2,14 @@ import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 // import Drawer from '@material-ui/core/Drawer'
 import { Typography } from '@material-ui/core'
-import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
 
 interface Props {
-  node: q.TreeNode,
-  classes: any,
-  theme: Theme
+  node: q.TreeNode
 }
 
-interface State {
-  node?: q.TreeNode | undefined
-}
-
-class NodeStats extends React.Component<Props, State> {
+class NodeStats extends React.Component<Props, {}> {
   constructor(props: any) {
     super(props)
-  }
-
-  public static styles: StyleRulesCallback<string> = (theme: Theme) => {
-    return {
-    }
   }
 
   public render() {
@@ -35,4 +23,4 @@ class NodeStats extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(NodeStats.styles, { withTheme: true })(NodeStats)
+export default NodeStats

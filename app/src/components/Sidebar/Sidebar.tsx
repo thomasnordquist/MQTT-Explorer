@@ -1,16 +1,13 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
-// import Drawer from '@material-ui/core/Drawer'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography } from '@material-ui/core'
+import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
 import ExpandMore from '@material-ui/icons/ExpandMore'
+
+import Copy from '../Copy'
 import ValueRenderer from './ValueRenderer'
 import NodeStats from './NodeStats'
 import Topic from './Topic'
-import { Typography } from '@material-ui/core'
-import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
-import Copy from '../Copy'
 
 interface Props {
   node?: q.TreeNode,
@@ -19,7 +16,7 @@ interface Props {
 }
 
 interface State {
-  node?: q.TreeNode
+  node: q.TreeNode
 }
 
 class Sidebar extends React.Component<Props, State> {
@@ -29,6 +26,7 @@ class Sidebar extends React.Component<Props, State> {
 
   constructor(props: any) {
     super(props)
+    console.warn('Find and fix me #state')
     this.state = { node: new q.Tree() }
   }
 

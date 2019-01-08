@@ -1,7 +1,7 @@
 import {
   addMqttConnectionEvent, backendEvents,
   makeConnectionStateEvent, removeConnection,
-  makeConnectionMessageEvent, AddMqttConnection
+  makeConnectionMessageEvent, AddMqttConnection,
 } from '../../events'
 import { MqttSource, DataSource } from './DataSource'
 
@@ -10,7 +10,7 @@ class ConnectionManager {
 
   public manageConnections() {
     backendEvents.subscribe(addMqttConnectionEvent, this.handleConnectionRequest)
-    backendEvents.subscribe(removeConnection, (connectionId) => this.removeConnection(connectionId))
+    backendEvents.subscribe(removeConnection, (connectionId: string) => this.removeConnection(connectionId))
   }
 
   private handleConnectionRequest = (event: AddMqttConnection) => {

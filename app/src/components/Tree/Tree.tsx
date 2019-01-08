@@ -1,17 +1,17 @@
 import * as React from 'react'
-import * as q from '../../../../backend/src/Model'
-import TreeNode from './TreeNode'
-import { Typography } from '@material-ui/core'
-import { makeConnectionMessageEvent, rendererEvents } from '../../../../events'
-import {  } from '../../../../events/Events'
-const MovingAvaerage = require('moving-average')
 import { connect } from 'react-redux'
+import * as q from '../../../../backend/src/Model'
+import { Typography } from '@material-ui/core'
+import TreeNode from './TreeNode'
+import { makeConnectionMessageEvent, rendererEvents } from '../../../../events'
 import { AppState } from '../../reducers'
+
+const MovingAverage = require('moving-average')
 
 declare const performance: any
 
 const timeInterval = 10 * 1000
-const average = MovingAvaerage(timeInterval)
+const average = MovingAverage(timeInterval)
 
 interface Props {
   autoExpandLimit: number
@@ -25,7 +25,6 @@ interface TreeState {
 }
 
 class Tree extends React.Component<Props, TreeState> {
-  private renderDuration: number = 300
   private updateTimer?: any
   private lastUpdate: number = 0
   private perf: number = 0
@@ -111,7 +110,6 @@ class Tree extends React.Component<Props, TreeState> {
           key="rootNode"
           performanceCallback={(ms: number) => {
             average.push(Date.now(), ms)
-            this.renderDuration = ms
           }}
         />
     </Typography>
