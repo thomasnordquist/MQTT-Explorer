@@ -1,3 +1,10 @@
+const { autoUpdater } = require("electron-updater")
+const log = require('electron-log');
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
+
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
 try {
@@ -38,7 +45,10 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', () => {
+  createWindow()
+  autoUpdater.checkForUpdatesAndNotify()
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
