@@ -6,12 +6,10 @@ require('./backend/build/backend/src/index.js')
 let mainWindow
 
 function createWindow () {
-  BrowserWindow.addDevToolsExtension ('/Users/thomas/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/3.5.0_0');
-
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1024,
-    height: 600,
+    height: 700,
     webPreferences: {
       nodeIntegration: true
     }
