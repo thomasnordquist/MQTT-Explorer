@@ -1,9 +1,14 @@
 import * as React from 'react'
-import { Typography, Toolbar, Modal, MenuItem, Button, Grid, Paper, TextField, Switch, FormControlLabel } from '@material-ui/core'
+import {
+  Typography, Toolbar, Modal,
+  MenuItem, Button, Grid, Paper,
+  TextField, Switch, FormControlLabel,
+  CircularProgress,
+} from '@material-ui/core'
 import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
 import Notification from './Notification'
 import { MqttOptions, DataSourceState } from '../../../../backend/src/DataSource'
-import { addMqttConnectionEvent, makeConnectionStateEvent, rendererEvents } from '../../../../events'
+import { addMqttConnectionEvent, makeConnectionStateEvent, removeConnection, rendererEvents } from '../../../../events'
 import sha1 = require('sha1')
 
 interface Props {
@@ -14,18 +19,20 @@ interface Props {
 }
 
 const protocols = [
-  'tcp://',
+  'mqtt://',
   'ws://',
 ]
 
 interface State {
+  connecting: boolean
+  connectionId?: string
   error?: Error
   visible: boolean
   host: string
   protocol: string
   port: number
-  ssl: boolean
-  sslValidation: boolean
+  tls: boolean
+  certValidation: boolean
   clientId: string
   username: string
   password: string
@@ -49,11 +56,13 @@ class Connection extends React.Component<Props, State> {
       host: 'nodered',
       protocol: protocols[0],
       port: 1883,
-      ssl: false,
-      sslValidation: true,
+      tls: false,
+      certValidation: true,
       clientId: '',
       username: '',
       password: '',
+      connecting: false,
+      connectionId: undefined,
     }
 
     this.state = Object.assign({}, defaultState, storedSettings)
@@ -71,16 +80,24 @@ class Connection extends React.Component<Props, State> {
       url,
       username: this.state.username || undefined,
       password: this.state.username || undefined,
-      ssl: this.state.ssl,
-      sslValidation: this.state.sslValidation,
+      tls: this.state.tls,
+      certValidation: this.state.certValidation,
     }
   }
 
   private connect() {
+    this.setState({
+      connecting: true,
+    })
+
     const options = this.optionsFromState()
     const connectionId = (sha1(Math.random() + JSON.stringify(options)).slice(0, 8)) as string
+    this.setState({ connectionId })
     rendererEvents.emit(addMqttConnectionEvent, { options, id: connectionId })
-    rendererEvents.subscribe(makeConnectionStateEvent(connectionId), (state: DataSourceState) => {
+    const event = makeConnectionStateEvent(connectionId)
+
+    rendererEvents.subscribe(event, (state: DataSourceState) => {
+      console.log(state)
       if (state.connected) {
         this.props.onConnection(connectionId)
         this.setState({ visible: false })
@@ -89,6 +106,13 @@ class Connection extends React.Component<Props, State> {
         this.setState({ error: state.error })
       }
     })
+  }
+
+  private disconnect() {
+    this.setState({
+      connecting: false,
+    })
+    rendererEvents.emit(removeConnection, this.state.connectionId)
   }
 
   public static styles: StyleRulesCallback<string> = (theme: Theme) => {
@@ -130,6 +154,7 @@ class Connection extends React.Component<Props, State> {
 
   public render() {
     const { classes } = this.props
+
     return <Modal open={this.state.visible} disableAutoFocus={true} onClose={() => { console.log('close') }}>
         <Paper className={classes.root}>
           <Toolbar>
@@ -190,13 +215,13 @@ class Connection extends React.Component<Props, State> {
                   margin="normal"
                 />
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={4}>
                 <div className={classes.switch}>
                   <FormControlLabel
                     control={(
                       <Switch
-                        checked={this.state.sslValidation}
-                        onChange={() => this.setState({ sslValidation: !this.state.sslValidation })}
+                        checked={this.state.certValidation}
+                        onChange={() => this.setState({ certValidation: !this.state.certValidation })}
                         color="primary"
                       />
                     )}
@@ -205,35 +230,54 @@ class Connection extends React.Component<Props, State> {
                   />
                 </div>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={4}>
                 <div className={classes.switch}>
                   <FormControlLabel
                     control={(
                       <Switch
-                        checked={this.state.ssl}
-                        onChange={() => this.setState({ ssl: !this.state.ssl })}
+                        checked={this.state.tls}
+                        onChange={() => this.setState({ tls: !this.state.tls })}
                         color="primary"
                       />
                     )}
-                    label="Encryption"
+                    label="Encryption (tls)"
                     labelPlacement="bottom"
                   />
                 </div>
               </Grid>
-              <Grid item xs={6}></Grid>
+              <Grid item xs={4}></Grid>
             </Grid>
             <br />
             <div style={{ textAlign: 'right' }}>
               <Button variant="contained" color="secondary" className={classes.button} onClick={() => this.saveConnectionSettings()}>
                 Save
               </Button>
-              <Button variant="contained" color="primary" className={classes.button} onClick={() => this.connect()}>
-                Connect
-              </Button>
+              { this.renderConnectButton() }
             </div>
           </form>
         </Paper>
     </Modal>
+  }
+
+  private renderConnectButton() {
+    const { classes } = this.props
+
+    if (this.state.connecting) {
+      return <Button variant="contained" color="primary" className={classes.button} onClick={this.onClickAbort}>
+        <CircularProgress size={22} style={{ marginRight: '10px' }} color="secondary" /> Abort
+      </Button>
+    }
+    return <Button variant="contained" color="primary" className={classes.button} onClick={this.onClickConnect}>
+      Connect
+    </Button>
+  }
+
+  private onClickConnect = () => {
+    this.connect()
+  }
+
+  private onClickAbort = () => {
+    this.disconnect()
   }
 }
 

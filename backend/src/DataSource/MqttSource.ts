@@ -1,12 +1,13 @@
 import { Client, connect as mqttConnect } from 'mqtt'
 import { DataSource, DataSourceStateMachine } from './'
+import * as Url from 'url'
 
 export interface MqttOptions {
   url: string
   username?: string
   password?: string
-  ssl: boolean
-  sslValidation: boolean
+  tls: boolean
+  certValidation: boolean
 }
 
 export class MqttSource implements DataSource<MqttOptions> {
@@ -22,13 +23,25 @@ export class MqttSource implements DataSource<MqttOptions> {
 
   public connect(options: MqttOptions): DataSourceStateMachine {
     this.stateMachine.setConnecting()
-    const client = mqttConnect(options.url, {
+
+    const urlStr = options.tls ? options.url.replace(/^(mqtt|ws):/, '$1s:') : options.url
+    let url
+    try {
+      url = Url.parse(urlStr)
+    } catch (error) {
+      this.stateMachine.setError(error)
+      throw error
+    }
+
+    const client = mqttConnect(url, {
       resubscribe: false,
+      rejectUnauthorized: !options.certValidation,
     })
 
     this.client = client
 
     client.on('error', (error: Error) => {
+      console.log(error)
       this.stateMachine.setError(error)
     })
 

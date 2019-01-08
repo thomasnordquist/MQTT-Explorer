@@ -1,4 +1,8 @@
-import { addMqttConnectionEvent, backendEvents, makeConnectionStateEvent, makeConnectionMessageEvent, AddMqttConnection } from '../../events'
+import {
+  addMqttConnectionEvent, backendEvents,
+  makeConnectionStateEvent, removeConnection,
+  makeConnectionMessageEvent, AddMqttConnection
+} from '../../events'
 import { MqttSource, DataSource } from './DataSource'
 
 class ConnectionManager {
@@ -6,17 +10,18 @@ class ConnectionManager {
 
   public manageConnections() {
     backendEvents.subscribe(addMqttConnectionEvent, this.handleConnectionRequest)
+    backendEvents.subscribe(removeConnection, (connectionId) => this.removeConnection(connectionId))
   }
 
   private handleConnectionRequest = (event: AddMqttConnection) => {
-    console.log(event)
     const connectionId = event.id
     const options = event.options
     const connection = new MqttSource()
     this.connections[connectionId] = connection
 
+    const connectionStateEvent = makeConnectionStateEvent(connectionId)
     connection.stateMachine.onUpdate.subscribe((state) => {
-      backendEvents.emit(makeConnectionStateEvent(connectionId), state)
+      backendEvents.emit(connectionStateEvent, state)
     })
 
     connection.connect(options)
@@ -36,7 +41,6 @@ class ConnectionManager {
 
   public removeConnection(hash: string) {
     const connection = this.connections[hash]
-    connection.stateMachine
     connection.disconnect()
     delete this.connections[hash]
   }
