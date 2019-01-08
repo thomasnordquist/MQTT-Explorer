@@ -9,6 +9,7 @@ import { AppState } from '../../reducers'
 const MovingAverage = require('moving-average')
 
 declare const performance: any
+declare const window: any
 
 const timeInterval = 10 * 1000
 const average = MovingAverage(timeInterval)
@@ -48,14 +49,17 @@ class Tree extends React.Component<Props, TreeState> {
     }
 
     const expectedRenderTime = average.forecast()
-    const updateInterval = Math.max(expectedRenderTime * 5, 300)
+    const updateInterval = Math.max(expectedRenderTime * 20, 300)
     const timeUntilNextUpdate = updateInterval - (performance.now() - this.lastUpdate)
 
     this.updateTimer = setTimeout(() => {
-      this.lastUpdate = performance.now()
-      this.updateTimer && clearTimeout(this.updateTimer)
-      this.updateTimer = undefined
-      this.setState(state)
+      window.requestAnimationFrame(() => {
+        console.log('doRender')
+        this.lastUpdate = performance.now()
+        this.updateTimer && clearTimeout(this.updateTimer)
+        this.updateTimer = undefined
+        this.setState(state)
+      })
     }, Math.max(0, timeUntilNextUpdate))
   }
 
@@ -98,15 +102,15 @@ class Tree extends React.Component<Props, TreeState> {
       cursor: 'default',
     }
 
-    return <Typography style={ style }>
+    return <Typography style={style}>
         <TreeNode
-          animateChages = { true }
-          autoExpandLimit = { this.props.autoExpandLimit }
-          isRoot = { true }
-          didSelectNode = { this.props.didSelectNode }
-          treeNode = { this.state.tree }
-          name = "/"
-          collapsed = { false }
+          animateChages={true}
+          autoExpandLimit={this.props.autoExpandLimit}
+          isRoot={true}
+          didSelectNode={this.props.didSelectNode}
+          treeNode={this.state.tree}
+          name="/"
+          collapsed={false}
           key="rootNode"
           performanceCallback={(ms: number) => {
             average.push(Date.now(), ms)

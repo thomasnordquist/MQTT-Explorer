@@ -136,38 +136,41 @@ class TreeNode extends React.Component<Props, State> {
     const { classes } = this.props
     this.dirtyEdges = this.dirtyMessage = this.dirtySubnodes = false
 
-    return <div
-      key={this.props.treeNode.hash()}
-      className={`${classes.node} ${!this.props.isRoot ? classes.hover : ''}`}
-      onClick={(event) => {
-        event.stopPropagation()
-        this.toggle()
-        this.props.didSelectNode && this.props.didSelectNode(this.props.treeNode)
-      }}
-    >
-      <span ref={this.titleRef} style={animationStyle}>
-        <TreeNodeTitle
-          onClick={() => this.toggle()}
-          collapsed={this.collapsed()}
-          treeNode={this.props.treeNode}
-          name={this.props.name}
-          didSelectNode={this.props.didSelectNode}
-          toggleCollapsed={() => this.toggle()}
-        />
-      </span>
-      { this.renderNodes() }
-    </div>
+    return (
+      <div
+        key={this.props.treeNode.hash()}
+        className={`${classes.node} ${!this.props.isRoot ? classes.hover : ''}`}
+        onClick={this.didClickNode}
+      >
+        <span ref={this.titleRef} style={animationStyle}>
+          <TreeNodeTitle
+            collapsed={this.collapsed()}
+            treeNode={this.props.treeNode}
+            name={this.props.name}
+            didSelectNode={this.props.didSelectNode}
+          />
+        </span>
+        {this.renderNodes()}
+      </div>
+    )
+  }
+
+  private didClickNode = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    this.toggle()
+    this.props.didSelectNode && this.props.didSelectNode(this.props.treeNode)
   }
 
   private renderNodes() {
-    return <TreeNodeSubnodes
-      animateChanges={this.props.animateChages}
-      collapsed={this.collapsed()}
-      autoExpandLimit={this.props.autoExpandLimit}
-      didSelectNode={this.props.didSelectNode}
-      toggleCollapsed={() => this.toggle()}
-      treeNode={this.props.treeNode}
-    />
+    return (
+      <TreeNodeSubnodes
+        animateChanges={this.props.animateChages}
+        collapsed={this.collapsed()}
+        autoExpandLimit={this.props.autoExpandLimit}
+        didSelectNode={this.props.didSelectNode}
+        treeNode={this.props.treeNode}
+      />
+    )
   }
 
   private indicatingChangeAnimationStyle(): React.CSSProperties {

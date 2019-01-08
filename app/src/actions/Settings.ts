@@ -1,4 +1,4 @@
-import { ActionTypes } from '../reducers'
+import { ActionTypes, NodeOrder } from '../reducers'
 
 export const setAutoExpandLimit = (autoExpandLimit: number = 0) => {
   return {
@@ -10,5 +10,12 @@ export const setAutoExpandLimit = (autoExpandLimit: number = 0) => {
 export const toggleSettingsVisibility = () => {
   return {
     type: ActionTypes.toggleSettingsVisibility,
+  }
+}
+
+export const setNodeOrder = (nodeOrder: NodeOrder = NodeOrder.none) => {
+  return {
+    nodeOrder,
+    type: ActionTypes.setNodeOrder,
   }
 }

@@ -42,13 +42,13 @@ class Notification extends React.Component<Props, State> {
         vertical: 'bottom',
         horizontal: 'left',
       }}
-      open = {this.state.snackBarOpen}
-      autoHideDuration = {6000}
-      onClose = {() => { this.setState({ snackBarOpen: false }) }}
+      open={this.state.snackBarOpen}
+      autoHideDuration={6000}
+      onClose={() => { this.setState({ snackBarOpen: false }) }}
     >
       <SnackbarContent
-        className = {this.props.classes[this.props.type]}
-        message = {this.props.message}
+        className={this.props.classes[this.props.type]}
+        message={this.props.message}
       />
     </Snackbar>
   }

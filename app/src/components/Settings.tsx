@@ -14,7 +14,7 @@ import { Typography, InputBase, Input, InputLabel } from '@material-ui/core'
 import { withStyles, StyleRulesCallback } from '@material-ui/core/styles'
 
 import { settingsActions } from '../actions'
-import { AppState } from '../reducers'
+import { AppState, NodeOrder } from '../reducers'
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -40,16 +40,14 @@ const styles: StyleRulesCallback = theme => ({
 
 interface Props {
   actions?: any
-  autoExpandLimit: number,
-  visible: boolean,
-  store?: any,
+  autoExpandLimit: number
+  visible: boolean
+  store?: any
   classes: any
+  nodeOrder: NodeOrder
 }
 
-interface State {
-}
-
-class Settings extends React.Component<Props, State> {
+class Settings extends React.Component<Props, {}> {
   constructor(props: any) {
     super(props)
     this.state = {}
@@ -57,59 +55,91 @@ class Settings extends React.Component<Props, State> {
 
   public render() {
     const { classes, actions, visible } = this.props
-    return <Drawer
-      anchor = "left"
-      className = { classes.drawer }
-      open = { visible }
-      variant = "persistent"
-    >
-      <div
-        className = { classes.paper }
-        tabIndex = { 0 }
-        role = "button"
-        onClick = {(e: React.MouseEvent) => e.stopPropagation()}
-        onKeyDown = {(e: React.KeyboardEvent) => e.stopPropagation()}
+    return (
+      <Drawer
+        anchor="left"
+        className={classes.drawer}
+        open={visible}
+        variant="persistent"
       >
+        <div
+          className={classes.paper}
+          tabIndex={0}
+          role="button"
+          onClick={(e: React.MouseEvent) => e.stopPropagation()}
+          onKeyDown={(e: React.KeyboardEvent) => e.stopPropagation()}
+        >
 
-        <Typography className = { classes.title } variant = "h6" color = "inherit">
-          <IconButton onClick = {actions.toggleSettingsVisibility}>
-            <ChevronRight />
-          </IconButton>
-          Settings
-        </Typography>
-        <Divider />
+          <Typography className={ classes.title } variant="h6" color="inherit">
+            <IconButton onClick={actions.toggleSettingsVisibility}>
+              <ChevronRight />
+            </IconButton>
+            Settings
+          </Typography>
+          <Divider />
 
-        {this.renderAutoExpand()}
-      </div>
-    </Drawer>
+          {this.renderAutoExpand()}
+          {this.renderNodeOrder()}
+        </div>
+      </Drawer>
+    )
   }
 
   private renderAutoExpand() {
     const { classes, actions, autoExpandLimit } = this.props
 
-    return <div style={{ padding: '8px' }}>
-      <InputLabel htmlFor="auto-expand">Auto Expand</InputLabel>
+    return (
+        <div style={{ padding: '8px' }}>
+        <InputLabel htmlFor="auto-expand">Auto Expand</InputLabel>
+        <Select
+            value={autoExpandLimit}
+            onChange={ (e: React.ChangeEvent<HTMLSelectElement>) => actions.setAutoExpandLimit(e.target.value) }
+            input={<Input name="auto-expand" id="auto-expand-label-placeholder" />}
+            displayEmpty={true}
+            name="auto-expand"
+            className={classes.input}
+        >
+          <MenuItem value={0}><em>Disabled</em></MenuItem>
+          <MenuItem value={2}>Few</MenuItem>
+          <MenuItem value={3}>Some</MenuItem>
+          <MenuItem value={10}>Most</MenuItem>
+          <MenuItem value={1E6}>All</MenuItem>
+        </Select>
+      </div>
+    )
+  }
+
+  private renderNodeOrder() {
+    const { classes, actions, nodeOrder } = this.props
+
+    return (
+      <div style={{ padding: '8px' }}>
+      <InputLabel htmlFor="auto-expand">Topic order</InputLabel>
       <Select
-          value = { autoExpandLimit }
-          onChange = { (e: React.ChangeEvent<HTMLSelectElement>) => actions.setAutoExpandLimit(e.target.value) }
-          input = {<Input name="auto-expand" id="auto-expand-label-placeholder" />}
-          displayEmpty
-          name = "auto-expand"
-          className = {classes.input}
+          value={nodeOrder}
+          onChange={ (e: React.ChangeEvent<HTMLSelectElement>) => {
+            window.requestAnimationFrame(() => {
+              actions.setNodeOrder(e.target.value)
+            })
+          }}
+          input={<Input name="node-order" id="node-order-label-placeholder" />}
+          displayEmpty={true}
+          name="node-order"
+          className={classes.input}
       >
-        <MenuItem value = {0}><em>Disabled</em></MenuItem>
-        <MenuItem value = {2}>Few</MenuItem>
-        <MenuItem value = {3}>Some</MenuItem>
-        <MenuItem value = {10}>Most</MenuItem>
-        <MenuItem value = {1E6}>All</MenuItem>
+        <MenuItem value={NodeOrder.none}><em>default</em></MenuItem>
+        <MenuItem value={NodeOrder.abc}>a-z</MenuItem>
+        <MenuItem value={NodeOrder.messages}>{NodeOrder.messages}</MenuItem>
+        <MenuItem value={NodeOrder.topics}>{NodeOrder.topics}</MenuItem>
       </Select>
-    </div>
+    </div>)
   }
 }
 
 const mapStateToProps = (state: AppState) => {
   return {
     autoExpandLimit: state.settings.autoExpandLimit,
+    nodeOrder: state.settings.nodeOrder,
     visible: state.settings.visible,
   }
 }

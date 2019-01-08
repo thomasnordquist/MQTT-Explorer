@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 
-import reducers from './reducers'
+import reducers, { NodeOrder } from './reducers'
 import App from './App'
 
 declare var document: any
@@ -12,6 +12,7 @@ declare var document: any
 const initialAppState = {
   settings: {
     autoExpandLimit: 0,
+    nodeOrder: NodeOrder.none,
     visible: false,
   },
 }

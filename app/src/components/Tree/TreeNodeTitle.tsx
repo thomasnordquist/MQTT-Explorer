@@ -6,7 +6,6 @@ export interface TreeNodeProps extends React.HTMLAttributes<HTMLElement> {
   treeNode: q.TreeNode
   name?: string | undefined
   collapsed?: boolean | undefined
-  toggleCollapsed: () => void
   didSelectNode?: (node: q.TreeNode) => void
   theme: Theme
 }
@@ -24,25 +23,22 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
     }
   }
 
+  private didSelectNode = () => {
+    if (this.props.treeNode.message) {
+      this.props.didSelectNode && this.props.didSelectNode(this.props.treeNode)
+    }
+  }
+
   public render() {
     const style: React.CSSProperties = {
       lineHeight: '1em',
       whiteSpace: 'nowrap',
     }
-    return <span
-      style={style}
-      onClick={() => {
-        this.toggle()
-        this.props.didSelectNode && this.props.didSelectNode(this.props.treeNode)
-      }}
-      onMouseOver={() => {
-        if (this.props.treeNode.message) {
-          this.props.didSelectNode && this.props.didSelectNode(this.props.treeNode)
-        }
-      }}
-    >
-      {this.renderExpander()} {this.renderSourceEdge()} {this.renderCollapsedSubnodes()} {this.renderValue()}
-    </span>
+    return (
+      <span style={style} onMouseOver={this.didSelectNode}>
+        {this.renderExpander()} {this.renderSourceEdge()} {this.renderCollapsedSubnodes()} {this.renderValue()}
+      </span>
+    )
   }
 
   private renderSourceEdge() {
@@ -67,14 +63,8 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
       display: 'inline-block',
     }
     return this.props.treeNode.message
-      ? <span
-          style={style}
-          > = {this.props.treeNode.message.value.toString()}</span>
+      ? <span style={style}> = {this.props.treeNode.message.value.toString()}</span>
       : null
-  }
-
-  private toggle() {
-    this.props.toggleCollapsed()
   }
 
   private renderExpander() {

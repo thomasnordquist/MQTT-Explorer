@@ -32,8 +32,8 @@ class Copy extends React.Component<Props, State> {
 
   public render() {
     const icon = !this.state.didCopy
-      ? <FileCopy fontSize="inherit" style={ { cursor: 'pointer' } } onClick={this.handleClick} />
-      : <Check fontSize="inherit" style={ { cursor: 'default' } } />
+      ? <FileCopy fontSize="inherit" style={{ cursor: 'pointer' }} onClick={this.handleClick} />
+      : <Check fontSize="inherit" style={{ cursor: 'default' }} />
 
     return <span>
       <span style={{ fontSize: '16px' }}>{icon}</span>

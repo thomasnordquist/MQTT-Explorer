@@ -18,11 +18,7 @@
     "appId": "mqtt-explorer",
     "mac": {
       "category": "de.t7n.apps.mq-explorer",
-      "files": [
-        "**/*",
-        "!**/*.ts",
-        "!app/node_modules"
-      ]
+      "publish": ["github"]
     },
     "linux": {
       "category": "Development",

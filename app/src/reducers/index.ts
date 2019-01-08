@@ -3,20 +3,30 @@ import { Reducer, Action } from 'redux'
 export enum ActionTypes {
   setAutoExpandLimit = 'SET_AUTO_EXPAND_LIMIT',
   toggleSettingsVisibility = 'TOGGLE_SETTINGS_VISIBILITY',
+  setNodeOrder = 'SET_NODE_ORDER',
 }
 
 interface SettingsAction extends Action {
   type: ActionTypes,
-  autoExpandLimit: number
+  autoExpandLimit?: number
+  nodeOrder?: NodeOrder
 }
 
 export interface AppState {
   settings: SettingsModel
 }
 
+export enum NodeOrder {
+  none = 'none',
+  messages = '#messages',
+  abc = 'abc',
+  topics = '#topics',
+}
+
 export interface SettingsModel {
   autoExpandLimit: number
   visible: boolean
+  nodeOrder: NodeOrder
 }
 
 const reducer: Reducer<AppState | undefined, SettingsAction> = (state, action) => {
@@ -27,11 +37,15 @@ const reducer: Reducer<AppState | undefined, SettingsAction> = (state, action) =
 
   switch (action.type) {
     case ActionTypes.setAutoExpandLimit:
+      if (!action.autoExpandLimit) {
+        return state
+      }
       return {
         ...state,
         settings: {
           visible: state.settings.visible,
           autoExpandLimit: action.autoExpandLimit,
+          nodeOrder: state.settings.nodeOrder,
         },
       }
     case ActionTypes.toggleSettingsVisibility:
@@ -40,6 +54,19 @@ const reducer: Reducer<AppState | undefined, SettingsAction> = (state, action) =
         settings: {
           visible: !state.settings.visible,
           autoExpandLimit: state.settings.autoExpandLimit,
+          nodeOrder: state.settings.nodeOrder,
+        },
+      }
+    case ActionTypes.setNodeOrder:
+      if (!action.nodeOrder) {
+        return state
+      }
+      return {
+        ...state,
+        settings: {
+          visible: state.settings.visible,
+          autoExpandLimit: state.settings.autoExpandLimit,
+          nodeOrder: action.nodeOrder,
         },
       }
     default:

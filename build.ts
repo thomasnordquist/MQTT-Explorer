@@ -27,13 +27,13 @@ const mac: builder.CliOptions = {
   arm64: false,
   mac: ['dmg'],
   projectDir: './build/clean',
-  publish: 'onTag',
+  publish: 'always',
 }
 
 async function buildAll() {
-  await builder.build(linux)
+//  await builder.build(linux)
+//  await builder.build(win)
   await builder.build(mac)
-  await builder.build(win)
 }
 
 buildAll()

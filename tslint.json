@@ -1,5 +1,5 @@
 {
-  "extends": "tslint-config-airbnb",
+  "extends": ["tslint-config-airbnb", "tslint-react"],
   "rules": {
     "semicolon": [true, "never"],
     "max-line-length": [true, 200],
