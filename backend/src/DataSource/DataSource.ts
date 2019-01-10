@@ -7,6 +7,7 @@ interface DataSource<DataSourceOptions> {
   connect(options: DataSourceOptions): DataSourceStateMachine
   disconnect(): void
   onMessage(messageCallback: MessageCallback): void
+  publish(topic: string, payload: any): void
   topicSeparator: string
   stateMachine: DataSourceStateMachine
 }

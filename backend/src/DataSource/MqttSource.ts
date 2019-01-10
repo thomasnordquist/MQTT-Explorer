@@ -69,6 +69,10 @@ export class MqttSource implements DataSource<MqttOptions> {
     return this.stateMachine
   }
 
+  public publish(topic: string, payload: any) {
+    this.client && this.client.publish(topic, payload)
+  }
+
   public disconnect() {
     this.client && this.client.end()
   }

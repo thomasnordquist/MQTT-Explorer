@@ -23,7 +23,7 @@ export function makeConnectionStateEvent(connectionId: string): Event<DataSource
   }
 }
 
-interface Message {
+export interface Message {
   topic: string,
   payload: any
 }
@@ -31,5 +31,11 @@ interface Message {
 export function makeConnectionMessageEvent(connectionId: string): Event<Message> {
   return {
     topic: `conn/${connectionId}`,
+  }
+}
+
+export function makePublishEvent(connectionId: string): Event<Message> {
+  return {
+    topic: `conn/publish/${connectionId}`,
   }
 }

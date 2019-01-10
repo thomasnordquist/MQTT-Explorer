@@ -1,7 +1,7 @@
 import {
   addMqttConnectionEvent, backendEvents,
   makeConnectionStateEvent, removeConnection,
-  makeConnectionMessageEvent, AddMqttConnection,
+  makeConnectionMessageEvent, makePublishEvent, AddMqttConnection, Message,
 } from '../../events'
 import { MqttSource, DataSource } from './DataSource'
 
@@ -26,6 +26,9 @@ class ConnectionManager {
 
     connection.connect(options)
     this.handleNewMessagesForConnection(connectionId, connection)
+    backendEvents.subscribe(makePublishEvent(connectionId), (msg: Message) => {
+      this.connections[connectionId].publish(msg.topic, msg.payload)
+    })
   }
 
   private handleNewMessagesForConnection(connectionId: string, connection: MqttSource) {

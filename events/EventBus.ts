@@ -46,7 +46,6 @@ class IpcRendererEventBus implements EventBusInterface {
   }
 
   public emit<MessageType>(event: Event<MessageType>, msg: MessageType) {
-    console.log(event.topic, msg)
     this.ipc.send(event.topic, msg)
   }
 }

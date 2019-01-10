@@ -91,7 +91,7 @@ class App extends React.Component<Props, State> {
               }} />
             </div>
             <div style={this.getStyles().right}>
-              <Sidebar />
+              <Sidebar connectionId={this.state.connectionId} />
             </div>
           </div>
       </div>

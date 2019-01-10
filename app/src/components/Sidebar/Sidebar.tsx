@@ -5,6 +5,7 @@ import * as q from '../../../../backend/src/Model'
 import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography } from '@material-ui/core'
 import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
 import ExpandMore from '@material-ui/icons/ExpandMore'
+import Publisher from './Publisher'
 
 import Copy from '../Copy'
 import ValueRenderer from './ValueRenderer'
@@ -15,10 +16,11 @@ interface Props {
   node?: q.TreeNode,
   classes: any,
   theme: Theme,
+  connectionId?: string,
 }
 
 interface State {
-  node: q.TreeNode
+  node: q.TreeNode,
 }
 
 class Sidebar extends React.Component<Props, State> {
@@ -77,30 +79,39 @@ class Sidebar extends React.Component<Props, State> {
 
     const copyTopic = node ? <Copy value={node.path()} /> : null
     const copyValue = node && node.message ? <Copy value={node.message.value} /> : null
-
+    const summeryStyle = { minHeight: '0' }
+    const detailsStyle = { padding: '0px 8px 8px' }
     return (
       <div>
         <ExpansionPanel key="topic" defaultExpanded={true}>
-          <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+          <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summeryStyle}>
             <Typography className={classes.heading}>Topic {copyTopic}</Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+          <ExpansionPanelDetails style={detailsStyle}>
             <Topic node={this.props.node} didSelectNode={this.updateNode} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel key="value" defaultExpanded={true}>
-          <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+          <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summeryStyle}>
             <Typography className={classes.heading}>Value {copyValue}</Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+          <ExpansionPanelDetails style={detailsStyle}>
             <ValueRenderer node={this.props.node} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel defaultExpanded={true}>
-          <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+          <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summeryStyle}>
+            <Typography className={classes.heading}>Publish</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails style={detailsStyle}>
+            <Publisher node={this.props.node} connectionId={this.props.connectionId} />
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+        <ExpansionPanel defaultExpanded={true}>
+          <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summeryStyle}>
             <Typography className={classes.heading}>Stats</Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+          <ExpansionPanelDetails style={detailsStyle}>
             {this.props.node ? <NodeStats node={this.props.node} /> : null}
           </ExpansionPanelDetails>
         </ExpansionPanel>
