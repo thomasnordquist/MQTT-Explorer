@@ -11,7 +11,7 @@ import * as brace from 'brace'
 import { default as AceEditor } from 'react-ace'
 // tslint:disable-next-line
 import 'react-ace'
-import 'brace/mode/java'
+import 'brace/mode/json'
 import 'brace/mode/text'
 import 'brace/mode/xml'
 import 'brace/theme/monokai'
