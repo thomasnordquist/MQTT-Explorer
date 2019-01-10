@@ -15,6 +15,7 @@ const initialAppState = {
     nodeOrder: NodeOrder.none,
     visible: false,
   },
+  selectedNode: undefined,
 }
 const store = createStore(reducers, initialAppState)
 

@@ -118,8 +118,7 @@ class Tree extends React.Component<Props, TreeState> {
           name="/"
           collapsed={false}
           key="rootNode"
-          lastUpdate={0}
-          performanceCallback={this.performanceCallback}
+          lastUpdate={this.state.tree.lastUpdate}
         />
       </Typography>
     )

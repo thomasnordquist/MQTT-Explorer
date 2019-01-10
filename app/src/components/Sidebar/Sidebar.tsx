@@ -1,4 +1,6 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
+import { AppState } from '../../reducers'
 import * as q from '../../../../backend/src/Model'
 import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography } from '@material-ui/core'
 import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
@@ -63,9 +65,11 @@ class Sidebar extends React.Component<Props, State> {
   }
 
   public render() {
-    return <div className={this.props.classes.drawer}>
-      {this.renderNode()}
-    </div>
+    return (
+      <div className={this.props.classes.drawer}>
+        {this.renderNode()}
+      </div>
+    )
   }
 
   private renderNode() {
@@ -74,33 +78,41 @@ class Sidebar extends React.Component<Props, State> {
     const copyTopic = node ? <Copy value={node.path()} /> : null
     const copyValue = node && node.message ? <Copy value={node.message.value} /> : null
 
-    return <div>
-      <ExpansionPanel key="topic" defaultExpanded={true}>
-        <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-          <Typography className={classes.heading}>Topic {copyTopic}</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <Topic node={this.props.node} didSelectNode={this.updateNode} />
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-      <ExpansionPanel key="value" defaultExpanded={true}>
-        <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-          <Typography className={classes.heading}>Value {copyValue}</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <ValueRenderer node={this.state.node} />
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-      <ExpansionPanel defaultExpanded={true}>
-        <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-          <Typography className={classes.heading}>Stats</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <NodeStats node={this.state.node} />
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-    </div>
+    return (
+      <div>
+        <ExpansionPanel key="topic" defaultExpanded={true}>
+          <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+            <Typography className={classes.heading}>Topic {copyTopic}</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <Topic node={this.props.node} didSelectNode={this.updateNode} />
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+        <ExpansionPanel key="value" defaultExpanded={true}>
+          <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+            <Typography className={classes.heading}>Value {copyValue}</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <ValueRenderer node={this.props.node} />
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+        <ExpansionPanel defaultExpanded={true}>
+          <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+            <Typography className={classes.heading}>Stats</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            {this.props.node ? <NodeStats node={this.props.node} /> : null}
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+      </div>
+    )
   }
 }
 
-export default withStyles(Sidebar.styles, { withTheme: true })(Sidebar)
+const mapStateToProps = (state: AppState) => {
+  return {
+    node: state.selectedTopic,
+  }
+}
+
+export default withStyles(Sidebar.styles, { withTheme: true })(connect(mapStateToProps)(Sidebar))

@@ -49,13 +49,14 @@ class TreeNodeSubnodes extends React.Component<Props, {}> {
 
     const nodes = this.sortedNodes()
     const listItems = nodes.map(node => (
-        <div key={node.hash()} style={listItemStyle}>
+        <div key={node.hash()}>
           <TreeNode
             animateChages={this.props.animateChanges}
             treeNode={node}
             didSelectNode={this.props.didSelectNode}
             autoExpandLimit={this.props.autoExpandLimit}
             lastUpdate={node.lastUpdate}
+            style={listItemStyle}
           />
         </div>
       ))

@@ -1,4 +1,7 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { treeActions } from '../../actions'
 import * as q from '../../../../backend/src/Model'
 import { withStyles, Theme } from '@material-ui/core/styles'
 
@@ -29,6 +32,7 @@ const styles = (theme: Theme) => {
 }
 
 interface Props {
+  actions: any
   lastUpdate: number
   animateChages: boolean
   isRoot?: boolean
@@ -39,6 +43,7 @@ interface Props {
   didSelectNode?: (node: q.TreeNode) => void
   classes: any
   autoExpandLimit: number
+  style?: React.CSSProperties
 }
 
 interface State {
@@ -168,13 +173,13 @@ class TreeNode extends React.Component<Props, State> {
         key={this.props.treeNode.hash()}
         className={`${classes.node} ${!this.props.isRoot ? classes.hover : ''}`}
         onClick={this.didClickNode}
+        style={this.props.style}
       >
         <span ref={this.titleRef} style={animation}>
           <TreeNodeTitle
             collapsed={this.collapsed()}
             treeNode={this.props.treeNode}
             name={this.props.name}
-            didSelectNode={this.props.didSelectNode}
           />
         </span>
         {this.renderNodes()}
@@ -185,7 +190,7 @@ class TreeNode extends React.Component<Props, State> {
   private didClickNode = (event: React.MouseEvent) => {
     event.stopPropagation()
     this.toggle()
-    this.props.didSelectNode && this.props.didSelectNode(this.props.treeNode)
+    this.props.actions.selectTopic(this.props.treeNode)
   }
 
   private renderNodes() {
@@ -202,4 +207,10 @@ class TreeNode extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(TreeNode)
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: bindActionCreators(treeActions, dispatch),
+  }
+}
+
+export default withStyles(styles)(connect(null, mapDispatchToProps)(TreeNode))

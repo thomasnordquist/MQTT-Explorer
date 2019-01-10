@@ -1,6 +1,5 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
-// import Drawer from '@material-ui/core/Drawer'
 import { Typography } from '@material-ui/core'
 
 interface Props {
@@ -15,11 +14,13 @@ class NodeStats extends React.Component<Props, {}> {
   public render() {
     const { node } = this.props
 
-    return <div>
-      <Typography>Messages: #{node.messages}</Typography>
-      <Typography>Subtopics: {node.leafCount()}</Typography>
-      <Typography>Messages Subtopics: #{node.leafMessageCount()}</Typography>
-    </div>
+    return (
+      <div>
+        <Typography>Messages: #{node.messages}</Typography>
+        <Typography>Subtopics: {node.leafCount()}</Typography>
+        <Typography>Messages Subtopics: #{node.leafMessageCount()}</Typography>
+      </div>
+    )
   }
 }
 

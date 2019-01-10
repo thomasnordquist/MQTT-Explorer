@@ -31,7 +31,8 @@ class Topic extends React.Component<Props, {}> {
       .map(node => node.sourceEdge)
       .filter(edge => Boolean(edge))
       .map(edge =>
-        [<Button
+        [(
+          <Button
             onClick={() => this.setState({ node: edge!.target })}
             size="small"
             color="secondary"
@@ -39,7 +40,8 @@ class Topic extends React.Component<Props, {}> {
             key={edge!.hash()}
           >
             {edge!.name}
-          </Button>],
+          </Button>
+        )],
       )
 
     if (breadCrumps.length === 0) {

@@ -1,12 +1,15 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { treeActions } from '../../actions'
 import * as q from '../../../../backend/src/Model'
 import { withTheme, Theme } from '@material-ui/core/styles'
 
 export interface TreeNodeProps extends React.HTMLAttributes<HTMLElement> {
   treeNode: q.TreeNode
+  actions: any
   name?: string | undefined
   collapsed?: boolean | undefined
-  didSelectNode?: (node: q.TreeNode) => void
   theme: Theme
 }
 
@@ -23,9 +26,10 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
     }
   }
 
-  private didSelectNode = () => {
+  private didSelectNode = (event: React.MouseEvent) => {
+    event.stopPropagation()
     if (this.props.treeNode.message) {
-      this.props.didSelectNode && this.props.didSelectNode(this.props.treeNode)
+      this.props.actions.selectTopic(this.props.treeNode)
     }
   }
 
@@ -59,7 +63,7 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       padding: '0',
-      paddingLeft: '5px',
+      marginLeft: '5px',
       display: 'inline-block',
     }
     return this.props.treeNode.message
@@ -85,4 +89,10 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
   }
 }
 
-export default withTheme()(TreeNodeTitle)
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: bindActionCreators(treeActions, dispatch),
+  }
+}
+
+export default withTheme()(connect(null, mapDispatchToProps)(TreeNodeTitle))
