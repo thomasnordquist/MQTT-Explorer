@@ -80,7 +80,7 @@ class Sidebar extends React.Component<Props, State> {
     const copyTopic = node ? <Copy value={node.path()} /> : null
     const copyValue = node && node.message ? <Copy value={node.message.value} /> : null
     const summeryStyle = { minHeight: '0' }
-    const detailsStyle = { padding: '0px 8px 8px' }
+    const detailsStyle = { padding: '0px 16px 8px 8px' }
     return (
       <div>
         <ExpansionPanel key="topic" defaultExpanded={true}>
