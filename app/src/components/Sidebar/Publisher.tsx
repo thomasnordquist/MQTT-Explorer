@@ -94,7 +94,12 @@ class Publisher extends React.Component<Props, State> {
 
   private publishButton() {
     return (
-      <Button variant="contained" size="small" color="primary">
+      <Button
+        variant="contained"
+        size="small"
+        color="primary"
+        onClick={this.publish}
+      >
         <Navigation style={{ marginRight: '8px' }} /> Publish
       </Button>
     )
