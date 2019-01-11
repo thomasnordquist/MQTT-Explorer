@@ -11,6 +11,7 @@ export interface TreeNodeProps extends React.HTMLAttributes<HTMLElement> {
   name?: string | undefined
   collapsed?: boolean | undefined
   theme: Theme
+  lastUpdate: number
 }
 
 class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {

@@ -180,6 +180,7 @@ class TreeNode extends React.Component<Props, State> {
             collapsed={this.collapsed()}
             treeNode={this.props.treeNode}
             name={this.props.name}
+            lastUpdate={this.props.treeNode.lastUpdate}
           />
         </span>
         {this.renderNodes()}
