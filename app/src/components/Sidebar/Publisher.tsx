@@ -54,7 +54,7 @@ class Publisher extends React.Component<Props, State> {
 
   private publish = (e: React.MouseEvent) => {
     e.stopPropagation()
-    const topic = this.state.customTopic
+    const topic = this.currentTopic() || ''
     const payload = this.state.payload
 
     if (this.props.connectionId && topic) {
@@ -81,9 +81,13 @@ class Publisher extends React.Component<Props, State> {
     )
   }
 
-  private topic() {
+  private currentTopic(): string | undefined {
     const { node } = this.props
-    const topicStr = (this.state.customTopic !== undefined) ? this.state.customTopic : (node ? node.path() : '')
+    return (this.state.customTopic !== undefined) ? this.state.customTopic : (node ? node.path() : undefined)
+  }
+
+  private topic() {
+    const topicStr = this.currentTopic() || ''
 
     return (
       <div>
