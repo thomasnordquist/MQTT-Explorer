@@ -16,6 +16,7 @@
   },
   "build": {
     "appId": "mqtt-explorer",
+    "nodeGypRebuild": true,
     "mac": {
       "category": "de.t7n.apps.mq-explorer",
       "publish": [

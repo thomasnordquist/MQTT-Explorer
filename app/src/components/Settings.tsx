@@ -84,14 +84,14 @@ class Settings extends React.Component<Props, {}> {
   }
 
   private renderAutoExpand() {
-    const { classes, actions, autoExpandLimit } = this.props
+    const { classes, autoExpandLimit } = this.props
 
     return (
         <div style={{ padding: '8px' }}>
         <InputLabel htmlFor="auto-expand">Auto Expand</InputLabel>
         <Select
             value={autoExpandLimit}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => actions.setAutoExpandLimit(e.target.value)}
+            onChange={this.onChangeAutoExpand}
             input={<Input name="auto-expand" id="auto-expand-label-placeholder" />}
             displayEmpty={true}
             name="auto-expand"
@@ -105,6 +105,10 @@ class Settings extends React.Component<Props, {}> {
         </Select>
       </div>
     )
+  }
+
+  private onChangeAutoExpand = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    this.props.actions.setAutoExpandLimit(e.target.value)
   }
 
   private renderNodeOrder() {

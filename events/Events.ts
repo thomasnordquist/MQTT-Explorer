@@ -28,14 +28,14 @@ export interface Message {
   payload: any
 }
 
-export function makeConnectionMessageEvent(connectionId: string): Event<Message> {
-  return {
-    topic: `conn/${connectionId}`,
-  }
-}
-
 export function makePublishEvent(connectionId: string): Event<Message> {
   return {
     topic: `conn/publish/${connectionId}`,
+  }
+}
+
+export function makeConnectionMessageEvent(connectionId: string): Event<Message> {
+  return {
+    topic: `conn/${connectionId}`,
   }
 }
