@@ -21,16 +21,23 @@ interface Props {
   connectionId?: string
 }
 
+interface Message {
+  topic: string
+  payload?: string
+  sent: Date
+}
+
 interface State {
   customTopic?: string
   payload?: string
   mode: string
+  history: Message[]
 }
 
 class Publisher extends React.Component<Props, State> {
   constructor(props: any) {
     super(props)
-    this.state = { mode: 'json' }
+    this.state = { mode: 'json', history: [] }
   }
 
   private updatePayload = (value: string, event?: any) => {
@@ -47,14 +54,21 @@ class Publisher extends React.Component<Props, State> {
 
   private publish = (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (!this.props.connectionId || !this.state.customTopic) {
-      return
-    }
+    const topic = this.state.customTopic
+    const payload = this.state.payload
 
-    rendererEvents.emit(makePublishEvent(this.props.connectionId), {
-      topic: this.state.customTopic,
-      payload: this.state.payload,
-    })
+    if (this.props.connectionId && topic) {
+      rendererEvents.emit(makePublishEvent(this.props.connectionId), { topic, payload })
+      this.addMessageToHistory(topic, payload)
+    }
+  }
+
+  private addMessageToHistory(topic: string, payload?: string) {
+    // Remove duplicates
+    let filteredHistory = this.state.history.filter(e => e.payload !== payload || e.topic !== topic)
+    filteredHistory = filteredHistory.slice(-7)
+    const history: Message[] = [...filteredHistory, { topic, payload, sent: new Date() }]
+    this.setState({ history })
   }
 
   public render() {
@@ -62,13 +76,15 @@ class Publisher extends React.Component<Props, State> {
       <div style={{ flexGrow: 1, marginLeft: '8px' }}>
         {this.topic()}
         {this.editor()}
+        {this.history()}
       </div>
     )
   }
 
   private topic() {
     const { node } = this.props
-    const topicStr = this.state.customTopic || (node ? node.path() : '')
+    const topicStr = (this.state.customTopic !== undefined) ? this.state.customTopic : (node ? node.path() : '')
+
     return (
       <div>
         <Typography>Topic</Typography>
@@ -79,9 +95,16 @@ class Publisher extends React.Component<Props, State> {
           value={topicStr}
           multiline={true}
           onChange={this.updateTopic}
+          InputProps={{ onBlur: this.onTopicBlur }}
         />
       </div>
     )
+  }
+
+  private onTopicBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    if (!e.target.value) {
+      this.setState({ customTopic: undefined })
+    }
   }
 
   private editorOptions = {
@@ -142,6 +165,31 @@ class Publisher extends React.Component<Props, State> {
             {this.publishButton()}
           </div>
         </Typography>
+      </div>
+    )
+  }
+
+  private loadHistoryEntry(entry: Message) {
+    this.setState({
+      customTopic: entry.topic,
+      payload: entry.payload,
+    })
+  }
+
+  private history() {
+    const entries = this.state.history.map(message => (
+      <Typography onClick={() => this.loadHistoryEntry(message)}>
+        <div style={{ width: '100%', cursor: 'pointer', marginTop: '8px' }}>
+          <div><b>{message.topic}</b></div>
+          <div><i>{message.payload}</i></div>
+        </div>
+      </Typography>
+    ))
+
+    return (
+      <div style={{ marginTop: '8px' }}>
+        <Typography>History</Typography>
+        {entries}
       </div>
     )
   }
