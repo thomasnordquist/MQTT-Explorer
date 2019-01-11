@@ -1,11 +1,17 @@
 import * as React from 'react'
-import * as q from '../../../../backend/src/Model'
-import { makePublishEvent, rendererEvents } from '../../../../events'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import * as q from '../../../../../backend/src/Model'
+import { AppState } from '../../../reducers'
+import { rendererEvents, makePublishEvent } from '../../../../../events'
+import { sidebarActions } from '../../../actions'
 import Navigation from '@material-ui/icons/Navigation'
 import {
   Button, Fab, InputAdornment, FormControlLabel, Radio,
   RadioGroup, TextField, Typography,
 } from '@material-ui/core'
+import Message from './Model/Message'
+import HistoryEntry from './HistoryEntry'
 
 import * as brace from 'brace'
 import { default as AceEditor } from 'react-ace'
@@ -19,17 +25,12 @@ import 'brace/theme/monokai'
 interface Props {
   node?: q.TreeNode
   connectionId?: string
-}
-
-interface Message {
-  topic: string
+  topic?: string
   payload?: string
-  sent: Date
+  actions: any
 }
 
 interface State {
-  customTopic?: string
-  payload?: string
   mode: string
   history: Message[]
 }
@@ -41,11 +42,12 @@ class Publisher extends React.Component<Props, State> {
   }
 
   private updatePayload = (value: string, event?: any) => {
-    this.setState({ payload: value })
+    this.props.actions.setPublishPayload(value)
   }
 
   private updateTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ customTopic: e.target.value })
+    console.log(e.target.value)
+    this.props.actions.setPublishTopic(e.target.value)
   }
 
   private updateMode = (e: React.ChangeEvent<{}>, value: string) => {
@@ -55,7 +57,7 @@ class Publisher extends React.Component<Props, State> {
   private publish = (e: React.MouseEvent) => {
     e.stopPropagation()
     const topic = this.currentTopic() || ''
-    const payload = this.state.payload
+    const payload = this.props.payload
 
     if (this.props.connectionId && topic) {
       rendererEvents.emit(makePublishEvent(this.props.connectionId), { topic, payload })
@@ -82,8 +84,10 @@ class Publisher extends React.Component<Props, State> {
   }
 
   private currentTopic(): string | undefined {
-    const { node } = this.props
-    return (this.state.customTopic !== undefined) ? this.state.customTopic : (node ? node.path() : undefined)
+    const { node, topic } = this.props
+    const selectedNodePath = (node ? node.path() : undefined)
+
+    return (topic !== undefined) ? topic : selectedNodePath
   }
 
   private topic() {
@@ -107,7 +111,7 @@ class Publisher extends React.Component<Props, State> {
 
   private onTopicBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     if (!e.target.value) {
-      this.setState({ customTopic: undefined })
+      this.props.actions.setPublishTopic(undefined)
     }
   }
 
@@ -173,21 +177,9 @@ class Publisher extends React.Component<Props, State> {
     )
   }
 
-  private loadHistoryEntry(entry: Message) {
-    this.setState({
-      customTopic: entry.topic,
-      payload: entry.payload,
-    })
-  }
-
   private history() {
     const entries = this.state.history.map(message => (
-      <Typography onClick={() => this.loadHistoryEntry(message)}>
-        <div style={{ width: '100%', cursor: 'pointer', marginTop: '8px' }}>
-          <div><b>{message.topic}</b></div>
-          <div><i>{message.payload}</i></div>
-        </div>
-      </Typography>
+      <HistoryEntry message={message} />
     ))
 
     return (
@@ -209,7 +201,7 @@ class Publisher extends React.Component<Props, State> {
           width="100%"
           height="200px"
           showGutter={true}
-          value={this.state.payload}
+          value={this.props.payload}
           onChange={this.updatePayload}
           setOptions={this.editorOptions}
           editorProps={{ $blockScrolling: true }}
@@ -219,4 +211,17 @@ class Publisher extends React.Component<Props, State> {
   }
 }
 
-export default Publisher
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: bindActionCreators(sidebarActions, dispatch),
+  }
+}
+
+const mapStateToProps = (state: AppState) => {
+  return {
+    topic: state.sidebar.publishTopic,
+    payload: state.sidebar.publishPayload,
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Publisher)

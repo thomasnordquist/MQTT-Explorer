@@ -5,7 +5,7 @@ import * as q from '../../../../backend/src/Model'
 import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography } from '@material-ui/core'
 import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
 import ExpandMore from '@material-ui/icons/ExpandMore'
-import Publisher from './Publisher'
+import Publish from './Publish/Publish'
 
 import Copy from '../Copy'
 import ValueRenderer from './ValueRenderer'
@@ -104,7 +104,7 @@ class Sidebar extends React.Component<Props, State> {
             <Typography className={classes.heading}>Publish</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={detailsStyle}>
-            <Publisher node={this.props.node} connectionId={this.props.connectionId} />
+            <Publish node={this.props.node} connectionId={this.props.connectionId} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel defaultExpanded={true}>

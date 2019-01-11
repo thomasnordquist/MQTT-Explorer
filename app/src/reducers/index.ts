@@ -6,18 +6,28 @@ export enum ActionTypes {
   toggleSettingsVisibility = 'TOGGLE_SETTINGS_VISIBILITY',
   setNodeOrder = 'SET_NODE_ORDER',
   selectTopic = 'SELECT_TOPIC',
+  setPublishTopic = 'SET_PUBLISH_TOPIC',
+  setPublishPayload = 'SET_PUBLISH_PAYLOAD',
 }
 
-interface CustomAction extends Action {
+export interface CustomAction extends Action {
   type: ActionTypes,
   autoExpandLimit?: number
   nodeOrder?: NodeOrder
   selectedTopic?: q.TreeNode
+  publishTopic?: string
+  publishPayload?: string
+}
+
+export interface SidebarState {
+  publishTopic?: string
+  publishPayload?: string
 }
 
 export interface AppState {
   settings: SettingsState,
   selectedTopic?: q.TreeNode
+  sidebar: SidebarState
 }
 
 export interface SettingsState {
@@ -47,18 +57,27 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state, action) => 
       return {
         ...state,
         settings: {
-          visible: state.settings.visible,
+          ...state.settings,
           autoExpandLimit: action.autoExpandLimit,
-          nodeOrder: state.settings.nodeOrder,
         },
+      }
+    case ActionTypes.setPublishTopic:
+      console.log(state)
+      return {
+        ...state,
+        sidebar: { ...state.sidebar, publishTopic: action.publishTopic },
+      }
+    case ActionTypes.setPublishPayload:
+      return {
+        ...state,
+        sidebar: { ...state.sidebar, publishPayload: action.publishPayload },
       }
     case ActionTypes.toggleSettingsVisibility:
       return {
         ...state,
         settings: {
+          ...state.settings,
           visible: !state.settings.visible,
-          autoExpandLimit: state.settings.autoExpandLimit,
-          nodeOrder: state.settings.nodeOrder,
         },
       }
     case ActionTypes.selectTopic:
@@ -67,7 +86,6 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state, action) => 
       }
       return {
         ...state,
-        settings: state.settings,
         selectedTopic: action.selectedTopic,
       }
     case ActionTypes.setNodeOrder:
@@ -76,11 +94,7 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state, action) => 
       }
       return {
         ...state,
-        settings: {
-          visible: state.settings.visible,
-          autoExpandLimit: state.settings.autoExpandLimit,
-          nodeOrder: action.nodeOrder,
-        },
+        settings: { ...state.settings, autoExpandLimit: state.settings.autoExpandLimit },
       }
     default:
       return state

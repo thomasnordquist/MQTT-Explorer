@@ -66,11 +66,9 @@ class Settings extends React.Component<Props, {}> {
           className={classes.paper}
           tabIndex={0}
           role="button"
-          onClick={(e: React.MouseEvent) => e.stopPropagation()}
-          onKeyDown={(e: React.KeyboardEvent) => e.stopPropagation()}
         >
 
-          <Typography className={ classes.title } variant="h6" color="inherit">
+          <Typography className={classes.title} variant="h6" color="inherit">
             <IconButton onClick={actions.toggleSettingsVisibility}>
               <ChevronRight />
             </IconButton>
@@ -93,7 +91,7 @@ class Settings extends React.Component<Props, {}> {
         <InputLabel htmlFor="auto-expand">Auto Expand</InputLabel>
         <Select
             value={autoExpandLimit}
-            onChange={ (e: React.ChangeEvent<HTMLSelectElement>) => actions.setAutoExpandLimit(e.target.value) }
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => actions.setAutoExpandLimit(e.target.value)}
             input={<Input name="auto-expand" id="auto-expand-label-placeholder" />}
             displayEmpty={true}
             name="auto-expand"
@@ -110,16 +108,14 @@ class Settings extends React.Component<Props, {}> {
   }
 
   private renderNodeOrder() {
-    const { classes, actions, nodeOrder } = this.props
+    const { classes, nodeOrder } = this.props
 
     return (
       <div style={{ padding: '8px' }}>
       <InputLabel htmlFor="auto-expand">Topic order</InputLabel>
       <Select
           value={nodeOrder}
-          onChange={ (e: React.ChangeEvent<HTMLSelectElement>) => {
-            actions.setNodeOrder(e.target.value)
-          }}
+          onChange={this.onChangeSorting}
           input={<Input name="node-order" id="node-order-label-placeholder" />}
           displayEmpty={true}
           name="node-order"
@@ -131,6 +127,10 @@ class Settings extends React.Component<Props, {}> {
         <MenuItem value={NodeOrder.topics}>{NodeOrder.topics}</MenuItem>
       </Select>
     </div>)
+  }
+
+  private onChangeSorting = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    this.props.actions.setNodeOrder(e.target.value)
   }
 }
 
