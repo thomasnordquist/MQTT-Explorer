@@ -1,26 +1,34 @@
-import * as React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import * as q from '../../../../../backend/src/Model'
-import { AppState } from '../../../reducers'
-import { rendererEvents, makePublishEvent } from '../../../../../events'
-import { sidebarActions } from '../../../actions'
-import Navigation from '@material-ui/icons/Navigation'
-import {
-  Button, Fab, InputAdornment, FormControlLabel, Radio,
-  RadioGroup, TextField, Typography,
-} from '@material-ui/core'
-import Message from './Model/Message'
-import HistoryEntry from './HistoryEntry'
-
-import * as brace from 'brace'
-import { default as AceEditor } from 'react-ace'
 // tslint:disable-next-line
 import 'react-ace'
 import 'brace/mode/json'
 import 'brace/mode/text'
 import 'brace/mode/xml'
 import 'brace/theme/monokai'
+
+import * as React from 'react'
+import * as brace from 'brace'
+import * as q from '../../../../../backend/src/Model'
+
+import {
+  Button,
+  Fab,
+  FormControlLabel,
+  InputAdornment,
+  Radio,
+  RadioGroup,
+  TextField,
+  Typography,
+} from '@material-ui/core'
+import { makePublishEvent, rendererEvents } from '../../../../../events'
+
+import { default as AceEditor } from 'react-ace'
+import { AppState } from '../../../reducers'
+import History from '../History'
+import Message from './Model/Message'
+import Navigation from '@material-ui/icons/Navigation'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { sidebarActions } from '../../../actions'
 
 interface Props {
   node?: q.TreeNode
@@ -35,7 +43,7 @@ interface State {
   history: Message[]
 }
 
-class Publisher extends React.Component<Props, State> {
+class Publish extends React.Component<Props, State> {
   constructor(props: any) {
     super(props)
     this.state = { mode: 'json', history: [] }
@@ -140,7 +148,7 @@ class Publisher extends React.Component<Props, State> {
     const labelStyle = { margin: '0 8px 0 8px' }
     return (
       <div style={{ marginTop: '16px' }}>
-        <Typography style={{ width: '100%', lineHeight: '64px' }}>
+        <div style={{ width: '100%', lineHeight: '64px' }}>
           <RadioGroup
             style={{ display: 'inline-block', float: 'left' }}
             value={this.state.mode}
@@ -172,22 +180,24 @@ class Publisher extends React.Component<Props, State> {
           <div style={{ float: 'right', marginRight: '16px' }}>
             {this.publishButton()}
           </div>
-        </Typography>
+        </div>
       </div>
     )
   }
 
   private history() {
-    const entries = this.state.history.map(message => (
-      <HistoryEntry message={message} />
-    ))
+    const items = this.state.history.map(message => ({
+      title: message.topic,
+      value: message.payload,
+    }))
 
-    return (
-      <div style={{ marginTop: '8px' }}>
-        <Typography>History</Typography>
-        {entries}
-      </div>
-    )
+    return <History items={items} onClick={this.didSelectHistoryEntry} />
+  }
+
+  private didSelectHistoryEntry = (index: number) => {
+    let message = this.state.history[index]
+    this.props.actions.setPublishTopic(message.topic)
+    this.props.actions.setPublishPayload(message.payload)
   }
 
   private editor() {
@@ -224,4 +234,4 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Publisher)
+export default connect(mapStateToProps, mapDispatchToProps)(Publish)

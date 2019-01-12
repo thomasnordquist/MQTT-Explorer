@@ -4,7 +4,7 @@ import { EventDispatcher } from '../../../events'
 export class TreeNode {
   public sourceEdge?: Edge
   public message?: Message
-  public messageHistory = new RingBuffer<Message>(3000, 100)
+  public messageHistory: RingBuffer<Message> = new RingBuffer<Message>(3000, 100)
   public edges: {[s: string]: Edge} = {}
   public collapsed = false
   public messages: number = 0

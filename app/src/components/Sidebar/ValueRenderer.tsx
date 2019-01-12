@@ -1,15 +1,18 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
+
+import { Theme, withTheme } from '@material-ui/core/styles'
+
+import MessageHistory from './MessageHistory'
 import { default as ReactJson } from 'react-json-view'
-import { withTheme, Theme } from '@material-ui/core/styles'
 
 interface Props {
-  node?: q.TreeNode | undefined
+  node?: q.TreeNode
   theme: Theme
 }
 
 interface State {
-  node?: q.TreeNode | undefined
+  node?: q.TreeNode
 }
 
 class ValueRenderer extends React.Component<Props, State> {
@@ -28,6 +31,15 @@ class ValueRenderer extends React.Component<Props, State> {
   }
 
   public render() {
+    return (
+      <div style={{width: '100%'}}>
+        {this.renderValue()}
+        <MessageHistory node={this.props.node} />
+      </div>
+    )
+  }
+
+  public renderValue() {
     const node = this.props.node
     if (!node || !node.message) {
       return null
@@ -47,19 +59,20 @@ class ValueRenderer extends React.Component<Props, State> {
     } else if (typeof json === 'boolean') {
       return this.renderRawValue(node.message.value)
     } else {
-      const theme = this.props.theme.palette.type === 'dark' ? 'monokai' : 'bright:inverted'
-      return <ReactJson
-        style={{ width: '100%' }}
-        src={json}
-        theme={theme}
-        onEdit={(val) => {
-          console.log(val)
-        }} />
+      const theme = (this.props.theme.palette.type === 'dark') ? 'monokai' : 'bright:inverted'
+      return (
+        <ReactJson
+          style={{ width: '100%' }}
+          src={json}
+          theme={theme}
+        />
+      )
     }
   }
 
   private renderRawValue(value: string) {
     const style: React.CSSProperties = {
+      backgroundColor: 'rgba(80, 80, 80, 0.6)',
       wordBreak: 'break-all',
       width: '100%',
       overflow: 'scroll',

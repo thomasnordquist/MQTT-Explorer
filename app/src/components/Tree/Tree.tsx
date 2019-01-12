@@ -108,7 +108,7 @@ class Tree extends React.Component<Props, TreeState> {
     }
 
     return (
-      <Typography style={style}>
+      <div style={style}>
         <TreeNode
           animateChages={true}
           autoExpandLimit={this.props.autoExpandLimit}
@@ -120,7 +120,7 @@ class Tree extends React.Component<Props, TreeState> {
           key="rootNode"
           lastUpdate={this.state.tree.lastUpdate}
         />
-      </Typography>
+      </div>
     )
   }
 }

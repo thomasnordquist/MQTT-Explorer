@@ -1,16 +1,17 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
-import { AppState } from '../../reducers'
 import * as q from '../../../../backend/src/Model'
-import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography } from '@material-ui/core'
-import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
-import ExpandMore from '@material-ui/icons/ExpandMore'
-import Publish from './Publish/Publish'
 
+import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography } from '@material-ui/core'
+import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
+
+import { AppState } from '../../reducers'
 import Copy from '../Copy'
-import ValueRenderer from './ValueRenderer'
+import ExpandMore from '@material-ui/icons/ExpandMore'
 import NodeStats from './NodeStats'
+import Publish from './Publish/Publish'
 import Topic from './Topic'
+import ValueRenderer from './ValueRenderer'
+import { connect } from 'react-redux'
 
 interface Props {
   node?: q.TreeNode,
@@ -74,20 +75,21 @@ class Sidebar extends React.Component<Props, State> {
     )
   }
 
+  private detailsStyle = { padding: '0px 16px 8px 8px' }
+
   private renderNode() {
     const { classes, node } = this.props
 
     const copyTopic = node ? <Copy value={node.path()} /> : null
     const copyValue = node && node.message ? <Copy value={node.message.value} /> : null
     const summeryStyle = { minHeight: '0' }
-    const detailsStyle = { padding: '0px 16px 8px 8px' }
     return (
       <div>
-        <ExpansionPanel key="topic" defaultExpanded={true}>
+        <ExpansionPanel key="topic" defaultExpanded={true} disabled={!Boolean(this.props.node)}>
           <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summeryStyle}>
             <Typography className={classes.heading}>Topic {copyTopic}</Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails style={detailsStyle}>
+          <ExpansionPanelDetails style={this.detailsStyle}>
             <Topic node={this.props.node} didSelectNode={this.updateNode} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
@@ -95,7 +97,7 @@ class Sidebar extends React.Component<Props, State> {
           <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summeryStyle}>
             <Typography className={classes.heading}>Value {copyValue}</Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails style={detailsStyle}>
+          <ExpansionPanelDetails style={this.detailsStyle}>
             <ValueRenderer node={this.props.node} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
@@ -103,19 +105,29 @@ class Sidebar extends React.Component<Props, State> {
           <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summeryStyle}>
             <Typography className={classes.heading}>Publish</Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails style={detailsStyle}>
+          <ExpansionPanelDetails style={this.detailsStyle}>
             <Publish node={this.props.node} connectionId={this.props.connectionId} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
-        <ExpansionPanel defaultExpanded={true}>
+        <ExpansionPanel defaultExpanded={Boolean(this.props.node)}>
           <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summeryStyle}>
             <Typography className={classes.heading}>Stats</Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails style={detailsStyle}>
-            {this.props.node ? <NodeStats node={this.props.node} /> : null}
-          </ExpansionPanelDetails>
+          {this.renderNodeStats()}
         </ExpansionPanel>
       </div>
+    )
+  }
+
+  private renderNodeStats() {
+    if (!this.props.node) {
+      return null
+    }
+
+    return (
+      <ExpansionPanelDetails style={this.detailsStyle}>
+        <NodeStats node={this.props.node} />
+      </ExpansionPanelDetails>
     )
   }
 }
