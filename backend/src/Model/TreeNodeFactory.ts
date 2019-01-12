@@ -1,7 +1,11 @@
-import { Edge, Message, Tree, TreeNode } from './'
+import { Edge, Tree, TreeNode } from './'
+
+interface HasLength {
+  length: number
+}
 
 export abstract class TreeNodeFactory {
-  public static fromEdgesAndValue(edgeNames: string[], value: any): TreeNode {
+  public static fromEdgesAndValue<T extends HasLength>(edgeNames: string[], value: T): TreeNode {
     let currentNode: TreeNode = new Tree()
     for (const edgeName of edgeNames) {
       const edge = new Edge(edgeName)
@@ -11,7 +15,11 @@ export abstract class TreeNodeFactory {
       currentNode = newNode
     }
 
-    currentNode.setMessage({ value })
+    currentNode.setMessage({
+      value,
+      length: value.length,
+      received: new Date(),
+    })
     return currentNode
   }
 }

@@ -1,9 +1,10 @@
-import { Edge, Message } from './'
+import { Edge, Message, RingBuffer } from './'
 import { EventDispatcher } from '../../../events'
 
 export class TreeNode {
   public sourceEdge?: Edge
   public message?: Message
+  public messageHistory = new RingBuffer<Message>(3000, 100)
   public edges: {[s: string]: Edge} = {}
   public collapsed = false
   public messages: number = 0
@@ -21,7 +22,7 @@ export class TreeNode {
       sourceEdge.target = this
     }
 
-    this.setMessage(message)
+    message && this.setMessage(message)
     this.onMerge.subscribe(() => {
       this.cachedLeafes = undefined
       this.cachedLeafMessageCount = undefined
@@ -35,8 +36,9 @@ export class TreeNode {
     })
   }
 
-  public setMessage(value: any) {
-    this.message = value
+  public setMessage(message: Message) {
+    this.messageHistory.add(message)
+    this.message = message
     this.messages += 1
   }
 
