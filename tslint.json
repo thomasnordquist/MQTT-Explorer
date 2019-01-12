@@ -6,6 +6,7 @@
     "member-access": true,
     "no-else-after-return": false,
     "align": false,
-    "variable-name": false
+    "variable-name": false,
+    "jsx-no-lambda": false
   }
 }
