@@ -3,61 +3,37 @@ import * as q from '../../../../backend/src/Model'
 
 import { Theme, withTheme } from '@material-ui/core/styles'
 
-import MessageHistory from './MessageHistory'
 import { default as ReactJson } from 'react-json-view'
 
 interface Props {
-  node?: q.TreeNode
+  message?: q.Message
   theme: Theme
 }
 
-interface State {
-  node?: q.TreeNode
-}
-
-class ValueRenderer extends React.Component<Props, State> {
-  private updateNode: () => void
-  constructor(props: any) {
-    super(props)
-    this.state = {}
-    this.updateNode = () => {
-      this.setState(this.state)
-    }
-  }
-
-  public componentWillReceiveProps(nextProps: Props) {
-    this.props.node && this.props.node.onMessage.unsubscribe(this.updateNode)
-    nextProps.node && nextProps.node.onMessage.subscribe(this.updateNode)
-  }
-
+class ValueRenderer extends React.Component<Props, {}> {
   public render() {
-    return (
-      <div style={{width: '100%'}}>
-        {this.renderValue()}
-        <MessageHistory node={this.props.node} />
-      </div>
-    )
+    return <div>{this.renderValue()}</div>
   }
 
   public renderValue() {
-    const node = this.props.node
-    if (!node || !node.message) {
+    const { message } = this.props
+    if (!message) {
       return null
     }
 
     let json
     try {
-      json = JSON.parse(node.message.value)
+      json = JSON.parse(message.value)
     } catch (error) {
-      return this.renderRawValue(node.message.value)
+      return this.renderRawValue(message.value)
     }
 
     if (typeof json === 'string') {
-      return this.renderRawValue(node.message.value)
+      return this.renderRawValue(message.value)
     } else if (typeof json === 'number') {
-      return this.renderRawValue(node.message.value)
+      return this.renderRawValue(message.value)
     } else if (typeof json === 'boolean') {
-      return this.renderRawValue(node.message.value)
+      return this.renderRawValue(message.value)
     } else {
       const theme = (this.props.theme.palette.type === 'dark') ? 'monokai' : 'bright:inverted'
       return (
@@ -79,6 +55,7 @@ class ValueRenderer extends React.Component<Props, State> {
       display: 'block',
       lineHeight: '1.2em',
       padding: '12px 5px 12px 5px',
+      color: this.props.theme.palette.text.primary
     }
 
     return <pre style={style}><code>{value}</code></pre>

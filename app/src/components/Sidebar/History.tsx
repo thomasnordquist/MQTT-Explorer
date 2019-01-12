@@ -11,7 +11,7 @@ interface HistoryItem {
 
 interface Props {
   items: HistoryItem[]
-  onClick?: (index: number) => void
+  onClick?: (index: number, element: EventTarget) => void
   classes: any
 }
 
@@ -38,7 +38,7 @@ class MessageHistory extends React.Component<Props, State> {
           padding: '8px 8px 0 8px',
           cursor: this.props.onClick ? 'pointer' : 'inherit',
         }}
-        onClick={() => this.props.onClick && this.props.onClick(index)}
+        onClick={(event: React.MouseEvent) => this.props.onClick && this.props.onClick(index, event.target)}
       >
         <div><i>{element.title}</i></div>
         <div style={messageStyle}>
@@ -55,7 +55,9 @@ class MessageHistory extends React.Component<Props, State> {
         >
           {this.state.collapsed ? '▶' : '▼'} History
         </Typography>
-        {this.state.collapsed ? null : elements}
+        <div style={{ maxHeight: '230px', overflowY: 'scroll'  }}>
+          {this.state.collapsed ? null : elements}
+        </div>
       </div>
     )
   }
@@ -64,11 +66,11 @@ class MessageHistory extends React.Component<Props, State> {
     const visible = this.props.items.length > 0 && this.state.collapsed
     return (
       <Badge
-        style={{display: 'block', width: '100%'}}
+        style={{ display: 'block', width: '100%' }}
         invisible={!visible}
         badgeContent={this.props.items.length}
         color="primary"
-        classes={{badge: this.props.classes.badge}}
+        classes={{ badge: this.props.classes.badge }}
       >
         {this.renderHistory()}
       </Badge>
@@ -81,7 +83,7 @@ class MessageHistory extends React.Component<Props, State> {
 }
 
 const styles = (theme: Theme) => ({
-  badge: {top: '-8px', left:'64px'}
-});
+  badge: { top: '-8px', left:'64px' },
+})
 
 export default withStyles(styles)(MessageHistory)

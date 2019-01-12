@@ -1,12 +1,21 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 
-import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography } from '@material-ui/core'
+import {
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
+  Fade,
+  Paper,
+  Popper,
+  Typography,
+} from '@material-ui/core'
 import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
 
 import { AppState } from '../../reducers'
 import Copy from '../Copy'
 import ExpandMore from '@material-ui/icons/ExpandMore'
+import MessageHistory from './MessageHistory'
 import NodeStats from './NodeStats'
 import Publish from './Publish/Publish'
 import Topic from './Topic'
@@ -22,16 +31,18 @@ interface Props {
 
 interface State {
   node: q.TreeNode,
+  compareMessage?: q.Message
 }
 
 class Sidebar extends React.Component<Props, State> {
+  private valueRef: any = React.createRef<HTMLDivElement>()
   private updateNode = () => {
     this.setState(this.state)
   }
 
   constructor(props: any) {
     super(props)
-    console.warn('Find and fix me #state')
+    console.error('Find and fix me #state')
     this.state = { node: new q.Tree() }
   }
 
@@ -55,6 +66,10 @@ class Sidebar extends React.Component<Props, State> {
     this.props.node && this.removeUpdateListener(this.props.node)
     nextProps.node && this.registerUpdateListener(nextProps.node)
     this.props.node && this.setState({ node: this.props.node })
+
+    if (this.props.node !== nextProps.node) {
+      this.setState({ compareMessage: undefined })
+    }
   }
 
   private registerUpdateListener(node: q.TreeNode) {
@@ -75,7 +90,7 @@ class Sidebar extends React.Component<Props, State> {
     )
   }
 
-  private detailsStyle = { padding: '0px 16px 8px 8px' }
+  private detailsStyle = { padding: '0px 16px 8px 8px', display: 'block' }
 
   private renderNode() {
     const { classes, node } = this.props
@@ -98,7 +113,17 @@ class Sidebar extends React.Component<Props, State> {
             <Typography className={classes.heading}>Value {copyValue}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={this.detailsStyle}>
-            <ValueRenderer node={this.props.node} />
+            <div ref={this.valueRef}><ValueRenderer message={this.props.node && this.props.node.message} /></div>
+            <div><MessageHistory onSelect={this.handleMessageHistorySelect} node={this.props.node} /></div>
+            <Popper open={Boolean(this.state.compareMessage)} anchorEl={this.valueRef.current} placement="left" transition={true}>
+              {({ TransitionProps }) => (
+                <Fade {...TransitionProps} timeout={350}>
+                  <Paper>
+                    <ValueRenderer message={this.state.compareMessage} />
+                  </Paper>
+                </Fade>
+              )}
+            </Popper>
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel defaultExpanded={true}>
@@ -117,6 +142,14 @@ class Sidebar extends React.Component<Props, State> {
         </ExpansionPanel>
       </div>
     )
+  }
+
+  private handleMessageHistorySelect = (message: q.Message) => {
+    if (message !== this.state.compareMessage) {
+      this.setState({ compareMessage: message })
+    } else {
+      this.setState({ compareMessage: undefined })
+    }
   }
 
   private renderNodeStats() {

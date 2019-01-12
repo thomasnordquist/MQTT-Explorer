@@ -3,16 +3,27 @@ import * as q from '../../../../backend/src/Model'
 
 import { Theme, withTheme } from '@material-ui/core/styles'
 
+import Fade from '@material-ui/core/Fade'
 import History from './History'
+import Paper from '@material-ui/core/Paper'
+import Popper from '@material-ui/core/Popper'
+import ValueRenderer from './ValueRenderer'
 
 interface Props {
   node?: q.TreeNode
   theme: Theme
+  onSelect: (message: q.Message) => void
 }
 
-class MessageHistory extends React.Component<Props, {}> {
+interface State {
+  displayMessage?: q.Message,
+  anchorEl?: HTMLElement
+}
+
+class MessageHistory extends React.Component<Props, State> {
   constructor(props: any) {
     super(props)
+    this.state = { }
   }
 
   private updateNode = () => {
@@ -33,16 +44,30 @@ class MessageHistory extends React.Component<Props, {}> {
   }
 
   public render() {
-    if (!this.props.node) {
+    const { node } = this.props
+    if (!node) {
       return null
     }
-    const history = this.props.node.messageHistory.toArray()
+
+    const history = node.messageHistory.toArray()
     const historyElements = history.map(message => ({
       title: message.received.toGMTString(),
       value: message.value,
     }))
 
-    return <History items={historyElements} />
+    return (
+      <div>
+        <History
+          items={historyElements}
+          onClick={this.displayMessage}
+        />
+      </div>
+    )
+  }
+
+  private displayMessage = (index: number, eventTarget: EventTarget) => {
+    const message = this.props.node && this.props.node.messageHistory.toArray()[index]
+    this.props.onSelect(message)
   }
 }
 
