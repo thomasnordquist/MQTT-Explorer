@@ -44,7 +44,7 @@ class TreeNodeSubnodes extends React.Component<Props, {}> {
     }
 
     const listItemStyle = {
-      padding: '3px 8px 0px 8px',
+      padding: '3px 0px 0px 8px',
     }
 
     const nodes = this.sortedNodes()
