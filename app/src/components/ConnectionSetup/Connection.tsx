@@ -1,14 +1,23 @@
 import * as React from 'react'
+
 import {
-  Typography, Toolbar, Modal,
-  MenuItem, Button, Grid, Paper,
-  TextField, Switch, FormControlLabel,
+  Button,
   CircularProgress,
+  FormControlLabel,
+  Grid,
+  MenuItem,
+  Modal,
+  Paper,
+  Switch,
+  TextField,
+  Toolbar,
+  Typography,
 } from '@material-ui/core'
-import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
-import Notification from './Notification'
-import { MqttOptions, DataSourceState } from '../../../../backend/src/DataSource'
+import { DataSourceState, MqttOptions } from '../../../../backend/src/DataSource'
+import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
 import { addMqttConnectionEvent, makeConnectionStateEvent, removeConnection, rendererEvents } from '../../../../events'
+
+import Notification from './Notification'
 import sha1 = require('sha1')
 
 interface Props {
@@ -53,7 +62,7 @@ class Connection extends React.Component<Props, State> {
 
     const defaultState = {
       visible: true,
-      host: 'nodered',
+      host: 'iot.eclipse.org',
       protocol: protocols[0],
       port: 1883,
       tls: false,
