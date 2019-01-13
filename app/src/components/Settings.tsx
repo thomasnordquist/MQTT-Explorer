@@ -1,23 +1,23 @@
 import * as React from 'react'
 import * as q from '../../../backend/src/Model'
 
-import Drawer from '@material-ui/core/Drawer'
-import IconButton from '@material-ui/core/IconButton'
-import Paper from '@material-ui/core/Paper'
-import Divider from '@material-ui/core/Divider'
-import MenuItem from '@material-ui/core/MenuItem'
-import Select from '@material-ui/core/Select'
+import { AppState, NodeOrder } from '../reducers'
+import {
+  Divider,
+  Drawer,
+  IconButton,
+  Input,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from '@material-ui/core'
+import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 
 import ChevronRight from '@material-ui/icons/ChevronRight'
-
-import { Typography, InputBase, Input, InputLabel } from '@material-ui/core'
-import { withStyles, StyleRulesCallback } from '@material-ui/core/styles'
-
-import { settingsActions } from '../actions'
-import { AppState, NodeOrder } from '../reducers'
-
-import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { settingsActions } from '../actions'
 
 const styles: StyleRulesCallback = theme => ({
   drawer: {
@@ -85,7 +85,6 @@ class Settings extends React.Component<Props, {}> {
 
   private renderAutoExpand() {
     const { classes, autoExpandLimit } = this.props
-
     return (
         <div style={{ padding: '8px' }}>
         <InputLabel htmlFor="auto-expand">Auto Expand</InputLabel>
@@ -93,11 +92,10 @@ class Settings extends React.Component<Props, {}> {
             value={autoExpandLimit}
             onChange={this.onChangeAutoExpand}
             input={<Input name="auto-expand" id="auto-expand-label-placeholder" />}
-            displayEmpty={true}
             name="auto-expand"
             className={classes.input}
         >
-          <MenuItem value={0}><em>Disabled</em></MenuItem>
+          <MenuItem value={0}><em>Collapsed</em></MenuItem>
           <MenuItem value={2}>Few</MenuItem>
           <MenuItem value={3}>Some</MenuItem>
           <MenuItem value={10}>Most</MenuItem>

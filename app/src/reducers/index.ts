@@ -1,5 +1,6 @@
-import { Reducer, Action } from 'redux'
 import * as q from '../../../backend/src/Model'
+
+import { Action, Reducer } from 'redux'
 
 export enum ActionTypes {
   setAutoExpandLimit = 'SET_AUTO_EXPAND_LIMIT',
@@ -47,7 +48,6 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state, action) => 
   if (!state) {
     throw Error('No initial state')
   }
-  console.log(action)
 
   switch (action.type) {
     case ActionTypes.setAutoExpandLimit:
@@ -62,7 +62,6 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state, action) => 
         },
       }
     case ActionTypes.setPublishTopic:
-      console.log(state)
       return {
         ...state,
         sidebar: { ...state.sidebar, publishTopic: action.publishTopic },
