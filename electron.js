@@ -58,16 +58,6 @@ app.on('ready', () => {
   })
 
   updateNotifier.onCheckUpdateRequest.subscribe(() => {
-    updateNotifier.notify({
-      version: '0.0.4',
-      releaseNotes: '<ul><li>some</li><li>stuff</li></ul>',
-      files: [{
-        url: 'https://github.com/thomasnordquist/MQTT-Explorer/releases/download/v0.0.2/MQTT-Explorer-0.0.2.dmg'
-      },
-      {
-        url: 'https://github.com/thomasnordquist/MQTT-Explorer/releases/download/v0.0.2/MQTT-Explorer-0.0.2-mac.zip'
-      }]
-    })
     try {
       autoUpdater.checkForUpdatesAndNotify()
     } catch (error) {
