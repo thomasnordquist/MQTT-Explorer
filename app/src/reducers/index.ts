@@ -93,7 +93,7 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state, action) => 
       }
       return {
         ...state,
-        settings: { ...state.settings, autoExpandLimit: state.settings.autoExpandLimit },
+        settings: { ...state.settings, nodeOrder: action.nodeOrder },
       }
     default:
       return state
