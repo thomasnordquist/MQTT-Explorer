@@ -1,10 +1,11 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
 import * as q from '../../../../backend/src/Model'
-import { withTheme, Theme } from '@material-ui/core/styles'
+
 import { AppState, NodeOrder } from '../../reducers'
+import { Theme, withTheme } from '@material-ui/core/styles'
 
 import TreeNode from './TreeNode'
+import { connect } from 'react-redux'
 
 export interface Props {
   lastUpdate: number
@@ -63,7 +64,7 @@ class TreeNodeSubnodes extends React.Component<Props, {}> {
 
     return (
       <span style={{ display: 'block', clear: 'both' }} >
-        {this.props.collapsed ? null : listItems}
+        {listItems}
       </span>
     )
   }
