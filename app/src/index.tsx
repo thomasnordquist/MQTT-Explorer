@@ -1,10 +1,14 @@
+import './tracking'
+
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
+
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
+import reducers, { AppState, NodeOrder } from './reducers'
+
+import App from './App'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
-import reducers, { NodeOrder, AppState } from './reducers'
-import App from './App'
 
 const initialAppState: AppState = {
   settings: {
