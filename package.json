@@ -1,6 +1,6 @@
 {
-  "name": "MQ(TT)-Explorer",
-  "version": "0.0.1",
+  "name": "MQTT-Explorer",
+  "version": "0.0.2",
   "description": "Explore your message queues",
   "main": "electron.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "appId": "mqtt-explorer",
     "nodeGypRebuild": false,
     "mac": {
-      "category": "de.t7n.apps.mq-explorer",
+      "category": "de.t7n.apps.mqtt-explorer",
       "publish": [
         "github"
       ]
@@ -59,13 +59,9 @@
     "tslint-strict-null-checks": "^1.0.1"
   },
   "dependencies": {
-    "@types/electron": "^1.6.10",
-    "@types/socket.io": "^2.1.2",
     "electron-log": "^2.2.17",
     "electron-updater": "^4.0.6",
     "mqtt": "^2.18.8",
-    "react-ace": "^6.3.2",
-    "sha1": "^1.1.1",
-    "socket.io": "^2.2.0"
+    "sha1": "^1.1.1"
   }
 }

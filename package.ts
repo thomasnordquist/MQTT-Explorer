@@ -5,9 +5,9 @@ const linux: builder.CliOptions = {
   ia32: true,
   armv7l: true,
   arm64: true,
-  linux: ['snap', 'AppImage', 'deb', 'pacman'],
+  linux: ['AppImage', 'deb', 'snap'],
   projectDir: './build/clean',
-  publish: 'always',
+  publish: 'onTag',
 }
 
 const win: builder.CliOptions = {
@@ -15,9 +15,9 @@ const win: builder.CliOptions = {
   ia32: true,
   armv7l: false,
   arm64: false,
-  win: ['portable'],
+  win: ['portable', 'nsis'],
   projectDir: './build/clean',
-  publish: 'always',
+  publish: 'onTag',
 }
 
 const mac: builder.CliOptions = {
@@ -27,7 +27,7 @@ const mac: builder.CliOptions = {
   arm64: false,
   mac: ['dmg'],
   projectDir: './build/clean',
-  publish: 'always',
+  publish: 'onTag',
 }
 
 async function buildAll() {
