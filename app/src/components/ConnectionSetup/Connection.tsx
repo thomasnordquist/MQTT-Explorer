@@ -17,7 +17,6 @@ import { DataSourceState, MqttOptions } from '../../../../backend/src/DataSource
 import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
 import { addMqttConnectionEvent, makeConnectionStateEvent, removeConnection, rendererEvents } from '../../../../events'
 
-import Notification from './Notification'
 import sha1 = require('sha1')
 
 interface Props {
