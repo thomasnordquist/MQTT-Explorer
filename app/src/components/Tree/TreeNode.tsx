@@ -1,13 +1,14 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { treeActions } from '../../actions'
 import * as q from '../../../../backend/src/Model'
-import { withStyles, Theme } from '@material-ui/core/styles'
 
-import { isElementInViewport } from '../helper/isElementInViewport'
-import TreeNodeTitle from './TreeNodeTitle'
+import { Theme, withStyles } from '@material-ui/core/styles'
+
 import TreeNodeSubnodes from './TreeNodeSubnodes'
+import TreeNodeTitle from './TreeNodeTitle'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { isElementInViewport } from '../helper/isElementInViewport'
+import { treeActions } from '../../actions'
 
 declare var performance: any
 
@@ -119,12 +120,6 @@ class TreeNode extends React.Component<Props, State> {
       const renderTime = performance.now() - this.willUpdateTime
       this.props.performanceCallback(renderTime)
     }
-    // setTimeout(() => {
-    //   this.setState(this.state)
-    // }, 500)
-    // this.addCssAnimation()
-    // setTimeout(this.removeCssAnimation, 500)
-
   }
 
   public componentWillUpdate() {
@@ -144,20 +139,6 @@ class TreeNode extends React.Component<Props, State> {
 
     return this.props.treeNode.edgeCount() > this.props.autoExpandLimit
   }
-
-  // private addCssAnimation = () => {
-  //   const element = this.titleRef.current
-  //   if ((this.dirtyEdges || this.dirtyMessage || this.dirtySubnodes) && element && isElementInViewport(element)) {
-  //     element.style.animation = 'example 0.5s'
-  //   }
-  // }
-  //
-  // private removeCssAnimation = () => {
-  //   const element = this.titleRef.current
-  //   if (element && element.style.animation) {
-  //     element.style.animation = ''
-  //   }
-  // }
 
   public render() {
     const { classes } = this.props

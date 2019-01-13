@@ -87,7 +87,8 @@ class TitleBar extends React.Component<Props, State> {
   public render() {
     const { classes } = this.props
 
-    return <AppBar position="static">
+    return (
+      <AppBar position="static">
         <Toolbar>
           <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={this.props.actions.toggleSettingsVisibility}>
             <Menu />
@@ -95,6 +96,7 @@ class TitleBar extends React.Component<Props, State> {
           <Typography className={classes.title} variant="h6" color="inherit">MQTT-Explorer</Typography>
         </Toolbar>
       </AppBar>
+    )
   }
 
   private renderSearch() {
