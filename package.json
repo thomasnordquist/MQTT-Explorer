@@ -9,7 +9,8 @@
     "test": "npm run test-backend",
     "build": "cd app; npm run build; cd ..; cd backend; npm run build; cd ..",
     "test-backend": "cd backend && npm run test && cd ..",
-    "release": "npm run test && ./release.sh"
+    "prepare-release": "./prepare-release.sh",
+    "package": "ts-node package.ts"
   },
   "repository": {
     "type": "git",

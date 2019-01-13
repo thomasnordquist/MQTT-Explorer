@@ -1,20 +1,32 @@
 #!/bin/bash
-
-DIR=build/clean
-
-rm -rf "$DIR"
-mkdir -p "$DIR"
-git clone .git "$DIR"
+set -e
 
 ORIGINAL_DIR=`pwd`
+DIR=build/clean
+
+rm -rf "$DIR" || echo "Directory did not exist"
+mkdir -p "$DIR"
+
+git clone .git "$DIR"
 cd $DIR
-cd app && npm install; cd ..
-cd backend && npm install; cd ..
+
+
+# App
+cd app
+  npm install
+cd ..
+
+# Backend
+cd backend
+  npm install;
+  #npm run test
+cd ..
+
+# Build
 npm run build
 rm -rf app/node_modules
 cd "$ORIGINAL_DIR"
 
-node_modules/.bin/ts-node build.ts
 exit 0
 docker run --rm -ti \
  --env ELECTRON_CACHE="/root/.cache/electron" \

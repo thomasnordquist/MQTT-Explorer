@@ -7,7 +7,7 @@ const linux: builder.CliOptions = {
   arm64: true,
   linux: ['snap', 'AppImage', 'deb', 'pacman'],
   projectDir: './build/clean',
-  publish: 'onTag',
+  publish: 'always',
 }
 
 const win: builder.CliOptions = {
@@ -17,7 +17,7 @@ const win: builder.CliOptions = {
   arm64: false,
   win: ['portable'],
   projectDir: './build/clean',
-  publish: 'onTag',
+  publish: 'always',
 }
 
 const mac: builder.CliOptions = {
@@ -31,6 +31,7 @@ const mac: builder.CliOptions = {
 }
 
 async function buildAll() {
+  console.log(process.argv[2])
   switch (process.argv[2]) {
     case 'win':
       await builder.build(win)
