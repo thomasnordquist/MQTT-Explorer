@@ -32,9 +32,42 @@
               #-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.8);
           }
         </style>
+        <style>
+          #splash {
+            z-index: 1000000;
+            background-color: #303030;
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            opacity: 1;
+          }
+          #splash1 {
+            margin: 37vh auto 0 auto;
+            height: 25vh;
+            width: 25vh;
+            background-image:url('./rings.svg');
+            background-size: cover;
+          }
+          #splash2 {
+            margin: 0 auto;
+          }
+          @keyframes unsplash {
+            0%   {opacity: 1;}
+            100% {opacity: 0;}
+          }
+        </style>
         <script src="http://localhost:35729/livereload.js"></script>
     </head>
     <body>
+        <div id="splash"><div id="splash1"></div>
+          <!-- <div id="splash1">
+            <div id="splash2" style="color: #ddd" class="la-square-jelly-box la-3x">
+              <div>a</div>
+              <div>ads</div>
+            </div> -->
+          </div>
+        </div>
         <div id="app" style="font:-webkit-control"></div>
         <script src="./build/bundle.js"></script>
     </body>

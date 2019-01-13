@@ -29,6 +29,12 @@ const theme = createMuiTheme({
   typography: { useNextVariants: true },
 })
 
+const splash = document.getElementById('splash')
+if (splash) {
+  splash.style.animation = 'unsplash 1s ease-out 0s 1 normal forwards'
+  setTimeout(() => splash.remove(), 1100)
+}
+
 ReactDOM.render(
     <MuiThemeProvider theme={theme}>
       <Provider store={store}>
