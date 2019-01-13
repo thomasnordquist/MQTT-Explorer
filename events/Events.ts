@@ -1,4 +1,8 @@
-import { MqttOptions, DataSourceState } from '../backend/src/DataSource'
+import { DataSourceState, MqttOptions } from '../backend/src/DataSource'
+
+import { UpdateInfo } from 'builder-util-runtime'
+
+export { UpdateInfo } from 'builder-util-runtime'
 
 export interface Event<MessageType> {
   topic: string
@@ -21,6 +25,14 @@ export function makeConnectionStateEvent(connectionId: string): Event<DataSource
   return {
     topic: `conn/state/${connectionId}`,
   }
+}
+
+export const checkForUpdates: Event<void> = {
+  topic: 'app/update/check',
+}
+
+export const updateAvailable: Event<UpdateInfo> = {
+  topic: 'app/update/available',
 }
 
 export interface Message {

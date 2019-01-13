@@ -1,17 +1,15 @@
+const { app, BrowserWindow } = require('electron')
 const { autoUpdater } = require("electron-updater")
 const log = require('electron-log');
+const { ConnectionManager, updateNotifier } = require('./backend/build/backend/src/index.js')
 
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
 log.info('App starting...');
 
-// Modules to control application life and create native browser window
-const { app, BrowserWindow, Notification } = require('electron')
-try {
-  require('./backend/build/backend/src/index.js')
-} catch (err) {
-  console.error(err)
-}
+const connectionManager = new ConnectionManager()
+connectionManager.manageConnections()
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -29,31 +27,6 @@ function createWindow () {
   // and load the index.html of the app.
   mainWindow.loadFile('app/index.html')
 
-  mainWindow.webContents.once('dom-ready', () => {
-
-    console.log('window loaded, check for updates')
-    let updateInfo
-
-    autoUpdater.on('update-available', (info) => {
-      updateInfo = info
-    })
-
-    autoUpdater.on('error', () => {
-      const version = updateInfo ? ` (${updateInfo.version})` : ''
-      const releaseNotes = ((updateInfo && updateInfo.releaseNotes) ? `${updateInfo.releaseNotes}\n` : '')
-      let notification = new Notification({
-        title: 'Update available' + version,
-        silent: true,
-        body: releaseNotes + 'https://github.com/thomasnordquist/MQTT-Explorer/releases'
-      })
-      notification.show()
-    })
-    try {
-      autoUpdater.checkForUpdatesAndNotify()
-    } catch (error) {
-      console.error(error)
-    }
-  })
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 
@@ -72,6 +45,35 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   createWindow()
+
+  let updateInfo
+  autoUpdater.on('update-available', (info) => {
+    updateInfo = info
+  })
+
+  autoUpdater.on('error', () => {
+    if (updateInfo) {
+      updateNotifier.notify(updateInfo)
+    }
+  })
+
+  updateNotifier.onCheckUpdateRequest.subscribe(() => {
+    updateNotifier.notify({
+      version: '0.0.4',
+      releaseNotes: '<ul><li>some</li><li>stuff</li></ul>',
+      files: [{
+        url: 'https://github.com/thomasnordquist/MQTT-Explorer/releases/download/v0.0.2/MQTT-Explorer-0.0.2.dmg'
+      },
+      {
+        url: 'https://github.com/thomasnordquist/MQTT-Explorer/releases/download/v0.0.2/MQTT-Explorer-0.0.2-mac.zip'
+      }]
+    })
+    try {
+      autoUpdater.checkForUpdatesAndNotify()
+    } catch (error) {
+      console.error(error)
+    }
+  })
 })
 
 // Quit when all windows are closed.

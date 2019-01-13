@@ -1,14 +1,17 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
 import * as q from '../../backend/src/Model'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import { withStyles, Theme } from '@material-ui/core/styles'
-import Tree from './components/Tree/Tree'
-import TitleBar from './components/TitleBar'
-import Sidebar from './components/Sidebar/Sidebar'
-import Connection from './components/ConnectionSetup/Connection'
-import Settings from './components/Settings'
+
+import { Theme, withStyles } from '@material-ui/core/styles'
+
 import { AppState } from './reducers'
+import Connection from './components/ConnectionSetup/Connection'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import Settings from './components/Settings'
+import Sidebar from './components/Sidebar/Sidebar'
+import TitleBar from './components/TitleBar'
+import Tree from './components/Tree/Tree'
+import UpdateNotifier from './UpdateNotifier'
+import { connect } from 'react-redux'
 
 interface State {
   selectedNode?: q.TreeNode,
@@ -79,24 +82,27 @@ class App extends React.Component<Props, State> {
   public render() {
     const { settingsVisible } = this.props
     const { content, contentShift, centerContent } = this.getStyles()
-    return <div style={centerContent}>
-      <CssBaseline />
-      <Settings />
-      <div style={settingsVisible ? contentShift : content}>
-          <TitleBar />
-          <div style={centerContent}>
-            <div style={this.getStyles().left}>
-              <Tree connectionId={this.state.connectionId} didSelectNode={(node: q.TreeNode) => {
-                this.setState({ selectedNode: node })
-              }} />
+    return (
+      <div style={centerContent}>
+        <CssBaseline />
+        <Settings />
+        <div style={settingsVisible ? contentShift : content}>
+            <TitleBar />
+            <div style={centerContent}>
+              <div style={this.getStyles().left}>
+                <Tree connectionId={this.state.connectionId} didSelectNode={(node: q.TreeNode) => {
+                  this.setState({ selectedNode: node })
+                }} />
+              </div>
+              <div style={this.getStyles().right}>
+                <Sidebar connectionId={this.state.connectionId} />
+              </div>
             </div>
-            <div style={this.getStyles().right}>
-              <Sidebar connectionId={this.state.connectionId} />
-            </div>
-          </div>
-      </div>
-      <Connection onConnection={(connectionId: string) => this.setState({ connectionId })}/>
-    </div >
+        </div>
+        <UpdateNotifier />
+        <Connection onConnection={(connectionId: string) => this.setState({ connectionId })}/>
+      </div >
+    )
   }
 }
 

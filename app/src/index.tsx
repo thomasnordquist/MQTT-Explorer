@@ -18,6 +18,7 @@ const initialAppState: AppState = {
   },
   sidebar: {},
   selectedTopic: undefined,
+  showUpdateDetails: false,
 }
 const store = createStore(reducers, initialAppState)
 

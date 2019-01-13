@@ -1,11 +1,21 @@
 import {
-  addMqttConnectionEvent, backendEvents,
-  makeConnectionStateEvent, removeConnection,
-  makeConnectionMessageEvent, makePublishEvent, AddMqttConnection, Message,
+  AddMqttConnection,
+  EventDispatcher,
+  Message,
+  addMqttConnectionEvent,
+  backendEvents,
+  checkForUpdates,
+  makeConnectionMessageEvent,
+  makeConnectionStateEvent,
+  makePublishEvent,
+  removeConnection,
+  updateAvailable,
 } from '../../events'
-import { MqttSource, DataSource } from './DataSource'
+import { DataSource, MqttSource } from './DataSource'
 
-class ConnectionManager {
+import { UpdateInfo } from 'builder-util-runtime'
+
+export class ConnectionManager {
   private connections: {[s: string]: DataSource<any>} = {}
 
   public manageConnections() {
@@ -49,5 +59,16 @@ class ConnectionManager {
   }
 }
 
-const connectionManager = new ConnectionManager()
-connectionManager.manageConnections()
+class UpdateNotifier {
+  public onCheckUpdateRequest = new EventDispatcher<void, UpdateNotifier>(this)
+  constructor() {
+    backendEvents.subscribe(checkForUpdates, () => {
+      this.onCheckUpdateRequest.dispatch()
+    })
+  }
+  public notify(updateInfo: UpdateInfo) {
+    backendEvents.emit(updateAvailable, updateInfo)
+  }
+}
+
+export const updateNotifier = new UpdateNotifier()

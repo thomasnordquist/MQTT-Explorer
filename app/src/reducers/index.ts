@@ -11,6 +11,8 @@ export enum ActionTypes {
   selectTopic = 'SELECT_TOPIC',
   setPublishTopic = 'SET_PUBLISH_TOPIC',
   setPublishPayload = 'SET_PUBLISH_PAYLOAD',
+  showUpdateNotification = 'SHOW_UPDATE_NOTIFICATION',
+  showUpdateDetails = 'SHOW_UPDATE_DETAILS',
 }
 
 export interface CustomAction extends Action {
@@ -20,6 +22,8 @@ export interface CustomAction extends Action {
   selectedTopic?: q.TreeNode
   publishTopic?: string
   publishPayload?: string
+  showUpdateNotification?: boolean
+  showUpdateDetails?: boolean
 }
 
 export interface SidebarState {
@@ -31,6 +35,8 @@ export interface AppState {
   settings: SettingsState,
   selectedTopic?: q.TreeNode
   sidebar: SidebarState
+  showUpdateNotification?: boolean
+  showUpdateDetails: boolean
 }
 
 export interface SettingsState {
@@ -51,7 +57,7 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state, action) => 
     throw Error('No initial state')
   }
   trackEvent(action.type)
-
+  console.log(action, state)
   switch (action.type) {
     case ActionTypes.setAutoExpandLimit:
       if (action.autoExpandLimit === undefined) {
@@ -97,6 +103,19 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state, action) => 
       return {
         ...state,
         settings: { ...state.settings, nodeOrder: action.nodeOrder },
+      }
+    case ActionTypes.showUpdateNotification:
+      return {
+        ...state,
+        showUpdateNotification: action.showUpdateNotification,
+      }
+    case ActionTypes.showUpdateDetails:
+      if (action.showUpdateDetails === undefined) {
+        return state
+      }
+      return {
+        ...state,
+        showUpdateDetails: action.showUpdateDetails,
       }
     default:
       return state
