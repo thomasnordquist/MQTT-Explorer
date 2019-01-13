@@ -1,14 +1,14 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import * as q from '../../../backend/src/Model'
 
 import { AppBar, IconButton, InputBase, Toolbar, Typography } from '@material-ui/core'
-import Search from '@material-ui/icons/Search'
-import Menu from '@material-ui/icons/Menu'
-import { withStyles, StyleRulesCallback } from '@material-ui/core/styles'
-import { fade } from '@material-ui/core/styles/colorManipulator'
+import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 
+import Menu from '@material-ui/icons/Menu'
+import Search from '@material-ui/icons/Search'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { fade } from '@material-ui/core/styles/colorManipulator'
 import { settingsActions } from '../actions'
 
 const styles: StyleRulesCallback = theme => ({
@@ -92,7 +92,7 @@ class TitleBar extends React.Component<Props, State> {
           <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={this.props.actions.toggleSettingsVisibility}>
             <Menu />
           </IconButton>
-          <Typography className={classes.title} variant="h6" color="inherit">MQTT-Xplorer</Typography>
+          <Typography className={classes.title} variant="h6" color="inherit">MQTT-Explorer</Typography>
         </Toolbar>
       </AppBar>
   }
