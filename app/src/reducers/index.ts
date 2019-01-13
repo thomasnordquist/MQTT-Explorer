@@ -51,7 +51,7 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state, action) => 
 
   switch (action.type) {
     case ActionTypes.setAutoExpandLimit:
-      if (!action.autoExpandLimit) {
+      if (action.autoExpandLimit === undefined) {
         return state
       }
       return {
