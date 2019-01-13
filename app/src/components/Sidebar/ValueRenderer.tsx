@@ -51,11 +51,13 @@ class ValueRenderer extends React.Component<Props, {}> {
       backgroundColor: 'rgba(80, 80, 80, 0.6)',
       wordBreak: 'break-all',
       width: '100%',
-      overflow: 'scroll',
+      overflowX: 'scroll',
+      overflowY: 'clip',
       display: 'block',
       lineHeight: '1.2em',
       padding: '12px 5px 12px 5px',
-      color: this.props.theme.palette.text.primary
+      maxWidth: '40vw',
+      color: this.props.theme.palette.text.primary,
     }
 
     return <pre style={style}><code>{value}</code></pre>
