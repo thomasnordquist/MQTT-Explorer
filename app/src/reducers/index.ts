@@ -2,6 +2,8 @@ import * as q from '../../../backend/src/Model'
 
 import { Action, Reducer } from 'redux'
 
+import { trackEvent } from '../tracking'
+
 export enum ActionTypes {
   setAutoExpandLimit = 'SET_AUTO_EXPAND_LIMIT',
   toggleSettingsVisibility = 'TOGGLE_SETTINGS_VISIBILITY',
@@ -48,6 +50,7 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state, action) => 
   if (!state) {
     throw Error('No initial state')
   }
+  trackEvent(action.type)
 
   switch (action.type) {
     case ActionTypes.setAutoExpandLimit:
