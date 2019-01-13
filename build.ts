@@ -31,9 +31,19 @@ const mac: builder.CliOptions = {
 }
 
 async function buildAll() {
-//  await builder.build(linux)
-//  await builder.build(win)
-  await builder.build(mac)
+  switch (process.argv[2]) {
+    case 'win':
+      await builder.build(win)
+      break
+    case 'linux':
+      await builder.build(linux)
+      break
+    case 'mac':
+      await builder.build(mac)
+      break
+    default:
+      await builder.build(mac)
+  }
 }
 
 buildAll()

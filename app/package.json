@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --mode production",
-    "postinstall": "npm run build"
+    "build": "webpack --mode production"
   },
   "author": "",
   "license": "ISC",

@@ -5,6 +5,7 @@
   "main": "electron.js",
   "scripts": {
     "start": "electron .",
+    "install": "cd app; npm install; cd ..",
     "test": "npm run test-backend",
     "build": "cd app; npm run build; cd ..; cd backend; npm run build; cd ..",
     "test-backend": "cd backend && npm run test && cd ..",
@@ -16,7 +17,7 @@
   },
   "build": {
     "appId": "mqtt-explorer",
-    "nodeGypRebuild": true,
+    "nodeGypRebuild": false,
     "mac": {
       "category": "de.t7n.apps.mq-explorer",
       "publish": [
