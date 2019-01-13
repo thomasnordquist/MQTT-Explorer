@@ -6,7 +6,7 @@ autoUpdater.logger.transports.file.level = 'info';
 log.info('App starting...');
 
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const { app, BrowserWindow, Notification } = require('electron')
 try {
   require('./backend/build/backend/src/index.js')
 } catch (err) {
@@ -29,6 +29,31 @@ function createWindow () {
   // and load the index.html of the app.
   mainWindow.loadFile('app/index.html')
 
+  mainWindow.webContents.once('dom-ready', () => {
+
+    console.log('window loaded, check for updates')
+    let updateInfo
+
+    autoUpdater.on('update-available', (info) => {
+      updateInfo = info
+    })
+
+    autoUpdater.on('error', () => {
+      const version = updateInfo ? ` (${updateInfo.version})` : ''
+      const releaseNotes = ((updateInfo && updateInfo.releaseNotes) ? `${updateInfo.releaseNotes}\n` : '')
+      let notification = new Notification({
+        title: 'Update available' + version,
+        silent: true,
+        body: releaseNotes + 'https://github.com/thomasnordquist/MQTT-Explorer/releases'
+      })
+      notification.show()
+    })
+    try {
+      autoUpdater.checkForUpdatesAndNotify()
+    } catch (error) {
+      console.error(error)
+    }
+  })
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 
@@ -47,11 +72,6 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   createWindow()
-  try {
-    autoUpdater.checkForUpdatesAndNotify()
-  } catch (error) {
-    console.error(error)
-  }
 })
 
 // Quit when all windows are closed.

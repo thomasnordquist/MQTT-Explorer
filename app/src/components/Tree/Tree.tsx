@@ -1,10 +1,11 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
 import * as q from '../../../../backend/src/Model'
-import { Typography } from '@material-ui/core'
-import TreeNode from './TreeNode'
+
 import { makeConnectionMessageEvent, rendererEvents } from '../../../../events'
+
 import { AppState } from '../../reducers'
+import TreeNode from './TreeNode'
+import { connect } from 'react-redux'
 
 const MovingAverage = require('moving-average')
 

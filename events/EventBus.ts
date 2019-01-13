@@ -1,5 +1,6 @@
+import { IpcMain, IpcRenderer, ipcMain, ipcRenderer } from 'electron'
+
 import { Event } from './Events'
-import { ipcMain, ipcRenderer, IpcRenderer, IpcMain } from 'electron'
 
 interface EventBusInterface {
   subscribe<MessageType>(event: Event<MessageType>, callback:(msg: MessageType) => void): void
