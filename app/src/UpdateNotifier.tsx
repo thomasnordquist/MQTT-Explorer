@@ -51,12 +51,19 @@ class UpdateNotifier extends React.Component<Props, {}> {
     this.props.actions.showUpdateNotification(true)
   }
 
+  private onCloseNotification = (event: React.SyntheticEvent<any>, reason: string) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    this.props.actions.showUpdateNotification(false)
+  }
+
   private closeNotification = () => {
     this.props.actions.showUpdateNotification(false)
   }
 
   private showDetails = () => {
-    this.closeNotification()
+    this.props.actions.showUpdateNotification(false)
     this.props.actions.showUpdateDetails(true)
   }
 
@@ -74,7 +81,7 @@ class UpdateNotifier extends React.Component<Props, {}> {
   }
 
   private renderUpdateNotification() {
-    const snackbarAnchor = {
+    const snackbarAnchor: any = {
       vertical: 'top',
       horizontal: 'right',
     }
@@ -83,8 +90,8 @@ class UpdateNotifier extends React.Component<Props, {}> {
       <Snackbar
         anchorOrigin={snackbarAnchor}
         open={this.props.showUpdateNotification}
-        autoHideDuration={6000}
-        onClose={this.closeNotification}
+        autoHideDuration={7000}
+        onClose={this.onCloseNotification}
       >
         <SnackbarContent
           className={this.props.classes.success}
