@@ -124,9 +124,6 @@ class Publish extends React.Component<Props, State> {
   }
 
   private editorOptions = {
-    enableBasicAutocompletion: true,
-    enableLiveAutocompletion: true,
-    enableSnippets: true,
     showLineNumbers: false,
     tabSize: 2,
   }
