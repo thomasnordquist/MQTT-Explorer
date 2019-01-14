@@ -28,7 +28,9 @@ class IpcMainEventBus implements EventBusInterface {
   }
 
   public emit<MessageType>(event: Event<MessageType>, msg: MessageType) {
-    this.client.send(event.topic, msg)
+    if (!this.client.isDestroyed()) {
+      this.client.send(event.topic, msg)
+    }
   }
 }
 
