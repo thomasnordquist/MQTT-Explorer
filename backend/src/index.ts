@@ -57,6 +57,11 @@ export class ConnectionManager {
     connection.disconnect()
     delete this.connections[hash]
   }
+
+  public closeAllConnections() {
+    Object.keys(this.connections)
+      .forEach(hash => this.removeConnection(hash))
+  }
 }
 
 class UpdateNotifier {
