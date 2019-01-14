@@ -7,8 +7,7 @@ This application subscribes to all topics on your MQTT-Server and displays your 
 ## Download
 The app is prebuilt for Windows, Linux and Mac. [Downloads](https://github.com/thomasnordquist/MQTT-Explorer/releases)
 
-![screenshot](https://user-images.githubusercontent.com/7721625/51086078-340c1c00-1742-11e9-83a9-07f932055467.png)
-
+![screen2](https://user-images.githubusercontent.com/7721625/51109225-dbe22200-17f4-11e9-8f6b-c6a27c07c90e.png)
 
 ## Develop
 PRs and issues are welcome
@@ -21,4 +20,3 @@ The `app` directory contains all the rendering logic, the `backend` directory cu
 
 ## License
 Not yet decided which licens exactly, but the basic idea is: "You may do whatever you want with this tool, except sell it."
-
