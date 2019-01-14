@@ -5,7 +5,7 @@ interface HasLength {
 }
 
 export abstract class TreeNodeFactory {
-  public static fromEdgesAndValue<T extends HasLength>(edgeNames: string[], value: T): TreeNode {
+  public static fromEdgesAndValue<T extends HasLength>(edgeNames: string[], value?: T): TreeNode {
     let currentNode: TreeNode = new Tree()
     for (const edgeName of edgeNames) {
       const edge = new Edge(edgeName)
@@ -17,7 +17,7 @@ export abstract class TreeNodeFactory {
 
     currentNode.setMessage({
       value,
-      length: value.length,
+      length: value ? value.length : 0,
       received: new Date(),
     })
     return currentNode
