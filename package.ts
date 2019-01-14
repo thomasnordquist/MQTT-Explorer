@@ -5,7 +5,17 @@ const linux: builder.CliOptions = {
   ia32: true,
   armv7l: true,
   arm64: true,
-  linux: ['AppImage', 'deb', 'snap'],
+  linux: ['AppImage', 'deb', 'rpm', 'pacman', 'tar.gz'],
+  projectDir: './build/clean',
+  publish: 'onTag',
+}
+
+const linuxSnap: builder.CliOptions = {
+  x64: false,
+  ia32: false,
+  armv7l: false,
+  arm64: true,
+  linux: ['snap'],
   projectDir: './build/clean',
   publish: 'onTag',
 }
@@ -30,7 +40,7 @@ const mac: builder.CliOptions = {
   publish: 'onTag',
 }
 
-async function buildAll() {
+async function executeBuild() {
   console.log(process.argv[2])
   switch (process.argv[2]) {
     case 'win':
@@ -38,6 +48,11 @@ async function buildAll() {
       break
     case 'linux':
       await builder.build(linux)
+      try {
+        await builder.build(linuxSnap)
+      } catch {
+        // ignore
+      }
       break
     case 'mac':
       await builder.build(mac)
@@ -47,4 +62,13 @@ async function buildAll() {
   }
 }
 
-buildAll()
+function build() {
+  try {
+    executeBuild()
+  } catch (error) {
+    console.error(error)
+    process.exit(1)
+  }
+}
+
+build()
