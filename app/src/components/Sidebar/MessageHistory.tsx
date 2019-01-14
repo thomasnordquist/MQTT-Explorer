@@ -9,6 +9,8 @@ import Paper from '@material-ui/core/Paper'
 import Popper from '@material-ui/core/Popper'
 import ValueRenderer from './ValueRenderer'
 
+const throttle = require('lodash.throttle')
+
 interface Props {
   node?: q.TreeNode
   theme: Theme
@@ -26,9 +28,9 @@ class MessageHistory extends React.Component<Props, State> {
     this.state = { }
   }
 
-  private updateNode = () => {
+  private updateNode = throttle(() => {
     this.setState(this.state)
-  }
+  }, 300)
 
   public componentWillReceiveProps(nextProps: Props) {
     this.props.node && this.props.node.onMessage.unsubscribe(this.updateNode)

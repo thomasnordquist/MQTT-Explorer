@@ -22,6 +22,8 @@ import Topic from './Topic'
 import ValueRenderer from './ValueRenderer'
 import { connect } from 'react-redux'
 
+const throttle = require('lodash.throttle')
+
 interface Props {
   node?: q.TreeNode,
   classes: any,
@@ -36,9 +38,9 @@ interface State {
 
 class Sidebar extends React.Component<Props, State> {
   private valueRef: any = React.createRef<HTMLDivElement>()
-  private updateNode = () => {
+  private updateNode = throttle(() => {
     this.setState(this.state)
-  }
+  }, 300)
 
   constructor(props: any) {
     super(props)

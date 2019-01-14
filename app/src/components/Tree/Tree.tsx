@@ -9,11 +9,10 @@ import { connect } from 'react-redux'
 
 const MovingAverage = require('moving-average')
 
-declare const performance: any
-declare const window: any
-
 const timeInterval = 10 * 1000
 const average = MovingAverage(timeInterval)
+
+declare var window: any
 
 interface Props {
   autoExpandLimit: number
@@ -44,22 +43,26 @@ class Tree extends React.Component<Props, TreeState> {
     return time
   }
 
+  private performanceCallback = (ms: number) => {
+    average.push(Date.now(), ms)
+  }
+
   public throttledStateUpdate(state: any) {
     if (this.updateTimer) {
       return
     }
 
     const expectedRenderTime = average.forecast()
-    const updateInterval = Math.max(expectedRenderTime * 20, 300)
+    const updateInterval = Math.max(expectedRenderTime * 7, 300)
     const timeUntilNextUpdate = updateInterval - (performance.now() - this.lastUpdate)
 
     this.updateTimer = setTimeout(() => {
-      window.requestAnimationFrame(() => {
+      window.requestIdleCallback(() => {
         this.lastUpdate = performance.now()
         this.updateTimer && clearTimeout(this.updateTimer)
         this.updateTimer = undefined
         this.setState(state)
-      })
+      }, { timeout: 500 })
     }, Math.max(0, timeUntilNextUpdate))
   }
 
@@ -104,10 +107,6 @@ class Tree extends React.Component<Props, TreeState> {
       cursor: 'default',
     }
 
-    const performanceCallback = (ms: number) => {
-      average.push(Date.now(), ms)
-    }
-
     return (
       <div style={style}>
         <TreeNode
@@ -120,6 +119,7 @@ class Tree extends React.Component<Props, TreeState> {
           collapsed={false}
           key="rootNode"
           lastUpdate={this.state.tree.lastUpdate}
+          performanceCallback={this.performanceCallback}
         />
       </div>
     )
