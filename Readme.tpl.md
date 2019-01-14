@@ -1,4 +1,6 @@
 # MQTT-Explorer
+[![Build Status](https://travis-ci.org/thomasnordquist/MQTT-Explorer.svg?branch=master)](https://travis-ci.org/thomasnordquist/MQTT-Explorer)
+
 ### Version {{ version }}
 See the whole picture of your message queue.
 The perfect tool to integrate new services, IoT devices in your network.
@@ -21,4 +23,4 @@ Start with `npm run start`
 The `app` directory contains all the rendering logic, the `backend` directory currently contains the models, tests, connection management.
 
 ## License
-Not yet decided which licens exactly, but the basic idea is: "You may do whatever you want with this tool, except sell it."
+Not yet decided which license exactly, but the basic idea is: "You may do whatever you want with this tool, except sell it."
