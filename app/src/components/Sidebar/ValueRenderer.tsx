@@ -40,6 +40,7 @@ class ValueRenderer extends React.Component<Props, {}> {
         <ReactJson
           style={{ width: '100%' }}
           src={json}
+          name={null}
           theme={theme}
         />
       )
