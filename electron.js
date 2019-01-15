@@ -33,8 +33,9 @@ function createWindow () {
   mainWindow.loadFile('app/index.html')
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
-
+  if (process.argv[2] === '--debug') {
+    mainWindow.webContents.openDevTools()
+  }
   // Emitted when the window is closed.
   mainWindow.on('close', function () {
     connectionManager.closeAllConnections()
