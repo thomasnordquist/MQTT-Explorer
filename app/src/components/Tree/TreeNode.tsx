@@ -3,6 +3,7 @@ import * as q from '../../../../backend/src/Model'
 
 import { Theme, withStyles } from '@material-ui/core/styles'
 
+import LabelImportant from '@material-ui/icons/LabelImportant'
 import TreeNodeSubnodes from './TreeNodeSubnodes'
 import TreeNodeTitle from './TreeNodeTitle'
 import { bindActionCreators } from 'redux'
@@ -28,6 +29,12 @@ const styles = (theme: Theme) => {
       '&:hover': {
         backgroundColor: 'rgba(80, 80, 80, 0.35)',
       },
+    },
+    topicSelect: {
+      float: 'right' as 'right',
+      opacity: 0,
+      cursor: 'pointer',
+      marginTop: '-1px',
     },
   }
 }
@@ -61,6 +68,7 @@ class TreeNode extends React.Component<Props, State> {
 
   private willUpdateTime: number = performance.now()
   private titleRef = React.createRef<HTMLDivElement>()
+  private topicSelectRef = React.createRef<HTMLDivElement>()
 
   private subnodesDidchange = () => {
     this.dirtySubnodes = true
@@ -155,6 +163,8 @@ class TreeNode extends React.Component<Props, State> {
         className={`${classes.node} ${!this.props.isRoot ? classes.hover : ''}`}
         onClick={this.didClickNode}
         style={this.props.style}
+        onMouseOver={this.mouseOver}
+        onMouseOut={this.mouseOut}
       >
         <span ref={this.titleRef} style={animation}>
           <TreeNodeTitle
@@ -164,9 +174,38 @@ class TreeNode extends React.Component<Props, State> {
             lastUpdate={this.props.treeNode.lastUpdate}
           />
         </span>
+        <div
+          className={this.props.classes.topicSelect}
+          ref={this.topicSelectRef}
+          onClick={this.didSelectNode}
+          title="Select topic"
+        >
+          <LabelImportant style={{ fontSize: '14px' }} />
+        </div>
         {this.renderNodes()}
       </div>
     )
+  }
+
+  private mouseOver = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    if (this.topicSelectRef.current) {
+      this.topicSelectRef.current.style.opacity = '1'
+    }
+  }
+  private mouseOut = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    if (this.topicSelectRef.current) {
+      this.topicSelectRef.current.style.opacity = '0'
+    }
+  }
+
+  private didSelectNode = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    if (this.topicSelectRef.current) {
+      this.topicSelectRef.current.style.opacity = '1'
+    }
+    this.props.actions.selectTopic(this.props.treeNode)
   }
 
   private didClickNode = (event: React.MouseEvent) => {
