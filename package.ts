@@ -11,10 +11,10 @@ const linux: builder.CliOptions = {
 }
 
 const linuxSnap: builder.CliOptions = {
-  x64: false,
+  x64: true,
   ia32: false,
   armv7l: false,
-  arm64: true,
+  arm64: false,
   linux: ['snap'],
   projectDir: './build/clean',
   publish: 'always',
@@ -48,6 +48,8 @@ async function executeBuild() {
       break
     case 'linux':
       await builder.build(linux)
+      break
+    case 'snap':
       try {
         await builder.build(linuxSnap)
       } catch {
