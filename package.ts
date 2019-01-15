@@ -5,7 +5,7 @@ const linux: builder.CliOptions = {
   ia32: true,
   armv7l: true,
   arm64: true,
-  linux: ['AppImage', 'deb', 'rpm', 'pacman', 'tar.gz'],
+  linux: ['AppImage'],
   projectDir: './build/clean',
   publish: 'always',
 }
