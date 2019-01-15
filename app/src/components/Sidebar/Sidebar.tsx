@@ -14,6 +14,7 @@ import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
 
 import { AppState } from '../../reducers'
 import Copy from '../Copy'
+import DateFormatter from '../DateFormatter'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import MessageHistory from './MessageHistory'
 import NodeStats from './NodeStats'
@@ -115,7 +116,12 @@ class Sidebar extends React.Component<Props, State> {
             <Typography className={classes.heading}>Value {copyValue}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={this.detailsStyle}>
-            <div ref={this.valueRef}><ValueRenderer message={this.props.node && this.props.node.message} /></div>
+            <div style={{ width: '100%', textAlign:'right' }}>
+              {this.props.node && this.props.node.message && <i><DateFormatter date={this.props.node.message.received} /></i>}
+            </div>
+            <div ref={this.valueRef}>
+              <ValueRenderer message={this.props.node && this.props.node.message} />
+            </div>
             <div><MessageHistory onSelect={this.handleMessageHistorySelect} node={this.props.node} /></div>
             <Popper open={Boolean(this.state.compareMessage)} anchorEl={this.valueRef.current} placement="left" transition={true}>
               {({ TransitionProps }) => (

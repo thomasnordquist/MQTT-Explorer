@@ -3,11 +3,8 @@ import * as q from '../../../../backend/src/Model'
 
 import { Theme, withTheme } from '@material-ui/core/styles'
 
-import Fade from '@material-ui/core/Fade'
+import DateFormatter from '../DateFormatter'
 import History from './History'
-import Paper from '@material-ui/core/Paper'
-import Popper from '@material-ui/core/Popper'
-import ValueRenderer from './ValueRenderer'
 
 const throttle = require('lodash.throttle')
 
@@ -53,7 +50,7 @@ class MessageHistory extends React.Component<Props, State> {
 
     const history = node.messageHistory.toArray()
     const historyElements = history.map(message => ({
-      title: message.received.toGMTString(),
+      title: <DateFormatter date={message.received} />,
       value: message.value,
     }))
 
