@@ -3,8 +3,13 @@ import * as React from 'react'
 import {
   Button,
   CircularProgress,
+  FormControl,
   FormControlLabel,
   Grid,
+  IconButton,
+  Input,
+  InputAdornment,
+  InputLabel,
   MenuItem,
   Modal,
   Paper,
@@ -16,6 +21,10 @@ import {
 import { DataSourceState, MqttOptions } from '../../../../backend/src/DataSource'
 import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
 import { addMqttConnectionEvent, makeConnectionStateEvent, removeConnection, rendererEvents } from '../../../../events'
+
+import Notification from './Notification'
+import Visibility from '@material-ui/icons/Visibility'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
 
 import sha1 = require('sha1')
 
@@ -34,7 +43,7 @@ const protocols = [
 interface State {
   connecting: boolean
   connectionId?: string
-  error?: Error
+  error?: string
   visible: boolean
   host: string
   protocol: string
@@ -44,6 +53,7 @@ interface State {
   clientId: string
   username: string
   password: string
+  showPassword: boolean
 }
 
 declare var window: any
@@ -71,6 +81,7 @@ class Connection extends React.Component<Props, State> {
       password: '',
       connecting: false,
       connectionId: undefined,
+      showPassword: false,
     }
 
     this.state = Object.assign({}, defaultState, storedSettings)
@@ -80,6 +91,10 @@ class Connection extends React.Component<Props, State> {
     window.localStorage.setItem('connectionSettings', JSON.stringify(this.state))
   }
 
+  private handleClickShowPassword = () => {
+    this.setState({ showPassword: !this.state.showPassword })
+  }
+
   private optionsFromState(): MqttOptions {
     const protocol = this.state.protocol === 'tcp://' ? 'mqtt://' : this.state.protocol
     const url = `${protocol}${this.state.host}:${this.state.port}`
@@ -87,7 +102,7 @@ class Connection extends React.Component<Props, State> {
     return {
       url,
       username: this.state.username || undefined,
-      password: this.state.username || undefined,
+      password: this.state.password || undefined,
       tls: this.state.tls,
       certValidation: this.state.certValidation,
     }
@@ -110,8 +125,8 @@ class Connection extends React.Component<Props, State> {
         this.props.onConnection(connectionId)
         this.setState({ visible: false })
       } else if (state.error) {
-        console.log('error', state.error)
         this.setState({ error: state.error })
+        this.disconnect()
       }
     })
   }
@@ -150,6 +165,9 @@ class Connection extends React.Component<Props, State> {
       button: {
         margin: theme.spacing.unit,
       },
+      passwordFormControl: {
+        marginTop: '16px',
+      },
     }
   }
 
@@ -163,108 +181,137 @@ class Connection extends React.Component<Props, State> {
   public render() {
     const { classes } = this.props
 
-    return <Modal open={this.state.visible} disableAutoFocus={true} onClose={() => { console.log('close') }}>
-        <Paper className={classes.root}>
-          <Toolbar>
-            <Typography className={classes.title} variant="h6" color="inherit">MQTT Connection</Typography>
-          </Toolbar>
-          <form className={classes.container} noValidate autoComplete="off">
-            <Grid container spacing={24}>
-              <Grid item xs={2}>
-                <TextField
-                  select
-                  label="Protocol"
-                  className={classes.textField}
-                  value={this.state.protocol}
-                  onChange={this.handleChange('protocol')}
-                  margin="normal"
-                >
-                  {protocols.map((value: string) => (
-                    <MenuItem key={value} value={value}>
-                      {value}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={7}>
-                <TextField
-                  label="Host"
-                  className={classes.textField}
-                  value={this.state.host}
-                  onChange={this.handleChange('host')}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <TextField
-                  label="Port"
-                  className={classes.textField}
-                  value={this.state.port}
-                  onChange={this.handleChange('port')}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={5}>
-                <TextField
-                  label="Username"
-                  className={classes.textField}
-                  value={this.state.username}
-                  onChange={this.handleChange('username')}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={5}>
-                <TextField
-                  label="Password"
-                  type="type"
-                  className={classes.textField}
-                  value={this.state.password}
-                  onChange={this.handleChange('password')}
-                  margin="normal"
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <div className={classes.switch}>
-                  <FormControlLabel
-                    control={(
-                      <Switch
-                        checked={this.state.certValidation}
-                        onChange={() => this.setState({ certValidation: !this.state.certValidation })}
-                        color="primary"
+    const passwordVisibilityButton = (
+      <InputAdornment position="end">
+        <IconButton
+          aria-label="Toggle password visibility"
+          onClick={this.handleClickShowPassword}
+        >
+          {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+        </IconButton>
+      </InputAdornment>
+    )
+
+    let renderError = null
+    if (this.state.error) {
+      renderError = (
+        <Notification
+          message={this.state.error}
+          type="error"
+          onClose={() => { this.setState({ error: undefined }) }}
+        />
+      )
+    }
+
+    return (
+      <div>
+        {renderError}
+        <Modal open={this.state.visible} disableAutoFocus={true}>
+            <Paper className={classes.root}>
+              <Toolbar>
+                <Typography className={classes.title} variant="h6" color="inherit">MQTT Connection</Typography>
+              </Toolbar>
+              <form className={classes.container} noValidate={true} autoComplete="off">
+                <Grid container={true} spacing={24}>
+                  <Grid item={true} xs={2}>
+                    <TextField
+                      select={true}
+                      label="Protocol"
+                      className={classes.textField}
+                      value={this.state.protocol}
+                      onChange={this.handleChange('protocol')}
+                      margin="normal"
+                    >
+                      {protocols.map((value: string) => (
+                        <MenuItem key={value} value={value}>
+                          {value}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid item xs={7}>
+                    <TextField
+                      label="Host"
+                      className={classes.textField}
+                      value={this.state.host}
+                      onChange={this.handleChange('host')}
+                      margin="normal"
+                    />
+                  </Grid>
+                  <Grid item={true} xs={3}>
+                    <TextField
+                      label="Port"
+                      className={classes.textField}
+                      value={this.state.port}
+                      onChange={this.handleChange('port')}
+                      margin="normal"
+                    />
+                  </Grid>
+                  <Grid item={true} xs={5}>
+                    <TextField
+                      label="Username"
+                      className={classes.textField}
+                      value={this.state.username}
+                      onChange={this.handleChange('username')}
+                      margin="normal"
+                    />
+                  </Grid>
+                  <Grid item={true} xs={5}>
+                    <FormControl className={`${classes.textField} ${classes.passwordFormControl}`}>
+                      <InputLabel htmlFor="adornment-password">Password</InputLabel>
+                      <Input
+                        id="adornment-password"
+                        type={this.state.showPassword ? 'text' : 'password'}
+                        value={this.state.password}
+                        onChange={this.handleChange('password')}
+                        endAdornment={passwordVisibilityButton}
                       />
-                    )}
-                    label="Validate certificate"
-                    labelPlacement="bottom"
-                  />
-                </div>
-              </Grid>
-              <Grid item xs={4}>
-                <div className={classes.switch}>
-                  <FormControlLabel
-                    control={(
-                      <Switch
-                        checked={this.state.tls}
-                        onChange={() => this.setState({ tls: !this.state.tls })}
-                        color="primary"
+                    </FormControl>
+                  </Grid>
+                  <Grid item={true} xs={4}>
+                    <div className={classes.switch}>
+                      <FormControlLabel
+                        control={(
+                          <Switch
+                            checked={this.state.certValidation}
+                            onChange={() => this.setState({ certValidation: !this.state.certValidation })}
+                            color="primary"
+                          />
+                        )}
+                        label="Validate certificate"
+                        labelPlacement="bottom"
                       />
-                    )}
-                    label="Encryption (tls)"
-                    labelPlacement="bottom"
-                  />
+                    </div>
+                  </Grid>
+                  <Grid item={true} xs={4}>
+                    <div className={classes.switch}>
+                      <FormControlLabel
+                        control={(
+                          <Switch
+                            checked={this.state.tls}
+                            onChange={() => this.setState({ tls: !this.state.tls })}
+                            color="primary"
+                          />
+                        )}
+                        label="Encryption (tls)"
+                        labelPlacement="bottom"
+                      />
+                    </div>
+                  </Grid>
+                  <Grid item={true} xs={4} />
+                </Grid>
+                <br />
+                <div style={{ textAlign: 'right' }}>
+                  <Button variant="contained" color="secondary" className={classes.button} onClick={() => this.saveConnectionSettings()}>
+                    Save
+                  </Button>
+                  {this.renderConnectButton()}
                 </div>
-              </Grid>
-              <Grid item xs={4}></Grid>
-            </Grid>
-            <br />
-            <div style={{ textAlign: 'right' }}>
-              <Button variant="contained" color="secondary" className={classes.button} onClick={() => this.saveConnectionSettings()}>
-                Save
-              </Button>
-              { this.renderConnectButton() }
-            </div>
-          </form>
-        </Paper>
-    </Modal>
+              </form>
+            </Paper>
+        </Modal>
+      </div>
+    )
   }
 
   private renderConnectButton() {

@@ -1,6 +1,7 @@
+import * as Url from 'url'
+
 import { Client, connect as mqttConnect } from 'mqtt'
 import { DataSource, DataSourceStateMachine } from './'
-import * as Url from 'url'
 
 export interface MqttOptions {
   url: string
@@ -36,6 +37,8 @@ export class MqttSource implements DataSource<MqttOptions> {
     const client = mqttConnect(url, {
       resubscribe: false,
       rejectUnauthorized: !options.certValidation,
+      username: options.username,
+      password: options.password,
     })
 
     this.client = client

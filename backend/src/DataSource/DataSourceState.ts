@@ -3,7 +3,7 @@ import { EventDispatcher } from '../../../events'
 export interface DataSourceState {
   connecting: boolean
   connected: boolean
-  error?: Error
+  error?: string
 }
 
 export class DataSourceStateMachine {
@@ -25,7 +25,7 @@ export class DataSourceStateMachine {
 
   public setError(error: Error) {
     this.state = {
-      error,
+      error: error.message,
       connected: false,
       connecting: false,
     }
