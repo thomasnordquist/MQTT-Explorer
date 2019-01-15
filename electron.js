@@ -58,10 +58,13 @@ app.on('ready', () => {
 
   let updateInfo
   autoUpdater.on('update-available', (info) => {
+    console.log('there is an update')
     updateInfo = info
   })
 
   autoUpdater.on('error', () => {
+    console.log('could not update due to error')
+
     if (updateInfo) {
       updateNotifier.notify(updateInfo)
     }
