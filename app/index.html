@@ -59,17 +59,18 @@
           }
         </style>
         <script src="http://localhost:35729/livereload.js"></script>
+
     </head>
     <body>
-        <div id="splash"><div id="splash1"></div>
-          <!-- <div id="splash1">
-            <div id="splash2" style="color: #ddd" class="la-square-jelly-box la-3x">
-              <div>a</div>
-              <div>ads</div>
-            </div> -->
-          </div>
-        </div>
+        <div id="splash"><div id="splash1"></div></div>
         <div id="app" style="font:-webkit-control"></div>
-        <script src="./build/bundle.js"></script>
+        <script>
+          function onLoad() {
+            var script = document.createElement("script");
+            script.src = "./build/bundle.js"
+            document.head.appendChild(script);
+          }
+          document.addEventListener('DOMContentLoaded', onLoad(), false);
+        </script>
     </body>
 </html>
