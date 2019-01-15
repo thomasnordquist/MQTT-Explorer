@@ -4,6 +4,7 @@ const log = require('electron-log');
 const { ConnectionManager, updateNotifier } = require('./backend/build/backend/src/index.js')
 const fs = require('fs')
 const path = require('path')
+require('electron-debug')({enabled: true});
 
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
