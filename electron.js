@@ -4,7 +4,7 @@ const log = require('electron-log');
 const { ConnectionManager, updateNotifier } = require('./backend/build/backend/src/index.js')
 const fs = require('fs')
 const path = require('path')
-require('electron-debug')({enabled: true});
+require('electron-debug')({enabled: process.argv[2] === '--debug'});
 
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
@@ -33,10 +33,6 @@ function createWindow () {
   // and load the index.html of the app.
   mainWindow.loadFile('app/index.html')
 
-  // Open the DevTools.
-  if (process.argv[2] === '--debug') {
-    mainWindow.webContents.openDevTools()
-  }
   // Emitted when the window is closed.
   mainWindow.on('close', function () {
     connectionManager.closeAllConnections()
