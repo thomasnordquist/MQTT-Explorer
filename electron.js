@@ -2,6 +2,8 @@ const { app, BrowserWindow } = require('electron')
 const { autoUpdater } = require("electron-updater")
 const log = require('electron-log');
 const { ConnectionManager, updateNotifier } = require('./backend/build/backend/src/index.js')
+const fs = require('fs')
+const path = require('path')
 
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
@@ -15,15 +17,18 @@ connectionManager.manageConnections()
 let mainWindow
 
 function createWindow () {
+  const icon = path.join(__dirname, 'icon.png')
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1024,
     height: 700,
     webPreferences: {
       nodeIntegration: true
-    }
+    },
+    icon
   })
 
+  console.log(icon)
   // and load the index.html of the app.
   mainWindow.loadFile('app/index.html')
 
