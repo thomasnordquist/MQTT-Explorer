@@ -42,6 +42,13 @@ class UpdateNotifier extends React.Component<Props, {}> {
     rendererEvents.subscribe(updateAvailable, this.handleUpdate)
   }
 
+  private fixUrl(url: string, version: string) {
+    if (!/^http/.test(url)) {
+      return `https://github.com/thomasnordquist/MQTT-Explorer/releases/download/v${version}/${url}`
+    }
+
+    return url
+  }
   public componentWillUnmount() {
     rendererEvents.unsubscribeAll(updateAvailable)
   }
@@ -156,7 +163,7 @@ class UpdateNotifier extends React.Component<Props, {}> {
         <div key={index}>
           <Button
             className={this.props.classes.download}
-            href={file.url}
+            href={this.fixUrl(file.url, updateInfo.version)}
           >
             <IconButton><CloudDownload /></IconButton>{this.urlToFilename(file.url)}
           </Button>
