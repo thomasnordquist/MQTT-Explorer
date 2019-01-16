@@ -49,7 +49,7 @@
     "@types/socket.io": "^2.1.2",
     "axios": "^0.18.0",
     "chai": "^4.2.0",
-    "electron": "^4.0.0",
+    "electron": "^4.0.1",
     "electron-builder": "^20.38.4",
     "mocha": "^5.2.0",
     "mustache": "^3.0.1",
