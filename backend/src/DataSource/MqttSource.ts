@@ -36,7 +36,7 @@ export class MqttSource implements DataSource<MqttOptions> {
 
     const client = mqttConnect(url, {
       resubscribe: false,
-      rejectUnauthorized: !options.certValidation,
+      rejectUnauthorized: options.certValidation,
       username: options.username,
       password: options.password,
     })
