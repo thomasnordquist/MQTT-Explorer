@@ -47,13 +47,22 @@ class MessageHistory extends React.Component<Props, State> {
       </div>
     ))
 
+    const visible = this.props.items.length > 0 && this.state.collapsed
+
     return (
       <div style={{ backgroundColor: 'rgba(60, 60, 60, 0.6)', marginTop: '16px' }}>
         <Typography
           onClick={this.toggle}
           style={{ cursor: 'pointer' }}
         >
-          {this.state.collapsed ? '▶' : '▼'} History
+          <Badge
+            classes={{ badge: this.props.classes.badge }}
+            invisible={!visible}
+            badgeContent={this.props.items.length}
+            color="primary"
+          >
+            {this.state.collapsed ? '▶' : '▼'} History
+          </Badge>
         </Typography>
         <div style={{ maxHeight: '230px', overflowY: 'scroll'  }}>
           {this.state.collapsed ? null : elements}
@@ -63,17 +72,12 @@ class MessageHistory extends React.Component<Props, State> {
   }
 
   public render() {
-    const visible = this.props.items.length > 0 && this.state.collapsed
     return (
-      <Badge
+      <div
         style={{ display: 'block', width: '100%' }}
-        invisible={!visible}
-        badgeContent={this.props.items.length}
-        color="primary"
-        classes={{ badge: this.props.classes.badge }}
       >
         {this.renderHistory()}
-      </Badge>
+      </div>
     )
   }
 
@@ -83,7 +87,7 @@ class MessageHistory extends React.Component<Props, State> {
 }
 
 const styles = (theme: Theme) => ({
-  badge: { top: '-8px', left:'64px' },
+  badge: { right:'-25px' },
 })
 
 export default withStyles(styles)(MessageHistory)

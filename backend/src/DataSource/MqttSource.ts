@@ -65,7 +65,7 @@ export class MqttSource implements DataSource<MqttOptions> {
       })
     })
 
-    client.on('message', (topic, message) => {
+    client.on('message', (topic, message, packet) => {
       this.messageCallback && this.messageCallback(topic, message)
     })
 
