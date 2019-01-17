@@ -2,7 +2,7 @@
   "name": "MQTT-Explorer",
   "version": "0.0.7",
   "description": "Explore your message queues",
-  "main": "dist/electron.js",
+  "main": "dist/src/electron.js",
   "scripts": {
     "start": "electron .",
     "install": "cd app; npm install; cd ..",

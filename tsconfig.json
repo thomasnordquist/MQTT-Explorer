@@ -5,8 +5,9 @@
     "strictNullChecks": true,
     "outDir": "./dist",
     "strict": true,
+    "sourceRoot": "src/",
     "lib": ["es2017", "dom"],
     "sourceMap": true
   },
-  "include": ["electron.ts"]
+  "include": ["src/electron.ts"]
 }

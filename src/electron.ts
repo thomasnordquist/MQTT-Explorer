@@ -1,11 +1,11 @@
-import { UpdateInfo } from './events'
+import { UpdateInfo } from '../events'
 import { BrowserWindow, app } from 'electron'
 import * as path from 'path'
 import * as fs from 'fs'
 
 const { autoUpdater } = require('electron-updater')
 const log = require('electron-log')
-import { ConnectionManager, updateNotifier } from './backend/src/index'
+import { ConnectionManager, updateNotifier } from '../backend/src/index'
 
 const isDebugEnabled = Boolean(process.argv.find(arg => arg === 'debug'))
 require('electron-debug')({ enabled: isDebugEnabled })
