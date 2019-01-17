@@ -3,9 +3,10 @@
   "compilerOptions": {
     "noImplicitAny": true,
     "strictNullChecks": true,
-    "outDir": "./build",
+    "outDir": "./dist",
     "strict": true,
-    "lib": ["es2017"],
+    "lib": ["es2017", "dom"],
     "sourceMap": true
-  }
+  },
+  "include": ["electron.ts"]
 }

@@ -2,6 +2,7 @@ node_modules
 backend/coverage
 backend/.nyc_output
 build
+/dist
 .DS_Store
 test.dot
 test.png
