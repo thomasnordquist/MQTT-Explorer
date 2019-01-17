@@ -1,17 +1,15 @@
 import { UpdateInfo } from '../events'
-import { BrowserWindow, app } from 'electron'
+import { BrowserWindow, app, Menu } from 'electron'
 import * as path from 'path'
-import * as fs from 'fs'
-
-const { autoUpdater } = require('electron-updater')
-const log = require('electron-log')
+import { menuTemplate } from './MenuTemplate'
+import { autoUpdater } from 'electron-updater'
+import * as log from 'electron-log'
 import { ConnectionManager, updateNotifier } from '../backend/src/index'
 
 const isDebugEnabled = Boolean(process.argv.find(arg => arg === 'debug'))
 require('electron-debug')({ enabled: isDebugEnabled })
 
 autoUpdater.logger = log
-autoUpdater.logger.transports.file.level = 'info'
 log.info('App starting...')
 
 const connectionManager = new ConnectionManager()
@@ -33,7 +31,7 @@ function createWindow() {
     icon: iconPath,
   })
 
-  console.log(iconPath)
+  console.log('icon path', iconPath)
   // and load the index.html of the app.
   mainWindow.loadFile('app/index.html')
 
@@ -56,6 +54,7 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
+  Menu.setApplicationMenu(menuTemplate)
   createWindow()
 
   let updateInfo: UpdateInfo
