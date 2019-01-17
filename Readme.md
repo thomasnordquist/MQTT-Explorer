@@ -1,4 +1,6 @@
 # MQTT-Explorer
+[![Downloads](https://github-basic-badges.herokuapp.com/release/thomasnordquist/MQTT-Explorer.svg)](https://travis-ci.org/thomasnordquist/MQTT-Explorer/releases)
+[![Downloads](https://github-basic-badges.herokuapp.com/downloads/thomasnordquist/MQTT-Explorer/total.svg)](https://travis-ci.org/thomasnordquist/MQTT-Explorer/releases)
 [![Build Status](https://travis-ci.org/thomasnordquist/MQTT-Explorer.svg?branch=master)](https://travis-ci.org/thomasnordquist/MQTT-Explorer)
 
 ### Version 0.0.7
