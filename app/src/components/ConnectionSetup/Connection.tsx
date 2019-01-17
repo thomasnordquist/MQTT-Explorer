@@ -59,6 +59,7 @@ interface State {
 declare var window: any
 
 class Connection extends React.Component<Props, State> {
+  private randomClientId: tring
   constructor(props: any) {
     super(props)
     const storedSettingsString = window.localStorage.getItem('connectionSettings')
@@ -69,6 +70,8 @@ class Connection extends React.Component<Props, State> {
       window.localStorage.setItem('connectionSettings', undefined)
     }
 
+    const clientIdSha = sha1(`${Math.random()}`).slice(0, 8)
+    this.randomClientId = `mqtt-explorer-${clientIdSha}`
     const defaultState = {
       visible: true,
       host: 'iot.eclipse.org',
@@ -103,6 +106,7 @@ class Connection extends React.Component<Props, State> {
       url,
       username: this.state.username || undefined,
       password: this.state.password || undefined,
+      clientId: this.state.clientId || this.randomClientId,
       tls: this.state.tls,
       certValidation: this.state.certValidation,
     }
@@ -268,6 +272,16 @@ class Connection extends React.Component<Props, State> {
                       />
                     </FormControl>
                   </Grid>
+                  <Grid item={true} xs={5}>
+                    <TextField
+                      label="Client ID"
+                      placeholder={this.randomClientId}
+                      className={classes.textField}
+                      value={this.state.clientId || ''}
+                      onChange={this.handleChange('clientId')}
+                      margin="normal"
+                    />
+                  </Grid>
                   <Grid item={true} xs={4}>
                     <div className={classes.switch}>
                       <FormControlLabel
@@ -283,7 +297,7 @@ class Connection extends React.Component<Props, State> {
                       />
                     </div>
                   </Grid>
-                  <Grid item={true} xs={4}>
+                  <Grid item={true} xs={3}>
                     <div className={classes.switch}>
                       <FormControlLabel
                         control={(
@@ -298,7 +312,6 @@ class Connection extends React.Component<Props, State> {
                       />
                     </div>
                   </Grid>
-                  <Grid item={true} xs={4} />
                 </Grid>
                 <br />
                 <div style={{ textAlign: 'right' }}>
@@ -318,13 +331,17 @@ class Connection extends React.Component<Props, State> {
     const { classes } = this.props
 
     if (this.state.connecting) {
-      return <Button variant="contained" color="primary" className={classes.button} onClick={this.onClickAbort}>
-        <CircularProgress size={22} style={{ marginRight: '10px' }} color="secondary" /> Abort
-      </Button>
+      return (
+        <Button variant="contained" color="primary" className={classes.button} onClick={this.onClickAbort}>
+          <CircularProgress size={22} style={{ marginRight: '10px' }} color="secondary" /> Abort
+        </Button>
+      )
     }
-    return <Button variant="contained" color="primary" className={classes.button} onClick={this.onClickConnect}>
-      Connect
-    </Button>
+    return (
+       <Button variant="contained" color="primary" className={classes.button} onClick={this.onClickConnect}>
+        Connect
+      </Button>
+    )
   }
 
   private onClickConnect = () => {

@@ -9,6 +9,7 @@ export interface MqttOptions {
   password?: string
   tls: boolean
   certValidation: boolean
+  clientId?: string
 }
 
 export class MqttSource implements DataSource<MqttOptions> {
@@ -39,6 +40,7 @@ export class MqttSource implements DataSource<MqttOptions> {
       rejectUnauthorized: options.certValidation,
       username: options.username,
       password: options.password,
+      clientId: options.clientId,
     })
 
     this.client = client
