@@ -65,6 +65,11 @@ export class MqttSource implements DataSource<MqttOptions> {
           throw new Error('mqtt subscription failed')
         }
       })
+      client.subscribe('$SYS/#', (err: Error) => {
+        if (err) {
+          throw new Error('mqtt subscription failed')
+        }
+      })
     })
 
     client.on('message', (topic, message, packet) => {
