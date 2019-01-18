@@ -16,6 +16,10 @@ import {
   RadioGroup,
   TextField,
   Typography,
+  IconButton,
+  FormControl,
+  InputLabel,
+  Input,
 } from '@material-ui/core'
 import { makePublishEvent, rendererEvents } from '../../../../../events'
 
@@ -24,6 +28,7 @@ import { AppState } from '../../../reducers'
 import History from '../History'
 import Message from './Model/Message'
 import Navigation from '@material-ui/icons/Navigation'
+import Clear from '@material-ui/icons/Clear'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { sidebarActions } from '../../../actions'
@@ -96,21 +101,28 @@ class Publish extends React.Component<Props, State> {
     return (topic !== undefined) ? topic : selectedNodePath
   }
 
+  private clearTopic = () => {
+    this.props.actions.setPublishTopic(undefined)
+  }
+
   private topic() {
     const topicStr = this.currentTopic() || ''
 
     return (
       <div>
-        <Typography>Topic</Typography>
-        <TextField
-          placeholder="example/topic"
-          style={{ width: '100%' }}
-          margin="normal"
-          value={topicStr}
-          multiline={true}
-          onChange={this.updateTopic}
-          InputProps={{ onBlur: this.onTopicBlur }}
-        />
+        <FormControl style={{ width: '100%' }}>
+            <InputLabel htmlFor="publish-topic">Topic</InputLabel>
+            <Input
+              id="publish-topic"
+              value={topicStr}
+              startAdornment={<span/>}
+              endAdornment={<IconButton style={{ padding: '4px' }} onClick={this.clearTopic}><Clear style={{ fontSize: '14px' }} /></IconButton>}
+              onBlur={this.onTopicBlur}
+              onChange={this.updateTopic}
+              multiline={true}
+              placeholder="example/topic"
+            />
+          </FormControl>
       </div>
     )
   }
