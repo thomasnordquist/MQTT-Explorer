@@ -1,4 +1,4 @@
-import { Menu, app } from 'electron'
+import { Menu, app, BrowserWindow, webContents } from 'electron'
 
 const applicationMenu = {
   label: 'Application',
@@ -9,6 +9,11 @@ const applicationMenu = {
     },
     {
       type: 'separator' as 'separator',
+    },
+    {
+      label: 'Dev Tools',
+      accelerator: 'CmdOrCtrl+Alt+I',
+      role: 'toggleDevTools',
     },
     {
       label: 'Quit',
