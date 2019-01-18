@@ -1,5 +1,4 @@
 import * as React from 'react'
-import * as q from '../../backend/src/Model'
 import {
   Button,
   Modal,
@@ -56,9 +55,9 @@ class ErrorBoundary extends React.Component<Props, State> {
           <Toolbar style={{ padding: '0' }}>
             <Typography className={classes.title} variant="h6" color="inherit"><Warning /> Oooooops!</Typography>
           </Toolbar>
-          <Typography>I hoped that you would never see this window, but MQTT-Explorer had an unexpected error.</Typography>
-          <Typography style={{ textAlign: 'center' }}><SentimentDissatisfied /></Typography>
-          <pre className={classes.textColor} style={{ maxHeight: '40vh', overflow: 'scroll' }}>
+          <Typography className={classes.centered}>I hoped that you would never see this window, but MQTT-Explorer had an unexpected error.</Typography>
+          <Typography className={classes.centered}><SentimentDissatisfied /></Typography>
+          <pre className={classes.textColor} style={{ maxHeight: '35vh', overflow: 'scroll' }}>
             <code className={classes.textColor}>
               {this.state.error.stack}
             </code>
@@ -68,8 +67,10 @@ class ErrorBoundary extends React.Component<Props, State> {
             <span> <a className={classes.textColor} href="https://github.com/thomasnordquist/MQTT-Explorer/issues">https://github.com/thomasnordquist/MQTT-Explorer/issues</a></span>
           </Typography>
           <div>
-            <div className={classes.buttonPositioning}><Button onClick={this.restart}>Restart</Button></div>
-            <div className={classes.buttonPositioning}><Button onClick={this.clearStorage}>Start Fresh</Button></div>
+            <div className={classes.buttonPositioning}>
+              <Button className={classes.button} variant="contained" color="secondary" onClick={this.clearStorage}>Start Fresh</Button>
+              <Button className={classes.button} variant="contained" color="primary" onClick={this.restart}>Restart</Button>
+            </div>
           </div>
         </Paper>
       </Modal>
@@ -78,11 +79,14 @@ class ErrorBoundary extends React.Component<Props, State> {
 }
 
 const styles = (theme: Theme) => ({
+  button: {
+    margin: '0 8px 0 8px',
+  },
   root: {
     minWidth: 550,
     maxWidth: 650,
     backgroundColor: theme.palette.background.default,
-    margin: '14vh auto auto auto',
+    margin: '10vh auto auto auto',
     padding: `${2 * theme.spacing.unit}px`,
     outline: 'none',
   },
@@ -93,6 +97,9 @@ const styles = (theme: Theme) => ({
   },
   textColor: {
     color: theme.palette.text.primary,
+  },
+  centered: {
+    textAlign: 'center' as 'center',
   },
   buttonPositioning: {
     textAlign: 'center' as 'center',
