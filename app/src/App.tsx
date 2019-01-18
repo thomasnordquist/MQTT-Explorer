@@ -12,6 +12,7 @@ import TitleBar from './components/TitleBar'
 import Tree from './components/Tree/Tree'
 import UpdateNotifier from './UpdateNotifier'
 import { connect } from 'react-redux'
+import ErrorBoundary from './ErrorBoundary'
 
 interface State {
   selectedNode?: q.TreeNode,
@@ -82,25 +83,28 @@ class App extends React.Component<Props, State> {
   public render() {
     const { settingsVisible } = this.props
     const { content, contentShift, centerContent } = this.getStyles()
+
     return (
       <div style={centerContent}>
         <CssBaseline />
-        <Settings />
-        <div style={settingsVisible ? contentShift : content}>
-            <TitleBar />
-            <div style={centerContent}>
-              <div style={this.getStyles().left}>
-                <Tree connectionId={this.state.connectionId} didSelectNode={(node: q.TreeNode) => {
-                  this.setState({ selectedNode: node })
-                }} />
+        <ErrorBoundary>
+          <Settings />
+          <div style={settingsVisible ? contentShift : content}>
+              <TitleBar />
+              <div style={centerContent}>
+                <div style={this.getStyles().left}>
+                  <Tree connectionId={this.state.connectionId} didSelectNode={(node: q.TreeNode) => {
+                    this.setState({ selectedNode: node })
+                  }} />
+                </div>
+                <div style={this.getStyles().right}>
+                  <Sidebar connectionId={this.state.connectionId} />
+                </div>
               </div>
-              <div style={this.getStyles().right}>
-                <Sidebar connectionId={this.state.connectionId} />
-              </div>
-            </div>
-        </div>
-        <UpdateNotifier />
-        <Connection onConnection={(connectionId: string) => this.setState({ connectionId })}/>
+          </div>
+          <UpdateNotifier />
+          <Connection onConnection={(connectionId: string) => this.setState({ connectionId })}/>
+        </ErrorBoundary>
       </div >
     )
   }

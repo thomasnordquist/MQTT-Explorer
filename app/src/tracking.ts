@@ -1,3 +1,4 @@
+import { rendererEvents, trackError, trackUserInteraction } from '../../events'
 let userId = window.localStorage.getItem('userId')
 const sha1 = require('sha1')
 
