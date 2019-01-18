@@ -48,7 +48,7 @@ class MessageHistory extends React.Component<Props, State> {
       return null
     }
 
-    const history = node.messageHistory.toArray()
+    const history = node.messageHistory.toArray().reverse()
     const historyElements = history.map(message => ({
       title: <DateFormatter date={message.received} />,
       value: message.value,
