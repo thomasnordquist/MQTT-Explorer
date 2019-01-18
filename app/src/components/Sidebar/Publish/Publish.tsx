@@ -11,9 +11,7 @@ import * as q from '../../../../../backend/src/Model'
 
 import {
   Button,
-  Fab,
   FormControlLabel,
-  InputAdornment,
   Radio,
   RadioGroup,
   TextField,
@@ -192,7 +190,7 @@ class Publish extends React.Component<Props, State> {
   }
 
   private didSelectHistoryEntry = (index: number) => {
-    let message = this.state.history[index]
+    const message = this.state.history[index]
     this.props.actions.setPublishTopic(message.topic)
     this.props.actions.setPublishPayload(message.payload)
   }

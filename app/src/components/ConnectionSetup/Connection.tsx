@@ -169,7 +169,7 @@ class Connection extends React.Component<Props, State> {
       button: {
         margin: theme.spacing.unit,
       },
-      passwordFormControl: {
+      inputFormControl: {
         marginTop: '16px',
       },
     }
@@ -261,7 +261,7 @@ class Connection extends React.Component<Props, State> {
                     />
                   </Grid>
                   <Grid item={true} xs={5}>
-                    <FormControl className={`${classes.textField} ${classes.passwordFormControl}`}>
+                    <FormControl className={`${classes.textField} ${classes.inputFormControl}`}>
                       <InputLabel htmlFor="adornment-password">Password</InputLabel>
                       <Input
                         id="adornment-password"
@@ -273,14 +273,16 @@ class Connection extends React.Component<Props, State> {
                     </FormControl>
                   </Grid>
                   <Grid item={true} xs={5}>
-                    <TextField
-                      label="Client ID"
-                      placeholder={this.randomClientId}
-                      className={classes.textField}
-                      value={this.state.clientId || ''}
-                      onChange={this.handleChange('clientId')}
-                      margin="normal"
-                    />
+                    <FormControl className={`${classes.textField} ${classes.inputFormControl}`}>
+                      <InputLabel htmlFor="client-id">Client ID</InputLabel>
+                      <Input
+                        placeholder={this.randomClientId}
+                        className={classes.textField}
+                        value={this.state.clientId || ''}
+                        onChange={this.handleChange('clientId')}
+                        startAdornment={<span />}
+                      />
+                    </FormControl>
                   </Grid>
                   <Grid item={true} xs={4}>
                     <div className={classes.switch}>
