@@ -20,6 +20,7 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-redux": "^6.0.0",
+    "react-vis": "^1.11.6",
     "redux": "^4.0.1",
     "style-loader": "^0.23.1",
     "webpack-livereload-plugin": "^2.2.0"
@@ -39,7 +40,6 @@
     "react-ace": "^6.3.2",
     "react-json-view": "^1.19.1",
     "react-resize-detector": "^3.4.0",
-    "react-vis": "^1.11.6",
     "sha1": "^1.1.1",
     "socket.io-client": "^2.2.0",
     "source-map-loader": "^0.2.4",
