@@ -1,4 +1,5 @@
-var LiveReloadPlugin = require('webpack-livereload-plugin');
+const LiveReloadPlugin = require('webpack-livereload-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
     entry: {
@@ -49,7 +50,8 @@ module.exports = {
     },
 
     plugins: [
-      new LiveReloadPlugin({})
+      new LiveReloadPlugin({}),
+    //   new BundleAnalyzerPlugin(),
     ],
 
     // When importing a module whose path matches one of the following, just
