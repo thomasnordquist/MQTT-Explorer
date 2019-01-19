@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { electronRendererTelementry } from 'electron-telemetry'
 import {
   Button,
   Modal,
@@ -27,6 +28,7 @@ class ErrorBoundary extends React.Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: any) {
+    electronRendererTelementry.trackError(error)
     console.log('did catch', error)
   }
 

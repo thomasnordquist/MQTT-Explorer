@@ -5,6 +5,9 @@ import { menuTemplate } from './MenuTemplate'
 import { autoUpdater } from 'electron-updater'
 import * as log from 'electron-log'
 import { ConnectionManager, updateNotifier } from '../backend/src/index'
+import { electronTelemetryFactory } from 'electron-telemetry'
+
+const electronTelemetry = electronTelemetryFactory('9b0c8ca04a361eb8160d98c5')
 
 const isDebugEnabled = Boolean(process.argv.find(arg => arg === 'debug'))
 require('electron-debug')({ enabled: isDebugEnabled })

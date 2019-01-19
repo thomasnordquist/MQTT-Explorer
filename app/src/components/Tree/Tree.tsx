@@ -90,7 +90,6 @@ class Tree extends React.Component<Props, TreeState> {
   }
 
   private handleNewData = (msg: any) => {
-    console.log('new data')
     const edges = msg.topic.split('/')
     const node = q.TreeNodeFactory.fromEdgesAndValue(edges, Buffer.from(msg.payload, 'base64').toString())
     this.state.tree.updateWithNode(node.firstNode())

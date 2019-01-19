@@ -3,8 +3,8 @@ import * as q from '../../../backend/src/Model'
 
 import { AppBar, Button, IconButton, InputBase, Toolbar, Typography } from '@material-ui/core'
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
-import CloudOff from '@material-ui/icons/CloudOff'
 
+import CloudOff from '@material-ui/icons/CloudOff'
 import Menu from '@material-ui/icons/Menu'
 import Search from '@material-ui/icons/Search'
 import { bindActionCreators } from 'redux'
@@ -106,18 +106,17 @@ class TitleBar extends React.Component<Props, State> {
   private renderSearch() {
     const { classes } = this.props
 
-    return <div className={classes.search}>
-      <div className={classes.searchIcon}>
-        <Search />
+    return (
+      <div className={classes.search}>
+        <div className={classes.searchIcon}>
+          <Search />
+        </div>
+        <InputBase
+          placeholder="Search…"
+          classes={{ root: classes.inputRoot, input: classes.inputInput }}
+        />
       </div>
-      <InputBase
-        placeholder="Search…"
-        classes={{
-          root: classes.inputRoot,
-          input: classes.inputInput,
-        }}
-      />
-    </div>
+    )
   }
 }
 

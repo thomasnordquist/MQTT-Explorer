@@ -1,6 +1,7 @@
-import { rendererEvents, trackError, trackUserInteraction } from '../../events'
+import { rendererEvents } from '../../events'
 let userId = window.localStorage.getItem('userId')
 const sha1 = require('sha1')
+import { electronRendererTelementry } from 'electron-telemetry'
 
 if (!userId) {
   userId = sha1(sha1(Math.random()) + sha1(performance.now()) + sha1(Date.now())).slice(0, 8) as string
@@ -19,4 +20,5 @@ export function trackEvent(name: string) {
     return
   }
   Nucleus.track(name)
+  electronRendererTelementry.trackEvent(name)
 }

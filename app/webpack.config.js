@@ -1,15 +1,24 @@
 var LiveReloadPlugin = require('webpack-livereload-plugin');
 
 module.exports = {
-    entry: "./src/index.tsx",
+    entry: {
+        app: "./src/index.tsx",
+        bugtracking: "./src/bugtracking.ts",
+    },
     output: {
-        filename: "bundle.js",
+        filename: "[name].bundle.js",
         path: __dirname + "/build"
     },
     optimization: {
       removeAvailableModules: false,
       removeEmptyChunks: false,
-      splitChunks: false,
+      splitChunks: {
+        cacheGroups: {
+          vendors: {
+            filename: '[name].bundle.js'
+          }
+        }
+      }
     },
 
     target: 'electron-renderer',

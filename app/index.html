@@ -3,6 +3,8 @@
     <head>
         <meta charset="UTF-8" />
         <title>MQTT-Explorer</title>
+        <script src="./build/bugtracking.bundle.js"></script>
+
         <style>
           body, html {
             margin: 0;
@@ -66,7 +68,7 @@
         <script>
           function onLoad() {
             var script = document.createElement("script");
-            script.src = "./build/bundle.js"
+            script.src = "./build/app.bundle.js"
             document.head.appendChild(script);
           }
           document.addEventListener('DOMContentLoaded', onLoad(), false);

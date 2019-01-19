@@ -148,7 +148,6 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state = initialApp
       if (!action.connectionId) {
         return state
       }
-
       return {
         ...state,
         connected: false,
@@ -165,7 +164,6 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state = initialApp
       }
 
     case ActionTypes.connected:
-
       return {
         ...state,
         connected: true,
