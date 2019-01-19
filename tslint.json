@@ -7,6 +7,7 @@
     "no-else-after-return": false,
     "align": false,
     "variable-name": false,
-    "jsx-no-lambda": false
+    "jsx-no-lambda": false,
+    "indent": [true, "spaces", 2]
   }
 }

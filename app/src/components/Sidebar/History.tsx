@@ -28,16 +28,18 @@ class MessageHistory extends React.Component<Props, State> {
   }
 
   public renderHistory() {
+    const style = {
+      backgroundColor: 'rgba(80, 80, 80, 0.6)',
+      margin: '8px',
+      padding: '8px 8px 0 8px',
+      cursor: this.props.onClick ? 'pointer' : 'inherit',
+    }
+
     const messageStyle: React.CSSProperties = { textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }
     const elements = this.props.items.map((element, index) => (
       <div
         key={index}
-        style={{
-          backgroundColor: 'rgba(80, 80, 80, 0.6)',
-          margin: '8px',
-          padding: '8px 8px 0 8px',
-          cursor: this.props.onClick ? 'pointer' : 'inherit',
-        }}
+        style={style}
         onClick={(event: React.MouseEvent) => this.props.onClick && this.props.onClick(index, event.target)}
       >
         <div><i>{element.title}</i></div>
@@ -65,6 +67,7 @@ class MessageHistory extends React.Component<Props, State> {
           </Badge>
         </Typography>
         <div style={{ maxHeight: '230px', overflowY: 'scroll'  }}>
+          {this.state.collapsed ? null : this.props.children}
           {this.state.collapsed ? null : elements}
         </div>
       </div>

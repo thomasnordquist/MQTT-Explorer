@@ -5,6 +5,7 @@ import { Theme, withTheme } from '@material-ui/core/styles'
 
 import DateFormatter from '../DateFormatter'
 import History from './History'
+import PlotHistory from './PlotHistory'
 
 const throttle = require('lodash.throttle')
 
@@ -48,8 +49,8 @@ class MessageHistory extends React.Component<Props, State> {
       return null
     }
 
-    const history = node.messageHistory.toArray().reverse()
-    const historyElements = history.map(message => ({
+    const history = node.messageHistory.toArray()
+    const historyElements = history.reverse().map(message => ({
       title: <DateFormatter date={message.received} />,
       value: message.value,
     }))
@@ -59,9 +60,20 @@ class MessageHistory extends React.Component<Props, State> {
         <History
           items={historyElements}
           onClick={this.displayMessage}
-        />
+        >
+          {this.renderPlot(history)}
+        </History>
       </div>
     )
+  }
+
+  public renderPlot(history: q.Message[]) {
+    const numbers = history.filter(message => !isNaN(message.value))
+    if (numbers.length < 3) {
+      return null
+    }
+
+    return <PlotHistory messages={numbers} />
   }
 
   private displayMessage = (index: number, eventTarget: EventTarget) => {
