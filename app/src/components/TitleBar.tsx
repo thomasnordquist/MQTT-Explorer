@@ -1,15 +1,16 @@
 import * as React from 'react'
 import * as q from '../../../backend/src/Model'
 
-import { AppBar, IconButton, InputBase, Toolbar, Typography } from '@material-ui/core'
+import { AppBar, Button, IconButton, InputBase, Toolbar, Typography } from '@material-ui/core'
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
+import CloudOff from '@material-ui/icons/CloudOff'
 
 import Menu from '@material-ui/icons/Menu'
 import Search from '@material-ui/icons/Search'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { fade } from '@material-ui/core/styles/colorManipulator'
-import { settingsActions } from '../actions'
+import { settingsActions, connectionActions } from '../actions'
 
 const styles: StyleRulesCallback = theme => ({
   title: {
@@ -85,7 +86,7 @@ class TitleBar extends React.Component<Props, State> {
   }
 
   public render() {
-    const { classes } = this.props
+    const { actions, classes } = this.props
 
     return (
       <AppBar position="static">
@@ -94,6 +95,9 @@ class TitleBar extends React.Component<Props, State> {
             <Menu />
           </IconButton>
           <Typography className={classes.title} variant="h6" color="inherit">MQTT-Explorer</Typography>
+          <Button style={{ margin: 'auto 8px auto auto' }} onClick={actions.disconnect}>
+            Disconnect <CloudOff style={{ marginRight: '8px', paddingLeft: '8px' }}/>
+          </Button>
         </Toolbar>
       </AppBar>
     )
@@ -119,8 +123,8 @@ class TitleBar extends React.Component<Props, State> {
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    actions: bindActionCreators(settingsActions, dispatch),
+    actions: { ...bindActionCreators(connectionActions, dispatch), ...bindActionCreators(settingsActions, dispatch) },
   }
 }
 
-export default withStyles(styles)(connect(null, mapDispatchToProps)(TitleBar))
+export default connect(undefined, mapDispatchToProps)(withStyles(styles)(TitleBar))

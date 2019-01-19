@@ -4,14 +4,8 @@ import { Snackbar, SnackbarContent } from '@material-ui/core'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { green, red } from '@material-ui/core/colors'
 
-enum MessageType {
-  success = 'success',
-  error = 'error',
-}
-
 interface Props {
   message?: string
-  type: MessageType
   onClose: () => void
   classes: any
 }
@@ -33,18 +27,20 @@ class Notification extends React.Component<Props, {}> {
   })
 
   public render() {
+    const snackbarAnchor = {
+      vertical: 'bottom' as 'bottom',
+      horizontal: 'left' as 'left',
+    }
+
     return (
       <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
+        anchorOrigin={snackbarAnchor}
         open={Boolean(this.props.message)}
         autoHideDuration={10000}
         onClose={this.props.onClose}
       >
         <SnackbarContent
-          className={this.props.classes[this.props.type]}
+          className={this.props.classes.error}
           message={this.props.message}
         />
       </Snackbar>

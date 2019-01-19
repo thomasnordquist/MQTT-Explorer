@@ -3,8 +3,12 @@ import * as q from '../../../backend/src/Model'
 import { Action, Reducer } from 'redux'
 
 import { trackEvent } from '../tracking'
+import { MqttOptions, DataSourceStateMachine } from '../../../backend/src/DataSource'
+import { rendererEvents, addMqttConnectionEvent, makeConnectionStateEvent } from '../../../events'
 
 export enum ActionTypes {
+  disconnect = 'DISCONNECT',
+  showError = 'SHOW_ERROR',
   setAutoExpandLimit = 'SET_AUTO_EXPAND_LIMIT',
   toggleSettingsVisibility = 'TOGGLE_SETTINGS_VISIBILITY',
   setNodeOrder = 'SET_NODE_ORDER',
@@ -13,6 +17,8 @@ export enum ActionTypes {
   setPublishPayload = 'SET_PUBLISH_PAYLOAD',
   showUpdateNotification = 'SHOW_UPDATE_NOTIFICATION',
   showUpdateDetails = 'SHOW_UPDATE_DETAILS',
+  connecting = 'CONNECTING',
+  connected = 'CONNECTED',
 }
 
 export interface CustomAction extends Action {
@@ -24,6 +30,9 @@ export interface CustomAction extends Action {
   publishPayload?: string
   showUpdateNotification?: boolean
   showUpdateDetails?: boolean
+  connectionOptions?: MqttOptions
+  connectionId?: string
+  error?: string
 }
 
 export interface SidebarState {
@@ -37,6 +46,10 @@ export interface AppState {
   sidebar: SidebarState
   showUpdateNotification?: boolean
   showUpdateDetails: boolean
+  connecting: boolean
+  connected: boolean
+  error?: string
+  connectionId?: string
 }
 
 export interface SettingsState {
@@ -52,7 +65,21 @@ export enum NodeOrder {
   topics = '#topics',
 }
 
-const reducer: Reducer<AppState | undefined, CustomAction> = (state, action) => {
+const initialAppState: AppState = {
+  settings: {
+    autoExpandLimit: 0,
+    nodeOrder: NodeOrder.none,
+    visible: false,
+  },
+  sidebar: {},
+  selectedTopic: undefined,
+  showUpdateDetails: false,
+  connected: false,
+  connecting: false,
+  error: undefined,
+}
+
+const reducer: Reducer<AppState | undefined, CustomAction> = (state = initialAppState, action) => {
   if (!state) {
     throw Error('No initial state')
   }
@@ -117,6 +144,40 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state, action) => 
         ...state,
         showUpdateDetails: action.showUpdateDetails,
       }
+    case ActionTypes.connecting:
+      if (!action.connectionId) {
+        return state
+      }
+
+      return {
+        ...state,
+        connected: false,
+        connecting: true,
+        connectionId: action.connectionId,
+      }
+
+    case ActionTypes.disconnect:
+      return {
+        ...state,
+        connected: false,
+        connecting: false,
+        connectionId: undefined,
+      }
+
+    case ActionTypes.connected:
+
+      return {
+        ...state,
+        connected: true,
+        connecting: false,
+      }
+
+    case ActionTypes.showError:
+      return {
+        ...state,
+        error: action.error,
+      }
+
     default:
       return state
   }

@@ -55,6 +55,7 @@
     "mocha": "^5.2.0",
     "mustache": "^3.0.1",
     "nyc": "^13.1.0",
+    "redux-thunk": "^2.3.0",
     "source-map-support": "^0.5.9",
     "ts-node": "^7.0.1",
     "tslint": "^5.12.0",

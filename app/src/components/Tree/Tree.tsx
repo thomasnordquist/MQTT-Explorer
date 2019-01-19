@@ -18,6 +18,7 @@ interface Props {
   autoExpandLimit: number
   didSelectNode?: (node: q.TreeNode) => void
   connectionId?: string
+  connected: boolean
 }
 
 interface TreeState {
@@ -32,8 +33,7 @@ class Tree extends React.Component<Props, TreeState> {
 
   constructor(props: any) {
     super(props)
-    const tree = new q.Tree()
-    this.state = { tree, msg: {} }
+    this.state = { tree: new q.Tree(), msg: {} }
   }
 
   public time(): number {
@@ -67,20 +67,18 @@ class Tree extends React.Component<Props, TreeState> {
   }
 
   public componentWillReceiveProps(nextProps: Props) {
-    if (this.props.connectionId) {
-      const event = makeConnectionMessageEvent(this.props.connectionId)
-      rendererEvents.unsubscribeAll(event)
-    }
-    if (nextProps.connectionId) {
-      const event = makeConnectionMessageEvent(nextProps.connectionId)
-      rendererEvents.subscribe(event, this.handleNewData)
-    }
+    this.registerAndUnregisterEventSubscriptionsForNewProps(nextProps)
   }
 
-  public componentDidMount() {
-    if (this.props.connectionId) {
-      const event = makeConnectionMessageEvent(this.props.connectionId)
-      rendererEvents.subscribe(event, this.handleNewData)
+  private registerAndUnregisterEventSubscriptionsForNewProps(nextProps: Props) {
+    if (this.props.connectionId !== nextProps.connectionId) {
+      if (this.props.connectionId) {
+        this.setState({ tree: new q.Tree() })
+        rendererEvents.unsubscribeAll(makeConnectionMessageEvent(this.props.connectionId))
+      }
+      if (nextProps.connectionId) {
+        rendererEvents.subscribe(makeConnectionMessageEvent(nextProps.connectionId), this.handleNewData)
+      }
     }
   }
 
@@ -92,6 +90,7 @@ class Tree extends React.Component<Props, TreeState> {
   }
 
   private handleNewData = (msg: any) => {
+    console.log('new data')
     const edges = msg.topic.split('/')
     const node = q.TreeNodeFactory.fromEdgesAndValue(edges, Buffer.from(msg.payload, 'base64').toString())
     this.state.tree.updateWithNode(node.firstNode())
@@ -100,7 +99,9 @@ class Tree extends React.Component<Props, TreeState> {
   }
 
   public render() {
-    console.log('render called')
+    if (!this.props.connected) {
+      return null
+    }
 
     const style: React.CSSProperties = {
       lineHeight: '1.1',
@@ -129,6 +130,7 @@ class Tree extends React.Component<Props, TreeState> {
 const mapStateToProps = (state: AppState) => {
   return {
     autoExpandLimit: state.settings.autoExpandLimit,
+    connected: state.connected,
   }
 }
 

@@ -2,25 +2,24 @@ import './tracking'
 
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
+import reduxThunk from 'redux-thunk'
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import reducers, { AppState, NodeOrder } from './reducers'
 
 import App from './App'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
 
-const initialAppState: AppState = {
-  settings: {
-    autoExpandLimit: 0,
-    nodeOrder: NodeOrder.none,
-    visible: false,
-  },
-  sidebar: {},
-  selectedTopic: undefined,
-  showUpdateDetails: false,
-}
-const store = createStore(reducers, initialAppState)
+const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+const store = createStore(
+  reducers,
+  composeEnhancers(
+    applyMiddleware(
+      reduxThunk,
+    ),
+  ),
+)
 
 const theme = createMuiTheme({
   palette: {

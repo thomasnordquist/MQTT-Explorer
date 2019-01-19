@@ -18,21 +18,27 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core'
-import { DataSourceState, MqttOptions } from '../../../../backend/src/DataSource'
+import { connect } from 'react-redux'
+import { MqttOptions } from '../../../../backend/src/DataSource'
 import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
-import { addMqttConnectionEvent, makeConnectionStateEvent, removeConnection, rendererEvents } from '../../../../events'
 
 import Notification from './Notification'
 import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 
 import sha1 = require('sha1')
+import { AppState } from '../../reducers'
+import { bindActionCreators } from 'redux'
+import { connectionActions } from '../../actions'
 
 interface Props {
   classes: {[s: string]: string}
   theme: Theme
-  onAbort: () => void,
-  onConnection: (connectionId: string) => void
+  actions: typeof connectionActions,
+  visible: boolean
+  connected: boolean
+  connecting: boolean
+  error?: string
 }
 
 const protocols = [
@@ -41,57 +47,64 @@ const protocols = [
 ]
 
 interface State {
-  connecting: boolean
-  connectionId?: string
-  error?: string
-  visible: boolean
+  showPassword: boolean
+  connectionSettings: ConnectionSettings
+}
+
+interface ConnectionSettings {
   host: string
   protocol: string
   port: number
   tls: boolean
   certValidation: boolean
   clientId: string
+  connectionId?: string
   username: string
   password: string
-  showPassword: boolean
 }
 
 declare var window: any
 
 class Connection extends React.Component<Props, State> {
-  private randomClientId: tring
+  private randomClientId: string
+  private defaultConnectionSettings: ConnectionSettings = {
+    host: 'iot.eclipse.org',
+    protocol: protocols[0],
+    port: 1883,
+    tls: false,
+    certValidation: true,
+    clientId: '',
+    username: '',
+    password: '',
+    connectionId: undefined,
+  }
+
   constructor(props: any) {
     super(props)
+
+    const clientIdSha = sha1(`${Math.random()}`).slice(0, 8)
+    this.randomClientId = `mqtt-explorer-${clientIdSha}`
+    this.state = {
+      connectionSettings: this.loadConnectionSettings(),
+      showPassword: false,
+    }
+  }
+
+  private loadConnectionSettings(): ConnectionSettings {
+    let storedSettings: ConnectionSettings | undefined
+
     const storedSettingsString = window.localStorage.getItem('connectionSettings')
-    let storedSettings
     try {
       storedSettings = storedSettingsString ? JSON.parse(storedSettingsString) : undefined
     } catch {
       window.localStorage.setItem('connectionSettings', undefined)
     }
 
-    const clientIdSha = sha1(`${Math.random()}`).slice(0, 8)
-    this.randomClientId = `mqtt-explorer-${clientIdSha}`
-    const defaultState = {
-      visible: true,
-      host: 'iot.eclipse.org',
-      protocol: protocols[0],
-      port: 1883,
-      tls: false,
-      certValidation: true,
-      clientId: '',
-      username: '',
-      password: '',
-      connecting: false,
-      connectionId: undefined,
-      showPassword: false,
-    }
-
-    this.state = Object.assign({}, defaultState, storedSettings)
+    return storedSettings || this.defaultConnectionSettings
   }
 
   private saveConnectionSettings() {
-    window.localStorage.setItem('connectionSettings', JSON.stringify(this.state))
+    window.localStorage.setItem('connectionSettings', JSON.stringify(this.state.connectionSettings))
   }
 
   private handleClickShowPassword = () => {
@@ -99,47 +112,17 @@ class Connection extends React.Component<Props, State> {
   }
 
   private optionsFromState(): MqttOptions {
-    const protocol = this.state.protocol === 'tcp://' ? 'mqtt://' : this.state.protocol
-    const url = `${protocol}${this.state.host}:${this.state.port}`
+    const protocol = this.state.connectionSettings.protocol === 'tcp://' ? 'mqtt://' : this.state.connectionSettings.protocol
+    const url = `${protocol}${this.state.connectionSettings.host}:${this.state.connectionSettings.port}`
 
     return {
       url,
-      username: this.state.username || undefined,
-      password: this.state.password || undefined,
-      clientId: this.state.clientId || this.randomClientId,
-      tls: this.state.tls,
-      certValidation: this.state.certValidation,
+      username: this.state.connectionSettings.username || undefined,
+      password: this.state.connectionSettings.password || undefined,
+      clientId: this.state.connectionSettings.clientId || this.randomClientId,
+      tls: this.state.connectionSettings.tls,
+      certValidation: this.state.connectionSettings.certValidation,
     }
-  }
-
-  private connect() {
-    this.setState({
-      connecting: true,
-    })
-
-    const options = this.optionsFromState()
-    const connectionId = (sha1(Math.random() + JSON.stringify(options)).slice(0, 8)) as string
-    this.setState({ connectionId })
-    rendererEvents.emit(addMqttConnectionEvent, { options, id: connectionId })
-    const event = makeConnectionStateEvent(connectionId)
-
-    rendererEvents.subscribe(event, (state: DataSourceState) => {
-      console.log(state)
-      if (state.connected) {
-        this.props.onConnection(connectionId)
-        this.setState({ visible: false })
-      } else if (state.error) {
-        this.setState({ error: state.error })
-        this.disconnect()
-      }
-    })
-  }
-
-  private disconnect() {
-    this.setState({
-      connecting: false,
-    })
-    rendererEvents.emit(removeConnection, this.state.connectionId)
   }
 
   public static styles: StyleRulesCallback<string> = (theme: Theme) => {
@@ -176,10 +159,12 @@ class Connection extends React.Component<Props, State> {
   }
 
   private handleChange = (name: string) => (event: any) => {
-    const state: any = {
-      [name]: event.target.value,
-    }
-    this.setState(state)
+    this.setState({
+      connectionSettings: {
+        ...this.state.connectionSettings,
+        [name]: event.target.value,
+      },
+    })
   }
 
   public render() {
@@ -197,12 +182,11 @@ class Connection extends React.Component<Props, State> {
     )
 
     let renderError = null
-    if (this.state.error) {
+    if (this.props.error) {
       renderError = (
         <Notification
-          message={this.state.error}
-          type="error"
-          onClose={() => { this.setState({ error: undefined }) }}
+          message={this.props.error}
+          onClose={() => { this.props.actions.showError(undefined) }}
         />
       )
     }
@@ -210,7 +194,7 @@ class Connection extends React.Component<Props, State> {
     return (
       <div>
         {renderError}
-        <Modal open={this.state.visible} disableAutoFocus={true}>
+        <Modal open={this.props.visible} disableAutoFocus={true}>
             <Paper className={classes.root}>
               <Toolbar>
                 <Typography className={classes.title} variant="h6" color="inherit">MQTT Connection</Typography>
@@ -218,26 +202,13 @@ class Connection extends React.Component<Props, State> {
               <form className={classes.container} noValidate={true} autoComplete="off">
                 <Grid container={true} spacing={24}>
                   <Grid item={true} xs={2}>
-                    <TextField
-                      select={true}
-                      label="Protocol"
-                      className={classes.textField}
-                      value={this.state.protocol}
-                      onChange={this.handleChange('protocol')}
-                      margin="normal"
-                    >
-                      {protocols.map((value: string) => (
-                        <MenuItem key={value} value={value}>
-                          {value}
-                        </MenuItem>
-                      ))}
-                    </TextField>
+                    {this.renderProtocols()}
                   </Grid>
-                  <Grid item xs={7}>
+                  <Grid item={true} xs={7}>
                     <TextField
                       label="Host"
                       className={classes.textField}
-                      value={this.state.host}
+                      value={this.state.connectionSettings.host}
                       onChange={this.handleChange('host')}
                       margin="normal"
                     />
@@ -246,7 +217,7 @@ class Connection extends React.Component<Props, State> {
                     <TextField
                       label="Port"
                       className={classes.textField}
-                      value={this.state.port}
+                      value={this.state.connectionSettings.port}
                       onChange={this.handleChange('port')}
                       margin="normal"
                     />
@@ -255,7 +226,7 @@ class Connection extends React.Component<Props, State> {
                     <TextField
                       label="Username"
                       className={classes.textField}
-                      value={this.state.username}
+                      value={this.state.connectionSettings.username}
                       onChange={this.handleChange('username')}
                       margin="normal"
                     />
@@ -266,7 +237,7 @@ class Connection extends React.Component<Props, State> {
                       <Input
                         id="adornment-password"
                         type={this.state.showPassword ? 'text' : 'password'}
-                        value={this.state.password}
+                        value={this.state.connectionSettings.password}
                         onChange={this.handleChange('password')}
                         endAdornment={passwordVisibilityButton}
                       />
@@ -278,41 +249,17 @@ class Connection extends React.Component<Props, State> {
                       <Input
                         placeholder={this.randomClientId}
                         className={classes.textField}
-                        value={this.state.clientId || ''}
+                        value={this.state.connectionSettings.clientId || ''}
                         onChange={this.handleChange('clientId')}
                         startAdornment={<span />}
                       />
                     </FormControl>
                   </Grid>
                   <Grid item={true} xs={4}>
-                    <div className={classes.switch}>
-                      <FormControlLabel
-                        control={(
-                          <Switch
-                            checked={this.state.certValidation}
-                            onChange={() => this.setState({ certValidation: !this.state.certValidation })}
-                            color="primary"
-                          />
-                        )}
-                        label="Validate certificate"
-                        labelPlacement="bottom"
-                      />
-                    </div>
+                    {this.renderCertValidationSwitch()}
                   </Grid>
                   <Grid item={true} xs={3}>
-                    <div className={classes.switch}>
-                      <FormControlLabel
-                        control={(
-                          <Switch
-                            checked={this.state.tls}
-                            onChange={() => this.setState({ tls: !this.state.tls })}
-                            color="primary"
-                          />
-                        )}
-                        label="Encryption (tls)"
-                        labelPlacement="bottom"
-                      />
-                    </div>
+                    {this.renderTlsSwitch()}
                   </Grid>
                 </Grid>
                 <br />
@@ -329,12 +276,90 @@ class Connection extends React.Component<Props, State> {
     )
   }
 
-  private renderConnectButton() {
+  private renderProtocols() {
     const { classes } = this.props
+    const protocolItems = protocols.map((value: string) => (
+      <MenuItem key={value} value={value}>
+        {value}
+      </MenuItem>
+    ))
 
-    if (this.state.connecting) {
+    return (
+      <TextField
+        select={true}
+        label="Protocol"
+        className={classes.textField}
+        value={this.state.connectionSettings.protocol}
+        onChange={this.handleChange('protocol')}
+        margin="normal"
+      >
+        {protocolItems}
+      </TextField>
+    )
+  }
+
+  private renderCertValidationSwitch() {
+    const { classes } = this.props
+    const certSwitch = (
+      <Switch
+        checked={this.state.connectionSettings.certValidation}
+        onChange={this.toggleCertValidation}
+        color="primary"
+      />
+    )
+
+    return (
+      <div className={classes.switch}>
+        <FormControlLabel
+          control={certSwitch}
+          label="Validate certificate"
+          labelPlacement="bottom"
+        />
+      </div>
+    )
+  }
+
+  private toggleCertValidation = () => this.setState({
+    connectionSettings: {
+      ...this.state.connectionSettings,
+      certValidation: !this.state.connectionSettings.certValidation,
+    },
+  })
+
+  private renderTlsSwitch() {
+    const { classes } = this.props
+    const tlsSwitch = (
+      <Switch
+        checked={this.state.connectionSettings.tls}
+        onChange={this.toggleTls}
+        color="primary"
+      />
+    )
+
+    return (
+      <div className={classes.switch}>
+        <FormControlLabel
+          control={tlsSwitch}
+          label="Encryption (tls)"
+          labelPlacement="bottom"
+        />
+      </div>
+    )
+  }
+
+  private toggleTls = () => this.setState({
+    connectionSettings: {
+      ...this.state.connectionSettings,
+      tls: !this.state.connectionSettings.tls,
+    },
+  })
+
+  private renderConnectButton() {
+    const { classes, actions } = this.props
+
+    if (this.props.connecting) {
       return (
-        <Button variant="contained" color="primary" className={classes.button} onClick={this.onClickAbort}>
+        <Button variant="contained" color="primary" className={classes.button} onClick={actions.disconnect}>
           <CircularProgress size={22} style={{ marginRight: '10px' }} color="secondary" /> Abort
         </Button>
       )
@@ -347,12 +372,25 @@ class Connection extends React.Component<Props, State> {
   }
 
   private onClickConnect = () => {
-    this.connect()
-  }
-
-  private onClickAbort = () => {
-    this.disconnect()
+    const connectionId = String(sha1(String(Math.random())).slice(0, 8))
+    const options = this.optionsFromState()
+    this.props.actions.connect(options, connectionId)
   }
 }
 
-export default withStyles(Connection.styles, { withTheme: true })(Connection)
+const mapStateToProps = (state: AppState) => {
+  return {
+    visible: !state.connected,
+    connected: state.connected,
+    connecting: state.connecting,
+    error: state.error,
+  }
+}
+
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: bindActionCreators(connectionActions, dispatch),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(Connection.styles, { withTheme: true })(Connection))

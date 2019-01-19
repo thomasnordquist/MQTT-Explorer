@@ -21,6 +21,7 @@ interface State {
 
 interface Props {
   name: string
+  connectionId: string
   theme: Theme
   settingsVisible: boolean
 }
@@ -93,17 +94,17 @@ class App extends React.Component<Props, State> {
               <TitleBar />
               <div style={centerContent}>
                 <div style={this.getStyles().left}>
-                  <Tree connectionId={this.state.connectionId} didSelectNode={(node: q.TreeNode) => {
+                  <Tree connectionId={this.props.connectionId} didSelectNode={(node: q.TreeNode) => {
                     this.setState({ selectedNode: node })
                   }} />
                 </div>
                 <div style={this.getStyles().right}>
-                  <Sidebar connectionId={this.state.connectionId} />
+                  <Sidebar connectionId={this.props.connectionId} />
                 </div>
               </div>
           </div>
           <UpdateNotifier />
-          <Connection onConnection={(connectionId: string) => this.setState({ connectionId })}/>
+          <Connection />
         </ErrorBoundary>
       </div >
     )
@@ -113,6 +114,7 @@ class App extends React.Component<Props, State> {
 const mapStateToProps = (state: AppState) => {
   return {
     settingsVisible: state.settings.visible,
+    connectionId: state.connectionId,
   }
 }
 
