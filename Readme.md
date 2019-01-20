@@ -1,6 +1,6 @@
 # MQTT-Explorer
 [![Downloads](https://github-basic-badges.herokuapp.com/release/thomasnordquist/MQTT-Explorer.svg)](https://travis-ci.org/thomasnordquist/MQTT-Explorer/releases)
-[![Downloads](https://github-basic-badges.herokuapp.com/downloads/thomasnordquist/MQTT-Explorer/total.svg)](https://travis-ci.org/thomasnordquist/MQTT-Explorer/releases)
+[![Downloads](https://img.shields.io/github/downloads/thomasnordquist/mqtt-explorer/total.svg)](https://travis-ci.org/thomasnordquist/MQTT-Explorer/releases)
 [![Build Status](https://travis-ci.org/thomasnordquist/MQTT-Explorer.svg?branch=master)](https://travis-ci.org/thomasnordquist/MQTT-Explorer)
 
 ### Version 0.0.9
@@ -13,7 +13,10 @@ The app is prebuilt for Windows ([portable](https:&#x2F;&#x2F;github.com&#x2F;th
 
 More architectures and package types: [Downloads](https://github.com/thomasnordquist/MQTT-Explorer/releases)
 
-![screen2](https://user-images.githubusercontent.com/7721625/51109225-dbe22200-17f4-11e9-8f6b-c6a27c07c90e.png)
+![screen1](https://user-images.githubusercontent.com/7721625/51441563-41418180-1cd3-11e9-893b-c22f6a6c3695.png)
+
+![screen2](https://user-images.githubusercontent.com/7721625/51441470-59fd6780-1cd2-11e9-925f-bc491027300c.png)
+
 
 ## Develop
 PRs and issues are welcome
