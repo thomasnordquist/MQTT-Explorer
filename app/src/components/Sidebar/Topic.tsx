@@ -2,12 +2,16 @@ import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 import Button from '@material-ui/core/Button'
 import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
+import { treeActions } from '../../actions'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 
 interface Props {
   classes: any
   theme: Theme
   node?: q.TreeNode
   selected?: q.TreeNode
+  actions: typeof treeActions
   didSelectNode: (node: q.TreeNode) => void
 }
 
@@ -33,7 +37,7 @@ class Topic extends React.Component<Props, {}> {
       .map(edge =>
         [(
           <Button
-            onClick={() => this.setState({ node: edge!.target })}
+            onClick={() => this.props.actions.selectTopic(edge!.target)}
             size="small"
             color="secondary"
             className={this.props.classes.button}
@@ -56,4 +60,10 @@ class Topic extends React.Component<Props, {}> {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(Topic)
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: bindActionCreators(treeActions, dispatch),
+  }
+}
+
+export default connect(null, mapDispatchToProps)(withStyles(styles, { withTheme: true })(Topic))
