@@ -55,7 +55,7 @@ class MessageHistory extends React.Component<Props, State> {
       value: message.value,
     }))
 
-    const numericMessages = history.filter(message => !isNaN(message.value))
+    const numericMessages = history.filter(message => !isNaN(parseFloat(message.value)))
     const showPlot = numericMessages.length >= 2
 
     return (
@@ -65,7 +65,7 @@ class MessageHistory extends React.Component<Props, State> {
           contentTypeIndicator={showPlot ? <BarChart /> : null}
           onClick={this.displayMessage}
         >
-          {showPlot ? this.renderPlot(history) : null}
+          {showPlot ? this.renderPlot(numericMessages) : null}
         </History>
       </div>
     )

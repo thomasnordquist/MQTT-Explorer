@@ -29,8 +29,8 @@ class PlotHistory extends React.Component<Props, Stats> {
   public render() {
     const data = this.props.messages.map((message) => {
       return {
-        x: message.received,
-        y: message.value,
+        x: message.received.getTime(),
+        y: parseFloat(message.value),
       }
     })
 
