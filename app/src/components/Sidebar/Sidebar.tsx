@@ -2,31 +2,40 @@ import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 
 import {
+  Button,
   ExpansionPanel,
   ExpansionPanelDetails,
   ExpansionPanelSummary,
   Fade,
+  Fab,
   Paper,
   Popper,
   Typography,
+  IconButton,
+  Tooltip,
 } from '@material-ui/core'
 import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
+
+import { sidebarActons } from '../../actions'
 
 import { AppState } from '../../reducers'
 import Copy from '../Copy'
 import DateFormatter from '../DateFormatter'
 import ExpandMore from '@material-ui/icons/ExpandMore'
+import Clear from '@material-ui/icons/Clear'
 import MessageHistory from './MessageHistory'
 import NodeStats from './NodeStats'
 import Publish from './Publish/Publish'
 import Topic from './Topic'
 import ValueRenderer from './ValueRenderer'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux';
 
 const throttle = require('lodash.throttle')
 
 interface Props {
   node?: q.TreeNode,
+  actions: typeof sidebarActons,
   classes: any,
   theme: Theme,
   connectionId?: string,
@@ -157,13 +166,28 @@ class Sidebar extends React.Component<Props, State> {
       return null
     }
 
+    const retainedButton = (
+      <Tooltip title="Delete retained topic" placement="top">
+        <Button
+          size="small"
+          color="secondary"
+          variant="contained"
+          mini={true}
+          style={{ marginTop: '-2px', padding: '0px 4px', minHeight: '24px' }}
+          onClick={this.props.actions.clearRetainedTopic}
+        >
+          retained <Clear style={{ fontSize: '16px', marginLeft: '2px' }} />
+        </Button>
+      </Tooltip>
+    )
+
     return (
       <div style={{ width: '100%', display: 'flex' }}>
-        <div style={{ flex: 1 }}><Typography>QoS: {this.props.node.mqttMessage.qos}</Typography></div>
-        <div style={{ flex: 1, textAlign: 'center' }}>
-          <Typography style={{ color: this.props.theme.palette.secondary.main }}><b>{this.props.node.mqttMessage.retain ? 'retained' : null}</b></Typography>
+        <div style={{ flex: 6 }}><Typography>QoS: {this.props.node.mqttMessage.qos}</Typography></div>
+        <div style={{ flex: 8, textAlign: 'center' }}>
+          {this.props.node.mqttMessage.retain ? retainedButton : null}
         </div>
-        <div style={{ flex: 1, textAlign: 'right' }}><Typography><i><DateFormatter date={this.props.node.message.received} /></i></Typography></div>
+        <div style={{ flex: 8, textAlign: 'right' }}><Typography><i><DateFormatter date={this.props.node.message.received} /></i></Typography></div>
       </div>
     )
   }
@@ -195,4 +219,10 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default withStyles(Sidebar.styles, { withTheme: true })(connect(mapStateToProps)(Sidebar))
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: bindActionCreators(sidebarActons, dispatch),
+  }
+}
+
+export default withStyles(Sidebar.styles, { withTheme: true })(connect(mapStateToProps, mapDispatchToProps)(Sidebar))
