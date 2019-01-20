@@ -17,12 +17,6 @@ export const setPayload = (payload?: string): Action => {
   }
 }
 
-export const toggleEmptyPayload = (): Action => {
-  return {
-    type: ActionTypes.PUBLISH_TOGGLE_EMPTY_PAYLOAD,
-  }
-}
-
 export const setQoS = (qos: 0 | 1 | 2): Action => {
   return {
     qos,
@@ -48,7 +42,7 @@ export const publish = (connectionId: string) => (dispatch: Dispatch<Action>, ge
   const publishEvent = makePublishEvent(connectionId)
   const mqttMessage = {
     topic,
-    payload: state.publish.emptyPayload ? null : state.publish.payload,
+    payload: state.publish.payload,
     retain: state.publish.retain,
     qos: state.publish.qos,
   }

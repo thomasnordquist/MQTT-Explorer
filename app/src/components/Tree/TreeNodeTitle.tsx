@@ -67,7 +67,8 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
       marginLeft: '5px',
       display: 'inline-block',
     }
-    return this.props.treeNode.message
+
+    return this.props.treeNode.message && this.props.treeNode.message.length > 0
       ? <span style={style}> = {this.props.treeNode.message.value.toString()}</span>
       : null
   }

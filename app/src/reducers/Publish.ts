@@ -4,18 +4,16 @@ import { createReducer } from './lib'
 export interface PublishState {
   topic?: string
   payload?: string
-  emptyPayload: boolean
   retain: boolean
   editorMode: string
   qos: 0 | 1 | 2
 }
 
-export type Action = SetPayload | SetTopic | ToggleEmptyPayload | ToggleRetain | SetEditorMode | SetQoS
+export type Action = SetPayload | SetTopic | ToggleRetain | SetEditorMode | SetQoS
 
 export enum ActionTypes {
   PUBLISH_SET_TOPIC = 'PUBLISH_SET_TOPIC',
   PUBLISH_SET_PAYLOAD = 'PUBLISH_SET_PAYLOAD',
-  PUBLISH_TOGGLE_EMPTY_PAYLOAD = 'PUBLISH_TOGGLE_EMPTY_PAYLOAD',
   PUBLISH_TOGGLE_RETAIN = 'PUBLISH_TOGGLE_RETAIN',
   PUBLISH_SET_EDITOR_MODE = 'PUBLISH_SET_EDITOR_MODE',
   PUBLISH_SET_QOS = 'PUBLISH_SET_QOS',
@@ -36,10 +34,6 @@ export interface SetQoS {
   qos: 0 | 1 | 2
 }
 
-export interface ToggleEmptyPayload {
-  type: ActionTypes.PUBLISH_TOGGLE_EMPTY_PAYLOAD
-}
-
 export interface SetEditorMode {
   type: ActionTypes.PUBLISH_SET_EDITOR_MODE
   editorMode: string
@@ -51,7 +45,6 @@ export interface ToggleRetain {
 
 const initialState: PublishState = {
   editorMode: 'text',
-  emptyPayload: false,
   retain: false,
   qos: 0,
 }
@@ -59,7 +52,6 @@ const initialState: PublishState = {
 export const publishReducer = createReducer(initialState, {
   PUBLISH_SET_TOPIC: setTopic,
   PUBLISH_SET_PAYLOAD: setPayload,
-  PUBLISH_TOGGLE_EMPTY_PAYLOAD: toggleEmptyPayload,
   PUBLISH_TOGGLE_RETAIN: toggleRetain,
   PUBLISH_SET_EDITOR_MODE: setEditorMode,
   PUBLISH_SET_QOS: setQoS,
@@ -90,13 +82,6 @@ function setEditorMode(state: PublishState, action: SetEditorMode) {
   return {
     ...state,
     editorMode: action.editorMode,
-  }
-}
-
-function toggleEmptyPayload(state: PublishState) {
-  return {
-    ...state,
-    emptyPayload: !state.emptyPayload,
   }
 }
 

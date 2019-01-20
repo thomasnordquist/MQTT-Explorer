@@ -39,7 +39,6 @@ interface Props {
   topic?: string
   payload?: string
   actions: typeof publishActions
-  emptyPayload: boolean
   retain: boolean
   editorMode: string
   qos: 0 | 1 | 2
@@ -164,9 +163,6 @@ class Publish extends React.Component<Props, State> {
   }
 
   private renderEditorModeSelection() {
-    if (this.props.emptyPayload) {
-      return null
-    }
     const labelStyle = { margin: '0 8px 0 8px' }
     return (
       <RadioGroup
@@ -234,19 +230,12 @@ class Publish extends React.Component<Props, State> {
     )
     return (
       <div style={{ marginTop: '8px', clear: 'both' }}>
-        <div style={{ width: '100%' }}>
+        <div style={{ width: '100%', textAlign: 'right' }}>
           <FormControlLabel
             style={labelStyle}
             control={qosSelect}
             label="QoS"
             labelPlacement="start"
-          />
-          <FormControlLabel
-            value="empty"
-            style={labelStyle}
-            control={<Checkbox color="primary" checked={this.props.emptyPayload} onChange={this.props.actions.toggleEmptyPayload} />}
-            label="no message"
-            labelPlacement="end"
           />
           <FormControlLabel
             value="retain"
@@ -286,10 +275,6 @@ class Publish extends React.Component<Props, State> {
   }
 
   private renderEditor() {
-    if (this.props.emptyPayload) {
-      return null
-    }
-
     return (
       <AceEditor
         mode={this.props.editorMode}
@@ -317,7 +302,6 @@ const mapStateToProps = (state: AppState) => {
   return {
     topic: state.publish.topic,
     payload: state.publish.payload,
-    emptyPayload: state.publish.emptyPayload,
     editorMode: state.publish.editorMode,
     retain: state.publish.retain,
     qos: state.publish.qos,
