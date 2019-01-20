@@ -1,4 +1,4 @@
-const { XYPlot, XAxis, YAxis, HorizontalGridLines, LineSeries } = require('react-vis')
+const { XYPlot, XAxis, LineMarkSeries, Hint, YAxis, HorizontalGridLines, LineSeries } = require('react-vis')
 import { default as ReactResizeDetector } from 'react-resize-detector'
 
 import * as React from 'react'
@@ -12,6 +12,7 @@ interface Props {
 
 interface Stats {
   width: number
+  value?: any
 }
 
 class PlotHistory extends React.Component<Props, Stats> {
@@ -36,12 +37,29 @@ class PlotHistory extends React.Component<Props, Stats> {
       <div>
         <XYPlot width={this.state.width} height={150}>
           <HorizontalGridLines />
-          <LineSeries data={data} />
           <YAxis />
+          <LineMarkSeries
+            onValueMouseOver={this._rememberValue}
+            onValueMouseOut={this._forgetValue}
+            size={3}
+            data={data}
+            curve="curveCardinal"
+          />
+          {this.state.value ? <Hint value={this.state.value} /> : null}
         </XYPlot>
         <ReactResizeDetector handleWidth={true} onResize={this.resize} />
       </div>
     )
+  }
+
+  private _forgetValue = () => {
+    this.setState({
+      value: undefined,
+    })
+  }
+
+  private _rememberValue = (value: any) => {
+    this.setState({ value })
   }
 }
 

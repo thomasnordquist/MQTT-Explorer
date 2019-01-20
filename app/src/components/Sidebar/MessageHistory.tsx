@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 
 import { Theme, withTheme } from '@material-ui/core/styles'
-
+import BarChart from '@material-ui/icons/BarChart'
 import DateFormatter from '../DateFormatter'
 import History from './History'
 import PlotHistory from './PlotHistory'
@@ -55,25 +55,24 @@ class MessageHistory extends React.Component<Props, State> {
       value: message.value,
     }))
 
+    const numericMessages = history.filter(message => !isNaN(message.value))
+    const showPlot = numericMessages.length >= 2
+
     return (
       <div>
         <History
           items={historyElements}
+          contentTypeIndicator={showPlot ? <BarChart /> : null}
           onClick={this.displayMessage}
         >
-          {this.renderPlot(history)}
+          {showPlot ? this.renderPlot(history) : null}
         </History>
       </div>
     )
   }
 
-  public renderPlot(history: q.Message[]) {
-    const numbers = history.filter(message => !isNaN(message.value))
-    if (numbers.length < 3) {
-      return null
-    }
-
-    return <PlotHistory messages={numbers} />
+  public renderPlot(numericMessages: q.Message[]) {
+    return <PlotHistory messages={numericMessages} />
   }
 
   private displayMessage = (index: number, eventTarget: EventTarget) => {

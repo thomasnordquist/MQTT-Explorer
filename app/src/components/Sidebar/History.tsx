@@ -13,6 +13,7 @@ interface Props {
   items: HistoryItem[]
   onClick?: (index: number, element: EventTarget) => void
   classes: any
+  contentTypeIndicator?: String
 }
 
 interface State {
@@ -65,6 +66,7 @@ class MessageHistory extends React.Component<Props, State> {
           >
             {this.state.collapsed ? '▶' : '▼'} History
           </Badge>
+          <div style={{ float: 'right' }}>{this.state.collapsed ? this.props.contentTypeIndicator : null}</div>
         </Typography>
         <div style={{ maxHeight: '230px', overflowY: 'scroll'  }}>
           {this.state.collapsed ? null : this.props.children}
