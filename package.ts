@@ -4,7 +4,7 @@ const linux: builder.CliOptions = {
   x64: true,
   ia32: true,
   armv7l: true,
-  arm64: true,
+  arm64: false,
   linux: ['AppImage'],
   projectDir: './build/clean',
   publish: 'always',
