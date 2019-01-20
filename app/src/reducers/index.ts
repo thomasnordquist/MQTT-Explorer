@@ -1,10 +1,10 @@
 import * as q from '../../../backend/src/Model'
 
-import { Action, Reducer } from 'redux'
+import { Action, Reducer, combineReducers } from 'redux'
 
 import { trackEvent } from '../tracking'
-import { MqttOptions, DataSourceStateMachine } from '../../../backend/src/DataSource'
-import { rendererEvents, addMqttConnectionEvent, makeConnectionStateEvent } from '../../../events'
+import { MqttOptions } from '../../../backend/src/DataSource'
+import { PublishState, publishReducer } from './Publish'
 
 export enum ActionTypes {
   disconnect = 'DISCONNECT',
@@ -13,8 +13,6 @@ export enum ActionTypes {
   toggleSettingsVisibility = 'TOGGLE_SETTINGS_VISIBILITY',
   setNodeOrder = 'SET_NODE_ORDER',
   selectTopic = 'SELECT_TOPIC',
-  setPublishTopic = 'SET_PUBLISH_TOPIC',
-  setPublishPayload = 'SET_PUBLISH_PAYLOAD',
   showUpdateNotification = 'SHOW_UPDATE_NOTIFICATION',
   showUpdateDetails = 'SHOW_UPDATE_DETAILS',
   connecting = 'CONNECTING',
@@ -26,8 +24,6 @@ export interface CustomAction extends Action {
   autoExpandLimit?: number
   nodeOrder?: NodeOrder
   selectedTopic?: q.TreeNode
-  publishTopic?: string
-  publishPayload?: string
   showUpdateNotification?: boolean
   showUpdateDetails?: boolean
   connectionOptions?: MqttOptions
@@ -35,15 +31,14 @@ export interface CustomAction extends Action {
   error?: string
 }
 
-export interface SidebarState {
-  publishTopic?: string
-  publishPayload?: string
+export interface AppState {
+  tooBigReducer: TooBigOfState
+  publish: PublishState
 }
 
-export interface AppState {
+export interface TooBigOfState {
   settings: SettingsState,
   selectedTopic?: q.TreeNode
-  sidebar: SidebarState
   showUpdateNotification?: boolean
   showUpdateDetails: boolean
   connecting: boolean
@@ -65,13 +60,12 @@ export enum NodeOrder {
   topics = '#topics',
 }
 
-const initialAppState: AppState = {
+const initialBigState: TooBigOfState = {
   settings: {
     autoExpandLimit: 0,
     nodeOrder: NodeOrder.none,
     visible: false,
   },
-  sidebar: {},
   selectedTopic: undefined,
   showUpdateDetails: false,
   connected: false,
@@ -79,7 +73,7 @@ const initialAppState: AppState = {
   error: undefined,
 }
 
-const reducer: Reducer<AppState | undefined, CustomAction> = (state = initialAppState, action) => {
+const tooBigReducer: Reducer<TooBigOfState | undefined, CustomAction> = (state = initialBigState, action) => {
   if (!state) {
     throw Error('No initial state')
   }
@@ -97,16 +91,7 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state = initialApp
           autoExpandLimit: action.autoExpandLimit,
         },
       }
-    case ActionTypes.setPublishTopic:
-      return {
-        ...state,
-        sidebar: { ...state.sidebar, publishTopic: action.publishTopic },
-      }
-    case ActionTypes.setPublishPayload:
-      return {
-        ...state,
-        sidebar: { ...state.sidebar, publishPayload: action.publishPayload },
-      }
+
     case ActionTypes.toggleSettingsVisibility:
       return {
         ...state,
@@ -115,6 +100,7 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state = initialApp
           visible: !state.settings.visible,
         },
       }
+
     case ActionTypes.selectTopic:
       if (!action.selectedTopic) {
         return state
@@ -123,6 +109,7 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state = initialApp
         ...state,
         selectedTopic: action.selectedTopic,
       }
+
     case ActionTypes.setNodeOrder:
       if (!action.nodeOrder) {
         return state
@@ -131,11 +118,13 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state = initialApp
         ...state,
         settings: { ...state.settings, nodeOrder: action.nodeOrder },
       }
+
     case ActionTypes.showUpdateNotification:
       return {
         ...state,
         showUpdateNotification: action.showUpdateNotification,
       }
+
     case ActionTypes.showUpdateDetails:
       if (action.showUpdateDetails === undefined) {
         return state
@@ -144,6 +133,7 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state = initialApp
         ...state,
         showUpdateDetails: action.showUpdateDetails,
       }
+
     case ActionTypes.connecting:
       if (!action.connectionId) {
         return state
@@ -180,5 +170,10 @@ const reducer: Reducer<AppState | undefined, CustomAction> = (state = initialApp
       return state
   }
 }
+
+const reducer = combineReducers({
+  tooBigReducer,
+  publish: publishReducer,
+})
 
 export default reducer

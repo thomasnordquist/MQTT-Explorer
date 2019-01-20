@@ -1,7 +1,7 @@
 import * as settingsActions from './Settings'
-import * as sidebarActions from './Sidebar'
+import * as publishActions from './Publish'
 import * as treeActions from './Tree'
 import * as updateNotifierActions from './UpdateNotifier'
 import * as connectionActions from './Connection'
 
-export { settingsActions, treeActions, sidebarActions, updateNotifierActions, connectionActions }
+export { settingsActions, treeActions, publishActions, updateNotifierActions, connectionActions }

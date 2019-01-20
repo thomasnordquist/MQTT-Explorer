@@ -1,4 +1,3 @@
-// tslint:disable-next-line
 import 'react-ace'
 import 'brace/mode/json'
 import 'brace/mode/text'
@@ -6,7 +5,6 @@ import 'brace/mode/xml'
 import 'brace/theme/monokai'
 
 import * as React from 'react'
-import * as brace from 'brace'
 import * as q from '../../../../../backend/src/Model'
 
 import {
@@ -15,14 +13,16 @@ import {
   Radio,
   RadioGroup,
   TextField,
-  Typography,
   IconButton,
   FormControl,
   InputLabel,
   Input,
+  Checkbox,
+  MenuItem,
+  Tooltip,
 } from '@material-ui/core'
-import { makePublishEvent, rendererEvents } from '../../../../../events'
 
+// tslint:disable-next-line
 import { default as AceEditor } from 'react-ace'
 import { AppState } from '../../../reducers'
 import History from '../History'
@@ -31,47 +31,53 @@ import Navigation from '@material-ui/icons/Navigation'
 import Clear from '@material-ui/icons/Clear'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { sidebarActions } from '../../../actions'
+import { publishActions } from '../../../actions'
 
 interface Props {
   node?: q.TreeNode
   connectionId?: string
   topic?: string
   payload?: string
-  actions: any
+  actions: typeof publishActions
+  emptyPayload: boolean
+  retain: boolean
+  editorMode: string
+  qos: 0 | 1 | 2
 }
 
 interface State {
-  mode: string
   history: Message[]
 }
 
 class Publish extends React.Component<Props, State> {
   constructor(props: any) {
     super(props)
-    this.state = { mode: 'json', history: [] }
+    this.state = { history: [] }
   }
 
-  private updatePayload = (value: string, event?: any) => {
-    this.props.actions.setPublishPayload(value)
+  private updatePayload = (payload: string, event?: any) => {
+    this.props.actions.setPayload(payload)
   }
 
   private updateTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value)
-    this.props.actions.setPublishTopic(e.target.value)
+    this.props.actions.setTopic(e.target.value)
   }
 
   private updateMode = (e: React.ChangeEvent<{}>, value: string) => {
-    this.setState({ mode: value })
+    this.props.actions.setEditorMode(value)
   }
 
   private publish = (e: React.MouseEvent) => {
     e.stopPropagation()
+    if (!this.props.connectionId) {
+      return
+    }
+
+    this.props.actions.publish(this.props.connectionId)
     const topic = this.currentTopic() || ''
     const payload = this.props.payload
 
     if (this.props.connectionId && topic) {
-      rendererEvents.emit(makePublishEvent(this.props.connectionId), { topic, payload })
       this.addMessageToHistory(topic, payload)
     }
   }
@@ -102,7 +108,7 @@ class Publish extends React.Component<Props, State> {
   }
 
   private clearTopic = () => {
-    this.props.actions.setPublishTopic(undefined)
+    this.props.actions.setTopic('')
   }
 
   private topic() {
@@ -129,7 +135,7 @@ class Publish extends React.Component<Props, State> {
 
   private onTopicBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     if (!e.target.value) {
-      this.props.actions.setPublishTopic(undefined)
+      this.props.actions.setTopic(undefined)
     }
   }
 
@@ -152,41 +158,110 @@ class Publish extends React.Component<Props, State> {
   }
 
   private editorMode() {
-    const labelStyle = { margin: '0 8px 0 8px' }
     return (
       <div style={{ marginTop: '16px' }}>
         <div style={{ width: '100%', lineHeight: '64px' }}>
-          <RadioGroup
-            style={{ display: 'inline-block', float: 'left' }}
-            value={this.state.mode}
-            onChange={this.updateMode}
-            row={true}
-          >
-            <FormControlLabel
-              value="text"
-              style={labelStyle}
-              control={<Radio color="primary" />}
-              label="raw"
-              labelPlacement="top"
-            />
-            <FormControlLabel
-              value="xml"
-              style={labelStyle}
-              control={<Radio color="primary" />}
-              label="xml"
-              labelPlacement="top"
-            />
-            <FormControlLabel
-              value="json"
-              style={labelStyle}
-              control={<Radio color="primary" />}
-              label="json"
-              labelPlacement="top"
-            />
-          </RadioGroup>
+          {this.renderEditorModeSelection()}
           <div style={{ float: 'right', marginRight: '16px' }}>
             {this.publishButton()}
           </div>
+        </div>
+      </div>
+    )
+  }
+
+  private renderEditorModeSelection() {
+    if (this.props.emptyPayload) {
+      return null
+    }
+    const labelStyle = { margin: '0 8px 0 8px' }
+    return (
+      <RadioGroup
+        style={{ display: 'inline-block', float: 'left' }}
+        value={this.props.editorMode}
+        onChange={this.updateMode}
+        row={true}
+      >
+        <FormControlLabel
+          value="text"
+          style={labelStyle}
+          control={<Radio color="primary" />}
+          label="raw"
+          labelPlacement="top"
+        />
+        <FormControlLabel
+          value="xml"
+          style={labelStyle}
+          control={<Radio color="primary" />}
+          label="xml"
+          labelPlacement="top"
+        />
+        <FormControlLabel
+          value="json"
+          style={labelStyle}
+          control={<Radio color="primary" />}
+          label="json"
+          labelPlacement="top"
+        />
+      </RadioGroup>
+    )
+  }
+
+  private onChangeQoS = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(event.target.value, 10)
+    if (value !== 0 && value !== 1 && value !== 2) {
+      return
+    }
+
+    this.props.actions.setQoS(value)
+  }
+
+  private publishMode() {
+    const labelStyle = { margin: '0 8px 0 8px' }
+    const itemStyle = { padding: '0' }
+    const tooltipStyle = { textAlign: 'center' as 'center', width: '100%' }
+    const qosSelect = (
+      <TextField
+        select={true}
+        value={this.props.qos}
+        margin="normal"
+        style={{ margin: '8px 0 8px 8px' }}
+        onChange={this.onChangeQoS}
+      >
+        <MenuItem key={0} value={0} style={itemStyle}>
+          <Tooltip title="At most once"><div style={tooltipStyle}>0</div></Tooltip>
+        </MenuItem>
+        <MenuItem key={1} value={1} style={itemStyle}>
+          <Tooltip title="At least once"><div style={tooltipStyle}>1</div></Tooltip>
+        </MenuItem>
+        <MenuItem key={2} value={2} style={itemStyle}>
+          <Tooltip title="Exactly once"><div style={tooltipStyle}>2</div></Tooltip>
+        </MenuItem>
+      </TextField>
+    )
+    return (
+      <div style={{ marginTop: '8px', clear: 'both' }}>
+        <div style={{ width: '100%' }}>
+          <FormControlLabel
+            style={labelStyle}
+            control={qosSelect}
+            label="QoS"
+            labelPlacement="start"
+          />
+          <FormControlLabel
+            value="empty"
+            style={labelStyle}
+            control={<Checkbox color="primary" checked={this.props.emptyPayload} onChange={this.props.actions.toggleEmptyPayload} />}
+            label="no message"
+            labelPlacement="end"
+          />
+          <FormControlLabel
+            value="retain"
+            style={labelStyle}
+            control={<Checkbox color="primary" checked={this.props.retain} onChange={this.props.actions.toggleRetain} />}
+            label="retain"
+            labelPlacement="end"
+          />
         </div>
       </div>
     )
@@ -203,41 +278,56 @@ class Publish extends React.Component<Props, State> {
 
   private didSelectHistoryEntry = (index: number) => {
     const message = this.state.history[index]
-    this.props.actions.setPublishTopic(message.topic)
-    this.props.actions.setPublishPayload(message.payload)
+    this.props.actions.setTopic(message.topic)
+    this.props.actions.setPayload(message.payload)
   }
 
   private editor() {
     return (
       <div style={{ width: '100%', display: 'block' }}>
         {this.editorMode()}
-        <AceEditor
-          mode={this.state.mode}
-          theme="monokai"
-          name="UNIQUE_ID_OF_DIV"
-          width="100%"
-          height="200px"
-          showGutter={true}
-          value={this.props.payload}
-          onChange={this.updatePayload}
-          setOptions={this.editorOptions}
-          editorProps={{ $blockScrolling: true }}
-        />
+        {this.renderEditor()}
+        {this.publishMode()}
       </div>
+    )
+  }
+
+  private renderEditor() {
+    if (this.props.emptyPayload) {
+      return null
+    }
+
+    return (
+      <AceEditor
+        mode={this.props.editorMode}
+        theme="monokai"
+        name="UNIQUE_ID_OF_DIV"
+        width="100%"
+        height="200px"
+        showGutter={true}
+        value={this.props.payload}
+        onChange={this.updatePayload}
+        setOptions={this.editorOptions}
+        editorProps={{ $blockScrolling: true }}
+      />
     )
   }
 }
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    actions: bindActionCreators(sidebarActions, dispatch),
+    actions: bindActionCreators(publishActions, dispatch),
   }
 }
 
 const mapStateToProps = (state: AppState) => {
   return {
-    topic: state.sidebar.publishTopic,
-    payload: state.sidebar.publishPayload,
+    topic: state.publish.topic,
+    payload: state.publish.payload,
+    emptyPayload: state.publish.emptyPayload,
+    editorMode: state.publish.editorMode,
+    retain: state.publish.retain,
+    qos: state.publish.qos,
   }
 }
 

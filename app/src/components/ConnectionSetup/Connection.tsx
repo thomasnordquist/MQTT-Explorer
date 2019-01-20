@@ -380,10 +380,10 @@ class Connection extends React.Component<Props, State> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    visible: !state.connected,
-    connected: state.connected,
-    connecting: state.connecting,
-    error: state.error,
+    visible: !state.tooBigReducer.connected,
+    connected: state.tooBigReducer.connected,
+    connecting: state.tooBigReducer.connecting,
+    error: state.tooBigReducer.error,
   }
 }
 

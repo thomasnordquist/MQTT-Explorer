@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 
-import { makeConnectionMessageEvent, rendererEvents } from '../../../../events'
+import { makeConnectionMessageEvent, rendererEvents, MqttMessage } from '../../../../events'
 
 import { AppState } from '../../reducers'
 import TreeNode from './TreeNode'
@@ -89,9 +89,10 @@ class Tree extends React.Component<Props, TreeState> {
     }
   }
 
-  private handleNewData = (msg: any) => {
+  private handleNewData = (msg: MqttMessage) => {
     const edges = msg.topic.split('/')
-    const node = q.TreeNodeFactory.fromEdgesAndValue(edges, Buffer.from(msg.payload, 'base64').toString())
+    const node = q.TreeNodeFactory.fromEdgesAndValue(edges, msg.payload)
+    node.mqttMessage = msg
     this.state.tree.updateWithNode(node.firstNode())
 
     this.throttledStateUpdate({ msg, tree: this.state.tree })
@@ -128,8 +129,8 @@ class Tree extends React.Component<Props, TreeState> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    autoExpandLimit: state.settings.autoExpandLimit,
-    connected: state.connected,
+    autoExpandLimit: state.tooBigReducer.settings.autoExpandLimit,
+    connected: state.tooBigReducer.connected,
   }
 }
 

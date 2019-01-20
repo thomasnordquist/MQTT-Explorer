@@ -14,11 +14,6 @@ import UpdateNotifier from './UpdateNotifier'
 import { connect } from 'react-redux'
 import ErrorBoundary from './ErrorBoundary'
 
-interface State {
-  selectedNode?: q.TreeNode,
-  connectionId?: string
-}
-
 interface Props {
   name: string
   connectionId: string
@@ -26,12 +21,10 @@ interface Props {
   settingsVisible: boolean
 }
 
-class App extends React.Component<Props, State> {
+class App extends React.Component<Props, {}> {
   constructor(props: any) {
     super(props)
-    this.state = {
-      selectedNode: undefined,
-    }
+    this.state = { }
   }
 
   private getStyles(): {[s: string]: React.CSSProperties} {
@@ -94,9 +87,7 @@ class App extends React.Component<Props, State> {
               <TitleBar />
               <div style={centerContent}>
                 <div style={this.getStyles().left}>
-                  <Tree connectionId={this.props.connectionId} didSelectNode={(node: q.TreeNode) => {
-                    this.setState({ selectedNode: node })
-                  }} />
+                  <Tree connectionId={this.props.connectionId} />
                 </div>
                 <div style={this.getStyles().right}>
                   <Sidebar connectionId={this.props.connectionId} />
@@ -113,8 +104,8 @@ class App extends React.Component<Props, State> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    settingsVisible: state.settings.visible,
-    connectionId: state.connectionId,
+    settingsVisible: state.tooBigReducer.settings.visible,
+    connectionId: state.tooBigReducer.connectionId,
   }
 }
 

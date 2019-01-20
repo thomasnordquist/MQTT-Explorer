@@ -72,7 +72,7 @@ class TreeNodeSubnodes extends React.Component<Props, {}> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    nodeOrder: state.settings.nodeOrder,
+    nodeOrder: state.tooBigReducer.settings.nodeOrder,
   }
 }
 

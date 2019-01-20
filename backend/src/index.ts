@@ -1,7 +1,7 @@
 import {
   AddMqttConnection,
   EventDispatcher,
-  Message,
+  MqttMessage,
   addMqttConnectionEvent,
   backendEvents,
   checkForUpdates,
@@ -36,19 +36,20 @@ export class ConnectionManager {
 
     connection.connect(options)
     this.handleNewMessagesForConnection(connectionId, connection)
-    backendEvents.subscribe(makePublishEvent(connectionId), (msg: Message) => {
-      this.connections[connectionId].publish(msg.topic, msg.payload)
+    backendEvents.subscribe(makePublishEvent(connectionId), (msg: MqttMessage) => {
+      this.connections[connectionId].publish(msg)
     })
   }
 
   private handleNewMessagesForConnection(connectionId: string, connection: MqttSource) {
     const messageEvent = makeConnectionMessageEvent(connectionId)
-    connection.onMessage((topic: string, payload: Buffer) => {
+    connection.onMessage((topic: string, payload: Buffer, packet: any) => {
       let buffer = payload
       if (buffer.length > 10000) {
         buffer = buffer.slice(0, 10000)
       }
-      backendEvents.emit(messageEvent, { topic, payload: buffer.toString('base64') })
+
+      backendEvents.emit(messageEvent, { topic, payload: buffer.toString(), qos: packet.qos, retain: packet.retain })
     })
   }
 

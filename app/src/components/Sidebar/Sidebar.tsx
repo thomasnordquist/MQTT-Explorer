@@ -116,21 +116,13 @@ class Sidebar extends React.Component<Props, State> {
             <Typography className={classes.heading}>Value {copyValue}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={this.detailsStyle}>
-            <div style={{ width: '100%', textAlign:'right' }}>
-              {this.props.node && this.props.node.message && <i><DateFormatter date={this.props.node.message.received} /></i>}
-            </div>
+            {this.messageMetaInfo()}
             <div ref={this.valueRef}>
               <ValueRenderer message={this.props.node && this.props.node.message} />
             </div>
             <div><MessageHistory onSelect={this.handleMessageHistorySelect} node={this.props.node} /></div>
             <Popper open={Boolean(this.state.compareMessage)} anchorEl={this.valueRef.current} placement="left" transition={true}>
-              {({ TransitionProps }) => (
-                <Fade {...TransitionProps} timeout={350}>
-                  <Paper>
-                    <ValueRenderer message={this.state.compareMessage} />
-                  </Paper>
-                </Fade>
-              )}
+              {this.showValueComparison}
             </Popper>
           </ExpansionPanelDetails>
         </ExpansionPanel>
@@ -148,6 +140,30 @@ class Sidebar extends React.Component<Props, State> {
           </ExpansionPanelSummary>
           {this.renderNodeStats()}
         </ExpansionPanel>
+      </div>
+    )
+  }
+
+  private showValueComparison = (a: any) => (
+    <Fade {...a.TransitionProps} timeout={350}>
+      <Paper>
+        <ValueRenderer message={this.state.compareMessage} />
+      </Paper>
+    </Fade>
+  )
+
+  private messageMetaInfo() {
+    if (!this.props.node || !this.props.node.message || !this.props.node.mqttMessage) {
+      return null
+    }
+
+    return (
+      <div style={{ width: '100%', display: 'flex' }}>
+        <div style={{ flex: 1 }}><Typography>QoS: {this.props.node.mqttMessage.qos}</Typography></div>
+        <div style={{ flex: 1, textAlign: 'center' }}>
+          <Typography style={{ color: this.props.theme.palette.secondary.main }}><b>{this.props.node.mqttMessage.retain ? 'retained' : null}</b></Typography>
+        </div>
+        <div style={{ flex: 1, textAlign: 'right' }}><Typography><i><DateFormatter date={this.props.node.message.received} /></i></Typography></div>
       </div>
     )
   }
@@ -175,7 +191,7 @@ class Sidebar extends React.Component<Props, State> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    node: state.selectedTopic,
+    node: state.tooBigReducer.selectedTopic,
   }
 }
 

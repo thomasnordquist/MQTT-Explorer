@@ -32,7 +32,7 @@ export const showError = (error?: string) => ({
 })
 
 export const disconnect = () => (dispatch: Dispatch<CustomAction>, getState: () => AppState)  => {
-  rendererEvents.emit(removeConnection, getState().connectionId)
+  rendererEvents.emit(removeConnection, getState().tooBigReducer.connectionId)
 
   dispatch({
     type: ActionTypes.disconnect,

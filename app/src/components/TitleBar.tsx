@@ -66,7 +66,10 @@ const styles: StyleRulesCallback = theme => ({
 
 interface Props {
   classes: any
-  actions: any
+  actions: {
+    settings: typeof settingsActions,
+    connection: typeof connectionActions,
+  }
 }
 
 interface State {
@@ -91,11 +94,11 @@ class TitleBar extends React.Component<Props, State> {
     return (
       <AppBar position="static">
         <Toolbar>
-          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={this.props.actions.toggleSettingsVisibility}>
+          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={actions.settings.toggleSettingsVisibility}>
             <Menu />
           </IconButton>
           <Typography className={classes.title} variant="h6" color="inherit">MQTT-Explorer</Typography>
-          <Button style={{ margin: 'auto 8px auto auto' }} onClick={actions.disconnect}>
+          <Button style={{ margin: 'auto 8px auto auto' }} onClick={actions.connection.disconnect}>
             Disconnect <CloudOff style={{ marginRight: '8px', paddingLeft: '8px' }}/>
           </Button>
         </Toolbar>
@@ -122,7 +125,10 @@ class TitleBar extends React.Component<Props, State> {
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    actions: { ...bindActionCreators(connectionActions, dispatch), ...bindActionCreators(settingsActions, dispatch) },
+    actions: {
+      settings: bindActionCreators(settingsActions, dispatch),
+      connection: bindActionCreators(connectionActions, dispatch),
+    },
   }
 }
 

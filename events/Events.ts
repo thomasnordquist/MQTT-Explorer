@@ -35,18 +35,20 @@ export const updateAvailable: Event<UpdateInfo> = {
   topic: 'app/update/available',
 }
 
-export interface Message {
+export interface MqttMessage {
   topic: string,
-  payload: any
+  payload: any,
+  qos: 0 | 1 | 2,
+  retain: boolean
 }
 
-export function makePublishEvent(connectionId: string): Event<Message> {
+export function makePublishEvent(connectionId: string): Event<MqttMessage> {
   return {
     topic: `conn/publish/${connectionId}`,
   }
 }
 
-export function makeConnectionMessageEvent(connectionId: string): Event<Message> {
+export function makeConnectionMessageEvent(connectionId: string): Event<MqttMessage> {
   return {
     topic: `conn/${connectionId}`,
   }

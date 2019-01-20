@@ -212,8 +212,8 @@ const styles = (theme: Theme) => ({
 
 const mapStateToProps = (state: AppState) => {
   return {
-    showUpdateNotification: state.showUpdateNotification,
-    showUpdateDetails: state.showUpdateDetails,
+    showUpdateNotification: state.tooBigReducer.showUpdateNotification,
+    showUpdateDetails: state.tooBigReducer.showUpdateDetails,
   }
 }
 

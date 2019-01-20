@@ -1,15 +1,15 @@
 import { Edge, Message, RingBuffer } from './'
-import { EventDispatcher } from '../../../events'
+import { EventDispatcher, MqttMessage } from '../../../events'
 
 export class TreeNode {
   public sourceEdge?: Edge
   public message?: Message
+  public mqttMessage?: MqttMessage
   public messageHistory: RingBuffer<Message> = new RingBuffer<Message>(3000, 100)
   public edges: {[s: string]: Edge} = {}
   public collapsed = false
   public messages: number = 0
   public lastUpdate: number = Date.now()
-
   public onMerge = new EventDispatcher<void, TreeNode>(this)
   public onEdgesChange = new EventDispatcher<void, TreeNode>(this)
   public onMessage = new EventDispatcher<Message, TreeNode>(this)

@@ -138,9 +138,9 @@ class Settings extends React.Component<Props, {}> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    autoExpandLimit: state.settings.autoExpandLimit,
-    nodeOrder: state.settings.nodeOrder,
-    visible: state.settings.visible,
+    autoExpandLimit: state.tooBigReducer.settings.autoExpandLimit,
+    nodeOrder: state.tooBigReducer.settings.nodeOrder,
+    visible: state.tooBigReducer.settings.visible,
   }
 }
 

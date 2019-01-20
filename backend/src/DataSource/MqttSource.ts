@@ -2,6 +2,7 @@ import * as Url from 'url'
 
 import { Client, connect as mqttConnect } from 'mqtt'
 import { DataSource, DataSourceStateMachine } from './'
+import { MqttMessage } from '../../../events'
 
 export interface MqttOptions {
   url: string
@@ -15,11 +16,11 @@ export interface MqttOptions {
 export class MqttSource implements DataSource<MqttOptions> {
   public stateMachine: DataSourceStateMachine = new DataSourceStateMachine()
   private client: Client | undefined
-  private messageCallback?: (topic: string, message: Buffer) => void
+  private messageCallback?: (topic: string, message: Buffer, packet: any) => void
   private rootSubscription = '#'
   public topicSeparator = '/'
 
-  public onMessage(messageCallback: (topic: string, message: Buffer) => void) {
+  public onMessage(messageCallback: (topic: string, message: Buffer, packet: any) => void) {
     this.messageCallback = messageCallback
   }
 
@@ -73,14 +74,14 @@ export class MqttSource implements DataSource<MqttOptions> {
     })
 
     client.on('message', (topic, message, packet) => {
-      this.messageCallback && this.messageCallback(topic, message)
+      this.messageCallback && this.messageCallback(topic, message, packet)
     })
 
     return this.stateMachine
   }
 
-  public publish(topic: string, payload: any) {
-    this.client && this.client.publish(topic, payload)
+  public publish(msg: MqttMessage) {
+    this.client && this.client.publish(msg.topic, msg.payload, { qos: msg.qos, retain: msg.retain })
   }
 
   public disconnect() {
