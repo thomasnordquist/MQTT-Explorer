@@ -87,7 +87,7 @@ class App extends React.Component<Props, {}> {
               <TitleBar />
               <div style={centerContent}>
                 <div style={this.getStyles().left}>
-                  <Tree connectionId={this.props.connectionId} />
+                  <Tree />
                 </div>
                 <div style={this.getStyles().right}>
                   <Sidebar connectionId={this.props.connectionId} />
@@ -105,7 +105,7 @@ class App extends React.Component<Props, {}> {
 const mapStateToProps = (state: AppState) => {
   return {
     settingsVisible: state.tooBigReducer.settings.visible,
-    connectionId: state.tooBigReducer.connectionId,
+    connectionId: state.connection.connectionId,
   }
 }
 

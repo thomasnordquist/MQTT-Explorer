@@ -1,7 +1,9 @@
-import { ActionTypes, NodeOrder, CustomAction, AppState } from '../reducers'
+import { ActionTypes, Action, ConnectionState } from '../reducers/Connection'
 import { MqttOptions } from '../../../backend/src/DataSource'
 import { Dispatch } from 'redux'
 import { rendererEvents, addMqttConnectionEvent, makeConnectionStateEvent, removeConnection } from '../../../events'
+import { AppState } from '../reducers'
+import * as q from '../../../backend/src/Model'
 
 export const connect = (options: MqttOptions, connectionId: string) => (dispatch: Dispatch<any>, getState: () => AppState) => {
   dispatch(connecting(connectionId))
@@ -9,7 +11,9 @@ export const connect = (options: MqttOptions, connectionId: string) => (dispatch
   const event = makeConnectionStateEvent(connectionId)
   rendererEvents.subscribe(event, (dataSourceState) => {
     if (dataSourceState.connected) {
-      dispatch(connected())
+      const tree = new q.Tree()
+      tree.updateWithConnection(rendererEvents, connectionId)
+      dispatch(connected(tree))
     } else if (dataSourceState.error) {
       dispatch(showError(dataSourceState.error))
       dispatch(disconnect())
@@ -17,24 +21,27 @@ export const connect = (options: MqttOptions, connectionId: string) => (dispatch
   })
 }
 
-export const connected: () => CustomAction = ()  => ({
-  type: ActionTypes.connected,
+export const connected: (tree: q.Tree) => Action = (tree: q.Tree)  => ({
+  tree,
+  type: ActionTypes.CONNECTION_SET_CONNECTED,
 })
 
-export const connecting: (connectionId: string) => CustomAction = (connectionId: string)  => ({
+export const connecting: (connectionId: string) => Action = (connectionId: string)  => ({
   connectionId,
-  type: ActionTypes.connecting,
+  type: ActionTypes.CONNECTION_SET_CONNECTING,
 })
 
 export const showError = (error?: string) => ({
   error,
-  type: ActionTypes.showError,
+  type: ActionTypes.CONNECTION_SET_SHOW_ERROR,
 })
 
-export const disconnect = () => (dispatch: Dispatch<CustomAction>, getState: () => AppState)  => {
-  rendererEvents.emit(removeConnection, getState().tooBigReducer.connectionId)
+export const disconnect = () => (dispatch: Dispatch<Action>, getState: () => AppState)  => {
+  const { connectionId, tree } = getState().connection
+  rendererEvents.emit(removeConnection, connectionId)
+  tree && tree.stopUpdating()
 
   dispatch({
-    type: ActionTypes.disconnect,
+    type: ActionTypes.CONNECTION_SET_DISCONNECTED,
   })
 }

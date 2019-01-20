@@ -18,22 +18,17 @@ interface Props {
   autoExpandLimit: number
   didSelectNode?: (node: q.TreeNode) => void
   connectionId?: string
-  connected: boolean
+  tree?: q.Tree
 }
 
-interface TreeState {
-  tree: q.Tree
-  msg: any
-}
-
-class Tree extends React.Component<Props, TreeState> {
+class Tree extends React.Component<Props, {}> {
   private updateTimer?: any
   private lastUpdate: number = 0
   private perf: number = 0
 
   constructor(props: any) {
     super(props)
-    this.state = { tree: new q.Tree(), msg: {} }
+    this.state = { }
   }
 
   public time(): number {
@@ -43,11 +38,18 @@ class Tree extends React.Component<Props, TreeState> {
     return time
   }
 
-  private performanceCallback = (ms: number) => {
-    average.push(Date.now(), ms)
+  public componentWillReceiveProps(nextProps: Props) {
+    if (this.props.tree !== nextProps.tree) {
+      if (this.props.tree) {
+        this.props.tree.onMerge.unsubscribe(this.throttledTreeUpdate)
+      }
+      if (nextProps.tree) {
+        nextProps.tree.onMerge.subscribe(this.throttledTreeUpdate)
+      }
+    }
   }
 
-  public throttledTreeUpdate() {
+  public throttledTreeUpdate = () => {
     if (this.updateTimer) {
       return
     }
@@ -66,23 +68,6 @@ class Tree extends React.Component<Props, TreeState> {
     }, Math.max(0, timeUntilNextUpdate))
   }
 
-  public componentWillReceiveProps(nextProps: Props) {
-    this.registerAndUnregisterEventSubscriptionsForNewProps(nextProps)
-  }
-
-  private registerAndUnregisterEventSubscriptionsForNewProps(nextProps: Props) {
-    if (this.props.connectionId !== nextProps.connectionId) {
-      if (this.props.connectionId) {
-        this.setState({ tree: new q.Tree() })
-        rendererEvents.unsubscribeAll(makeConnectionMessageEvent(this.props.connectionId))
-        this.updateTimer && clearTimeout(this.updateTimer)
-      }
-      if (nextProps.connectionId) {
-        rendererEvents.subscribe(makeConnectionMessageEvent(nextProps.connectionId), this.handleNewData)
-      }
-    }
-  }
-
   public componentWillUnmount() {
     if (this.props.connectionId) {
       const event = makeConnectionMessageEvent(this.props.connectionId)
@@ -90,17 +75,8 @@ class Tree extends React.Component<Props, TreeState> {
     }
   }
 
-  private handleNewData = (msg: MqttMessage) => {
-    const edges = msg.topic.split('/')
-    const node = q.TreeNodeFactory.fromEdgesAndValue(edges, msg.payload)
-    node.mqttMessage = msg
-    this.state.tree.updateWithNode(node.firstNode())
-
-    this.throttledTreeUpdate()
-  }
-
   public render() {
-    if (!this.props.connected) {
+    if (!this.props.tree) {
       return null
     }
 
@@ -116,22 +92,26 @@ class Tree extends React.Component<Props, TreeState> {
           autoExpandLimit={this.props.autoExpandLimit}
           isRoot={true}
           didSelectNode={this.props.didSelectNode}
-          treeNode={this.state.tree}
+          treeNode={this.props.tree}
           name="/"
           collapsed={false}
           key="rootNode"
-          lastUpdate={this.state.tree.lastUpdate}
+          lastUpdate={this.props.tree.lastUpdate}
           performanceCallback={this.performanceCallback}
         />
       </div>
     )
+  }
+
+  private performanceCallback = (ms: number) => {
+    average.push(Date.now(), ms)
   }
 }
 
 const mapStateToProps = (state: AppState) => {
   return {
     autoExpandLimit: state.tooBigReducer.settings.autoExpandLimit,
-    connected: state.tooBigReducer.connected,
+    tree: state.connection.tree,
   }
 }
 

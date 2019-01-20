@@ -3,20 +3,18 @@ import * as q from '../../../backend/src/Model'
 import { Action, Reducer, combineReducers } from 'redux'
 
 import { trackEvent } from '../tracking'
-import { MqttOptions } from '../../../backend/src/DataSource'
 import { PublishState, publishReducer } from './Publish'
+import { ConnectionState, connectionReducer } from './Connection'
 
 export enum ActionTypes {
-  disconnect = 'DISCONNECT',
-  showError = 'SHOW_ERROR',
+
   setAutoExpandLimit = 'SET_AUTO_EXPAND_LIMIT',
   toggleSettingsVisibility = 'TOGGLE_SETTINGS_VISIBILITY',
   setNodeOrder = 'SET_NODE_ORDER',
   selectTopic = 'SELECT_TOPIC',
   showUpdateNotification = 'SHOW_UPDATE_NOTIFICATION',
   showUpdateDetails = 'SHOW_UPDATE_DETAILS',
-  connecting = 'CONNECTING',
-  connected = 'CONNECTED',
+
 }
 
 export interface CustomAction extends Action {
@@ -26,14 +24,12 @@ export interface CustomAction extends Action {
   selectedTopic?: q.TreeNode
   showUpdateNotification?: boolean
   showUpdateDetails?: boolean
-  connectionOptions?: MqttOptions
-  connectionId?: string
-  error?: string
 }
 
 export interface AppState {
   tooBigReducer: TooBigOfState
   publish: PublishState
+  connection: ConnectionState
 }
 
 export interface TooBigOfState {
@@ -41,10 +37,6 @@ export interface TooBigOfState {
   selectedTopic?: q.TreeNode
   showUpdateNotification?: boolean
   showUpdateDetails: boolean
-  connecting: boolean
-  connected: boolean
-  error?: string
-  connectionId?: string
 }
 
 export interface SettingsState {
@@ -68,9 +60,6 @@ const initialBigState: TooBigOfState = {
   },
   selectedTopic: undefined,
   showUpdateDetails: false,
-  connected: false,
-  connecting: false,
-  error: undefined,
 }
 
 const tooBigReducer: Reducer<TooBigOfState | undefined, CustomAction> = (state = initialBigState, action) => {
@@ -134,38 +123,6 @@ const tooBigReducer: Reducer<TooBigOfState | undefined, CustomAction> = (state =
         showUpdateDetails: action.showUpdateDetails,
       }
 
-    case ActionTypes.connecting:
-      if (!action.connectionId) {
-        return state
-      }
-      return {
-        ...state,
-        connected: false,
-        connecting: true,
-        connectionId: action.connectionId,
-      }
-
-    case ActionTypes.disconnect:
-      return {
-        ...state,
-        connected: false,
-        connecting: false,
-        connectionId: undefined,
-      }
-
-    case ActionTypes.connected:
-      return {
-        ...state,
-        connected: true,
-        connecting: false,
-      }
-
-    case ActionTypes.showError:
-      return {
-        ...state,
-        error: action.error,
-      }
-
     default:
       return state
   }
@@ -174,6 +131,7 @@ const tooBigReducer: Reducer<TooBigOfState | undefined, CustomAction> = (state =
 const reducer = combineReducers({
   tooBigReducer,
   publish: publishReducer,
+  connection: connectionReducer,
 })
 
 export default reducer

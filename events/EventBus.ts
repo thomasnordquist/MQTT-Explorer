@@ -2,7 +2,7 @@ import { IpcMain, IpcRenderer, ipcMain, ipcRenderer } from 'electron'
 
 import { Event } from './Events'
 
-interface EventBusInterface {
+export interface EventBusInterface {
   subscribe<MessageType>(event: Event<MessageType>, callback:(msg: MessageType) => void): void
   unsubscribeAll<MessageType>(event: Event<MessageType>): void
   emit<MessageType>(event: Event<MessageType>, msg: MessageType): void

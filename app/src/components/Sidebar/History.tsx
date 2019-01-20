@@ -1,5 +1,4 @@
 import * as React from 'react'
-import * as q from '../../../../backend/src/Model'
 
 import { Badge, Typography } from '@material-ui/core'
 import { Theme, withStyles } from '@material-ui/core/styles'
