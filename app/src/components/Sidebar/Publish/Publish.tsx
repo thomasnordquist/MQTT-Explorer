@@ -74,9 +74,9 @@ class Publish extends React.Component<Props, State> {
     }
 
     this.props.actions.publish(this.props.connectionId)
-    const topic = this.currentTopic() || ''
-    const payload = this.props.payload
 
+    const topic = this.props.topic || ''
+    const payload = this.props.payload
     if (this.props.connectionId && topic) {
       this.addMessageToHistory(topic, payload)
     }
@@ -100,19 +100,12 @@ class Publish extends React.Component<Props, State> {
     )
   }
 
-  private currentTopic(): string | undefined {
-    const { node, topic } = this.props
-    const selectedNodePath = (node ? node.path() : undefined)
-
-    return (topic !== undefined) ? topic : selectedNodePath
-  }
-
   private clearTopic = () => {
     this.props.actions.setTopic('')
   }
 
   private topic() {
-    const topicStr = this.currentTopic() || ''
+    const topicStr = this.props.topic || ''
 
     return (
       <div>
