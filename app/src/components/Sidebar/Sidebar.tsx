@@ -29,7 +29,7 @@ import Publish from './Publish/Publish'
 import Topic from './Topic'
 import ValueRenderer from './ValueRenderer'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux';
+import { bindActionCreators } from 'redux'
 
 const throttle = require('lodash.throttle')
 

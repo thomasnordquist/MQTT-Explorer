@@ -47,7 +47,7 @@ class Tree extends React.Component<Props, TreeState> {
     average.push(Date.now(), ms)
   }
 
-  public throttledStateUpdate(state: any) {
+  public throttledTreeUpdate() {
     if (this.updateTimer) {
       return
     }
@@ -61,7 +61,7 @@ class Tree extends React.Component<Props, TreeState> {
         this.lastUpdate = performance.now()
         this.updateTimer && clearTimeout(this.updateTimer)
         this.updateTimer = undefined
-        this.setState(state)
+        this.setState(this.state)
       }, { timeout: 500 })
     }, Math.max(0, timeUntilNextUpdate))
   }
@@ -75,6 +75,7 @@ class Tree extends React.Component<Props, TreeState> {
       if (this.props.connectionId) {
         this.setState({ tree: new q.Tree() })
         rendererEvents.unsubscribeAll(makeConnectionMessageEvent(this.props.connectionId))
+        this.updateTimer && clearTimeout(this.updateTimer)
       }
       if (nextProps.connectionId) {
         rendererEvents.subscribe(makeConnectionMessageEvent(nextProps.connectionId), this.handleNewData)
@@ -95,7 +96,7 @@ class Tree extends React.Component<Props, TreeState> {
     node.mqttMessage = msg
     this.state.tree.updateWithNode(node.firstNode())
 
-    this.throttledStateUpdate({ msg, tree: this.state.tree })
+    this.throttledTreeUpdate()
   }
 
   public render() {
