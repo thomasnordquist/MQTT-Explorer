@@ -237,13 +237,15 @@ class Publish extends React.Component<Props, State> {
             label="QoS"
             labelPlacement="start"
           />
-          <FormControlLabel
-            value="retain"
-            style={labelStyle}
-            control={<Checkbox color="primary" checked={this.props.retain} onChange={this.props.actions.toggleRetain} />}
-            label="retain"
-            labelPlacement="end"
-          />
+          <Tooltip title="Retained messages only appear to be retained, when client subscribes after the initial publish." placement="top">
+            <FormControlLabel
+              value="retain"
+              style={labelStyle}
+              control={<Checkbox color="primary" checked={this.props.retain} onChange={this.props.actions.toggleRetain} />}
+              label="retain"
+              labelPlacement="end"
+            />
+          </Tooltip>
         </div>
       </div>
     )
