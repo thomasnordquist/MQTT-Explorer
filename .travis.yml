@@ -24,6 +24,6 @@ script:
   - npm run build
   - npm run test
   - if [[ "$TRAVIS_TAG" != "" ]]; then npm run prepare-release; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TRAVIS_TAG" != "" ]]; then npm run package-with-docker  -- linux; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TRAVIS_TAG" != "" ]]; then npm run package -- linux; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ "$TRAVIS_TAG" != "" ]]; then npm run package -- mac; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TRAVIS_TAG" != "" ]]; then npm run package-with-docker -- win; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ "$TRAVIS_TAG" != "" ]]; then npm run -- win; fi
