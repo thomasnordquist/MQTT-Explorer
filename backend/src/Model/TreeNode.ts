@@ -83,6 +83,7 @@ export class TreeNode {
     if (node.message) {
       this.setMessage(node.message)
       this.onMessage.dispatch(node.message)
+      this.mqttMessage = node.mqttMessage
     }
 
     this.mergeEdges(node)

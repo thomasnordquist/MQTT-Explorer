@@ -46,12 +46,13 @@ export const publish = (connectionId: string) => (dispatch: Dispatch<Action>, ge
   }
 
   const publishEvent = makePublishEvent(connectionId)
-  rendererEvents.emit(publishEvent, {
+  const mqttMessage = {
     topic,
-    payload: state.publish.payload,
+    payload: state.publish.emptyPayload ? null : state.publish.payload,
     retain: state.publish.retain,
     qos: state.publish.qos,
-  })
+  }
+  rendererEvents.emit(publishEvent, mqttMessage)
 }
 
 export const toggleRetain = (): Action => {
