@@ -1,6 +1,7 @@
 const { XYPlot, XAxis, LineMarkSeries, Hint, YAxis, HorizontalGridLines, LineSeries } = require('react-vis')
 import { default as ReactResizeDetector } from 'react-resize-detector'
 
+import DateFormatter from '../DateFormatter'
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
@@ -45,11 +46,18 @@ class PlotHistory extends React.Component<Props, Stats> {
             data={data}
             curve="curveCardinal"
           />
-          {this.state.value ? <Hint value={this.state.value} /> : null}
+          {this.state.value ? <Hint format={this.hintFormatter} value={this.state.value} /> : null}
         </XYPlot>
         <ReactResizeDetector handleWidth={true} onResize={this.resize} />
       </div>
     )
+  }
+
+  private hintFormatter = (point: any) => {
+    return [
+      { title: <b>Time</b>, value: <DateFormatter date={new Date(point.x)} /> },
+      { title: <b>Value</b>, value: point.y },
+    ]
   }
 
   private _forgetValue = () => {
