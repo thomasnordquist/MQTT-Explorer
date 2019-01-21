@@ -3,7 +3,7 @@ import { AppState } from '../reducers'
 import { makePublishEvent, rendererEvents } from '../../../events'
 
 export const clearRetainedTopic = () => (dispatch: Dispatch<Action>, getState: () => AppState)  => {
-  const { selectedTopic } = getState().tooBigReducer
+  const { selectedTopic } = getState().tree
   const { connectionId } = getState().connection
 
   if (!selectedTopic || !connectionId) {

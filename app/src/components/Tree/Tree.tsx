@@ -19,6 +19,7 @@ interface Props {
   didSelectNode?: (node: q.TreeNode) => void
   connectionId?: string
   tree?: q.Tree
+  filter: string
 }
 
 class Tree extends React.Component<Props, {}> {
@@ -46,7 +47,12 @@ class Tree extends React.Component<Props, {}> {
       if (nextProps.tree) {
         nextProps.tree.onMerge.subscribe(this.throttledTreeUpdate)
       }
+      this.setState(this.state)
     }
+  }
+
+  public componentWillUnmount() {
+    this.props.tree && this.props.tree.onMerge.unsubscribe(this.throttledTreeUpdate)
   }
 
   public throttledTreeUpdate = () => {
@@ -68,15 +74,9 @@ class Tree extends React.Component<Props, {}> {
     }, Math.max(0, timeUntilNextUpdate))
   }
 
-  public componentWillUnmount() {
-    if (this.props.connectionId) {
-      const event = makeConnectionMessageEvent(this.props.connectionId)
-      rendererEvents.unsubscribeAll(event)
-    }
-  }
-
   public render() {
-    if (!this.props.tree) {
+    const { tree, filter } = this.props
+    if (!tree) {
       return null
     }
 
@@ -84,17 +84,17 @@ class Tree extends React.Component<Props, {}> {
       lineHeight: '1.1',
       cursor: 'default',
     }
-
+    const key = `rootNode-${filter}`
     return (
       <div style={style}>
         <TreeNode
+          key={key}
           animateChages={true}
           isRoot={true}
-          treeNode={this.props.tree}
+          treeNode={tree}
           name="/"
+          lastUpdate={tree.lastUpdate}
           collapsed={false}
-          key="rootNode"
-          lastUpdate={this.props.tree.lastUpdate}
           performanceCallback={this.performanceCallback}
         />
       </div>
@@ -109,7 +109,8 @@ class Tree extends React.Component<Props, {}> {
 const mapStateToProps = (state: AppState) => {
   return {
     autoExpandLimit: state.settings.autoExpandLimit,
-    tree: state.connection.tree,
+    tree: state.tree.tree,
+    filter: state.tree.filter,
   }
 }
 

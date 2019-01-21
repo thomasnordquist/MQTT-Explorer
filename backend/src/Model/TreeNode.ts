@@ -16,6 +16,17 @@ export class TreeNode {
   private cachedLeafes?: TreeNode[]
   private cachedLeafMessageCount?: number
 
+  public unconnectedClone() {
+    const node = new TreeNode()
+    node.message = this.message
+    node.mqttMessage = this.mqttMessage
+    node.messageHistory = this.messageHistory.clone()
+    node.messages = this.messages
+    node.lastUpdate = this.lastUpdate
+
+    return node
+  }
+
   constructor(sourceEdge?: Edge, message?: Message) {
     if (sourceEdge) {
       this.sourceEdge = sourceEdge

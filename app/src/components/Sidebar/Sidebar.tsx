@@ -84,6 +84,10 @@ class Sidebar extends React.Component<Props, State> {
     }
   }
 
+  public componentWillUnmount() {
+    this.props.node && this.removeUpdateListener(this.props.node)
+  }
+
   private registerUpdateListener(node: q.TreeNode) {
     node.onMerge.subscribe(this.updateNode)
     node.onMessage.subscribe(this.updateNode)
@@ -215,7 +219,7 @@ class Sidebar extends React.Component<Props, State> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    node: state.tooBigReducer.selectedTopic,
+    node: state.tree.selectedTopic,
   }
 }
 

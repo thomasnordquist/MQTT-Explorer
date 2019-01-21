@@ -42,15 +42,16 @@ class UpdateNotifier extends React.Component<Props, {}> {
     rendererEvents.subscribe(updateAvailable, this.handleUpdate)
   }
 
+  public componentWillUnmount() {
+    rendererEvents.unsubscribeAll(updateAvailable)
+  }
+
   private fixUrl(url: string, version: string) {
     if (!/^http/.test(url)) {
       return `https://github.com/thomasnordquist/MQTT-Explorer/releases/download/v${version}/${url}`
     }
 
     return url
-  }
-  public componentWillUnmount() {
-    rendererEvents.unsubscribeAll(updateAvailable)
   }
 
   private handleUpdate = (updateInfo: UpdateInfo) => {

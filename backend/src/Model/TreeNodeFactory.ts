@@ -5,21 +5,29 @@ interface HasLength {
 }
 
 export abstract class TreeNodeFactory {
-  public static fromEdgesAndValue<T extends HasLength>(edgeNames: string[], value?: T): TreeNode {
+  public static insertNodeAtPosition(edgeNames: string[], node: TreeNode) {
     let currentNode: TreeNode = new Tree()
+    let edge
     for (const edgeName of edgeNames) {
-      const edge = new Edge(edgeName)
-      const newNode = new TreeNode(edge)
-      edge.target = newNode
+      edge = new Edge(edgeName)
       currentNode.addEdge(edge)
-      currentNode = newNode
+      currentNode = new TreeNode(edge)
+      edge.target = currentNode
     }
+    node.sourceEdge = edge
+    node.sourceEdge!.target = node
+  }
 
-    currentNode.setMessage({
+  public static fromEdgesAndValue<T extends HasLength>(edgeNames: string[], value?: T): TreeNode {
+    const node = new TreeNode()
+    node.setMessage({
       value,
       length: value ? value.length : 0,
       received: new Date(),
     })
-    return currentNode
+
+    this.insertNodeAtPosition(edgeNames, node)
+
+    return node
   }
 }

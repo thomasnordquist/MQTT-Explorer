@@ -6,35 +6,33 @@ import { trackEvent } from '../tracking'
 import { PublishState, publishReducer } from './Publish'
 import { ConnectionState, connectionReducer } from './Connection'
 import { SettingsState, settingsReducer } from './Settings'
+import { TreeState, treeReducer } from './Tree'
 
 export enum ActionTypes {
-  selectTopic = 'SELECT_TOPIC',
   showUpdateNotification = 'SHOW_UPDATE_NOTIFICATION',
   showUpdateDetails = 'SHOW_UPDATE_DETAILS',
 }
 
 export interface CustomAction extends Action {
   type: ActionTypes,
-  selectedTopic?: q.TreeNode
   showUpdateNotification?: boolean
   showUpdateDetails?: boolean
 }
 
 export interface AppState {
   tooBigReducer: TooBigOfState
+  tree: TreeState
   settings: SettingsState,
   publish: PublishState
   connection: ConnectionState
 }
 
 export interface TooBigOfState {
-  selectedTopic?: q.TreeNode
   showUpdateNotification?: boolean
   showUpdateDetails: boolean
 }
 
 const initialBigState: TooBigOfState = {
-  selectedTopic: undefined,
   showUpdateDetails: false,
 }
 
@@ -43,17 +41,8 @@ const tooBigReducer: Reducer<TooBigOfState | undefined, CustomAction> = (state =
     throw Error('No initial state')
   }
   trackEvent(action.type)
-  console.log(action, state)
-  switch (action.type) {
-    case ActionTypes.selectTopic:
-      if (!action.selectedTopic) {
-        return state
-      }
-      return {
-        ...state,
-        selectedTopic: action.selectedTopic,
-      }
 
+  switch (action.type) {
     case ActionTypes.showUpdateNotification:
       return {
         ...state,
@@ -79,6 +68,7 @@ const reducer = combineReducers({
   publish: publishReducer,
   connection: connectionReducer,
   settings: settingsReducer,
+  tree: treeReducer,
 })
 
 export default reducer

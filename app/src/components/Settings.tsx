@@ -1,5 +1,4 @@
 import * as React from 'react'
-import * as q from '../../../backend/src/Model'
 
 import { AppState } from '../reducers'
 import {
@@ -19,6 +18,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { settingsActions } from '../actions'
 import { TopicOrder } from '../reducers/Settings'
+import Topic from './Sidebar/Topic';
 
 const styles: StyleRulesCallback = theme => ({
   drawer: {
@@ -40,7 +40,7 @@ const styles: StyleRulesCallback = theme => ({
 })
 
 interface Props {
-  actions?: any
+  actions: typeof settingsActions
   autoExpandLimit: number
   visible: boolean
   store?: any
@@ -107,7 +107,7 @@ class Settings extends React.Component<Props, {}> {
   }
 
   private onChangeAutoExpand = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    this.props.actions.setAutoExpandLimit(e.target.value)
+    this.props.actions.setAutoExpandLimit(parseInt(e.target.value, 10))
   }
 
   private renderNodeOrder() {
@@ -133,7 +133,7 @@ class Settings extends React.Component<Props, {}> {
   }
 
   private onChangeSorting = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    this.props.actions.setNodeOrder(e.target.value)
+    this.props.actions.setTopicOrder(e.target.value as TopicOrder)
   }
 }
 

@@ -4,6 +4,7 @@ import { Dispatch } from 'redux'
 import { rendererEvents, addMqttConnectionEvent, makeConnectionStateEvent, removeConnection } from '../../../events'
 import { AppState } from '../reducers'
 import * as q from '../../../backend/src/Model'
+import { showTree } from './Tree'
 
 export const connect = (options: MqttOptions, connectionId: string) => (dispatch: Dispatch<any>, getState: () => AppState) => {
   dispatch(connecting(connectionId))
@@ -14,6 +15,7 @@ export const connect = (options: MqttOptions, connectionId: string) => (dispatch
       const tree = new q.Tree()
       tree.updateWithConnection(rendererEvents, connectionId)
       dispatch(connected(tree))
+      dispatch(showTree(tree))
     } else if (dataSourceState.error) {
       dispatch(showError(dataSourceState.error))
       dispatch(disconnect())
@@ -36,11 +38,12 @@ export const showError = (error?: string) => ({
   type: ActionTypes.CONNECTION_SET_SHOW_ERROR,
 })
 
-export const disconnect = () => (dispatch: Dispatch<Action>, getState: () => AppState)  => {
+export const disconnect = () => (dispatch: Dispatch<any>, getState: () => AppState)  => {
   const { connectionId, tree } = getState().connection
   rendererEvents.emit(removeConnection, connectionId)
   tree && tree.stopUpdating()
 
+  dispatch(showTree(undefined))
   dispatch({
     type: ActionTypes.CONNECTION_SET_DISCONNECTED,
   })

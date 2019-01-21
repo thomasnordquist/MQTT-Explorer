@@ -19,7 +19,17 @@ export interface Props {
   theme: Theme
 }
 
-class TreeNodeSubnodes extends React.Component<Props, {}> {
+interface State {
+  alreadyAdded: number
+}
+
+class TreeNodeSubnodes extends React.Component<Props, State> {
+  private renderMoreAnimationFrame?: any
+  constructor(props: Props) {
+    super(props)
+    this.state = { alreadyAdded: 10 }
+  }
+
   private sortedNodes(): q.TreeNode[] {
     const { topicOrder, treeNode } = this.props
 
@@ -39,17 +49,32 @@ class TreeNodeSubnodes extends React.Component<Props, {}> {
     return nodes
   }
 
+  private renderMore() {
+    this.renderMoreAnimationFrame = window.requestAnimationFrame(() => {
+      this.setState({ ...this.state, alreadyAdded: this.state.alreadyAdded * 1.5 })
+    })
+  }
+
+  public componentWillUnmount() {
+    window.cancelAnimationFrame(this.renderMoreAnimationFrame)
+  }
+
   public render() {
     const edges = Object.values(this.props.treeNode.edges)
     if (edges.length === 0 || this.props.collapsed) {
       return null
     }
 
+    if (this.state.alreadyAdded < edges.length) {
+      const delta = Math.min(this.state.alreadyAdded, edges.length - this.state.alreadyAdded)
+      this.renderMore()
+    }
+
     const listItemStyle = {
       padding: '3px 0px 0px 8px',
     }
 
-    const nodes = this.sortedNodes()
+    const nodes = this.sortedNodes().slice(0, this.state.alreadyAdded)
     const listItems = nodes.map(node => (
         <div key={node.hash()}>
           <TreeNode

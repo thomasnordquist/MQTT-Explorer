@@ -10,9 +10,19 @@ export class RingBuffer<T extends Lengthwise> {
   private start: number = 0
   private end: number = 0
 
-  constructor(capacity: number, maxItems = Infinity) {
+  constructor(capacity: number, maxItems = Infinity, ringBuffer?: RingBuffer<T>) {
     this.capacity = capacity
     this.maxItems = maxItems
+
+    if (ringBuffer) {
+      this.items = ringBuffer.toArray()
+      this.end = this.items.length
+      this.usage = this.items.length
+    }
+  }
+
+  public clone(): RingBuffer<T> {
+    return new RingBuffer(this.capacity, this.maxItems, this)
   }
 
   public toArray() {
