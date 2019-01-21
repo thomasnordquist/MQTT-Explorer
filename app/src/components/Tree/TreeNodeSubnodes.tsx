@@ -1,15 +1,16 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 
-import { AppState, NodeOrder } from '../../reducers'
+import { AppState } from '../../reducers'
 import { Theme, withTheme } from '@material-ui/core/styles'
 
 import TreeNode from './TreeNode'
 import { connect } from 'react-redux'
+import { TopicOrder } from '../../reducers/Settings'
 
 export interface Props {
   lastUpdate: number
-  nodeOrder?: NodeOrder
+  topicOrder?: TopicOrder
   animateChanges: boolean
   treeNode: q.TreeNode
   autoExpandLimit: number
@@ -20,18 +21,18 @@ export interface Props {
 
 class TreeNodeSubnodes extends React.Component<Props, {}> {
   private sortedNodes(): q.TreeNode[] {
-    const { nodeOrder, treeNode } = this.props
+    const { topicOrder, treeNode } = this.props
 
     let edges = Object.values(treeNode.edges)
-    if (nodeOrder === NodeOrder.abc) {
+    if (topicOrder === TopicOrder.abc) {
       edges = edges.sort((a, b) => a.name.localeCompare(b.name))
     }
 
     let nodes = edges.map(edge => edge.target)
-    if (nodeOrder === NodeOrder.messages) {
+    if (topicOrder === TopicOrder.messages) {
       nodes = nodes.sort((a, b) => b.leafMessageCount() - a.leafMessageCount())
     }
-    if (nodeOrder === NodeOrder.topics) {
+    if (topicOrder === TopicOrder.topics) {
       nodes = nodes.sort((a, b) => b.leafCount() - a.leafCount())
     }
 
@@ -54,8 +55,6 @@ class TreeNodeSubnodes extends React.Component<Props, {}> {
           <TreeNode
             animateChages={this.props.animateChanges}
             treeNode={node}
-            didSelectNode={this.props.didSelectNode}
-            autoExpandLimit={this.props.autoExpandLimit}
             lastUpdate={node.lastUpdate}
             style={listItemStyle}
           />
@@ -72,7 +71,7 @@ class TreeNodeSubnodes extends React.Component<Props, {}> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    nodeOrder: state.tooBigReducer.settings.nodeOrder,
+    topicOrder: state.settings.topicOrder,
   }
 }
 

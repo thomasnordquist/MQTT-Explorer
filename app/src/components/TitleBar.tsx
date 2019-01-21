@@ -11,6 +11,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import { settingsActions, connectionActions } from '../actions'
+import { AppState } from '../reducers'
 
 const styles: StyleRulesCallback = theme => ({
   title: {
@@ -70,22 +71,13 @@ interface Props {
     settings: typeof settingsActions,
     connection: typeof connectionActions,
   }
+  topicFilter?: string
 }
 
-interface State {
-  selectedNode?: q.TreeNode
-  settingsVisible: boolean
-  autoExpandLimit: number
-}
-
-class TitleBar extends React.Component<Props, State> {
+class TitleBar extends React.Component<Props, {}> {
   constructor(props: any) {
     super(props)
-    this.state = {
-      selectedNode: undefined,
-      settingsVisible: false,
-      autoExpandLimit: 0,
-    }
+    this.state = { }
   }
 
   public render() {
@@ -98,6 +90,7 @@ class TitleBar extends React.Component<Props, State> {
             <Menu />
           </IconButton>
           <Typography className={classes.title} variant="h6" color="inherit">MQTT-Explorer</Typography>
+          {this.renderSearch()}
           <Button style={{ margin: 'auto 8px auto auto' }} onClick={actions.connection.disconnect}>
             Disconnect <CloudOff style={{ marginRight: '8px', paddingLeft: '8px' }}/>
           </Button>
@@ -115,11 +108,23 @@ class TitleBar extends React.Component<Props, State> {
           <Search />
         </div>
         <InputBase
+          value={this.props.topicFilter}
+          onChange={this.onFilterChange}
           placeholder="Search…"
           classes={{ root: classes.inputRoot, input: classes.inputInput }}
         />
       </div>
     )
+  }
+
+  private onFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.props.actions.settings.filterTopics(event.target.value)
+  }
+}
+
+const mapStateToProps = (state: AppState) => {
+  return {
+    topicFilter: state.settings.topicFilter,
   }
 }
 
@@ -132,4 +137,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(undefined, mapDispatchToProps)(withStyles(styles)(TitleBar))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(TitleBar))

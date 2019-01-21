@@ -89,9 +89,7 @@ class Tree extends React.Component<Props, {}> {
       <div style={style}>
         <TreeNode
           animateChages={true}
-          autoExpandLimit={this.props.autoExpandLimit}
           isRoot={true}
-          didSelectNode={this.props.didSelectNode}
           treeNode={this.props.tree}
           name="/"
           collapsed={false}
@@ -110,7 +108,7 @@ class Tree extends React.Component<Props, {}> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    autoExpandLimit: state.tooBigReducer.settings.autoExpandLimit,
+    autoExpandLimit: state.settings.autoExpandLimit,
     tree: state.connection.tree,
   }
 }

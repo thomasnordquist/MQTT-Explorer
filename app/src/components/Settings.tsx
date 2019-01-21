@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as q from '../../../backend/src/Model'
 
-import { AppState, NodeOrder } from '../reducers'
+import { AppState } from '../reducers'
 import {
   Divider,
   Drawer,
@@ -18,6 +18,7 @@ import ChevronRight from '@material-ui/icons/ChevronRight'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { settingsActions } from '../actions'
+import { TopicOrder } from '../reducers/Settings'
 
 const styles: StyleRulesCallback = theme => ({
   drawer: {
@@ -44,7 +45,7 @@ interface Props {
   visible: boolean
   store?: any
   classes: any
-  nodeOrder: NodeOrder
+  topicOrder: TopicOrder
 }
 
 class Settings extends React.Component<Props, {}> {
@@ -110,23 +111,23 @@ class Settings extends React.Component<Props, {}> {
   }
 
   private renderNodeOrder() {
-    const { classes, nodeOrder } = this.props
+    const { classes, topicOrder } = this.props
 
     return (
       <div style={{ padding: '8px' }}>
       <InputLabel htmlFor="auto-expand">Topic order</InputLabel>
       <Select
-          value={nodeOrder}
+          value={topicOrder}
           onChange={this.onChangeSorting}
           input={<Input name="node-order" id="node-order-label-placeholder" />}
           displayEmpty={true}
           name="node-order"
           className={classes.input}
       >
-        <MenuItem value={NodeOrder.none}><em>default</em></MenuItem>
-        <MenuItem value={NodeOrder.abc}>a-z</MenuItem>
-        <MenuItem value={NodeOrder.messages}>{NodeOrder.messages}</MenuItem>
-        <MenuItem value={NodeOrder.topics}>{NodeOrder.topics}</MenuItem>
+        <MenuItem value={TopicOrder.none}><em>default</em></MenuItem>
+        <MenuItem value={TopicOrder.abc}>a-z</MenuItem>
+        <MenuItem value={TopicOrder.messages}>{TopicOrder.messages}</MenuItem>
+        <MenuItem value={TopicOrder.topics}>{TopicOrder.topics}</MenuItem>
       </Select>
     </div>)
   }
@@ -138,9 +139,9 @@ class Settings extends React.Component<Props, {}> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    autoExpandLimit: state.tooBigReducer.settings.autoExpandLimit,
-    nodeOrder: state.tooBigReducer.settings.nodeOrder,
-    visible: state.tooBigReducer.settings.visible,
+    autoExpandLimit: state.settings.autoExpandLimit,
+    topicOrder: state.settings.topicOrder,
+    visible: state.settings.visible,
   }
 }
 

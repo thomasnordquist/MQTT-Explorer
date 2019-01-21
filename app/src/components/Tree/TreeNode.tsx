@@ -10,6 +10,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { isElementInViewport } from '../helper/isElementInViewport'
 import { treeActions } from '../../actions'
+import { AppState } from '../../reducers'
 
 declare var performance: any
 
@@ -40,7 +41,7 @@ const styles = (theme: Theme) => {
 }
 
 interface Props {
-  actions: any
+  actions: typeof treeActions
   lastUpdate: number
   animateChages: boolean
   isRoot?: boolean
@@ -48,9 +49,8 @@ interface Props {
   name?: string | undefined
   collapsed?: boolean | undefined
   performanceCallback?: ((ms: number) => void) | undefined
-  didSelectNode?: (node: q.TreeNode) => void
-  classes: any
   autoExpandLimit: number
+  classes: any
   style?: React.CSSProperties
 }
 
@@ -220,7 +220,6 @@ class TreeNode extends React.Component<Props, State> {
         animateChanges={this.props.animateChages}
         collapsed={this.collapsed()}
         autoExpandLimit={this.props.autoExpandLimit}
-        didSelectNode={this.props.didSelectNode}
         treeNode={this.props.treeNode}
         lastUpdate={this.props.treeNode.lastUpdate}
       />
@@ -234,4 +233,10 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default withStyles(styles)(connect(null, mapDispatchToProps)(TreeNode))
+const mapStateToProps = (state: AppState) => {
+  return {
+    autoExpandLimit: state.settings.autoExpandLimit,
+  }
+}
+
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(TreeNode))

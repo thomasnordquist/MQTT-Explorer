@@ -5,7 +5,7 @@ import * as ReactDOM from 'react-dom'
 import reduxThunk from 'redux-thunk'
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
-import reducers, { AppState, NodeOrder } from './reducers'
+import reducers from './reducers'
 
 import App from './App'
 import { Provider } from 'react-redux'

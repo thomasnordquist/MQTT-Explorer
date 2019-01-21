@@ -1,21 +1,28 @@
-import { ActionTypes, NodeOrder, CustomAction } from '../reducers'
+import { Action, ActionTypes, TopicOrder } from '../reducers/Settings'
 
-export const setAutoExpandLimit = (autoExpandLimit: number = 0): CustomAction => {
+export const setAutoExpandLimit = (autoExpandLimit: number = 0): Action => {
   return {
     autoExpandLimit,
-    type: ActionTypes.setAutoExpandLimit,
+    type: ActionTypes.SETTINGS_SET_AUTO_EXPAND_LIMIT,
   }
 }
 
-export const toggleSettingsVisibility = (): CustomAction => {
+export const toggleSettingsVisibility = (): Action => {
   return {
-    type: ActionTypes.toggleSettingsVisibility,
+    type: ActionTypes.SETTINGS_TOGGLE_VISIBILITY,
   }
 }
 
-export const setNodeOrder = (nodeOrder: NodeOrder = NodeOrder.none): CustomAction => {
+export const setTopicOrder = (topicOrder: TopicOrder = TopicOrder.none): Action => {
   return {
-    nodeOrder,
-    type: ActionTypes.setNodeOrder,
+    topicOrder,
+    type: ActionTypes.SETTINGS_SET_TOPIC_ORDER,
+  }
+}
+
+export const filterTopics = (topicFilter: string): Action => {
+  return {
+    topicFilter,
+    type: ActionTypes.SETTINGS_FILTER_TOPICS,
   }
 }

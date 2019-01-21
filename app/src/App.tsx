@@ -104,7 +104,7 @@ class App extends React.Component<Props, {}> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    settingsVisible: state.tooBigReducer.settings.visible,
+    settingsVisible: state.settings.visible,
     connectionId: state.connection.connectionId,
   }
 }

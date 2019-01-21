@@ -54,6 +54,7 @@ class MessageHistory extends React.Component<Props, State> {
     return (
       <div style={{ backgroundColor: 'rgba(60, 60, 60, 0.6)', marginTop: '16px' }}>
         <Typography
+          component={'span'}
           onClick={this.toggle}
           style={{ cursor: 'pointer' }}
         >
