@@ -7,11 +7,9 @@ import {
   ExpansionPanelDetails,
   ExpansionPanelSummary,
   Fade,
-  Fab,
   Paper,
   Popper,
   Typography,
-  IconButton,
   Tooltip,
 } from '@material-ui/core'
 import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
@@ -20,7 +18,7 @@ import { sidebarActons } from '../../actions'
 
 import { AppState } from '../../reducers'
 import Copy from '../Copy'
-import DateFormatter from '../DateFormatter'
+import DateFormatter from '../helper/DateFormatter'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import Clear from '@material-ui/icons/Clear'
 import MessageHistory from './MessageHistory'
@@ -37,7 +35,6 @@ interface Props {
   node?: q.TreeNode,
   actions: typeof sidebarActons,
   classes: any,
-  theme: Theme,
   connectionId?: string,
 }
 
@@ -56,22 +53,6 @@ class Sidebar extends React.Component<Props, State> {
     super(props)
     console.error('Find and fix me #state')
     this.state = { node: new q.Tree() }
-  }
-
-  public static styles: StyleRulesCallback<string> = (theme: Theme) => {
-    return {
-      drawer: {
-        display: 'block',
-        height: '100%',
-      },
-      valuePaper: {
-        margin: `${theme.spacing.unit}px ${theme.spacing.unit}px ${theme.spacing.unit}px ${theme.spacing.unit}px`,
-      },
-      heading: {
-        fontSize: theme.typography.pxToRem(15),
-        fontWeight: theme.typography.fontWeightRegular,
-      },
-    }
   }
 
   public componentWillReceiveProps(nextProps: Props) {
@@ -229,4 +210,20 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default withStyles(Sidebar.styles, { withTheme: true })(connect(mapStateToProps, mapDispatchToProps)(Sidebar))
+const styles: StyleRulesCallback<string> = (theme: Theme) => {
+  return {
+    drawer: {
+      display: 'block',
+      height: '100%',
+    },
+    valuePaper: {
+      margin: `${theme.spacing.unit}px ${theme.spacing.unit}px ${theme.spacing.unit}px ${theme.spacing.unit}px`,
+    },
+    heading: {
+      fontSize: theme.typography.pxToRem(15),
+      fontWeight: theme.typography.fontWeightRegular,
+    },
+  }
+}
+
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Sidebar))

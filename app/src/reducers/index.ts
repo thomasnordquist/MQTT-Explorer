@@ -7,6 +7,7 @@ import { PublishState, publishReducer } from './Publish'
 import { ConnectionState, connectionReducer } from './Connection'
 import { SettingsState, settingsReducer } from './Settings'
 import { TreeState, treeReducer } from './Tree'
+import { theme } from './theme'
 
 export enum ActionTypes {
   showUpdateNotification = 'SHOW_UPDATE_NOTIFICATION',
@@ -64,6 +65,7 @@ const tooBigReducer: Reducer<TooBigOfState | undefined, CustomAction> = (state =
 }
 
 const reducer = combineReducers({
+  theme,
   tooBigReducer,
   publish: publishReducer,
   connection: connectionReducer,

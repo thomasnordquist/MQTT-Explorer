@@ -1,6 +1,7 @@
 import { Action, ActionTypes, TopicOrder } from '../reducers/Settings'
-import { ActionTypes as TreeActionTypes, Action as TreeAction } from '../reducers/Tree'
+import { ActionTypes as TreeActionTypes } from '../reducers/Tree'
 import { Dispatch } from 'redux'
+import { showTree } from './Tree'
 import { AppState } from '../reducers'
 import * as q from '../../../backend/src/Model'
 
@@ -38,17 +39,22 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
   }
 
   if (!topicFilter) {
-    dispatch({
-      tree,
-      filter: '',
-      type: TreeActionTypes.TREE_SHOW_TREE,
-    })
-
+    dispatch(showTree(tree))
     return
   }
 
+  const nodeFilter = (node: q.TreeNode): boolean => {
+    const topicMatches = node.path().toLowerCase().indexOf(topicFilter) !== -1
+    if (topicMatches) {
+      return true
+    }
+
+    const messageMatches = (node.message && typeof node.message.value === 'string' && node.message.value.toLowerCase().indexOf(filterStr) !== -1)
+    return Boolean(messageMatches)
+  }
+
   const resultTree = tree.leafes()
-    .filter(leaf => leaf.path().toLowerCase().indexOf(topicFilter) !== -1)
+    .filter(nodeFilter)
     .map((node) => {
       const clone = node.unconnectedClone()
       q.TreeNodeFactory.insertNodeAtPosition(node.path().split('/'), clone)
@@ -59,9 +65,10 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
       return a
     }, new q.Tree())
 
-  dispatch({
-    tree: resultTree,
-    filter: topicFilter,
-    type: TreeActionTypes.TREE_SHOW_TREE,
-  })
+  const nextTree: q.Tree = resultTree as q.Tree
+  if (tree.updateSource && tree.connectionId) {
+    nextTree.updateWithConnection(tree.updateSource, tree.connectionId, nodeFilter)
+  }
+
+  dispatch(showTree(nextTree))
 }

@@ -1,10 +1,9 @@
 const { XYPlot, XAxis, LineMarkSeries, Hint, YAxis, HorizontalGridLines, LineSeries } = require('react-vis')
 import { default as ReactResizeDetector } from 'react-resize-detector'
 
-import DateFormatter from '../DateFormatter'
+import DateFormatter from '../helper/DateFormatter'
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
-import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
 import 'react-vis/dist/style.css'
 
 interface Props {
@@ -71,4 +70,4 @@ class PlotHistory extends React.Component<Props, Stats> {
   }
 }
 
-export default withStyles({}, { withTheme: true })(PlotHistory)
+export default PlotHistory

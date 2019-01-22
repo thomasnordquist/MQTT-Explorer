@@ -33,7 +33,6 @@ import { connectionActions } from '../../actions'
 
 interface Props {
   classes: {[s: string]: string}
-  theme: Theme
   actions: typeof connectionActions,
   visible: boolean
   connected: boolean
@@ -393,4 +392,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(Connection.styles, { withTheme: true })(Connection))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(Connection.styles)(Connection))

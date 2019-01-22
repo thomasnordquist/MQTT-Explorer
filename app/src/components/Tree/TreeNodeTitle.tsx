@@ -3,23 +3,20 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { treeActions } from '../../actions'
 import * as q from '../../../../backend/src/Model'
-import { withTheme, Theme } from '@material-ui/core/styles'
 
 export interface TreeNodeProps extends React.HTMLAttributes<HTMLElement> {
   treeNode: q.TreeNode
   actions: any
   name?: string | undefined
   collapsed?: boolean | undefined
-  theme: Theme
   lastUpdate: number
 }
 
 class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
   private getStyles() {
-    const { theme } = this.props
     return {
       collapsedSubnodes: {
-        color: theme.palette.text.secondary,
+        color: 'white', // theme.palette.text.secondary,
       },
       container: {
         display: 'block',
@@ -97,4 +94,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default withTheme()(connect(null, mapDispatchToProps)(TreeNodeTitle))
+export default connect(null, mapDispatchToProps)(TreeNodeTitle)

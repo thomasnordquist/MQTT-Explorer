@@ -3,27 +3,45 @@ import { EventBusInterface, makeConnectionMessageEvent, MqttMessage } from '../.
 import { TreeNodeFactory } from './TreeNodeFactory'
 
 export class Tree extends TreeNode {
-  private connectionId?: string
-  private updateSource?: EventBusInterface
+  public connectionId?: string
+  public updateSource?: EventBusInterface
+  public nodeFilter?: (node: TreeNode) => boolean
+  private subscriptionEvent?: any
+  public isTree = true
+  private cachedHash = `${Math.random()}`
+
   constructor() {
     super(undefined, undefined)
   }
 
-  public updateWithConnection(emitter: EventBusInterface, connectionId: string) {
+  public updateWithConnection(emitter: EventBusInterface, connectionId: string, nodeFilter?:(node: TreeNode) => boolean) {
     this.updateSource = emitter
-    this.updateSource.subscribe(makeConnectionMessageEvent(connectionId), this.handleNewData)
+    this.connectionId = connectionId
+    this.nodeFilter = nodeFilter
+
+    this.subscriptionEvent = makeConnectionMessageEvent(connectionId)
+    this.updateSource.subscribe(this.subscriptionEvent, this.handleNewData)
+  }
+
+  public hash() {
+    return this.cachedHash
   }
 
   private handleNewData = (msg: MqttMessage) => {
     const edges = msg.topic.split('/')
     const node = TreeNodeFactory.fromEdgesAndValue(edges, msg.payload)
     node.mqttMessage = msg
+
+    if (this.nodeFilter && !this.nodeFilter(node)) {
+      return
+    }
     this.updateWithNode(node.firstNode())
   }
 
   public stopUpdating() {
-    if (this.updateSource && this.connectionId) {
-      this.updateSource.unsubscribeAll(makeConnectionMessageEvent(this.connectionId))
+    if (this.subscriptionEvent && this.updateSource) {
+      console.log(this.updateSource.ipc)
+      this.updateSource.unsubscribe(this.subscriptionEvent, this.handleNewData)
     }
   }
 }

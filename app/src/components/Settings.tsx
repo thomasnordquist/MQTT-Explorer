@@ -18,7 +18,6 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { settingsActions } from '../actions'
 import { TopicOrder } from '../reducers/Settings'
-import Topic from './Sidebar/Topic';
 
 const styles: StyleRulesCallback = theme => ({
   drawer: {

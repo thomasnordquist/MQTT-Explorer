@@ -1,8 +1,6 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 
-import { makeConnectionMessageEvent, rendererEvents, MqttMessage } from '../../../../events'
-
 import { AppState } from '../../reducers'
 import TreeNode from './TreeNode'
 import { connect } from 'react-redux'
@@ -84,11 +82,11 @@ class Tree extends React.Component<Props, {}> {
       lineHeight: '1.1',
       cursor: 'default',
     }
-    const key = `rootNode-${filter}`
+
     return (
       <div style={style}>
         <TreeNode
-          key={key}
+          key={tree.hash()}
           animateChages={true}
           isRoot={true}
           treeNode={tree}

@@ -2,7 +2,6 @@ import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 
 import { AppState } from '../../reducers'
-import { Theme, withTheme } from '@material-ui/core/styles'
 
 import TreeNode from './TreeNode'
 import { connect } from 'react-redux'
@@ -14,9 +13,9 @@ export interface Props {
   animateChanges: boolean
   treeNode: q.TreeNode
   autoExpandLimit: number
+  filter?: string
   collapsed?: boolean | undefined
   didSelectNode?: (node: q.TreeNode) => void
-  theme: Theme
 }
 
 interface State {
@@ -76,15 +75,15 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
 
     const nodes = this.sortedNodes().slice(0, this.state.alreadyAdded)
     const listItems = nodes.map(node => (
-        <div key={node.hash()}>
-          <TreeNode
-            animateChages={this.props.animateChanges}
-            treeNode={node}
-            lastUpdate={node.lastUpdate}
-            style={listItemStyle}
-          />
-        </div>
-      ))
+      <div key={`${node.hash()}-${this.props.filter}`}>
+        <TreeNode
+          animateChages={this.props.animateChanges}
+          treeNode={node}
+          lastUpdate={node.lastUpdate}
+          style={listItemStyle}
+        />
+      </div>
+    ))
 
     return (
       <span style={{ display: 'block', clear: 'both' }} >
@@ -97,7 +96,8 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
 const mapStateToProps = (state: AppState) => {
   return {
     topicOrder: state.settings.topicOrder,
+    filter: state.tree.filter,
   }
 }
 
-export default withTheme()(connect(mapStateToProps)(TreeNodeSubnodes))
+export default connect(mapStateToProps)(TreeNodeSubnodes)

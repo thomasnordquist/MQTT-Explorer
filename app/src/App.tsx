@@ -17,7 +17,7 @@ import ErrorBoundary from './ErrorBoundary'
 interface Props {
   name: string
   connectionId: string
-  theme: Theme
+  classes: any
   settingsVisible: boolean
 }
 
@@ -27,69 +27,22 @@ class App extends React.Component<Props, {}> {
     this.state = { }
   }
 
-  private getStyles(): {[s: string]: React.CSSProperties} {
-    const { theme } = this.props
-    const drawerWidth = 300
-    return {
-      left: {
-        backgroundColor: theme.palette.background.default,
-        color: theme.palette.text.primary,
-        height: 'calc(100vh - 64px)',
-        float: 'left',
-        overflowY: 'scroll',
-        overflowX: 'hidden',
-        display: 'block',
-        width: '60vw',
-      },
-      right: {
-        height: 'calc(100vh - 64px)',
-        color: theme.palette.text.primary,
-        float: 'left',
-        width: '40vw',
-        overflowY: 'scroll',
-        overflowX: 'hidden',
-        display: 'block',
-      },
-      centerContent: {
-        width: '100vw',
-        overflow: 'hidden',
-      },
-      content: {
-        backgroundColor: theme.palette.background.default,
-        transition: theme.transitions.create('margin', {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen,
-        }),
-        marginLeft: 0,
-      },
-      contentShift: {
-        padding: 0,
-        backgroundColor: theme.palette.background.default,
-        transition: theme.transitions.create('margin', {
-          easing: theme.transitions.easing.easeOut,
-          duration: theme.transitions.duration.enteringScreen,
-        }),
-        marginLeft: drawerWidth,
-      },
-    }
-  }
-
   public render() {
     const { settingsVisible } = this.props
-    const { content, contentShift, centerContent } = this.getStyles()
+    const { content, contentShift, centerContent, left, right } = this.props.classes
 
     return (
-      <div style={centerContent}>
+      <div className={centerContent}>
         <CssBaseline />
         <ErrorBoundary>
           <Settings />
-          <div style={settingsVisible ? contentShift : content}>
+          <div className={settingsVisible ? contentShift : content}>
               <TitleBar />
-              <div style={centerContent}>
-                <div style={this.getStyles().left}>
+              <div className={centerContent}>
+                <div className={this.props.classes.left}>
                   <Tree />
                 </div>
-                <div style={this.getStyles().right}>
+                <div className={right}>
                   <Sidebar connectionId={this.props.connectionId} />
                 </div>
               </div>
@@ -109,4 +62,50 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default withStyles({}, { withTheme: true })(connect(mapStateToProps)(App))
+const styles = (theme: Theme) => {
+  const drawerWidth = 300
+  return {
+    left: {
+      backgroundColor: theme.palette.background.default,
+      color: theme.palette.text.primary,
+      height: 'calc(100vh - 64px)',
+      float: 'left' as 'left',
+      overflowY: 'scroll' as 'scroll',
+      overflowX: 'hidden' as 'hidden',
+      display: 'block' as 'block',
+      width: '60vw',
+    },
+    right: {
+      height: 'calc(100vh - 64px)',
+      color: theme.palette.text.primary,
+      float: 'left' as 'left',
+      width: '40vw',
+      overflowY: 'scroll' as 'scroll',
+      overflowX: 'hidden' as 'hidden',
+      display: 'block' as 'block',
+    },
+    centerContent: {
+      width: '100vw',
+      overflow: 'hidden' as 'hidden',
+    },
+    content: {
+      backgroundColor: theme.palette.background.default,
+      transition: theme.transitions.create('margin', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+      marginLeft: 0,
+    },
+    contentShift: {
+      padding: 0,
+      backgroundColor: theme.palette.background.default,
+      transition: theme.transitions.create('margin', {
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+      marginLeft: drawerWidth,
+    },
+  }
+}
+
+export default withStyles(styles)(connect(mapStateToProps)(App))

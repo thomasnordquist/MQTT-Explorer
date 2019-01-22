@@ -67,8 +67,8 @@ class TreeNode extends React.Component<Props, State> {
   private cssAnimationWasSetAt?: number
 
   private willUpdateTime: number = performance.now()
-  private titleRef = React.createRef<HTMLDivElement>()
-  private topicSelectRef = React.createRef<HTMLDivElement>()
+  private titleRef?: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>()
+  private topicSelectRef?: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>()
 
   private subnodesDidchange = () => {
     this.dirtySubnodes = true
@@ -90,18 +90,52 @@ class TreeNode extends React.Component<Props, State> {
     }
   }
 
+  private writeStats(what: string) {
+    const w: any = window
+    if (!w.stats) {
+      w.stats = {}
+    }
+    if (!w.stats[what]) {
+      w.stats[what] = 0
+    }
+    w.stats[what] += 1
+  }
+
   public componentDidMount() {
     const { treeNode } = this.props
+    this.addSubscriber(treeNode)
+  }
+
+  private addSubscriber(treeNode: q.TreeNode) {
+    this.writeStats('subscribe')
     treeNode.onMerge.subscribe(this.subnodesDidchange)
     treeNode.onEdgesChange.subscribe(this.edgesDidChange)
     treeNode.onMessage.subscribe(this.messageDidChange)
   }
 
+  private removeSubscriber(treeNode: q.TreeNode) {
+    this.writeStats('unsubscribe')
+    treeNode.onMerge.unsubscribe(this.subnodesDidchange)
+    treeNode.onEdgesChange.unsubscribe(this.edgesDidChange)
+    treeNode.onMessage.unsubscribe(this.messageDidChange)
+  }
+
+  public componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.treeNode !== this.props.treeNode) {
+      this.removeSubscriber(this.props.treeNode)
+      this.addSubscriber(nextProps.treeNode)
+    }
+  }
+
   public componentWillUnmount() {
+    this.writeStats('unsubscribe')
+
     const { treeNode } = this.props
     treeNode.onMerge.unsubscribe(this.subnodesDidchange)
     treeNode.onEdgesChange.unsubscribe(this.edgesDidChange)
     treeNode.onMessage.unsubscribe(this.messageDidChange)
+    this.topicSelectRef = undefined
+    this.titleRef = undefined
   }
 
   private stateHasChanged(newState: State) {
@@ -189,20 +223,20 @@ class TreeNode extends React.Component<Props, State> {
 
   private mouseOver = (event: React.MouseEvent) => {
     event.stopPropagation()
-    if (this.topicSelectRef.current) {
+    if (this.topicSelectRef && this.topicSelectRef.current) {
       this.topicSelectRef.current.style.opacity = '1'
     }
   }
   private mouseOut = (event: React.MouseEvent) => {
     event.stopPropagation()
-    if (this.topicSelectRef.current) {
+    if (this.topicSelectRef && this.topicSelectRef.current) {
       this.topicSelectRef.current.style.opacity = '0'
     }
   }
 
   private didSelectNode = (event: React.MouseEvent) => {
     event.stopPropagation()
-    if (this.topicSelectRef.current) {
+    if (this.topicSelectRef && this.topicSelectRef.current) {
       this.topicSelectRef.current.style.opacity = '1'
     }
     this.props.actions.selectTopic(this.props.treeNode)

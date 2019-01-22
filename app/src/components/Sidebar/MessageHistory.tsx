@@ -1,9 +1,8 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 
-import { Theme, withTheme } from '@material-ui/core/styles'
 import BarChart from '@material-ui/icons/BarChart'
-import DateFormatter from '../DateFormatter'
+import DateFormatter from '../helper/DateFormatter'
 import History from './History'
 import PlotHistory from './PlotHistory'
 
@@ -11,7 +10,6 @@ const throttle = require('lodash.throttle')
 
 interface Props {
   node?: q.TreeNode
-  theme: Theme
   onSelect: (message: q.Message) => void
 }
 
@@ -35,7 +33,7 @@ class MessageHistory extends React.Component<Props, State> {
     nextProps.node && nextProps.node.onMessage.subscribe(this.updateNode)
   }
 
-  public componentWillMount() {
+  public componentDidMount() {
     this.props.node && this.props.node.onMessage.subscribe(this.updateNode)
   }
 
@@ -81,4 +79,4 @@ class MessageHistory extends React.Component<Props, State> {
   }
 }
 
-export default withTheme()(MessageHistory)
+export default MessageHistory

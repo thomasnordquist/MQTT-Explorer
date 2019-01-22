@@ -13,6 +13,7 @@ export class TreeNode {
   public onMerge = new EventDispatcher<void, TreeNode>(this)
   public onEdgesChange = new EventDispatcher<void, TreeNode>(this)
   public onMessage = new EventDispatcher<Message, TreeNode>(this)
+  public isTree = false
   private cachedLeafes?: TreeNode[]
   private cachedLeafMessageCount?: number
 

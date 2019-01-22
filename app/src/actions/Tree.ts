@@ -18,9 +18,17 @@ export const selectTopic = (topic: q.TreeNode) => (dispatch: Dispatch<any>, getS
   })
 }
 
-export const showTree = (tree?: q.Tree) => {
-  return {
+export const showTree = (tree?: q.Tree) => (dispatch: Dispatch<any>, getState: () => AppState)  => {
+  const visibleTree = getState().tree.tree
+  const connectionTree = getState().connection.tree
+
+  // Stop updates of old tree
+  if (visibleTree !== connectionTree && visibleTree) {
+    visibleTree.stopUpdating()
+  }
+
+  dispatch({
     tree,
     type: ActionTypes.TREE_SHOW_TREE,
-  }
+  })
 }

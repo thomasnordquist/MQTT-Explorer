@@ -224,4 +224,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(connect(mapStateToProps, mapDispatchToProps)(UpdateNotifier))
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(UpdateNotifier))
