@@ -171,7 +171,7 @@ class TreeNode extends React.Component<Props, State> {
     this.dirtyEdges = this.dirtyMessage = this.dirtySubnodes = false
 
     const shouldStartAnimation = (isDirty && !this.animationDirty) && !this.props.isRoot
-    const animation = shouldStartAnimation ? { animation: 'example 0.5s' } : {}
+    const animation = shouldStartAnimation ? { willChange: 'auto', translateZ: 0, animation: 'example 0.5s' } : {}
     this.animationDirty = shouldStartAnimation
 
     return (
