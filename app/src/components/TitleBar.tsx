@@ -12,7 +12,7 @@ import { connect } from 'react-redux'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import { settingsActions, connectionActions } from '../actions'
 import { AppState } from '../reducers'
-import ClearAdornment from './helper/ClearAdornment';
+import ClearAdornment from './helper/ClearAdornment'
 
 const styles: StyleRulesCallback = theme => ({
   title: {

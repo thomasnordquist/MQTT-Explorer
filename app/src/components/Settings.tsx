@@ -86,14 +86,15 @@ class Settings extends React.Component<Props, {}> {
   private renderAutoExpand() {
     const { classes, autoExpandLimit } = this.props
     return (
-        <div style={{ padding: '8px' }}>
-        <InputLabel htmlFor="auto-expand">Auto Expand</InputLabel>
+      <div style={{ padding: '8px', display: 'flex' }}>
+        <InputLabel htmlFor="auto-expand" style={{ flex: '1', marginTop: '8px' }}>Auto Expand</InputLabel>
         <Select
             value={autoExpandLimit}
             onChange={this.onChangeAutoExpand}
             input={<Input name="auto-expand" id="auto-expand-label-placeholder" />}
             name="auto-expand"
             className={classes.input}
+            style={{ flex: '1' }}
         >
           <MenuItem value={0}><em>Collapsed</em></MenuItem>
           <MenuItem value={2}>Few</MenuItem>
@@ -113,8 +114,8 @@ class Settings extends React.Component<Props, {}> {
     const { classes, topicOrder } = this.props
 
     return (
-      <div style={{ padding: '8px' }}>
-      <InputLabel htmlFor="auto-expand">Topic order</InputLabel>
+      <div style={{ padding: '8px', display: 'flex' }}>
+      <InputLabel htmlFor="auto-expand" style={{ flex: '1', marginTop: '8px' }}>Topic order</InputLabel>
       <Select
           value={topicOrder}
           onChange={this.onChangeSorting}
@@ -122,6 +123,7 @@ class Settings extends React.Component<Props, {}> {
           displayEmpty={true}
           name="node-order"
           className={classes.input}
+          style={{ flex: '1' }}
       >
         <MenuItem value={TopicOrder.none}><em>default</em></MenuItem>
         <MenuItem value={TopicOrder.abc}>a-z</MenuItem>
