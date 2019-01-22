@@ -1,4 +1,4 @@
-import { Edge, TreeNode } from './'
+import { TreeNode } from './'
 import { EventBusInterface, makeConnectionMessageEvent, MqttMessage } from '../../../events'
 import { TreeNodeFactory } from './TreeNodeFactory'
 
@@ -40,7 +40,6 @@ export class Tree extends TreeNode {
 
   public stopUpdating() {
     if (this.subscriptionEvent && this.updateSource) {
-      console.log(this.updateSource.ipc)
       this.updateSource.unsubscribe(this.subscriptionEvent, this.handleNewData)
     }
   }

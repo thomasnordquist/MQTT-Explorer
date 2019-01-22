@@ -70,7 +70,6 @@ class IpcRendererEventBus implements EventBusInterface {
   }
 
   public unsubscribe<MessageType>(event: Event<MessageType>, callback: any) {
-    debugger
     const item = this.callbacks.find(store => store.callback === callback)
     if (!item) {
       return

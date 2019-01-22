@@ -158,7 +158,6 @@ class UpdateNotifier extends React.Component<Props, {}> {
   }
 
   private renderDownloads(updateInfo: UpdateInfo) {
-    console.log(updateInfo)
     return updateInfo.files
       .map((file: UpdateFileInfo, index: number) => (
         <div key={index}>

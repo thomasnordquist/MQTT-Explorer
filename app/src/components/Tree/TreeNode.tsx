@@ -90,31 +90,18 @@ class TreeNode extends React.Component<Props, State> {
     }
   }
 
-  private writeStats(what: string) {
-    const w: any = window
-    if (!w.stats) {
-      w.stats = {}
-    }
-    if (!w.stats[what]) {
-      w.stats[what] = 0
-    }
-    w.stats[what] += 1
-  }
-
   public componentDidMount() {
     const { treeNode } = this.props
     this.addSubscriber(treeNode)
   }
 
   private addSubscriber(treeNode: q.TreeNode) {
-    this.writeStats('subscribe')
     treeNode.onMerge.subscribe(this.subnodesDidchange)
     treeNode.onEdgesChange.subscribe(this.edgesDidChange)
     treeNode.onMessage.subscribe(this.messageDidChange)
   }
 
   private removeSubscriber(treeNode: q.TreeNode) {
-    this.writeStats('unsubscribe')
     treeNode.onMerge.unsubscribe(this.subnodesDidchange)
     treeNode.onEdgesChange.unsubscribe(this.edgesDidChange)
     treeNode.onMessage.unsubscribe(this.messageDidChange)
@@ -128,12 +115,8 @@ class TreeNode extends React.Component<Props, State> {
   }
 
   public componentWillUnmount() {
-    this.writeStats('unsubscribe')
-
     const { treeNode } = this.props
-    treeNode.onMerge.unsubscribe(this.subnodesDidchange)
-    treeNode.onEdgesChange.unsubscribe(this.edgesDidChange)
-    treeNode.onMessage.unsubscribe(this.messageDidChange)
+    this.removeSubscriber(treeNode)
     this.topicSelectRef = undefined
     this.titleRef = undefined
   }
