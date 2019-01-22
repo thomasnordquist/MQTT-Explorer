@@ -7,6 +7,7 @@ export class TreeNode {
   public mqttMessage?: MqttMessage
   public messageHistory: RingBuffer<Message> = new RingBuffer<Message>(3000, 100)
   public edges: {[s: string]: Edge} = {}
+  public edgeArray: Edge[] = []
   public collapsed = false
   public messages: number = 0
   public lastUpdate: number = Date.now()
@@ -14,8 +15,10 @@ export class TreeNode {
   public onEdgesChange = new EventDispatcher<void, TreeNode>(this)
   public onMessage = new EventDispatcher<Message, TreeNode>(this)
   public isTree = false
+
   private cachedLeafes?: TreeNode[]
   private cachedLeafMessageCount?: number
+  private cachedLeafCount?: number
 
   public unconnectedClone() {
     const node = new TreeNode()
@@ -37,6 +40,7 @@ export class TreeNode {
     message && this.setMessage(message)
     this.onMerge.subscribe(() => {
       this.cachedLeafes = undefined
+      this.cachedLeafCount = undefined
       this.cachedLeafMessageCount = undefined
       this.lastUpdate = Date.now()
     })
@@ -75,6 +79,7 @@ export class TreeNode {
 
   public addEdge(edge: Edge, emitUpdate: boolean = false) {
     this.edges[edge.name] = edge
+    this.edgeArray.push(edge)
     edge.source = this
 
     if (emitUpdate) {
@@ -102,33 +107,37 @@ export class TreeNode {
     this.onMerge.dispatch()
   }
 
-  public leafMessageCount() {
+  public leafMessageCount(): number {
     if (this.cachedLeafMessageCount === undefined) {
-      this.cachedLeafMessageCount = this.leafes()
-        .map(leaf => leaf.messages)
-        .reduce((a, b) => a + b)
+      this.cachedLeafMessageCount = this.edgeArray
+        .map(edge => edge.target.leafMessageCount())
+        .reduce((a, b) => a + b, 0) + this.messages
     }
 
     return this.cachedLeafMessageCount
   }
 
   public leafCount(): number {
-    return this.leafes().length
+    if (this.cachedLeafCount === undefined) {
+      this.cachedLeafCount = this.edgeArray
+        .map(e => e.target.leafCount())
+        .reduce((a, b) => a + b, this.edgeArray.length === 0 ? 1 : 0)
+    }
+
+    return this.cachedLeafCount
   }
 
   public edgeCount(): number {
-    return Object.values(this.edges).length
+    return this.edgeArray.length
   }
 
   public leafes(): TreeNode[] {
     if (this.cachedLeafes === undefined) {
-      if (Object.values(this.edges).length === 0) {
-        return [this]
-      }
+      const initialValue = this.message && this.message.value ? [this] : []
 
-      this.cachedLeafes = Object.values(this.edges)
+      this.cachedLeafes = this.edgeArray
         .map(e => e.target.leafes())
-        .reduce((a, b) => a.concat(b), [])
+        .reduce((a, b) => a.concat(b), initialValue)
     }
 
     return this.cachedLeafes

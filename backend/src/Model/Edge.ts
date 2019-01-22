@@ -13,7 +13,7 @@ export class Edge implements Hashable {
   }
 
   public edges() {
-    return this.target ? Object.values(this.target.edges) : []
+    return this.target ? this.target.edgeArray : []
   }
 
   public hash(): string {

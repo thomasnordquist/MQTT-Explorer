@@ -32,7 +32,7 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
   private sortedNodes(): q.TreeNode[] {
     const { topicOrder, treeNode } = this.props
 
-    let edges = Object.values(treeNode.edges)
+    let edges = treeNode.edgeArray
     if (topicOrder === TopicOrder.abc) {
       edges = edges.sort((a, b) => a.name.localeCompare(b.name))
     }
@@ -59,7 +59,7 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
   }
 
   public render() {
-    const edges = Object.values(this.props.treeNode.edges)
+    const edges = this.props.treeNode.edgeArray
     if (edges.length === 0 || this.props.collapsed) {
       return null
     }
