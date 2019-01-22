@@ -42,7 +42,7 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
       nodes = nodes.sort((a, b) => b.leafMessageCount() - a.leafMessageCount())
     }
     if (topicOrder === TopicOrder.topics) {
-      nodes = nodes.sort((a, b) => b.leafCount() - a.leafCount())
+      nodes = nodes.sort((a, b) => b.childTopicCount() - a.childTopicCount())
     }
 
     return nodes

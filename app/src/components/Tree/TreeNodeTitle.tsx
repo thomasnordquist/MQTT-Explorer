@@ -84,7 +84,7 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
     }
 
     const messages = this.props.treeNode.leafMessageCount()
-    return <span style={this.getStyles().collapsedSubnodes}>({this.props.treeNode.leafCount()} nodes, {messages} messages)</span>
+    return <span style={this.getStyles().collapsedSubnodes}>({this.props.treeNode.childTopicCount()} topics, {messages} messages)</span>
   }
 }
 

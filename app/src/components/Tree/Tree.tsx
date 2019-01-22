@@ -90,7 +90,7 @@ class Tree extends React.Component<Props, {}> {
           animateChages={true}
           isRoot={true}
           treeNode={tree}
-          name="/"
+          name={'"root"'}
           lastUpdate={tree.lastUpdate}
           collapsed={false}
           performanceCallback={this.performanceCallback}

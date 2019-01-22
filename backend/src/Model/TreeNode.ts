@@ -16,9 +16,10 @@ export class TreeNode {
   public onMessage = new EventDispatcher<Message, TreeNode>(this)
   public isTree = false
 
-  private cachedLeafes?: TreeNode[]
+  private cachedPath?: string
+  private cachedChildTopics?: TreeNode[]
   private cachedLeafMessageCount?: number
-  private cachedLeafCount?: number
+  private cachedChildTopicCount?: number
 
   public unconnectedClone() {
     const node = new TreeNode()
@@ -39,8 +40,8 @@ export class TreeNode {
 
     message && this.setMessage(message)
     this.onMerge.subscribe(() => {
-      this.cachedLeafes = undefined
-      this.cachedLeafCount = undefined
+      this.cachedChildTopics = undefined
+      this.cachedChildTopicCount = undefined
       this.cachedLeafMessageCount = undefined
       this.lastUpdate = Date.now()
     })
@@ -67,10 +68,14 @@ export class TreeNode {
   }
 
   public path(): string {
-    return this.branch()
-      .map(node => (node.sourceEdge && node.sourceEdge.name))
-      .filter(name => name !== undefined)
-      .join('/')
+    if (!this.cachedPath) {
+      return this.branch()
+        .map(node => (node.sourceEdge && node.sourceEdge.name))
+        .filter(name => name !== undefined)
+        .join('/')
+    }
+
+    return this.cachedPath
   }
 
   private previous(): TreeNode | undefined {
@@ -117,30 +122,30 @@ export class TreeNode {
     return this.cachedLeafMessageCount
   }
 
-  public leafCount(): number {
-    if (this.cachedLeafCount === undefined) {
-      this.cachedLeafCount = this.edgeArray
-        .map(e => e.target.leafCount())
+  public childTopicCount(): number {
+    if (this.cachedChildTopicCount === undefined) {
+      this.cachedChildTopicCount = this.edgeArray
+        .map(e => e.target.childTopicCount())
         .reduce((a, b) => a + b, this.edgeArray.length === 0 ? 1 : 0)
     }
 
-    return this.cachedLeafCount
+    return this.cachedChildTopicCount
   }
 
   public edgeCount(): number {
     return this.edgeArray.length
   }
 
-  public leafes(): TreeNode[] {
-    if (this.cachedLeafes === undefined) {
+  public childTopics(): TreeNode[] {
+    if (this.cachedChildTopics === undefined) {
       const initialValue = this.message && this.message.value ? [this] : []
 
-      this.cachedLeafes = this.edgeArray
-        .map(e => e.target.leafes())
+      this.cachedChildTopics = this.edgeArray
+        .map(e => e.target.childTopics())
         .reduce((a, b) => a.concat(b), initialValue)
     }
 
-    return this.cachedLeafes
+    return this.cachedChildTopics
   }
 
   private mergeEdges(node: TreeNode) {

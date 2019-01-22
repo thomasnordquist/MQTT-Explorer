@@ -53,7 +53,7 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
     return Boolean(messageMatches)
   }
 
-  const resultTree = tree.leafes()
+  const resultTree = tree.childTopics()
     .filter(nodeFilter)
     .map((node) => {
       const clone = node.unconnectedClone()

@@ -18,7 +18,7 @@ class NodeStats extends React.Component<Props, {}> {
     return (
       <div>
         <Typography>Messages: #{node.messages}</Typography>
-        <Typography>Subtopics: {node.leafCount()}</Typography>
+        <Typography>Subtopics: {node.childTopicCount()}</Typography>
         <Typography>Messages Subtopics: #{node.leafMessageCount()}</Typography>
       </div>
     )
