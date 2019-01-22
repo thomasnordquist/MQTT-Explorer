@@ -16,8 +16,9 @@ import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 import ChevronRight from '@material-ui/icons/ChevronRight'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { settingsActions } from '../actions'
+import { settingsActions, treeActions } from '../actions'
 import { TopicOrder } from '../reducers/Settings'
+import BrokerStatistics from './BrokerStatistics'
 
 const styles: StyleRulesCallback = theme => ({
   drawer: {
@@ -39,12 +40,12 @@ const styles: StyleRulesCallback = theme => ({
 })
 
 interface Props {
-  actions: typeof settingsActions
   autoExpandLimit: number
   visible: boolean
   store?: any
-  classes: any
   topicOrder: TopicOrder
+  classes: any
+  actions: typeof settingsActions
 }
 
 class Settings extends React.Component<Props, {}> {
@@ -79,6 +80,7 @@ class Settings extends React.Component<Props, {}> {
           {this.renderAutoExpand()}
           {this.renderNodeOrder()}
         </div>
+        <BrokerStatistics />
       </Drawer>
     )
   }
@@ -115,8 +117,8 @@ class Settings extends React.Component<Props, {}> {
 
     return (
       <div style={{ padding: '8px', display: 'flex' }}>
-      <InputLabel htmlFor="auto-expand" style={{ flex: '1', marginTop: '8px' }}>Topic order</InputLabel>
-      <Select
+        <InputLabel htmlFor="auto-expand" style={{ flex: '1', marginTop: '8px' }}>Topic order</InputLabel>
+        <Select
           value={topicOrder}
           onChange={this.onChangeSorting}
           input={<Input name="node-order" id="node-order-label-placeholder" />}
@@ -124,12 +126,12 @@ class Settings extends React.Component<Props, {}> {
           name="node-order"
           className={classes.input}
           style={{ flex: '1' }}
-      >
-        <MenuItem value={TopicOrder.none}><em>default</em></MenuItem>
-        <MenuItem value={TopicOrder.abc}>a-z</MenuItem>
-        <MenuItem value={TopicOrder.messages}>{TopicOrder.messages}</MenuItem>
-        <MenuItem value={TopicOrder.topics}>{TopicOrder.topics}</MenuItem>
-      </Select>
+        >
+          <MenuItem value={TopicOrder.none}><em>default</em></MenuItem>
+          <MenuItem value={TopicOrder.abc}>a-z</MenuItem>
+          <MenuItem value={TopicOrder.messages}>{TopicOrder.messages}</MenuItem>
+          <MenuItem value={TopicOrder.topics}>{TopicOrder.topics}</MenuItem>
+        </Select>
     </div>)
   }
 

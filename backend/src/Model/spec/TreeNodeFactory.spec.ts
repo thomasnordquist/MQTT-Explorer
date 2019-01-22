@@ -1,5 +1,4 @@
 import 'mocha'
-import './TreeNode.findNode'
 
 import { TreeNodeFactory } from '../'
 import { expect } from 'chai'

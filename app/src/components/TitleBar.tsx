@@ -1,5 +1,4 @@
 import * as React from 'react'
-import * as q from '../../../backend/src/Model'
 
 import { AppBar, Button, IconButton, InputBase, Toolbar, Typography } from '@material-ui/core'
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'

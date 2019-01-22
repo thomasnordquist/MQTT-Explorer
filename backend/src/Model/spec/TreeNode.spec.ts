@@ -1,4 +1,3 @@
-import './TreeNode.findNode'
 import 'mocha'
 
 import { TreeNodeFactory } from  '../'

@@ -148,6 +148,25 @@ export class TreeNode {
     return this.cachedChildTopics
   }
 
+  public findNode (path: String): TreeNode | undefined {
+    const topics = path.split('/')
+
+    return this.findChild(topics)
+  }
+
+  private findChild(edges: string[]): TreeNode | undefined {
+    if (edges.length === 0) {
+      return this
+    }
+
+    const nextEdge = this.edges[edges[0]]
+    if (!nextEdge) {
+      return undefined
+    }
+
+    return nextEdge.target.findChild(edges.slice(1))
+  }
+
   private mergeEdges(node: TreeNode) {
     const edgeKeys = Object.keys(node.edges)
     let edgesDidUpdate = false

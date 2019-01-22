@@ -2,7 +2,6 @@ import 'mocha'
 import { EventDispatcher } from '../../../../events'
 
 import { expect } from 'chai'
-import { doesNotReject } from 'assert'
 
 describe('EventDispatcher', async () => {
   it('should dispatch', async function () {

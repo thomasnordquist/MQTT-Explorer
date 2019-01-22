@@ -16,6 +16,7 @@
     "css-loader": "^2.1.0",
     "electron-nucleus": "^1.11.0",
     "electron-telemetry": "git+https://github.com/thomasnordquist/electron-telemetry.git",
+    "number-abbreviate": "^2.0.0",
     "react": "^16.8.0-alpha.1",
     "react-dom": "^16.7.0",
     "react-redux": "^6.0.0",

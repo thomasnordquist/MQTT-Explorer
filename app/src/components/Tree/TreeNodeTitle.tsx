@@ -56,7 +56,6 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
 
   private renderValue() {
     const style: React.CSSProperties = {
-      maxWidth: '15em',
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
