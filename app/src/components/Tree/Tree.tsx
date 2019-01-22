@@ -18,6 +18,7 @@ interface Props {
   connectionId?: string
   tree?: q.Tree
   filter: string
+  host?: string
 }
 
 class Tree extends React.Component<Props, {}> {
@@ -90,7 +91,7 @@ class Tree extends React.Component<Props, {}> {
           animateChages={true}
           isRoot={true}
           treeNode={tree}
-          name={'"root"'}
+          name={this.props.host}
           lastUpdate={tree.lastUpdate}
           collapsed={false}
           performanceCallback={this.performanceCallback}
@@ -109,6 +110,7 @@ const mapStateToProps = (state: AppState) => {
     autoExpandLimit: state.settings.autoExpandLimit,
     tree: state.tree.tree,
     filter: state.tree.filter,
+    host: state.connection.host,
   }
 }
 

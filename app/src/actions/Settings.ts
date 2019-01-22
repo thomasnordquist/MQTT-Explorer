@@ -26,22 +26,19 @@ export const setTopicOrder = (topicOrder: TopicOrder = TopicOrder.none): Action 
 }
 
 export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, getState: () => AppState)  => {
-  const topicFilter = filterStr.toLowerCase()
+  const { tree } = getState().connection
 
   dispatch({
-    topicFilter,
+    topicFilter: filterStr,
     type: ActionTypes.SETTINGS_FILTER_TOPICS,
   })
 
-  const { tree } = getState().connection
-  if (!tree) {
-    return
-  }
-
-  if (!topicFilter) {
+  if (!filterStr || !tree) {
     dispatch(showTree(tree))
     return
   }
+
+  const topicFilter = filterStr.toLowerCase()
 
   const nodeFilter = (node: q.TreeNode): boolean => {
     const topicMatches = node.path().toLowerCase().indexOf(topicFilter) !== -1

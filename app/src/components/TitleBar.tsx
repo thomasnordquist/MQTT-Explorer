@@ -12,6 +12,7 @@ import { connect } from 'react-redux'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import { settingsActions, connectionActions } from '../actions'
 import { AppState } from '../reducers'
+import ClearAdornment from './helper/ClearAdornment';
 
 const styles: StyleRulesCallback = theme => ({
   title: {
@@ -36,7 +37,7 @@ const styles: StyleRulesCallback = theme => ({
     },
   },
   searchIcon: {
-    width: theme.spacing.unit * 9,
+    width: theme.spacing.unit * 8,
     height: '100%',
     position: 'absolute',
     pointerEvents: 'none',
@@ -100,7 +101,7 @@ class TitleBar extends React.Component<Props, {}> {
   }
 
   private renderSearch() {
-    const { classes } = this.props
+    const { classes, topicFilter } = this.props
 
     return (
       <div className={classes.search}>
@@ -108,13 +109,18 @@ class TitleBar extends React.Component<Props, {}> {
           <Search />
         </div>
         <InputBase
-          value={this.props.topicFilter}
+          value={topicFilter}
           onChange={this.onFilterChange}
           placeholder="Search…"
+          endAdornment={<div style={{ width: '24px', paddingRight: '8px' }}><ClearAdornment action={this.clearFilter} value={topicFilter} /></div>}
           classes={{ root: classes.inputRoot, input: classes.inputInput }}
         />
       </div>
     )
+  }
+
+  private clearFilter = () => {
+    this.props.actions.settings.filterTopics('')
   }
 
   private onFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {

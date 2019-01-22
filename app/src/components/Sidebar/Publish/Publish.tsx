@@ -32,6 +32,7 @@ import Clear from '@material-ui/icons/Clear'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { publishActions } from '../../../actions'
+import ClearAdornment from '../../helper/ClearAdornment';
 
 interface Props {
   node?: q.TreeNode
@@ -114,7 +115,7 @@ class Publish extends React.Component<Props, State> {
               id="publish-topic"
               value={topicStr}
               startAdornment={<span/>}
-              endAdornment={<IconButton style={{ padding: '4px' }} onClick={this.clearTopic}><Clear style={{ fontSize: '14px' }} /></IconButton>}
+              endAdornment={<ClearAdornment action={this.clearTopic} value={topicStr} />}
               onBlur={this.onTopicBlur}
               onChange={this.updateTopic}
               multiline={true}

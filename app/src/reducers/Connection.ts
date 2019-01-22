@@ -4,6 +4,7 @@ import * as q from '../../../backend/src/Model'
 import { MqttOptions } from '../../../backend/src/DataSource'
 
 export interface ConnectionState {
+  host?: string
   tree?: q.Tree
   connectionOptions?: MqttOptions
   connectionId?: string
@@ -28,6 +29,7 @@ export interface SetConnecting {
 
 export interface SetConnected {
   type: ActionTypes.CONNECTION_SET_CONNECTED
+  host: string
   tree: q.Tree
 }
 
@@ -52,7 +54,7 @@ export const connectionReducer = createReducer(initialState, {
   CONNECTION_SET_SHOW_ERROR: showError,
 })
 
-function setConnecting(state: ConnectionState, action: SetConnecting) {
+function setConnecting(state: ConnectionState, action: SetConnecting): ConnectionState {
   return {
     ...state,
     connecting: true,
@@ -61,18 +63,20 @@ function setConnecting(state: ConnectionState, action: SetConnecting) {
   }
 }
 
-function setConnected(state: ConnectionState, action: SetConnected) {
+function setConnected(state: ConnectionState, action: SetConnected): ConnectionState {
   return {
     ...state,
+    host: action.host,
     connecting: false,
     connected: true,
     tree: action.tree,
   }
 }
 
-function setDisconnected(state: ConnectionState, action: SetDisconnected) {
+function setDisconnected(state: ConnectionState, action: SetDisconnected): ConnectionState {
   return {
     ...state,
+    host: undefined,
     connecting: false,
     connected: false,
     connectionId: undefined,
