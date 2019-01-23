@@ -14,7 +14,6 @@ declare var window: any
 
 interface Props {
   autoExpandLimit: number
-  didSelectNode?: (node: q.TreeNode) => void
   connectionId?: string
   tree?: q.Tree
   filter: string

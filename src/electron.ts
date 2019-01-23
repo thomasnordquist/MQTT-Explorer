@@ -28,11 +28,16 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1024,
     height: 700,
+    show: false,
     webPreferences: {
       nodeIntegration: true,
       devTools: true,
     },
     icon: iconPath,
+  })
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow && mainWindow.show()
   })
 
   console.log('icon path', iconPath)

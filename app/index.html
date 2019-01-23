@@ -10,6 +10,7 @@
             margin: 0;
             padding: 0;
           }
+
           @keyframes example {
             0%   {background-color: none;}
             25%  {background-color: #3f51b5;}
@@ -48,7 +49,7 @@
             margin: 37vh auto 0 auto;
             height: 25vh;
             width: 25vh;
-            background-image:url('../rings.svg');
+            /* background-image:url('../rings.svg'); */
             background-size: cover;
           }
           #splash2 {
@@ -124,9 +125,10 @@
     
             document.addEventListener('DOMContentLoaded', onLoad(), false);
             function onLoad() {
-              <% _.forEach(htmlWebpackPlugin.files.js, function(file) { %>loadScript("<%- file %>");<% }); %>
+              // <% _.forEach(htmlWebpackPlugin.files.js, function(file) { %>loadScript("<%- file %>");<% }); %>
               // loadScript("<%= JSON.stringify(htmlWebpackPlugin) %>")
             }
           </script>
+          <% _.forEach(htmlWebpackPlugin.files.js, function(file) { %><script src="<%- file %>"></script><% }); %>
     </body>
 </html>

@@ -30,11 +30,13 @@ const theme = createMuiTheme({
   typography: { useNextVariants: true },
 })
 
-const splash = document.getElementById('splash')
-if (splash) {
-  splash.style.animation = 'unsplash 1s ease-out 0s 1 normal forwards'
-  setTimeout(() => splash.remove(), 1100)
-}
+setTimeout(() => {
+  const splash = document.getElementById('splash')
+  if (splash) {
+    splash.style.animation = 'unsplash 0.5s ease-in 0s 1 normal forwards'
+    setTimeout(() => splash.remove(), 600)
+  }
+}, 300)
 
 ReactDOM.render(
     <MuiThemeProvider theme={theme}>
