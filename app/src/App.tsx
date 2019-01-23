@@ -13,6 +13,7 @@ import Tree from './components/Tree/Tree'
 import UpdateNotifier from './UpdateNotifier'
 import { connect } from 'react-redux'
 import ErrorBoundary from './ErrorBoundary'
+import { default as SplitPane } from 'react-split-pane'
 
 interface Props {
   name: string
@@ -29,22 +30,33 @@ class App extends React.Component<Props, {}> {
 
   public render() {
     const { settingsVisible } = this.props
-    const { content, contentShift, centerContent, left, right } = this.props.classes
+    const { content, contentShift, centerContent, paneDefaults, heightProperty } = this.props.classes
 
     return (
       <div className={centerContent}>
         <CssBaseline />
         <ErrorBoundary>
           <Settings />
-          <div className={settingsVisible ? contentShift : content}>
+          <div className={`${settingsVisible ? contentShift : content} ${heightProperty}`}>
               <TitleBar />
               <div className={centerContent}>
-                <div className={this.props.classes.left}>
+              <SplitPane
+                step={48}
+                primary="second"
+                className={heightProperty}
+                split="vertical"
+                minSize={250}
+                defaultSize={500}
+                allowResize={true}
+                pane1Style={{ overflow: 'hidden' }}
+              >
+                <div className={paneDefaults}>
                   <Tree />
                 </div>
-                <div className={right}>
+                <div className={paneDefaults}>
                   <Sidebar connectionId={this.props.connectionId} />
                 </div>
+              </SplitPane>
               </div>
           </div>
           <UpdateNotifier />
@@ -65,24 +77,16 @@ const mapStateToProps = (state: AppState) => {
 const styles = (theme: Theme) => {
   const drawerWidth = 300
   return {
-    left: {
+    heightProperty: {
+      height: 'calc(100vh - 64px) !important',
+    },
+    paneDefaults: {
       backgroundColor: theme.palette.background.default,
       color: theme.palette.text.primary,
-      height: 'calc(100vh - 64px)',
-      float: 'left' as 'left',
       overflowY: 'scroll' as 'scroll',
       overflowX: 'hidden' as 'hidden',
       display: 'block' as 'block',
-      width: '60vw',
-    },
-    right: {
       height: 'calc(100vh - 64px)',
-      color: theme.palette.text.primary,
-      float: 'left' as 'left',
-      width: '40vw',
-      overflowY: 'scroll' as 'scroll',
-      overflowX: 'hidden' as 'hidden',
-      display: 'block' as 'block',
     },
     centerContent: {
       width: '100vw',

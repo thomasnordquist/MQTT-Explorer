@@ -6,6 +6,7 @@ import { AppState } from '../../reducers'
 import TreeNode from './TreeNode'
 import { connect } from 'react-redux'
 import { TopicOrder } from '../../reducers/Settings'
+import { Theme, withStyles } from '@material-ui/core'
 
 export interface Props {
   lastUpdate: number
@@ -16,6 +17,7 @@ export interface Props {
   filter?: string
   collapsed?: boolean | undefined
   didSelectNode?: (node: q.TreeNode) => void
+  classes: any
 }
 
 interface State {
@@ -69,24 +71,19 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
       this.renderMore()
     }
 
-    const listItemStyle = {
-      padding: '3px 0px 0px 8px',
-    }
-
     const nodes = this.sortedNodes().slice(0, this.state.alreadyAdded)
     const listItems = nodes.map(node => (
-      <div key={`${node.hash()}-${this.props.filter}`}>
-        <TreeNode
-          animateChages={this.props.animateChanges}
-          treeNode={node}
-          lastUpdate={node.lastUpdate}
-          style={listItemStyle}
-        />
-      </div>
+      <TreeNode
+        key={`${node.hash()}-${this.props.filter}`}
+        animateChages={this.props.animateChanges}
+        treeNode={node}
+        lastUpdate={node.lastUpdate}
+        className={this.props.classes.listItem}
+      />
     ))
 
     return (
-      <span style={{ display: 'block', clear: 'both' }} >
+      <span className={this.props.classes.list}>
         {listItems}
       </span>
     )
@@ -100,4 +97,14 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default connect(mapStateToProps)(TreeNodeSubnodes)
+const styles = (theme: Theme) => ({
+  list: {
+    display: 'block' as 'block',
+    clear: 'both' as 'both',
+  },
+  listItem: {
+    padding: '3px 0px 0px 8px',
+  },
+})
+
+export default withStyles(styles)(connect(mapStateToProps)(TreeNodeSubnodes))

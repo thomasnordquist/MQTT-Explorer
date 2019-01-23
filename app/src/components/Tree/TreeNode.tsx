@@ -26,11 +26,11 @@ const styles = (theme: Theme) => {
       display: 'block',
       marginLeft: '10px',
     },
-    hover: {
-      '&:hover': {
-        backgroundColor: 'rgba(80, 80, 80, 0.35)',
-      },
-    },
+    // hover: {
+    //   '&:hover': {
+    //     backgroundColor: 'rgba(80, 80, 80, 0.35)',
+    //   },
+    // },
     topicSelect: {
       float: 'right' as 'right',
       opacity: 0,
@@ -51,7 +51,7 @@ interface Props {
   performanceCallback?: ((ms: number) => void) | undefined
   autoExpandLimit: number
   classes: any
-  style?: React.CSSProperties
+  className?: string
 }
 
 interface State {
@@ -68,6 +68,7 @@ class TreeNode extends React.Component<Props, State> {
 
   private willUpdateTime: number = performance.now()
   private titleRef?: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>()
+  private nodeRef?: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>()
   private topicSelectRef?: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>()
 
   private subnodesDidchange = () => {
@@ -119,6 +120,7 @@ class TreeNode extends React.Component<Props, State> {
     this.removeSubscriber(treeNode)
     this.topicSelectRef = undefined
     this.titleRef = undefined
+    this.nodeRef = undefined
   }
 
   private stateHasChanged(newState: State) {
@@ -177,11 +179,11 @@ class TreeNode extends React.Component<Props, State> {
     return (
       <div
         key={this.props.treeNode.hash()}
-        className={`${classes.node} ${!this.props.isRoot ? classes.hover : ''}`}
+        className={`${classes.node} ${this.props.className}`}
         onClick={this.didClickNode}
-        style={this.props.style}
         onMouseOver={this.mouseOver}
         onMouseOut={this.mouseOut}
+        ref={this.nodeRef}
       >
         <span ref={this.titleRef} style={animation}>
           <TreeNodeTitle
@@ -191,14 +193,6 @@ class TreeNode extends React.Component<Props, State> {
             lastUpdate={this.props.treeNode.lastUpdate}
           />
         </span>
-        <div
-          className={this.props.classes.topicSelect}
-          ref={this.topicSelectRef}
-          onClick={this.didSelectNode}
-          title="Select topic"
-        >
-          <LabelImportant style={{ fontSize: '14px' }} />
-        </div>
         {this.renderNodes()}
       </div>
     )
@@ -206,12 +200,18 @@ class TreeNode extends React.Component<Props, State> {
 
   private mouseOver = (event: React.MouseEvent) => {
     event.stopPropagation()
+    if (this.nodeRef && this.nodeRef.current) {
+      this.nodeRef.current.style.backgroundColor = 'rgba(100, 100, 100, 0.55)'
+    }
     if (this.topicSelectRef && this.topicSelectRef.current) {
       this.topicSelectRef.current.style.opacity = '1'
     }
   }
   private mouseOut = (event: React.MouseEvent) => {
     event.stopPropagation()
+    if (this.nodeRef && this.nodeRef.current) {
+      this.nodeRef.current.style.backgroundColor = 'inherit'
+    }
     if (this.topicSelectRef && this.topicSelectRef.current) {
       this.topicSelectRef.current.style.opacity = '0'
     }

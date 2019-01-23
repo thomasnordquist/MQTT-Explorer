@@ -20,6 +20,23 @@ import { settingsActions, treeActions } from '../actions'
 import { TopicOrder } from '../reducers/Settings'
 import BrokerStatistics from './BrokerStatistics'
 
+export const autoExpandLimitSet = [{
+  limit: 0,
+  name: 'Collapsed',
+}, {
+  limit: 2,
+  name: 'Few',
+}, {
+  limit: 3,
+  name: 'Some',
+}, {
+  limit: 10,
+  name: 'Most',
+}, {
+  limit: 1E6,
+  name: 'All',
+}]
+
 const styles: StyleRulesCallback = theme => ({
   drawer: {
     backgroundColor: theme.palette.background.default,
@@ -87,6 +104,8 @@ class Settings extends React.Component<Props, {}> {
 
   private renderAutoExpand() {
     const { classes, autoExpandLimit } = this.props
+
+    const limits = autoExpandLimitSet.map(limit => <MenuItem key={limit.limit} value={limit.limit}>{limit.name}</MenuItem>)
     return (
       <div style={{ padding: '8px', display: 'flex' }}>
         <InputLabel htmlFor="auto-expand" style={{ flex: '1', marginTop: '8px' }}>Auto Expand</InputLabel>
@@ -98,11 +117,7 @@ class Settings extends React.Component<Props, {}> {
             className={classes.input}
             style={{ flex: '1' }}
         >
-          <MenuItem value={0}><em>Collapsed</em></MenuItem>
-          <MenuItem value={2}>Few</MenuItem>
-          <MenuItem value={3}>Some</MenuItem>
-          <MenuItem value={10}>Most</MenuItem>
-          <MenuItem value={1E6}>All</MenuItem>
+          {limits}
         </Select>
       </div>
     )
