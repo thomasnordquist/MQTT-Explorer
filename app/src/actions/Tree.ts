@@ -1,10 +1,10 @@
 import { AppState } from '../reducers'
 import { ActionTypes } from '../reducers/Tree'
 import * as q from '../../../backend/src/Model'
-import { Dispatch } from 'redux'
+import { Dispatch, AnyAction } from 'redux'
 import { setTopic } from './Publish'
 
-export const selectTopic = (topic: q.TreeNode) => (dispatch: Dispatch<any>, getState: () => AppState)  => {
+export const selectTopic = (topic: q.TreeNode) => (dispatch: Dispatch<any>, getState: () => AppState): AnyAction  => {
   const { selectedTopic } = getState().tree
 
   // Update publish topic
@@ -12,13 +12,13 @@ export const selectTopic = (topic: q.TreeNode) => (dispatch: Dispatch<any>, getS
     dispatch(setTopic(topic.path()))
   }
 
-  dispatch({
+  return dispatch({
     selectedTopic: topic,
     type: ActionTypes.TREE_SELECT_TOPIC,
   })
 }
 
-export const showTree = (tree?: q.Tree) => (dispatch: Dispatch<any>, getState: () => AppState)  => {
+export const showTree = (tree?: q.Tree) => (dispatch: Dispatch<any>, getState: () => AppState): AnyAction  => {
   const visibleTree = getState().tree.tree
   const connectionTree = getState().connection.tree
 
@@ -27,7 +27,7 @@ export const showTree = (tree?: q.Tree) => (dispatch: Dispatch<any>, getState: (
     visibleTree.stopUpdating()
   }
 
-  dispatch({
+  return dispatch({
     tree,
     type: ActionTypes.TREE_SHOW_TREE,
   })

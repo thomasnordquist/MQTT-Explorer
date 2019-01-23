@@ -23,9 +23,9 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import Clear from '@material-ui/icons/Clear'
 import MessageHistory from './MessageHistory'
 import NodeStats from './NodeStats'
-import Publish from './Publish/Publish'
+const Publish = React.lazy(() => import('./Publish/Publish'))
 import Topic from './Topic'
-import ValueRenderer from './ValueRenderer'
+const ValueRenderer = React.lazy(() => import('./ValueRenderer'))
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
@@ -112,7 +112,9 @@ class Sidebar extends React.Component<Props, State> {
           <ExpansionPanelDetails style={this.detailsStyle}>
             {this.messageMetaInfo()}
             <div ref={this.valueRef}>
+            <React.Suspense fallback={<div>Loading...</div>}>
               <ValueRenderer message={this.props.node && this.props.node.message} />
+            </React.Suspense>
             </div>
             <div><MessageHistory onSelect={this.handleMessageHistorySelect} node={this.props.node} /></div>
             <Popper open={Boolean(this.state.compareMessage)} anchorEl={this.valueRef.current} placement="left" transition={true}>
@@ -125,7 +127,9 @@ class Sidebar extends React.Component<Props, State> {
             <Typography className={classes.heading}>Publish</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={this.detailsStyle}>
-            <Publish node={this.props.node} connectionId={this.props.connectionId} />
+            <React.Suspense fallback={<div>Loading...</div>}>
+              <Publish node={this.props.node} connectionId={this.props.connectionId} />
+            </React.Suspense>
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel defaultExpanded={Boolean(this.props.node)}>

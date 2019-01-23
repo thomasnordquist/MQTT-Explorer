@@ -4,8 +4,8 @@ import { Dispatch } from 'redux'
 import { showTree } from './Tree'
 import { AppState } from '../reducers'
 import * as q from '../../../backend/src/Model'
-import { batchActions, enableBatching, batchDispatchMiddleware } from 'redux-batched-actions';
-import { autoExpandLimitSet } from '../components/Settings';
+import { batchActions } from 'redux-batched-actions'
+import { autoExpandLimitSet } from '../components/Settings'
 
 export const setAutoExpandLimit = (autoExpandLimit: number = 0): Action => {
   return {
@@ -36,7 +36,7 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
   })
 
   if (!filterStr || !tree) {
-    dispatch(batchActions([setAutoExpandLimit(0), showTree(tree)]))
+    dispatch(batchActions([setAutoExpandLimit(0), (showTree(tree) as any)]))
     return
   }
 
@@ -69,7 +69,7 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
     nextTree.updateWithConnection(tree.updateSource, tree.connectionId, nodeFilter)
   }
 
-  dispatch(batchActions([setAutoExpandLimit(autoExpandLimitForTree(nextTree)), showTree(nextTree)]))
+  dispatch(batchActions([setAutoExpandLimit(autoExpandLimitForTree(nextTree)), (showTree(nextTree) as any)]))
 }
 
 function autoExpandLimitForTree(tree: q.Tree) {
@@ -78,7 +78,6 @@ function autoExpandLimitForTree(tree: q.Tree) {
   }
   function closestExistingLimit(i: number): number {
     const sorted = autoExpandLimitSet.sort((a, b) => Math.abs(a.limit - i) - Math.abs(b.limit - i))
-    console.log('sorted', i, sorted)
     return sorted[0]!.limit
   }
 

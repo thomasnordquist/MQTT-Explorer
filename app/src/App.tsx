@@ -6,7 +6,7 @@ import { Theme, withStyles } from '@material-ui/core/styles'
 import { AppState } from './reducers'
 import Connection from './components/ConnectionSetup/Connection'
 import CssBaseline from '@material-ui/core/CssBaseline'
-import Settings from './components/Settings'
+const Settings = React.lazy(() => import('./components/Settings'))
 import Sidebar from './components/Sidebar/Sidebar'
 import TitleBar from './components/TitleBar'
 import Tree from './components/Tree/Tree'
@@ -36,7 +36,9 @@ class App extends React.Component<Props, {}> {
       <div className={centerContent}>
         <CssBaseline />
         <ErrorBoundary>
-          <Settings />
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <Settings />
+          </React.Suspense>
           <div className={`${settingsVisible ? contentShift : content} ${heightProperty}`}>
               <TitleBar />
               <div className={centerContent}>

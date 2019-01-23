@@ -1,5 +1,6 @@
 const LiveReloadPlugin = require('webpack-livereload-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
     entry: {
@@ -7,19 +8,32 @@ module.exports = {
         bugtracking: "./src/bugtracking.ts",
     },
     output: {
+        chunkFilename: '[name].bundle.js',
         filename: "[name].bundle.js",
         path: __dirname + "/build"
     },
     optimization: {
-      removeAvailableModules: false,
-      removeEmptyChunks: false,
-      splitChunks: {
-        cacheGroups: {
-          vendors: {
-            filename: '[name].bundle.js'
+        splitChunks: {
+            chunks: 'async',
+            minSize: 30000,
+            maxSize: 0,
+            minChunks: 1,
+            maxAsyncRequests: 5,
+            maxInitialRequests: 3,
+            automaticNameDelimiter: '~',
+            name: true,
+            cacheGroups: {
+              vendors: {
+                test: /[\\/]node_modules[\\/]/,
+                priority: -10
+              },
+              default: {
+                minChunks: 2,
+                priority: -20,
+                reuseExistingChunk: true
+              }
+            }
           }
-        }
-      }
     },
 
     target: 'electron-renderer',
@@ -51,7 +65,8 @@ module.exports = {
 
     plugins: [
       new LiveReloadPlugin({}),
-    //   new BundleAnalyzerPlugin(),
+      new HtmlWebpackPlugin({ template: './index.html', file: './build/index.html', inject: false }),
+      new BundleAnalyzerPlugin(),
     ],
 
     // When importing a module whose path matches one of the following, just

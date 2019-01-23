@@ -37,7 +37,7 @@ function createWindow() {
 
   console.log('icon path', iconPath)
   // and load the index.html of the app.
-  mainWindow.loadFile('app/index.html')
+  mainWindow.loadFile('app/build/index.html')
 
   // Emitted when the window is closed.
   mainWindow.on('close', () => {

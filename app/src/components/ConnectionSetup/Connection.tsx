@@ -26,7 +26,7 @@ import Notification from './Notification'
 import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 
-import sha1 = require('sha1')
+const sha1 = require('sha1')
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connectionActions } from '../../actions'

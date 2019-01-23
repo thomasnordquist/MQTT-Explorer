@@ -5,10 +5,11 @@
     "strictNullChecks": true,
     "strict": true,
     "lib": ["es2017", "dom"],
+    "moduleResolution": "node",
     "outDir": "./build/",
     "sourceMap": true,
-    "module": "commonjs",
-    "target": "es5",
+    "module": "esnext",
+    "target": "es2017",
     "jsx": "react"
   },
   "include": [
@@ -18,8 +19,8 @@
     "**/*.d.ts"
   ],
   "awesomeTypescriptLoaderOptions": {
-        "useCache": true,
-        "transpileModule": true,
-        "errorsAsWarnings": true
-    }
+    "useCache": true,
+    "transpileModule": true,
+    "errorsAsWarnings": true
+  }
 }

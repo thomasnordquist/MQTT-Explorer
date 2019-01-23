@@ -4,7 +4,7 @@ import * as q from '../../../../backend/src/Model'
 import BarChart from '@material-ui/icons/BarChart'
 import DateFormatter from '../helper/DateFormatter'
 import History from './History'
-import PlotHistory from './PlotHistory'
+const PlotHistory = React.lazy(() => import('./PlotHistory'))
 
 const throttle = require('lodash.throttle')
 
@@ -70,7 +70,11 @@ class MessageHistory extends React.Component<Props, State> {
   }
 
   public renderPlot(numericMessages: q.Message[]) {
-    return <PlotHistory messages={numericMessages} />
+    return (
+      <React.Suspense fallback={<div>Loading...</div>}>
+        <PlotHistory messages={numericMessages} />
+      </React.Suspense>
+    )
   }
 
   private displayMessage = (index: number, eventTarget: EventTarget) => {

@@ -48,7 +48,7 @@
             margin: 37vh auto 0 auto;
             height: 25vh;
             width: 25vh;
-            background-image:url('./rings.svg');
+            background-image:url('../rings.svg');
             background-size: cover;
           }
           #splash2 {
@@ -116,12 +116,17 @@
         <div id="splash"><div id="splash1"></div></div>
         <div id="app" style="font:-webkit-control"></div>
         <script>
-          function onLoad() {
-            var script = document.createElement("script");
-            script.src = "./build/app.bundle.js"
-            document.head.appendChild(script);
-          }
-          document.addEventListener('DOMContentLoaded', onLoad(), false);
-        </script>
+            function loadScript(path) {
+              var script = document.createElement("script");
+              script.src = path
+              document.head.appendChild(script);
+            }
+    
+            document.addEventListener('DOMContentLoaded', onLoad(), false);
+            function onLoad() {
+              <% _.forEach(htmlWebpackPlugin.files.js, function(file) { %>loadScript("<%- file %>");<% }); %>
+              // loadScript("<%= JSON.stringify(htmlWebpackPlugin) %>")
+            }
+          </script>
     </body>
 </html>
