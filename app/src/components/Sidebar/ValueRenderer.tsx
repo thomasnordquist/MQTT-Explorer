@@ -56,7 +56,6 @@ class ValueRenderer extends React.Component<Props, {}> {
       display: 'block',
       lineHeight: '1.2em',
       padding: '12px 5px 12px 5px',
-      maxWidth: '40vw',
       color: this.props.theme.palette.text.primary,
     }
 
