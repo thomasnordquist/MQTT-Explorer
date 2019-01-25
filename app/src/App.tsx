@@ -98,7 +98,7 @@ const styles = (theme: Theme) => {
     },
     content: {
       width: '100vw',
-      overflowX: 'hidden',
+      overflowX: 'hidden' as 'hidden',
       backgroundColor: theme.palette.background.default,
       transition: theme.transitions.create('transform', {
         easing: theme.transitions.easing.sharp,
@@ -107,7 +107,7 @@ const styles = (theme: Theme) => {
       transform: 'translateX(0px)',
     },
     contentShift: {
-      overflowX: 'hidden',
+      overflowX: 'hidden' as 'hidden',
       width: '100vw',
       padding: 0,
       backgroundColor: theme.palette.background.default,

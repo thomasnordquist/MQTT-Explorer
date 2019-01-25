@@ -66,7 +66,7 @@ module.exports = {
     plugins: [
       new LiveReloadPlugin({}),
       new HtmlWebpackPlugin({ template: './index.html', file: './build/index.html', inject: false }),
-      new BundleAnalyzerPlugin(),
+    //   new BundleAnalyzerPlugin(),
     ],
 
     // When importing a module whose path matches one of the following, just
