@@ -12,7 +12,7 @@ interface Props {
 
 class ValueRenderer extends React.Component<Props, {}> {
   public render() {
-    return <div>{this.renderValue()}</div>
+    return <div style={{ padding: '8px 0px 8px 8px' }}>{this.renderValue()}</div>
   }
 
   public renderValue() {
@@ -49,13 +49,13 @@ class ValueRenderer extends React.Component<Props, {}> {
 
   private renderRawValue(value: string) {
     const style: React.CSSProperties = {
-      backgroundColor: 'rgba(80, 80, 80, 0.6)',
+      padding: '8px 12px 8px 12px',
+      backgroundColor: 'rgba(100, 100, 100, 0.55)',
       wordBreak: 'break-all',
       width: '100%',
       overflow: 'auto hidden',
       display: 'block',
       lineHeight: '1.2em',
-      padding: '12px 5px 12px 5px',
       color: this.props.theme.palette.text.primary,
     }
 
