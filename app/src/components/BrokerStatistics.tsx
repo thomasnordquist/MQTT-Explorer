@@ -42,7 +42,7 @@ class BrokerStatistics extends React.Component<Props, {}> {
 
   public render() {
     const { tree, classes } = this.props
-    if (!tree) {
+    if (!tree || !tree.findNode('$SYS')) {
       return null
     }
 
