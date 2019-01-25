@@ -38,7 +38,7 @@ class ValueRenderer extends React.Component<Props, {}> {
       const theme = (this.props.theme.palette.type === 'dark') ? 'monokai' : 'bright:inverted'
       return (
         <ReactJson
-          style={{ width: '100%' }}
+          style={{ width: '100%', overflowY: 'scroll', wordBreak: 'break-all' }}
           src={json}
           name={null}
           theme={theme}

@@ -23,14 +23,15 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import Clear from '@material-ui/icons/Clear'
 import MessageHistory from './MessageHistory'
 import NodeStats from './NodeStats'
-const Publish = React.lazy(() => import('./Publish/Publish'))
 import Topic from './Topic'
-const ValueRenderer = React.lazy(() => import('./ValueRenderer'))
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { TopicViewModel } from '../../TopicViewModel'
-
+import { default as ReactResizeDetector } from 'react-resize-detector'
 const throttle = require('lodash.throttle')
+
+const Publish = React.lazy(() => import('./Publish/Publish'))
+const ValueRenderer = React.lazy(() => import('./ValueRenderer'))
 
 interface Props {
   node?: q.TreeNode<TopicViewModel>,
@@ -42,6 +43,7 @@ interface Props {
 interface State {
   node: q.TreeNode<TopicViewModel>
   compareMessage?: q.Message
+  valueRenderWidth: number
 }
 
 class Sidebar extends React.Component<Props, State> {
@@ -53,7 +55,7 @@ class Sidebar extends React.Component<Props, State> {
   constructor(props: any) {
     super(props)
     console.error('Find and fix me #state')
-    this.state = { node: new q.Tree() }
+    this.state = { node: new q.Tree(), valueRenderWidth: 300 }
   }
 
   public componentWillReceiveProps(nextProps: Props) {
@@ -114,6 +116,7 @@ class Sidebar extends React.Component<Props, State> {
             {this.messageMetaInfo()}
             <div ref={this.valueRef}>
             <React.Suspense fallback={<div>Loading...</div>}>
+              <ReactResizeDetector handleWidth={true} onResize={this.valueRenderWidthChange} />
               <ValueRenderer message={this.props.node && this.props.node.message} />
             </React.Suspense>
             </div>
@@ -143,9 +146,14 @@ class Sidebar extends React.Component<Props, State> {
     )
   }
 
+  private valueRenderWidthChange = (width: number) => {
+    console.log(width)
+    this.setState({ valueRenderWidth: width })
+  }
+
   private showValueComparison = (a: any) => (
     <Fade {...a.TransitionProps} timeout={350}>
-      <Paper>
+      <Paper style={{ maxWidth: this.state.valueRenderWidth }}>
         <ValueRenderer message={this.state.compareMessage} />
       </Paper>
     </Fade>
