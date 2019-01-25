@@ -1,10 +1,11 @@
 import * as q from '../../../backend/src/Model'
 import { Action } from 'redux'
 import { createReducer } from './lib'
+import { TopicViewModel } from '../TopicViewModel'
 
 export interface TreeState {
-  tree?: q.Tree
-  selectedTopic?: q.TreeNode
+  tree?: q.Tree<TopicViewModel>
+  selectedTopic?: q.TreeNode<TopicViewModel>
   filter?: string
 }
 
@@ -17,13 +18,13 @@ export enum ActionTypes {
 
 export interface ShowTree {
   type: ActionTypes.TREE_SHOW_TREE
-  tree?: q.Tree
+  tree?: q.Tree<TopicViewModel>
   filter?: string
 }
 
 export interface SelectTopic {
   type: ActionTypes.TREE_SELECT_TOPIC
-  selectedTopic?: q.TreeNode
+  selectedTopic?: q.TreeNode<TopicViewModel>
 }
 
 const initialState: TreeState = { }

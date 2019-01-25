@@ -1,5 +1,3 @@
-import * as q from '../../../backend/src/Model'
-
 import { Action, Reducer, combineReducers } from 'redux'
 
 import { trackEvent } from '../tracking'

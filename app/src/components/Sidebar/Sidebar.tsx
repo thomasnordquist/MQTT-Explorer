@@ -28,18 +28,19 @@ import Topic from './Topic'
 const ValueRenderer = React.lazy(() => import('./ValueRenderer'))
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { TopicViewModel } from '../../TopicViewModel'
 
 const throttle = require('lodash.throttle')
 
 interface Props {
-  node?: q.TreeNode,
+  node?: q.TreeNode<TopicViewModel>,
   actions: typeof sidebarActons,
   classes: any,
   connectionId?: string,
 }
 
 interface State {
-  node: q.TreeNode,
+  node: q.TreeNode<TopicViewModel>
   compareMessage?: q.Message
 }
 
@@ -69,12 +70,12 @@ class Sidebar extends React.Component<Props, State> {
     this.props.node && this.removeUpdateListener(this.props.node)
   }
 
-  private registerUpdateListener(node: q.TreeNode) {
+  private registerUpdateListener(node: q.TreeNode<TopicViewModel>) {
     node.onMerge.subscribe(this.updateNode)
     node.onMessage.subscribe(this.updateNode)
   }
 
-  private removeUpdateListener(node: q.TreeNode) {
+  private removeUpdateListener(node: q.TreeNode<TopicViewModel>) {
     node.onMerge.unsubscribe(this.updateNode)
     node.onMessage.unsubscribe(this.updateNode)
   }

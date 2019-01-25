@@ -2,10 +2,11 @@ import { Action } from 'redux'
 import { createReducer } from './lib'
 import * as q from '../../../backend/src/Model'
 import { MqttOptions } from '../../../backend/src/DataSource'
+import { TopicViewModel } from '../TopicViewModel'
 
 export interface ConnectionState {
   host?: string
-  tree?: q.Tree
+  tree?: q.Tree<TopicViewModel>
   connectionOptions?: MqttOptions
   connectionId?: string
   error?: string
@@ -30,7 +31,7 @@ export interface SetConnecting {
 export interface SetConnected {
   type: ActionTypes.CONNECTION_SET_CONNECTED
   host: string
-  tree: q.Tree
+  tree: q.Tree<TopicViewModel>
 }
 
 export interface SetDisconnected {

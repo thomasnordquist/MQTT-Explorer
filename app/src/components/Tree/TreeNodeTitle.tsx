@@ -1,29 +1,33 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { treeActions } from '../../actions'
 import * as q from '../../../../backend/src/Model'
 import { withStyles, Theme } from '@material-ui/core'
+import { TopicViewModel } from '../../TopicViewModel'
+const debounce = require('lodash.debounce')
 
 export interface TreeNodeProps extends React.HTMLAttributes<HTMLElement> {
-  treeNode: q.TreeNode
-  actions: any
+  treeNode: q.TreeNode<TopicViewModel>
   name?: string | undefined
   collapsed?: boolean | undefined
-  lastUpdate: number
   classes: any
+  didSelectNode: any
 }
 
 class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
   private mouseOver = (event: React.MouseEvent) => {
-    if (this.props.treeNode.message) {
-      this.props.actions.selectTopic(this.props.treeNode)
-    }
+    event.preventDefault()
+    this.selectTopic()
   }
+
+  private selectTopic = debounce(() => {
+    if (this.props.treeNode.message) {
+      this.props.didSelectNode(this.props.treeNode)
+    }
+  }, 5)
 
   public render() {
     return (
-      <span className={this.props.classes.title} onMouseOver={this.mouseOver}>
+      <span className={this.props.classes.title} onMouseOver={this.props.treeNode.message ? this.mouseOver : undefined}>
         {this.renderExpander()} {this.renderSourceEdge()} {this.renderCollapsedSubnodes()} {this.renderValue()}
       </span>
     )
@@ -59,12 +63,6 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: bindActionCreators(treeActions, dispatch),
-  }
-}
-
 const styles = (theme: Theme) => ({
   value: {
     whiteSpace: 'nowrap' as 'nowrap',
@@ -88,4 +86,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default withStyles(styles)(connect(null, mapDispatchToProps)(TreeNodeTitle))
+export default withStyles(styles)(TreeNodeTitle)

@@ -1,20 +1,22 @@
 import { TreeNode } from './'
-import { EventBusInterface, makeConnectionMessageEvent, MqttMessage } from '../../../events'
+import { EventBusInterface, makeConnectionMessageEvent, MqttMessage, EventDispatcher } from '../../../events'
 import { TreeNodeFactory } from './TreeNodeFactory'
 
-export class Tree extends TreeNode {
+export class Tree<ViewModel> extends TreeNode<ViewModel> {
   public connectionId?: string
   public updateSource?: EventBusInterface
-  public nodeFilter?: (node: TreeNode) => boolean
+  public nodeFilter?: (node: TreeNode<ViewModel>) => boolean
   private subscriptionEvent?: any
   public isTree = true
   private cachedHash = `${Math.random()}`
+  private unmergedMessages: MqttMessage[] = []
+  public didReceive = new EventDispatcher<void, Tree<ViewModel>>(this)
 
   constructor() {
     super(undefined, undefined)
   }
 
-  public updateWithConnection(emitter: EventBusInterface, connectionId: string, nodeFilter?:(node: TreeNode) => boolean) {
+  public updateWithConnection(emitter: EventBusInterface, connectionId: string, nodeFilter?:(node: TreeNode<ViewModel>) => boolean) {
     this.updateSource = emitter
     this.connectionId = connectionId
     this.nodeFilter = nodeFilter
@@ -27,15 +29,22 @@ export class Tree extends TreeNode {
     return this.cachedHash
   }
 
-  private handleNewData = (msg: MqttMessage) => {
-    const edges = msg.topic.split('/')
-    const node = TreeNodeFactory.fromEdgesAndValue(edges, msg.payload)
-    node.mqttMessage = msg
+  public applyUnmergedChanges() {
+    this.unmergedMessages.forEach((msg) => {
+      const edges = msg.topic.split('/')
+      const node = TreeNodeFactory.fromEdgesAndValue<ViewModel, any>(edges, msg.payload)
+      node.mqttMessage = msg
 
-    if (this.nodeFilter && !this.nodeFilter(node)) {
-      return
-    }
-    this.updateWithNode(node.firstNode())
+      if (!this.nodeFilter || this.nodeFilter(node)) {
+        this.updateWithNode(node.firstNode())
+      }
+    })
+    this.unmergedMessages = []
+  }
+
+  private handleNewData = (msg: MqttMessage) => {
+    this.unmergedMessages.push(msg)
+    this.didReceive.dispatch()
   }
 
   public stopUpdating() {

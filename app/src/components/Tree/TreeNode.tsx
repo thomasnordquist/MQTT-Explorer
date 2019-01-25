@@ -3,7 +3,6 @@ import * as q from '../../../../backend/src/Model'
 
 import { Theme, withStyles } from '@material-ui/core/styles'
 
-import LabelImportant from '@material-ui/icons/LabelImportant'
 import TreeNodeSubnodes from './TreeNodeSubnodes'
 import TreeNodeTitle from './TreeNodeTitle'
 import { bindActionCreators } from 'redux'
@@ -11,6 +10,9 @@ import { connect } from 'react-redux'
 import { isElementInViewport } from '../helper/isElementInViewport'
 import { treeActions } from '../../actions'
 import { AppState } from '../../reducers'
+import { TopicOrder } from '../../reducers/Settings'
+import { TopicViewModel } from '../../TopicViewModel'
+const debounce = require('lodash.debounce')
 
 declare var performance: any
 
@@ -26,36 +28,40 @@ const styles = (theme: Theme) => {
       display: 'block',
       marginLeft: '10px',
     },
-    // hover: {
-    //   '&:hover': {
-    //     backgroundColor: 'rgba(80, 80, 80, 0.35)',
-    //   },
-    // },
     topicSelect: {
       float: 'right' as 'right',
       opacity: 0,
       cursor: 'pointer',
       marginTop: '-1px',
     },
+    selected: {
+      backgroundColor: 'rgba(120, 120, 120, 0.55)',
+    },
+    hover: {
+      backgroundColor: 'rgba(80, 80, 80, 0.55)',
+    },
   }
 }
 
 interface Props {
   actions: typeof treeActions
-  lastUpdate: number
   animateChages: boolean
   isRoot?: boolean
-  treeNode: q.TreeNode
+  treeNode: q.TreeNode<TopicViewModel>
   name?: string | undefined
   collapsed?: boolean | undefined
   performanceCallback?: ((ms: number) => void) | undefined
-  autoExpandLimit: number
   classes: any
   className?: string
+  topicOrder: TopicOrder
+  autoExpandLimit: number
+  lastUpdate: number
 }
 
 interface State {
   collapsedOverride: boolean | undefined
+  mouseOver: boolean
+  selected: boolean
 }
 
 class TreeNode extends React.Component<Props, State> {
@@ -63,13 +69,13 @@ class TreeNode extends React.Component<Props, State> {
   private dirtyEdges: boolean = true
   private dirtyMessage: boolean = true
   private animationDirty: boolean = false
+  private lastRenderTime = 0
 
   private cssAnimationWasSetAt?: number
 
   private willUpdateTime: number = performance.now()
   private titleRef?: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>()
   private nodeRef?: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>()
-  private topicSelectRef?: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>()
 
   private subnodesDidchange = () => {
     this.dirtySubnodes = true
@@ -88,6 +94,8 @@ class TreeNode extends React.Component<Props, State> {
 
     this.state = {
       collapsedOverride: props.collapsed,
+      mouseOver: false,
+      selected: false,
     }
   }
 
@@ -96,13 +104,21 @@ class TreeNode extends React.Component<Props, State> {
     this.addSubscriber(treeNode)
   }
 
-  private addSubscriber(treeNode: q.TreeNode) {
+  private addSubscriber(treeNode: q.TreeNode<TopicViewModel>) {
+    treeNode.viewModel = new TopicViewModel()
+    treeNode.viewModel.change.subscribe(this.viewStateHasChanged)
     treeNode.onMerge.subscribe(this.subnodesDidchange)
     treeNode.onEdgesChange.subscribe(this.edgesDidChange)
     treeNode.onMessage.subscribe(this.messageDidChange)
   }
 
-  private removeSubscriber(treeNode: q.TreeNode) {
+  private viewStateHasChanged = (msg: void, viewModel: TopicViewModel) => {
+    this.setState({ selected: viewModel.isSelected() })
+  }
+
+  private removeSubscriber(treeNode: q.TreeNode<TopicViewModel>) {
+    treeNode.viewModel && treeNode.viewModel.change.unsubscribe(this.viewStateHasChanged)
+    treeNode.viewModel = undefined
     treeNode.onMerge.unsubscribe(this.subnodesDidchange)
     treeNode.onEdgesChange.unsubscribe(this.edgesDidChange)
     treeNode.onMessage.unsubscribe(this.messageDidChange)
@@ -118,13 +134,14 @@ class TreeNode extends React.Component<Props, State> {
   public componentWillUnmount() {
     const { treeNode } = this.props
     this.removeSubscriber(treeNode)
-    this.topicSelectRef = undefined
     this.titleRef = undefined
     this.nodeRef = undefined
   }
 
   private stateHasChanged(newState: State) {
     return this.state.collapsedOverride !== newState.collapsedOverride
+      || this.state.mouseOver !== newState.mouseOver
+      || this.state.selected !== newState.selected
   }
 
   private propsHasChanged(newProps: Props) {
@@ -135,9 +152,7 @@ class TreeNode extends React.Component<Props, State> {
     const shouldRenderToRemoveCssAnimation = this.cssAnimationWasSetAt !== undefined
     return this.stateHasChanged(nextState)
       || this.propsHasChanged(nextProps)
-      || this.dirtyEdges
-      || this.dirtyMessage
-      || this.dirtySubnodes
+      || (this.dirtyEdges || this.dirtyMessage || this.dirtySubnodes)
       || this.animationDirty
       || shouldRenderToRemoveCssAnimation
   }
@@ -176,10 +191,11 @@ class TreeNode extends React.Component<Props, State> {
     const animation = shouldStartAnimation ? { willChange: 'auto', translateZ: 0, animation: 'example 0.5s' } : {}
     this.animationDirty = shouldStartAnimation
 
+    const highlightClass = this.state.selected ? this.props.classes.selected : (this.state.mouseOver ? this.props.classes.hover : '')
     return (
       <div
         key={this.props.treeNode.hash()}
-        className={`${classes.node} ${this.props.className}`}
+        className={`${classes.node} ${this.props.className} ${highlightClass}`}
         onClick={this.didClickNode}
         onMouseOver={this.mouseOver}
         onMouseOut={this.mouseOut}
@@ -190,7 +206,7 @@ class TreeNode extends React.Component<Props, State> {
             collapsed={this.collapsed()}
             treeNode={this.props.treeNode}
             name={this.props.name}
-            lastUpdate={this.props.treeNode.lastUpdate}
+            didSelectNode={this.didSelectTopic}
           />
         </span>
         {this.renderNodes()}
@@ -198,31 +214,27 @@ class TreeNode extends React.Component<Props, State> {
     )
   }
 
+  private didSelectTopic = () => {
+    this.props.actions.selectTopic(this.props.treeNode)
+  }
+
   private mouseOver = (event: React.MouseEvent) => {
     event.stopPropagation()
-    if (this.nodeRef && this.nodeRef.current) {
-      this.nodeRef.current.style.backgroundColor = 'rgba(100, 100, 100, 0.55)'
-    }
-    if (this.topicSelectRef && this.topicSelectRef.current) {
-      this.topicSelectRef.current.style.opacity = '1'
-    }
+    this.setHover(true)
   }
+
   private mouseOut = (event: React.MouseEvent) => {
     event.stopPropagation()
-    if (this.nodeRef && this.nodeRef.current) {
-      this.nodeRef.current.style.backgroundColor = 'inherit'
-    }
-    if (this.topicSelectRef && this.topicSelectRef.current) {
-      this.topicSelectRef.current.style.opacity = '0'
-    }
+    this.setHover(false)
   }
+
+  private setHover = debounce((hover: boolean) => {
+    this.setState({ mouseOver: hover })
+  }, 5)
 
   private didSelectNode = (event: React.MouseEvent) => {
     event.stopPropagation()
-    if (this.topicSelectRef && this.topicSelectRef.current) {
-      this.topicSelectRef.current.style.opacity = '1'
-    }
-    this.props.actions.selectTopic(this.props.treeNode)
+    this.didSelectTopic()
   }
 
   private didClickNode = (event: React.MouseEvent) => {
@@ -236,8 +248,9 @@ class TreeNode extends React.Component<Props, State> {
       <TreeNodeSubnodes
         animateChanges={this.props.animateChages}
         collapsed={this.collapsed()}
-        autoExpandLimit={this.props.autoExpandLimit}
         treeNode={this.props.treeNode}
+        autoExpandLimit={this.props.autoExpandLimit}
+        topicOrder={this.props.topicOrder}
         lastUpdate={this.props.treeNode.lastUpdate}
       />
     )
@@ -250,10 +263,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    autoExpandLimit: state.settings.autoExpandLimit,
-  }
-}
-
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(TreeNode))
+export default withStyles(styles)(connect(null, mapDispatchToProps)(TreeNode))

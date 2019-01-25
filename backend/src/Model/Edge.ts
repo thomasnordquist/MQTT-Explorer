@@ -1,11 +1,11 @@
 import { Hashable, TreeNode } from './'
 const sha1 = require('sha1')
 
-export class Edge implements Hashable {
+export class Edge<ViewModel> implements Hashable {
   public name: string
 
-  public target!: TreeNode
-  public source?: TreeNode | undefined
+  public target!: TreeNode<ViewModel>
+  public source?: TreeNode<ViewModel> | undefined
   private cachedHash?: string
 
   constructor(name: string) {
@@ -32,7 +32,7 @@ export class Edge implements Hashable {
     return this.cachedHash
   }
 
-  public firstEdge(): Edge {
+  public firstEdge(): Edge<ViewModel> {
     if (this.source && this.source.sourceEdge) {
       return this.source.sourceEdge.firstEdge()
     }

@@ -3,7 +3,7 @@ import './tracking'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import reduxThunk from 'redux-thunk'
-import { batchDispatchMiddleware } from 'redux-batched-actions';
+import { batchDispatchMiddleware } from 'redux-batched-actions'
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import reducers from './reducers'

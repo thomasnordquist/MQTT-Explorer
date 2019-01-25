@@ -7,17 +7,20 @@ import TreeNode from './TreeNode'
 import { connect } from 'react-redux'
 import { TopicOrder } from '../../reducers/Settings'
 import { Theme, withStyles } from '@material-ui/core'
+import { TopicViewModel } from '../../TopicViewModel'
 
 export interface Props {
-  lastUpdate: number
-  topicOrder?: TopicOrder
   animateChanges: boolean
-  treeNode: q.TreeNode
-  autoExpandLimit: number
+  treeNode: q.TreeNode<TopicViewModel>
   filter?: string
   collapsed?: boolean | undefined
-  didSelectNode?: (node: q.TreeNode) => void
   classes: any
+
+  lastUpdate: number
+
+  topicOrder: TopicOrder
+  selectedTopic?: q.TreeNode<TopicViewModel>
+  autoExpandLimit: number
 }
 
 interface State {
@@ -31,7 +34,7 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
     this.state = { alreadyAdded: 10 }
   }
 
-  private sortedNodes(): q.TreeNode[] {
+  private sortedNodes(): q.TreeNode<TopicViewModel>[] {
     const { topicOrder, treeNode } = this.props
 
     let edges = treeNode.edgeArray
@@ -72,28 +75,25 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
     }
 
     const nodes = this.sortedNodes().slice(0, this.state.alreadyAdded)
-    const listItems = nodes.map(node => (
-      <TreeNode
-        key={`${node.hash()}-${this.props.filter}`}
-        animateChages={this.props.animateChanges}
-        treeNode={node}
-        lastUpdate={node.lastUpdate}
-        className={this.props.classes.listItem}
-      />
-    ))
+    const listItems = nodes.map((node) => {
+      return (
+        <TreeNode
+          key={`${node.hash()}-${this.props.filter}`}
+          animateChages={this.props.animateChanges}
+          treeNode={node}
+          className={this.props.classes.listItem}
+          topicOrder={this.props.topicOrder}
+          autoExpandLimit={this.props.autoExpandLimit}
+          lastUpdate={node.lastUpdate}
+        />
+      )
+    })
 
     return (
       <span className={this.props.classes.list}>
         {listItems}
       </span>
     )
-  }
-}
-
-const mapStateToProps = (state: AppState) => {
-  return {
-    topicOrder: state.settings.topicOrder,
-    filter: state.tree.filter,
   }
 }
 
@@ -107,4 +107,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default withStyles(styles)(connect(mapStateToProps)(TreeNodeSubnodes))
+export default withStyles(styles)(TreeNodeSubnodes)

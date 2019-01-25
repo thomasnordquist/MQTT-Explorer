@@ -4,12 +4,13 @@ import * as q from '../../../../backend/src/Model'
 import BarChart from '@material-ui/icons/BarChart'
 import DateFormatter from '../helper/DateFormatter'
 import History from './History'
+import { TopicViewModel } from '../../TopicViewModel'
 const PlotHistory = React.lazy(() => import('./PlotHistory'))
 
 const throttle = require('lodash.throttle')
 
 interface Props {
-  node?: q.TreeNode
+  node?: q.TreeNode<TopicViewModel>
   onSelect: (message: q.Message) => void
 }
 

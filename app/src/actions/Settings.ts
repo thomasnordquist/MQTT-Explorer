@@ -6,6 +6,7 @@ import { AppState } from '../reducers'
 import * as q from '../../../backend/src/Model'
 import { batchActions } from 'redux-batched-actions'
 import { autoExpandLimitSet } from '../components/Settings'
+import { TopicViewModel } from '../TopicViewModel'
 
 export const setAutoExpandLimit = (autoExpandLimit: number = 0): Action => {
   return {
@@ -42,7 +43,7 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
 
   const topicFilter = filterStr.toLowerCase()
 
-  const nodeFilter = (node: q.TreeNode): boolean => {
+  const nodeFilter = (node: q.TreeNode<TopicViewModel>): boolean => {
     const topicMatches = node.path().toLowerCase().indexOf(topicFilter) !== -1
     if (topicMatches) {
       return true
@@ -54,17 +55,17 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
 
   const resultTree = tree.childTopics()
     .filter(nodeFilter)
-    .map((node) => {
+    .map((node: q.TreeNode<TopicViewModel>) => {
       const clone = node.unconnectedClone()
       q.TreeNodeFactory.insertNodeAtPosition(node.path().split('/'), clone)
       return clone.firstNode()
     })
-    .reduce((a: q.TreeNode, b: q.TreeNode) => {
+    .reduce((a: q.TreeNode<TopicViewModel>, b: q.TreeNode<TopicViewModel>) => {
       a.updateWithNode(b)
       return a
-    }, new q.Tree())
+    }, new q.Tree<TopicViewModel>())
 
-  const nextTree: q.Tree = resultTree as q.Tree
+  const nextTree: q.Tree<TopicViewModel> = resultTree as q.Tree<TopicViewModel>
   if (tree.updateSource && tree.connectionId) {
     nextTree.updateWithConnection(tree.updateSource, tree.connectionId, nodeFilter)
   }
@@ -72,7 +73,7 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
   dispatch(batchActions([setAutoExpandLimit(autoExpandLimitForTree(nextTree)), (showTree(nextTree) as any)]))
 }
 
-function autoExpandLimitForTree(tree: q.Tree) {
+function autoExpandLimitForTree(tree: q.Tree<TopicViewModel>) {
   if (!tree) {
     return 0
   }

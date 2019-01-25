@@ -6,6 +6,7 @@ import { AppState } from '../reducers'
 import * as q from '../../../backend/src/Model'
 import { showTree } from './Tree'
 import * as url from 'url'
+import { TopicViewModel } from '../TopicViewModel'
 
 export const connect = (options: MqttOptions, connectionId: string) => (dispatch: Dispatch<any>, getState: () => AppState) => {
   dispatch(connecting(connectionId))
@@ -15,7 +16,7 @@ export const connect = (options: MqttOptions, connectionId: string) => (dispatch
 
   rendererEvents.subscribe(event, (dataSourceState) => {
     if (dataSourceState.connected) {
-      const tree = new q.Tree()
+      const tree = new q.Tree<TopicViewModel>()
       tree.updateWithConnection(rendererEvents, connectionId)
       dispatch(connected(tree, host!))
       dispatch(showTree(tree))
@@ -26,7 +27,7 @@ export const connect = (options: MqttOptions, connectionId: string) => (dispatch
   })
 }
 
-export const connected: (tree: q.Tree, host: string) => Action = (tree: q.Tree, host: string)  => ({
+export const connected: (tree: q.Tree<TopicViewModel>, host: string) => Action = (tree: q.Tree<TopicViewModel>, host: string)  => ({
   tree,
   host,
   type: ActionTypes.CONNECTION_SET_CONNECTED,

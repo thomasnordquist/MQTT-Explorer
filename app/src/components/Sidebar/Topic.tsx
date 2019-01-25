@@ -5,14 +5,15 @@ import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
 import { treeActions } from '../../actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { TopicViewModel } from '../../TopicViewModel'
 
 interface Props {
   classes: any
   theme: Theme
-  node?: q.TreeNode
-  selected?: q.TreeNode
+  node?: q.TreeNode<TopicViewModel>
+  selected?: q.TreeNode<TopicViewModel>
   actions: typeof treeActions
-  didSelectNode: (node: q.TreeNode) => void
+  didSelectNode: (node: q.TreeNode<TopicViewModel>) => void
 }
 
 const styles: StyleRulesCallback<string> = (theme: Theme) => ({

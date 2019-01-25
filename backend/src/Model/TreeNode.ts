@@ -1,28 +1,29 @@
 import { Edge, Message, RingBuffer } from './'
 import { EventDispatcher, MqttMessage } from '../../../events'
 
-export class TreeNode {
-  public sourceEdge?: Edge
+export class TreeNode<ViewModel> {
+  public sourceEdge?: Edge<ViewModel>
   public message?: Message
   public mqttMessage?: MqttMessage
   public messageHistory: RingBuffer<Message> = new RingBuffer<Message>(3000, 100)
-  public edges: {[s: string]: Edge} = {}
-  public edgeArray: Edge[] = []
+  public viewModel?: ViewModel
+  public edges: {[s: string]: Edge<ViewModel>} = {}
+  public edgeArray: Edge<ViewModel>[] = []
   public collapsed = false
   public messages: number = 0
   public lastUpdate: number = Date.now()
-  public onMerge = new EventDispatcher<void, TreeNode>(this)
-  public onEdgesChange = new EventDispatcher<void, TreeNode>(this)
-  public onMessage = new EventDispatcher<Message, TreeNode>(this)
+  public onMerge = new EventDispatcher<void, TreeNode<ViewModel>>(this)
+  public onEdgesChange = new EventDispatcher<void, TreeNode<ViewModel>>(this)
+  public onMessage = new EventDispatcher<Message, TreeNode<ViewModel>>(this)
   public isTree = false
 
   private cachedPath?: string
-  private cachedChildTopics?: TreeNode[]
+  private cachedChildTopics?: TreeNode<ViewModel>[]
   private cachedLeafMessageCount?: number
   private cachedChildTopicCount?: number
 
   public unconnectedClone() {
-    const node = new TreeNode()
+    const node = new TreeNode<ViewModel>()
     node.message = this.message
     node.mqttMessage = this.mqttMessage
     node.messageHistory = this.messageHistory.clone()
@@ -32,7 +33,7 @@ export class TreeNode {
     return node
   }
 
-  constructor(sourceEdge?: Edge, message?: Message) {
+  constructor(sourceEdge?: Edge<ViewModel>, message?: Message) {
     if (sourceEdge) {
       this.sourceEdge = sourceEdge
       sourceEdge.target = this
@@ -63,7 +64,7 @@ export class TreeNode {
     return `N${(this.sourceEdge ? this.sourceEdge.hash() : '')}`
   }
 
-  public firstNode(): TreeNode {
+  public firstNode(): TreeNode<ViewModel> {
     return this.sourceEdge && this.sourceEdge.source ? this.sourceEdge.source.firstNode() : this
   }
 
@@ -78,11 +79,11 @@ export class TreeNode {
     return this.cachedPath
   }
 
-  private previous(): TreeNode | undefined {
+  private previous(): TreeNode<ViewModel> | undefined {
     return this.sourceEdge ? this.sourceEdge.source || undefined : undefined
   }
 
-  public addEdge(edge: Edge, emitUpdate: boolean = false) {
+  public addEdge(edge: Edge<ViewModel>, emitUpdate: boolean = false) {
     this.edges[edge.name] = edge
     this.edgeArray.push(edge)
     edge.source = this
@@ -92,7 +93,7 @@ export class TreeNode {
     }
   }
 
-  public branch(): TreeNode[] {
+  public branch(): TreeNode<ViewModel>[] {
     const previous = this.previous()
     if (!previous) {
       return [this]
@@ -101,7 +102,7 @@ export class TreeNode {
     return previous.branch().concat([this])
   }
 
-  public updateWithNode(node: TreeNode) {
+  public updateWithNode(node: TreeNode<ViewModel>) {
     if (node.message) {
       this.setMessage(node.message)
       this.onMessage.dispatch(node.message)
@@ -119,7 +120,7 @@ export class TreeNode {
         .reduce((a, b) => a + b, 0) + this.messages
     }
 
-    return this.cachedLeafMessageCount
+    return this.cachedLeafMessageCount as number
   }
 
   public childTopicCount(): number {
@@ -129,14 +130,14 @@ export class TreeNode {
         .reduce((a, b) => a + b, this.edgeArray.length === 0 ? 1 : 0)
     }
 
-    return this.cachedChildTopicCount
+    return this.cachedChildTopicCount as number
   }
 
   public edgeCount(): number {
     return this.edgeArray.length
   }
 
-  public childTopics(): TreeNode[] {
+  public childTopics(): TreeNode<ViewModel>[] {
     if (this.cachedChildTopics === undefined) {
       const initialValue = this.message && this.message.value ? [this] : []
 
@@ -145,16 +146,16 @@ export class TreeNode {
         .reduce((a, b) => a.concat(b), initialValue)
     }
 
-    return this.cachedChildTopics
+    return this.cachedChildTopics as TreeNode<ViewModel>[]
   }
 
-  public findNode (path: String): TreeNode | undefined {
+  public findNode (path: String): TreeNode<ViewModel> | undefined {
     const topics = path.split('/')
 
     return this.findChild(topics)
   }
 
-  private findChild(edges: string[]): TreeNode | undefined {
+  private findChild(edges: string[]): TreeNode<ViewModel> | undefined {
     if (edges.length === 0) {
       return this
     }
@@ -167,7 +168,7 @@ export class TreeNode {
     return nextEdge.target.findChild(edges.slice(1))
   }
 
-  private mergeEdges(node: TreeNode) {
+  private mergeEdges(node: TreeNode<ViewModel>) {
     const edgeKeys = Object.keys(node.edges)
     let edgesDidUpdate = false
 

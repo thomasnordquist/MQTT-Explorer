@@ -4,30 +4,38 @@ import * as q from '../../../../backend/src/Model'
 import { AppState } from '../../reducers'
 import TreeNode from './TreeNode'
 import { connect } from 'react-redux'
+import { TopicOrder } from '../../reducers/Settings'
+import { TopicViewModel } from '../../TopicViewModel'
 
 const MovingAverage = require('moving-average')
 
-const timeInterval = 10 * 1000
-const average = MovingAverage(timeInterval)
+const averagingTimeInterval = 10 * 1000
+const average = MovingAverage(averagingTimeInterval)
 
 declare var window: any
 
 interface Props {
-  autoExpandLimit: number
   connectionId?: string
-  tree?: q.Tree
+  tree?: q.Tree<TopicViewModel>
   filter: string
   host?: string
+
+  topicOrder: TopicOrder
+  autoExpandLimit: number
 }
 
-class Tree extends React.Component<Props, {}> {
+interface State {
+  lastUpdate: number
+}
+
+class Tree extends React.PureComponent<Props, State> {
   private updateTimer?: any
-  private lastUpdate: number = 0
   private perf: number = 0
+  private renderTime = 0
 
   constructor(props: any) {
     super(props)
-    this.state = { }
+    this.state = { lastUpdate: 0 }
   }
 
   public time(): number {
@@ -40,17 +48,17 @@ class Tree extends React.Component<Props, {}> {
   public componentWillReceiveProps(nextProps: Props) {
     if (this.props.tree !== nextProps.tree) {
       if (this.props.tree) {
-        this.props.tree.onMerge.unsubscribe(this.throttledTreeUpdate)
+        this.props.tree.didReceive.unsubscribe(this.throttledTreeUpdate)
       }
       if (nextProps.tree) {
-        nextProps.tree.onMerge.subscribe(this.throttledTreeUpdate)
+        nextProps.tree.didReceive.subscribe(this.throttledTreeUpdate)
       }
       this.setState(this.state)
     }
   }
 
   public componentWillUnmount() {
-    this.props.tree && this.props.tree.onMerge.unsubscribe(this.throttledTreeUpdate)
+    this.props.tree && this.props.tree.didReceive.unsubscribe(this.throttledTreeUpdate)
   }
 
   public throttledTreeUpdate = () => {
@@ -60,14 +68,17 @@ class Tree extends React.Component<Props, {}> {
 
     const expectedRenderTime = average.forecast()
     const updateInterval = Math.max(expectedRenderTime * 7, 300)
-    const timeUntilNextUpdate = updateInterval - (performance.now() - this.lastUpdate)
+    const timeUntilNextUpdate = updateInterval - (performance.now() - this.renderTime)
 
     this.updateTimer = setTimeout(() => {
       window.requestIdleCallback(() => {
-        this.lastUpdate = performance.now()
         this.updateTimer && clearTimeout(this.updateTimer)
         this.updateTimer = undefined
-        this.setState(this.state)
+        this.renderTime = performance.now()
+        this.props.tree && this.props.tree.applyUnmergedChanges()
+        window.requestIdleCallback(() => {
+          this.setState({ lastUpdate: this.renderTime })
+        }, { timeout: 100 })
       }, { timeout: 500 })
     }, Math.max(0, timeUntilNextUpdate))
   }
@@ -91,9 +102,11 @@ class Tree extends React.Component<Props, {}> {
           isRoot={true}
           treeNode={tree}
           name={this.props.host}
-          lastUpdate={tree.lastUpdate}
           collapsed={false}
           performanceCallback={this.performanceCallback}
+          autoExpandLimit={this.props.autoExpandLimit}
+          topicOrder={this.props.topicOrder}
+          lastUpdate={tree.lastUpdate}
         />
       </div>
     )
@@ -106,10 +119,11 @@ class Tree extends React.Component<Props, {}> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    autoExpandLimit: state.settings.autoExpandLimit,
     tree: state.tree.tree,
     filter: state.tree.filter,
     host: state.connection.host,
+    autoExpandLimit: state.settings.autoExpandLimit,
+    topicOrder: state.settings.topicOrder,
   }
 }
 

@@ -13,7 +13,6 @@ import {
   Radio,
   RadioGroup,
   TextField,
-  IconButton,
   FormControl,
   InputLabel,
   Input,
@@ -32,10 +31,11 @@ import Clear from '@material-ui/icons/Clear'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { publishActions } from '../../../actions'
-import ClearAdornment from '../../helper/ClearAdornment';
+import ClearAdornment from '../../helper/ClearAdornment'
+import { TopicViewModel } from '../../../TopicViewModel'
 
 interface Props {
-  node?: q.TreeNode
+  node?: q.TreeNode<TopicViewModel>
   connectionId?: string
   topic?: string
   payload?: string

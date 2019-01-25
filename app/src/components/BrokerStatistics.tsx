@@ -6,6 +6,7 @@ import { Typography } from '@material-ui/core'
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 
 import { connect } from 'react-redux'
+import { TopicViewModel } from '../TopicViewModel'
 const abbreviate = require('number-abbreviate')
 
 interface Stats {
@@ -30,7 +31,7 @@ const styles: StyleRulesCallback = theme => ({
 
 interface Props {
   classes: any
-  tree?: q.Tree
+  tree?: q.Tree<TopicViewModel>
 }
 
 class BrokerStatistics extends React.Component<Props, {}> {
@@ -95,7 +96,7 @@ class BrokerStatistics extends React.Component<Props, {}> {
     )
   }
 
-  private renderPair(tree: q.Tree, a: Stats, b: Stats) {
+  private renderPair(tree: q.Tree<TopicViewModel>, a: Stats, b: Stats) {
     return (
       <div className={this.props.classes.flex}>
         <div style={{ flex: 1 }}>{this.renderStat(tree, a)}</div>
@@ -104,7 +105,7 @@ class BrokerStatistics extends React.Component<Props, {}> {
     )
   }
 
-  public renderStat(tree: q.Tree, stat: Stats) {
+  public renderStat(tree: q.Tree<TopicViewModel>, stat: Stats) {
     const node = tree.findNode(stat.topic)
     if (!node) {
       return null

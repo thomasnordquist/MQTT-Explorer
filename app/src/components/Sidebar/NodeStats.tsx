@@ -2,9 +2,10 @@ import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 
 import { Typography } from '@material-ui/core'
+import { TopicViewModel } from '../../TopicViewModel'
 
 interface Props {
-  node: q.TreeNode
+  node: q.TreeNode<TopicViewModel>
 }
 
 class NodeStats extends React.Component<Props, {}> {

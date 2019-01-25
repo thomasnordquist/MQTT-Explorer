@@ -22,7 +22,7 @@ interface Props {
   settingsVisible: boolean
 }
 
-class App extends React.Component<Props, {}> {
+class App extends React.PureComponent<Props, {}> {
   constructor(props: any) {
     super(props)
     this.state = { }
