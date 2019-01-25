@@ -63,12 +63,12 @@ export class MqttSource implements DataSource<MqttOptions> {
       this.stateMachine.setConnected(true)
       client.subscribe(this.rootSubscription, (err: Error) => {
         if (err) {
-          throw new Error('mqtt subscription failed')
+          this.stateMachine.setError(err)
         }
       })
       client.subscribe('$SYS/#', (err: Error) => {
         if (err) {
-          throw new Error('mqtt subscription failed')
+          console.error('failed to subscribe to sys topic', err)
         }
       })
     })
