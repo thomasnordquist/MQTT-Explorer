@@ -52,6 +52,7 @@ class App extends React.PureComponent<Props, {}> {
                 minSize={250}
                 defaultSize={500}
                 allowResize={true}
+                style={{ position: 'relative' }}
                 pane1Style={{ overflow: 'hidden' }}
               >
                 <div className={paneDefaults}>
