@@ -17,6 +17,7 @@
     "electron-nucleus": "^1.11.0",
     "electron-telemetry": "git+https://github.com/thomasnordquist/electron-telemetry.git",
     "html-webpack-plugin": "^4.0.0-beta.5",
+    "lodash.debounce": "^4.0.8",
     "number-abbreviate": "^2.0.0",
     "react": "^16.8.0-alpha.1",
     "react-dom": "^16.7.0",

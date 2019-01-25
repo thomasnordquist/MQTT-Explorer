@@ -225,7 +225,7 @@ class TreeNode extends React.Component<Props, State> {
 
   private setHover = debounce((hover: boolean) => {
     this.setState({ mouseOver: hover })
-  }, 5)
+  }, 45)
 
   private didClickNode = (event: React.MouseEvent) => {
     event.stopPropagation()

@@ -5,8 +5,13 @@ import { Dispatch, AnyAction } from 'redux'
 import { setTopic } from './Publish'
 import { TopicViewModel } from '../TopicViewModel'
 import { batchActions } from 'redux-batched-actions'
+const debounce = require('lodash.debounce')
 
 export const selectTopic = (topic: q.TreeNode<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState)  => {
+  debouncedSelectTopic(topic, dispatch, getState)
+}
+
+const debouncedSelectTopic = debounce((topic: q.TreeNode<TopicViewModel>, dispatch: Dispatch<any>, getState: () => AppState)  => {
   const { selectedTopic } = getState().tree
   if (selectedTopic === topic) {
     return
@@ -36,7 +41,7 @@ export const selectTopic = (topic: q.TreeNode<TopicViewModel>) => (dispatch: Dis
   } else {
     dispatch(selectTreeTopicDispatch)
   }
-}
+}, 70)
 
 export const showTree = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState): AnyAction  => {
   const visibleTree = getState().tree.tree
