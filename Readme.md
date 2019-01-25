@@ -1,31 +1,31 @@
 # MQTT-Explorer
-[![Downloads](https://github-basic-badges.herokuapp.com/release/thomasnordquist/MQTT-Explorer.svg)](https://travis-ci.org/thomasnordquist/MQTT-Explorer/releases)
+[![Downloads](https://img.shields.io/github/release/thomasnordquist/mqtt-explorer.svg)](https://travis-ci.org/thomasnordquist/MQTT-Explorer/releases)
 [![Downloads](https://img.shields.io/github/downloads/thomasnordquist/mqtt-explorer/total.svg)](https://travis-ci.org/thomasnordquist/MQTT-Explorer/releases)
 [![Build Status](https://travis-ci.org/thomasnordquist/MQTT-Explorer.svg?branch=master)](https://travis-ci.org/thomasnordquist/MQTT-Explorer)
 
-### Version 0.1.0
+### Version 
 See the whole picture of your message queue.
 The perfect tool to integrate new services, IoT devices in your network.
 This application subscribes to all topics on your MQTT-Server and displays your message queue hierarchy, allowing you to drill-down to the topics that are of interest.
 
 ## Download
-The app is prebuilt for Windows ([portable](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.0&#x2F;MQTT-Explorer-0.1.0.exe), [installer](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.0&#x2F;MQTT-Explorer-Setup-0.1.0.exe)), Linux ([AppImage](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.0&#x2F;MQTT-Explorer-0.1.0-x86_64.AppImage)) and Mac ([dmg](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.0&#x2F;MQTT-Explorer-0.1.0.dmg)).
+The app is prebuilt for Windows ([portable](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.2&#x2F;MQTT-Explorer-0.1.2.exe), [installer](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.2&#x2F;MQTT-Explorer-Setup-0.1.2.exe)), Linux ([AppImage](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.2&#x2F;MQTT-Explorer-0.1.2-x86_64.AppImage)) and Mac ([dmg](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.2&#x2F;MQTT-Explorer-0.1.2.dmg)).
 
 <center>
 
 | | | | 
 |:----------|:-------------:|:------:|
-| ![windows](https://user-images.githubusercontent.com/7721625/51445407-b4172080-1d04-11e9-8c70-d8413d1d6d8b.png) | Windows | [portable](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.0&#x2F;MQTT-Explorer-0.1.0.exe), [installer](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.0&#x2F;MQTT-Explorer-Setup-0.1.0.exe) |
-| ![linux](https://user-images.githubusercontent.com/7721625/51445392-947ff800-1d04-11e9-8c7f-a30efb755651.png) | Linux | [AppImage](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.0&#x2F;MQTT-Explorer-0.1.0-x86_64.AppImage)<br>*Run AppImage:<br>Make it executable and double-click it.* | 
-| ![mac](https://user-images.githubusercontent.com/7721625/51445390-921d9e00-1d04-11e9-8339-351469ef20ae.png) | Mac | [dmg](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.0&#x2F;MQTT-Explorer-0.1.0.dmg) | 
+| ![windows](https://user-images.githubusercontent.com/7721625/51445407-b4172080-1d04-11e9-8c70-d8413d1d6d8b.png) | Windows | [portable](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.2&#x2F;MQTT-Explorer-0.1.2.exe), [installer](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.2&#x2F;MQTT-Explorer-Setup-0.1.2.exe) |
+| ![linux](https://user-images.githubusercontent.com/7721625/51445392-947ff800-1d04-11e9-8c7f-a30efb755651.png) | Linux | [AppImage](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.2&#x2F;MQTT-Explorer-0.1.2-x86_64.AppImage)<br>*Run AppImage:<br>Make it executable and double-click it.* | 
+| ![mac](https://user-images.githubusercontent.com/7721625/51445390-921d9e00-1d04-11e9-8339-351469ef20ae.png) | Mac | [dmg](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.2&#x2F;MQTT-Explorer-0.1.2.dmg) | 
 
 </center>
 
 More architectures and package types: [Downloads](https://github.com/thomasnordquist/MQTT-Explorer/releases)
 
-![screen1](https://user-images.githubusercontent.com/7721625/51441563-41418180-1cd3-11e9-893b-c22f6a6c3695.png)
+![screen1](https://user-images.githubusercontent.com/7721625/51770198-6c6a0d80-20e5-11e9-94d5-a0174634253c.png)
 
-![screen2](https://user-images.githubusercontent.com/7721625/51441470-59fd6780-1cd2-11e9-925f-bc491027300c.png)
+![screen2](https://user-images.githubusercontent.com/7721625/51770345-c7036980-20e5-11e9-94dc-5d6fa9dbf86b.png)
 
 
 ## Develop

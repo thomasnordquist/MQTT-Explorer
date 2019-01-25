@@ -23,9 +23,9 @@ The app is prebuilt for Windows ({{windowsTargets}}), Linux ({{linuxTargets}}) a
 
 More architectures and package types: [Downloads](https://github.com/thomasnordquist/MQTT-Explorer/releases)
 
-![screen1](https://user-images.githubusercontent.com/7721625/51441563-41418180-1cd3-11e9-893b-c22f6a6c3695.png)
+![screen1](https://user-images.githubusercontent.com/7721625/51770198-6c6a0d80-20e5-11e9-94d5-a0174634253c.png)
 
-![screen2](https://user-images.githubusercontent.com/7721625/51441470-59fd6780-1cd2-11e9-925f-bc491027300c.png)
+![screen2](https://user-images.githubusercontent.com/7721625/51770345-c7036980-20e5-11e9-94dc-5d6fa9dbf86b.png)
 
 
 ## Develop
