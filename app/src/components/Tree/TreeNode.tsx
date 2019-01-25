@@ -5,11 +5,6 @@ import { Theme, withStyles } from '@material-ui/core/styles'
 
 import TreeNodeSubnodes from './TreeNodeSubnodes'
 import TreeNodeTitle from './TreeNodeTitle'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { isElementInViewport } from '../helper/isElementInViewport'
-import { treeActions } from '../../actions'
-import { AppState } from '../../reducers'
 import { TopicOrder } from '../../reducers/Settings'
 import { TopicViewModel } from '../../TopicViewModel'
 const debounce = require('lodash.debounce')
@@ -44,7 +39,6 @@ const styles = (theme: Theme) => {
 }
 
 interface Props {
-  actions: typeof treeActions
   animateChages: boolean
   isRoot?: boolean
   treeNode: q.TreeNode<TopicViewModel>
@@ -56,6 +50,7 @@ interface Props {
   topicOrder: TopicOrder
   autoExpandLimit: number
   lastUpdate: number
+  didSelectTopic: any
 }
 
 interface State {
@@ -215,7 +210,7 @@ class TreeNode extends React.Component<Props, State> {
   }
 
   private didSelectTopic = () => {
-    this.props.actions.selectTopic(this.props.treeNode)
+    this.props.didSelectTopic(this.props.treeNode)
   }
 
   private mouseOver = (event: React.MouseEvent) => {
@@ -232,15 +227,10 @@ class TreeNode extends React.Component<Props, State> {
     this.setState({ mouseOver: hover })
   }, 5)
 
-  private didSelectNode = (event: React.MouseEvent) => {
-    event.stopPropagation()
-    this.didSelectTopic()
-  }
-
   private didClickNode = (event: React.MouseEvent) => {
     event.stopPropagation()
     this.toggle()
-    this.props.actions.selectTopic(this.props.treeNode)
+    this.didSelectTopic()
   }
 
   private renderNodes() {
@@ -252,15 +242,10 @@ class TreeNode extends React.Component<Props, State> {
         autoExpandLimit={this.props.autoExpandLimit}
         topicOrder={this.props.topicOrder}
         lastUpdate={this.props.treeNode.lastUpdate}
+        didSelectTopic={this.props.didSelectTopic}
       />
     )
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: bindActionCreators(treeActions, dispatch),
-  }
-}
-
-export default withStyles(styles)(connect(null, mapDispatchToProps)(TreeNode))
+export default withStyles(styles)(TreeNode)

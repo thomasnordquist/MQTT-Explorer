@@ -7,6 +7,15 @@ if (!userId) {
   window.localStorage.setItem('userId', userId)
 }
 
+setInterval(() => {
+  try {
+    electronRendererTelementry.trackCustomEvent({ name: 'heapStatistics', payload: process.getHeapStatistics() })
+    electronRendererTelementry.trackCustomEvent({ name: 'cpuUsage', payload: process.getCPUUsage() })
+  } catch (error) {
+    console.error(error)
+  }
+}, 30 * 1000)
+
 export function trackEvent(name: string) {
   if (name.match(/^@@redux/)) {
     return

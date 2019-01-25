@@ -21,6 +21,7 @@ export interface Props {
   topicOrder: TopicOrder
   selectedTopic?: q.TreeNode<TopicViewModel>
   autoExpandLimit: number
+  didSelectTopic: any
 }
 
 interface State {
@@ -85,6 +86,7 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
           topicOrder={this.props.topicOrder}
           autoExpandLimit={this.props.autoExpandLimit}
           lastUpdate={node.lastUpdate}
+          didSelectTopic={this.props.didSelectTopic}
         />
       )
     })

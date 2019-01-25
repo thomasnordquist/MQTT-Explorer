@@ -6,6 +6,8 @@ import TreeNode from './TreeNode'
 import { connect } from 'react-redux'
 import { TopicOrder } from '../../reducers/Settings'
 import { TopicViewModel } from '../../TopicViewModel'
+import { treeActions } from '../../actions'
+import { bindActionCreators } from 'redux'
 
 const MovingAverage = require('moving-average')
 
@@ -15,6 +17,7 @@ const average = MovingAverage(averagingTimeInterval)
 declare var window: any
 
 interface Props {
+  actions: typeof treeActions
   connectionId?: string
   tree?: q.Tree<TopicViewModel>
   filter: string
@@ -107,6 +110,7 @@ class Tree extends React.PureComponent<Props, State> {
           autoExpandLimit={this.props.autoExpandLimit}
           topicOrder={this.props.topicOrder}
           lastUpdate={tree.lastUpdate}
+          didSelectTopic={this.props.actions.selectTopic}
         />
       </div>
     )
@@ -127,4 +131,10 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default connect(mapStateToProps)(Tree)
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: bindActionCreators(treeActions, dispatch),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Tree)

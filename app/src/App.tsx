@@ -39,13 +39,15 @@ class App extends React.PureComponent<Props, {}> {
           <React.Suspense fallback={<div>Loading...</div>}>
             <Settings />
           </React.Suspense>
-          <div className={`${settingsVisible ? contentShift : content} ${heightProperty}`}>
-              <TitleBar />
-              <div className={centerContent}>
+          <div className={centerContent}>
+            <div className={`${settingsVisible ? contentShift : content}`}>
+                <TitleBar />
+            </div>
+            <div>
               <SplitPane
                 step={48}
                 primary="second"
-                className={heightProperty}
+                className={`${settingsVisible ? contentShift : content} ${heightProperty}`}
                 split="vertical"
                 minSize={250}
                 defaultSize={500}
@@ -59,7 +61,7 @@ class App extends React.PureComponent<Props, {}> {
                   <Sidebar connectionId={this.props.connectionId} />
                 </div>
               </SplitPane>
-              </div>
+            </div>
           </div>
           <UpdateNotifier />
           <Connection />
@@ -95,21 +97,25 @@ const styles = (theme: Theme) => {
       overflow: 'hidden' as 'hidden',
     },
     content: {
+      width: '100vw',
+      overflowX: 'hidden',
       backgroundColor: theme.palette.background.default,
-      transition: theme.transitions.create('margin', {
+      transition: theme.transitions.create('transform', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
-      marginLeft: 0,
+      transform: 'translateX(0px)',
     },
     contentShift: {
+      overflowX: 'hidden',
+      width: '100vw',
       padding: 0,
       backgroundColor: theme.palette.background.default,
-      transition: theme.transitions.create('margin', {
+      transition: theme.transitions.create('transform', {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
-      marginLeft: drawerWidth,
+      transform: `translateX(${drawerWidth}px)`,
     },
   }
 }
