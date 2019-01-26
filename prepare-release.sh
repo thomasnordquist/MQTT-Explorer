@@ -10,19 +10,17 @@ mkdir -p "$DIR"
 git clone .git "$DIR"
 cd $DIR
 
-
 # App
 cd app
-  npm install
-cd ..
-
-# Backend
-cd backend
-  npm install;
-  #npm run test
+  yarn
 cd ..
 
 # Build
-npm run build
+yarn
+yarn build
+rm -rf node_modules
+yarn install --production
+
 rm -rf app/node_modules
+
 cd "$ORIGINAL_DIR"

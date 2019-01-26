@@ -9,7 +9,7 @@
     "test-inspect": "mocha --inspect-brk",
     "coverage": "nyc mocha",
     "debug": "ts-node --inspect ./src/index.ts",
-    "postinstall": "npm run build"
+    "postinstall": "yarn build"
   },
   "author": "",
   "license": "ISC",
