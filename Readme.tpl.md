@@ -11,15 +11,11 @@ This application subscribes to all topics on your MQTT-Server and displays your 
 ## Download
 The app is prebuilt for Windows ({{windowsTargets}}), Linux ({{linuxTargets}}) and Mac ({{macTargets}}).
 
-<center>
-
-| | | | 
+| Platform | | Downloads | 
 |:----------|:-------------:|:------:|
 | ![windows](https://user-images.githubusercontent.com/7721625/51445407-b4172080-1d04-11e9-8c70-d8413d1d6d8b.png) | Windows | {{windowsTargets}} |
 | ![linux](https://user-images.githubusercontent.com/7721625/51445392-947ff800-1d04-11e9-8c7f-a30efb755651.png) | Linux | {{linuxTargets}}<br>*Run AppImage:<br>Make it executable and double-click it.* | 
 | ![mac](https://user-images.githubusercontent.com/7721625/51445390-921d9e00-1d04-11e9-8339-351469ef20ae.png) | Mac | {{macTargets}} | 
-
-</center>
 
 More architectures and package types: [Downloads](https://github.com/thomasnordquist/MQTT-Explorer/releases)
 

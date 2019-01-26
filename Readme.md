@@ -11,15 +11,11 @@ This application subscribes to all topics on your MQTT-Server and displays your 
 ## Download
 The app is prebuilt for Windows ([portable](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.3&#x2F;MQTT-Explorer-0.1.3.exe), [installer](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.3&#x2F;MQTT-Explorer-Setup-0.1.3.exe)), Linux ([AppImage](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.3&#x2F;MQTT-Explorer-0.1.3-x86_64.AppImage)) and Mac ([dmg](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.3&#x2F;MQTT-Explorer-0.1.3.dmg)).
 
-<center>
-
-| | | | 
+| Platform | | Downloads | 
 |:----------|:-------------:|:------:|
 | ![windows](https://user-images.githubusercontent.com/7721625/51445407-b4172080-1d04-11e9-8c70-d8413d1d6d8b.png) | Windows | [portable](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.3&#x2F;MQTT-Explorer-0.1.3.exe), [installer](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.3&#x2F;MQTT-Explorer-Setup-0.1.3.exe) |
 | ![linux](https://user-images.githubusercontent.com/7721625/51445392-947ff800-1d04-11e9-8c7f-a30efb755651.png) | Linux | [AppImage](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.3&#x2F;MQTT-Explorer-0.1.3-x86_64.AppImage)<br>*Run AppImage:<br>Make it executable and double-click it.* | 
 | ![mac](https://user-images.githubusercontent.com/7721625/51445390-921d9e00-1d04-11e9-8339-351469ef20ae.png) | Mac | [dmg](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.1.3&#x2F;MQTT-Explorer-0.1.3.dmg) | 
-
-</center>
 
 More architectures and package types: [Downloads](https://github.com/thomasnordquist/MQTT-Explorer/releases)
 
