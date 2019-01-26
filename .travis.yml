@@ -18,12 +18,12 @@ os:
   - osx
 
 install:
-  - npm install
+  - yarn install
 
 script:
-  - npm run build
-  - npm run test
-  - if [[ "$TRAVIS_TAG" != "" ]]; then npm run prepare-release; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TRAVIS_TAG" != "" ]]; then npm run package -- linux; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ "$TRAVIS_TAG" != "" ]]; then npm run package -- mac; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ "$TRAVIS_TAG" != "" ]]; then npm run package -- win; fi
+  - yarn run build
+  - yarn test
+  - if [[ "$TRAVIS_TAG" != "" ]]; then yarn run prepare-release; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package -- linux; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package -- mac; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package -- win; fi
