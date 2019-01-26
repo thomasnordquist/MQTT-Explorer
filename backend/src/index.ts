@@ -55,8 +55,10 @@ export class ConnectionManager {
 
   public removeConnection(hash: string) {
     const connection = this.connections[hash]
-    connection.disconnect()
-    delete this.connections[hash]
+    if (connection) {
+      connection.disconnect()
+      delete this.connections[hash]
+    }
   }
 
   public closeAllConnections() {
