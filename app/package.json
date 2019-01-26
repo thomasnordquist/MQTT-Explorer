@@ -13,6 +13,7 @@
     "@types/react": "^16.7.18",
     "@types/react-dom": "^16.0.11",
     "@types/react-redux": "^6.0.12",
+    "compare-versions": "^3.4.0",
     "css-loader": "^2.1.0",
     "electron-nucleus": "^1.11.0",
     "electron-telemetry": "git+https://github.com/thomasnordquist/electron-telemetry.git",

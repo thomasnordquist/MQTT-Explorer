@@ -10,16 +10,18 @@ import {
    Typography,
 } from '@material-ui/core'
 import { Theme, withStyles } from '@material-ui/core/styles'
-import { UpdateInfo, checkForUpdates, rendererEvents, updateAvailable } from '../../events'
-import { green, red } from '@material-ui/core/colors'
+import { green } from '@material-ui/core/colors'
 
 import { AppState } from './reducers'
 import Close from '@material-ui/icons/Close'
 import CloudDownload from '@material-ui/icons/CloudDownload'
-import { UpdateFileInfo } from 'builder-util-runtime'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { updateNotifierActions } from './actions'
+import axios from 'axios'
+import * as compareVersions from 'compare-versions'
+import * as electron from 'electron'
+import * as os from 'os'
 
 interface Props {
   showUpdateNotification: boolean
@@ -28,35 +30,55 @@ interface Props {
   actions: any
 }
 
-class UpdateNotifier extends React.Component<Props, {}> {
-  private updateInfo?: UpdateInfo
+interface GithubRelease {
+  url: string,
+  assets?: GithubAsset[]
+  published_at: string // "2019-01-25T20:14:39Z"
+  body_html: string
+  body: string
+  body_text: string
+  tag_name: string
+}
+
+interface GithubAsset {
+  id: number
+  node_id: string
+  url: string
+  name: string
+  label: string
+}
+
+interface State {
+  newerVersions: GithubRelease[]
+}
+
+class UpdateNotifier extends React.Component<Props, State> {
   constructor(props: any) {
     super(props)
-    this.state = {
-      selectedNode: undefined,
-    }
+    this.state = { newerVersions: [] }
+
+    // window.compare = compareVersions
+    const ownVersion = '0.0.9' || electron.remote.app.getVersion()
+    this.fetchReleases().then((releases) => {
+      const newerVersions = releases
+        .filter(release => compareVersions(release.tag_name, ownVersion) > 0)
+        .sort((a, b) => compareVersions(b.tag_name, a.tag_name))
+
+      if (newerVersions.length > 0) {
+        this.setState({ newerVersions })
+        this.props.actions.showUpdateNotification(true)
+      }
+    })
   }
 
-  public componentDidMount() {
-    rendererEvents.emit(checkForUpdates, undefined)
-    rendererEvents.subscribe(updateAvailable, this.handleUpdate)
-  }
-
-  public componentWillUnmount() {
-    rendererEvents.unsubscribeAll(updateAvailable)
-  }
-
-  private fixUrl(url: string, version: string) {
-    if (!/^http/.test(url)) {
-      return `https://github.com/thomasnordquist/MQTT-Explorer/releases/download/v${version}/${url}`
-    }
-
-    return url
-  }
-
-  private handleUpdate = (updateInfo: UpdateInfo) => {
-    this.updateInfo = updateInfo
-    this.props.actions.showUpdateNotification(true)
+  private fetchReleases(): Promise<GithubRelease[]> {
+    return axios.get('https://api.github.com/repos/thomasnordquist/mqtt-explorer/releases', {
+      headers: {
+        accept: 'application/vnd.github.v3.full+json',
+      },
+    }).then((res) => {
+      return res.data
+    })
   }
 
   private onCloseNotification = (event: React.SyntheticEvent<any>, reason: string) => {
@@ -93,17 +115,18 @@ class UpdateNotifier extends React.Component<Props, {}> {
       vertical: 'top',
       horizontal: 'right',
     }
+    console.log(this.state.newerVersions)
 
     return (
       <Snackbar
         anchorOrigin={snackbarAnchor}
         open={this.props.showUpdateNotification}
-        autoHideDuration={7000}
+        autoHideDuration={12000}
         onClose={this.onCloseNotification}
       >
         <SnackbarContent
           className={this.props.classes.success}
-          message="Update available"
+          message={`${this.state.newerVersions.length} Update(s) available`}
           action={this.notificationActions()}
         />
       </Snackbar>
@@ -113,7 +136,7 @@ class UpdateNotifier extends React.Component<Props, {}> {
   private notificationActions() {
     return [(
         <Button key="undo" size="small" onClick={this.showDetails}>
-          Download
+          Details
         </Button>
       ), (
         <IconButton
@@ -130,10 +153,14 @@ class UpdateNotifier extends React.Component<Props, {}> {
   }
 
   private renderUpdateDetails() {
-    if (!this.updateInfo) {
+    const latestUpdate = this.state.newerVersions[0]
+    if (!latestUpdate) {
       return null
     }
-    const releaseNotes = (this.updateInfo.releaseNotes as string) || ''
+    const releaseNotes = this.state.newerVersions
+      .map(release => `<p><h3>${release.tag_name}</h3><p/><p>${release.body_html}</p>`)
+      .join('<hr />')
+
     return (
       <Modal
         open={this.props.showUpdateDetails}
@@ -141,31 +168,58 @@ class UpdateNotifier extends React.Component<Props, {}> {
         onClose={this.hideDetails}
       >
         <Paper className={this.props.classes.root}>
-          <Typography variant="h6" className={this.props.classes.title}>Version {this.updateInfo.version}</Typography>
+          <Typography variant="h6" className={this.props.classes.title}>Version {latestUpdate.tag_name}</Typography>
           <Typography className={this.props.classes.title}>Changelog</Typography>
           <div className={this.props.classes.releaseNotes} dangerouslySetInnerHTML={{ __html: releaseNotes }} />
-          {this.renderDownloads(this.updateInfo)}
+          {this.renderDownloads()}
+          <Button
+            className={this.props.classes.download}
+            onClick={this.openGithub}
+          >
+            Github Page
+          </Button>
           <Button className={this.props.classes.closeButton} color="secondary" onClick={this.hideDetails}>Close</Button>
         </Paper>
       </Modal>
     )
   }
 
-  private urlToFilename(url: string) {
-    const parts = url.split('/')
-
-    return parts[parts.length - 1]
+  private openGithub = () => {
+    this.openUrl('https://github.com/thomasnordquist/MQTT-Explorer')
   }
 
-  private renderDownloads(updateInfo: UpdateInfo) {
-    return updateInfo.files
-      .map((file: UpdateFileInfo, index: number) => (
-        <div key={index}>
+  private openUrl = (url: string) => {
+    electron.shell.openExternal(url)
+  }
+
+  private assetForCurrentPlatform(asset: GithubAsset) {
+    let regex: RegExp
+    if (os.platform() === 'darwin') {
+      regex = /\.dmg$/
+    } else if (os.platform() === 'darwin') {
+      regex = /\.exe$/
+    } else {
+      regex = /\.AppImage$/
+    }
+
+    return regex.test(asset.name)
+  }
+
+  private renderDownloads() {
+    const latestUpdate = this.state.newerVersions[0]
+    if (!latestUpdate || !latestUpdate.assets) {
+      return null
+    }
+
+    return latestUpdate.assets
+      .filter(this.assetForCurrentPlatform)
+      .map(asset => (
+        <div>
           <Button
             className={this.props.classes.download}
-            href={this.fixUrl(file.url, updateInfo.version)}
+            onClick={() => this.openUrl(asset.url)}
           >
-            <IconButton><CloudDownload /></IconButton>{this.urlToFilename(file.url)}
+            <CloudDownload />&nbsp;{asset.name}
           </Button>
         </div>
       ))
