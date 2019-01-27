@@ -58,7 +58,7 @@ class UpdateNotifier extends React.Component<Props, State> {
     this.state = { newerVersions: [] }
 
     // window.compare = compareVersions
-    const ownVersion = '0.0.9' || electron.remote.app.getVersion()
+    const ownVersion = electron.remote.app.getVersion()
     this.fetchReleases().then((releases) => {
       const newerVersions = releases
         .filter(release => compareVersions(release.tag_name, ownVersion) > 0)
