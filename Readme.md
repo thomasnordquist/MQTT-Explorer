@@ -33,5 +33,31 @@ Start with `npm run start`
 
 The `app` directory contains all the rendering logic, the `backend` directory currently contains the models, tests, connection management.
 
+## Telemetry
+The App sends telemetry and error reports, this enables me to quickly react on bugs/errors I produced.
+This is a difficutlt task since this App runs on three different operating systems and architectures.
+
+It basically sends: app version, processor architecture, operating system, used memory, user interactions and error stacks.
+
+This greatly helps to improve the software quality and reliability.
+No data about you or your data is send or stored.
+Even thoug the data is purely technical, an option to disable telemetry is planned. [#52](https://github.com/thomasnordquist/MQTT-Explorer/issues/52)
+
+Example telemetry:
+```javascript
+{ system: { arch: 'x64', platform: 'darwin' },
+  appVersion: '0.0.7',
+  events: { HELLO_EVENT: [ 1547714886134 ] },
+  now: 1547714886135,
+  transactionId: '1767d251-f492-4f2c-aa62-88add3acc26b' }
+{ errors:
+   [ { time: 1547714887921,
+       message: 'He\'s dead Jim!',
+       stack:
+        'Error: He\'s dead Jim!\n    at ./src/tracking.ts.exports.default (./mqtt-explorer/app/build/bundle.js:142765:11)\n    at new Promise (<anonymous>)\n    at Object../src/tracking.ts (./mqtt-explorer/app/build/bundle.js:142764:1)\n    at __webpack_require__ (./mqtt-explorer/app/build/bundle.js:20:30)\n    at Object../src/index.tsx (./mqtt-explorer/app/build/bundle.js:142618:1)\n    at __webpack_require__ (./mqtt-explorer/app/build/bundle.js:20:30)\n    at ../backend/node_modules/charenc/charenc.js.charenc.utf8.stringToBytes (./mqtt-explorer/app/build/bundle.js:84:18)\n    at ./mqtt-explorer/app/build/bundle.js:87:10' } ],
+  now: 1547714887921,
+  transactionId: '53bf9aac-e695-40cc-9a81-b1cf3398843d' }
+```
+
 ## License
 Not yet decided which license exactly, but the basic idea is: "You may do whatever you want with this tool, except sell it."
