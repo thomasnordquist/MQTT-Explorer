@@ -6,7 +6,6 @@
   "scripts": {
     "start": "electron .",
     "test": "yarn run test-backend",
-    "install": "cd app; yarn install; cd ..",
     "build": "tsc && cd app && yarn run build && cd ..",
     "test-backend": "cd backend && yarn run test && cd ..",
     "prepare-release": "./prepare-release.sh",
