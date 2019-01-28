@@ -1,4 +1,5 @@
 import * as webdriverio from 'webdriverio'
+import * as os from 'os'
 import mockMqtt, { stop } from './mock-mqtt'
 import { connectTo } from './scenarios/connect'
 import { showNumericPlot } from './scenarios/showNumericPlot'
@@ -9,13 +10,15 @@ import { clearOldTopics } from './scenarios/clearOldTopics'
 import { showMenu } from './scenarios/showMenu'
 
 import { createFakeMousePointer, sleep, showText, hideText } from './util'
+
+const binary = os.platform() === 'darwin' ? 'Electron.app/Contents/MacOS/Electron' : 'electron'
 const options = {
   host: 'localhost', // Use localhost as chrome driver server
   port: 9515, // "9515" is the port opened by chrome driver.
   capabilities: {
     browserName: 'electron',
     chromeOptions: {
-      binary: `${__dirname}/../../../node_modules/electron/dist/Electron.app/Contents/MacOS/Electron`,
+      binary: `${__dirname}/../../../node_modules/electron/dist/${binary}`,
       args: [`--app=${__dirname}/../../..`, '--force-device-scale-factor=1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-extensions'],
     },
     windowTypes: ['app', 'webview'],
