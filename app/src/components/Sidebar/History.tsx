@@ -64,7 +64,7 @@ class MessageHistory extends React.Component<Props, State> {
             badgeContent={this.props.items.length}
             color="primary"
           >
-            {this.state.collapsed ? '▶' : '▼'} History
+            {this.state.collapsed ? '▶ History' : '▼ History'}
           </Badge>
           <div style={{ float: 'right' }}>{this.state.collapsed ? this.props.contentTypeIndicator : null}</div>
         </Typography>
