@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function finish {
-  echo "UUUUPS I crashed"
+  echo "Ooops I crashed"
   tmux send-keys -t record q || echo "No tmux was running"
   echo kill $PID_XVFB $PID_CHROMEDRIVER $PID_MOSQUITTO
   kill $PID_XVFB $PID_CHROMEDRIVER $PID_MOSQUITTO
@@ -11,12 +11,14 @@ trap finish EXIT
 
 set -e
 
+DIMENSIONS="1024x700"
 SCR=99
 # Start new window manager
-Xvfb :$SCR -screen 0 1024x800x24 -ac &
+Xvfb :$SCR -screen 0 "$DIMENSIONS"x24 -ac &
 export PID_XVFB=$!
 sleep 2
 
+# Start mqtt broker
 mosquitto &
 export PID_MOSQUITTO=$!
 
@@ -28,7 +30,7 @@ sleep 2
 rm ./app.mp4 || echo no need to delete ./app.mp4
 
 # Start recoring in tmux
-tmux new-session -d -s record ffmpeg -f x11grab -draw_mouse 0 -video_size 1024x800 -i :$SCR -codec:v libx264 -r 20 ./app.mp4
+tmux new-session -d -s record ffmpeg -f x11grab -draw_mouse 0 -video_size $DIMENSIONS -i :$SCR -codec:v libx264 -r 20 ./app.mp4
 
 # Start tests
 node dist/src/spec/webdriverio.js

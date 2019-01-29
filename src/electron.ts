@@ -14,6 +14,8 @@ if (!isDev) {
 }
 
 const isDebugEnabled = Boolean(process.argv.find(arg => arg === 'debug'))
+const isFullscreen = Boolean(process.argv.find(arg => arg === '--fullscreen'))
+
 require('electron-debug')({ enabled: isDebugEnabled })
 
 autoUpdater.logger = log
@@ -41,7 +43,10 @@ function createWindow() {
   })
 
   mainWindow.once('ready-to-show', () => {
-    mainWindow && mainWindow.show()
+    if (mainWindow) {
+      isFullscreen && mainWindow.setFullScreen(true)
+      mainWindow.show()
+    }
   })
 
   console.log('icon path', iconPath)

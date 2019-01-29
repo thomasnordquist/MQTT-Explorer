@@ -37,12 +37,17 @@ export async function moveToCenterOfElement(element: Element<void>, browser: Bro
     const stepY = deltaY / steps
     let currentStep = 0
     function getCloser() {
-      e.style.left = String(left + (stepX * currentStep)) + 5 + 'px'
-      e.style.top = String(top + (stepY * currentStep)) + 5 + 'px'
+      e.style.left = String(left + (stepX * currentStep)) + 'px'
+      e.style.top = String(top + (stepY * currentStep)) + 'px'
       if (currentStep < steps) {
         setTimeout(() => {
-    			currentStep += 1
-          getCloser()
+          currentStep += 1
+          if (currentStep === steps) {
+            e.style.left = String(targetX + 5) + 'px'
+            e.style.top = String(targetY + 1) + 'px'
+          } else {
+            getCloser()
+          }
         }, duration/steps)
       }
     }
@@ -71,13 +76,6 @@ export async function createFakeMousePointer(browser: Browser<void>) {
   + 'document.body.appendChild(i)'
 
   await browser.execute(addCursorImage)
-
-  const onMouseMove = `document.onmousemove = (event) => {
-      const e = document.getElementById('bier')
-      e.style.left = (event.pageX+1) + 'px'
-      e.style.top = event.pageY + 'px'
-  }`
-  await browser.execute(onMouseMove)
 }
 
 export async function showText(text: string, duration: number = 0, browser: Browser<void>) {
