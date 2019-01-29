@@ -26,7 +26,7 @@ install:
 script:
   - yarn run build
   - yarn test
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then yarn run ui-test -- linux; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then yarn run ui-test && yarn upload-video-artifacts; fi
   - if [[ "$TRAVIS_TAG" != "" ]]; then yarn run prepare-release; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package -- linux; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package -- mac; fi

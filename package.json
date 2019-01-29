@@ -12,6 +12,7 @@
     "prepare-release": "./scripts/prepare-release.sh",
     "package": "ts-node package.ts",
     "ui-test": "./scripts/uiTests.sh",
+    "upload-video-artifacts": "./scripts/uploadVideoAsset.ts ui-test.mp4 ui-test.gif original.mp4",
     "package-with-docker": "./scripts/package-with-docker.sh"
   },
   "repository": {

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function finish {
-  echo "Ooops I crashed"
+  echo "Exiting, cleaning up"
   tmux send-keys -t record q || echo "No tmux was running"
   echo kill $PID_XVFB $PID_CHROMEDRIVER $PID_MOSQUITTO
   kill $PID_XVFB $PID_CHROMEDRIVER $PID_MOSQUITTO
@@ -42,4 +42,4 @@ tmux send-keys -t record q
 sleep 5
 
 # Process the video
-./prepareVideo.sh
+./scripts/prepareVideo.sh
