@@ -1,7 +1,7 @@
 process.on('unhandledRejection', (error: Error) => {
-  console.error('unhandledRejection', error.message, error.stack);
+  console.error('unhandledRejection', error.message, error.stack)
   process.exit(1)
-});
+})
 
 import * as webdriverio from 'webdriverio'
 import * as os from 'os'
