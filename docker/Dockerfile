@@ -10,9 +10,7 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-COPY entrypoint.sh /entrypoint.sh
-
-CMD /entrypoint.sh
+CMD /bin/bash
 
 VOLUME /app
 EXPOSE 5900
