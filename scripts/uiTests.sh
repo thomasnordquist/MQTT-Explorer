@@ -3,8 +3,8 @@
 function finish {
   echo "Exiting, cleaning up"
   tmux send-keys -t record q || echo "No tmux was running"
-  echo kill $PID_XVFB $PID_CHROMEDRIVER $PID_MOSQUITTO
-  kill $PID_XVFB $PID_CHROMEDRIVER $PID_MOSQUITTO
+  #echo kill $PID_XVFB $PID_CHROMEDRIVER $PID_MOSQUITTO
+  #kill $PID_XVFB $PID_CHROMEDRIVER $PID_MOSQUITTO
 }
 
 trap finish EXIT
@@ -36,7 +36,8 @@ tmux new-session -d -s record ffmpeg -f x11grab -draw_mouse 0 -video_size $DIMEN
 
 # Start tests
 node dist/src/spec/webdriverio.js
-TEST_EXIT_CODE=$$
+TEST_EXIT_CODE=$?
+echo "Webriver exitet with $TEST_EXIT_CODE"
 
 # Stop recording
 tmux send-keys -t record q
