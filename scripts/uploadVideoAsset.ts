@@ -4,7 +4,6 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as mime from 'mime'
 
-const tag = process.env.TRAVIS_TAG
 const githubToken = process.env.GH_TOKEN
 
 async function tagUrl(tag: string): Promise<string | undefined> {
@@ -35,6 +34,7 @@ function cleanUploadUrl(url: string) {
 }
 
 async function uploadAsset() {
+  const tag = process.env.TRAVIS_TAG
   const files = process.argv.slice(2)
 
   if (!tag || files.length === 0) {
