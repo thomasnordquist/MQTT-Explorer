@@ -24,7 +24,7 @@ services:
 
 install:
   - yarn install
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd docker; docker build --tag uitest; fi;
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker build docker --tag uitest; fi;
 
 script:
   - yarn run build
