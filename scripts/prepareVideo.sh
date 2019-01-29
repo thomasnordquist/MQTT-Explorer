@@ -5,7 +5,7 @@ ffprobe -f lavfi -i "movie=app.mp4,blackdetect[out0]" -show_entries tags=lavfi.b
 END_OF_BLACK=`cat ffmpeg_info | grep end | head -n1 | cut -d'=' -f2`
 
 # Trim black frames at start
-ffmpeg -ss $END_ONF_BLACK -i app.mp4 app2.mp4
+ffmpeg -ss $END_OF_BLACK -i app.mp4 app2.mp4
 mv app2.mp4 app.mp4
 
 # Generate gif palette

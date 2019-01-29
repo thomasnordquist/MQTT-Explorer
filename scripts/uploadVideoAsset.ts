@@ -4,7 +4,11 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as mime from 'mime'
 
+<<<<<<< HEAD
 const tag = process.env.TRAVIS_TAG
+=======
+const tag = process.env.GIT_TAG
+>>>>>>> Upload video assets
 const githubToken = process.env.GH_TOKEN
 
 async function latestUrl() {

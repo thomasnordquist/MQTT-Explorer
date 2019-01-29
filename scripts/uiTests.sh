@@ -9,8 +9,6 @@ function finish {
 
 trap finish EXIT
 
-set -e
-
 DIMENSIONS="1024x700"
 SCR=99
 # Start new window manager
@@ -34,6 +32,7 @@ tmux new-session -d -s record ffmpeg -f x11grab -draw_mouse 0 -video_size $DIMEN
 
 # Start tests
 node dist/src/spec/webdriverio.js
+TEST_EXIT_CODE=$$
 
 # Stop recording
 tmux send-keys -t record q
@@ -43,3 +42,5 @@ sleep 5
 
 # Process the video
 ./scripts/prepareVideo.sh
+
+exit $TEST_EXIT_CODE
