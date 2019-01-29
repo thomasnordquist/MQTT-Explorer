@@ -16,5 +16,5 @@ async function writeTextToInput(name: string, text: string, browser: Browser<voi
   wait && await sleep(500)
   input.clearValue()
   wait && await sleep(300)
-  await writeText(text, input)
+  await writeText(text, browser)
 }

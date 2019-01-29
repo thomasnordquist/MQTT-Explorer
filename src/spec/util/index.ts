@@ -7,9 +7,9 @@ export function sleep(ms: number) {
   })
 }
 
-export async function writeText(text: string, to: Element<void>) {
+export async function writeText(text: string, to: Browser<void>) {
   for (const c of text.split('')) {
-    await to.setValue((await to.getValue()) + c)
+    await browser.keys([c])
     await sleep(50)
   }
 }
