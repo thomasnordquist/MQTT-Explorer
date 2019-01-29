@@ -17,6 +17,8 @@ os:
   - linux
   - osx
 
+dist: xenial
+
 install:
   - yarn install
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo add-apt-repository ppa:mc3man/trusty-media -y; sudo apt-get -qq update; sudo apt-get install -y tmux mosquitto ffmpeg; fi;
