@@ -4,18 +4,8 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as mime from 'mime'
 
-<<<<<<< HEAD
 const tag = process.env.TRAVIS_TAG
-=======
-const tag = process.env.GIT_TAG
->>>>>>> Upload video assets
 const githubToken = process.env.GH_TOKEN
-
-async function latestUrl() {
-  const response = await axios.get(`https://api.github.com/repos/thomasnordquist/mqtt-explorer/releases/latest?access_token=${githubToken}`)
-  const latestRelease = response.data
-  return cleanUploadUrl(response.data.upload_url)
-}
 
 async function tagUrl(tag: string): Promise<string | undefined> {
   const response = await axios.get(`https://api.github.com/repos/thomasnordquist/mqtt-explorer/releases?access_token=${githubToken}`)
@@ -45,7 +35,6 @@ function cleanUploadUrl(url: string) {
 }
 
 async function uploadAsset() {
-  const tag = 'v0.1.1'
   const files = process.argv.slice(2)
 
   if (!tag || files.length === 0) {
@@ -60,12 +49,12 @@ async function uploadAsset() {
       try {
         uploadUrl = await createDraft(tag)
       } catch (error) {
-        console.error('failed to create draft', error)
+        console.error('failed to create draft', error.stack)
         process.exit(1)
       }
     }
   } catch (error) {
-    console.error('failed to find tag release', error)
+    console.error('failed to find tag release', error.stack)
     process.exit(1)
   }
 
