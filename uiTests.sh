@@ -1,20 +1,34 @@
 #!/bin/bash
 
+function finish {
+  echo "UUUUPS I crashed"
+  tmux send-keys -t record q || echo "No tmux was running"
+  echo kill $PID_XVFB $PID_CHROMEDRIVER $PID_MOSQUITTO
+  kill $PID_XVFB $PID_CHROMEDRIVER $PID_MOSQUITTO
+}
+
+trap finish EXIT
+
+set -e
+
 SCR=99
 # Start new window manager
 Xvfb :$SCR -screen 0 1024x800x24 -ac &
-PID_XVFB=$!
+export PID_XVFB=$!
 sleep 2
 
+mosquitto &
+export PID_MOSQUITTO=$!
+
 DISPLAY=:$SCR ./node_modules/.bin/chromedriver --url-base=wd/hub --port=9515 &
-PID_CHROMEDRIVER=$!
+export PID_CHROMEDRIVER=$!
 sleep 2
 
 # Delete old video
-rm ./app.mp4
+rm ./app.mp4 || echo no need to delete ./app.mp4
 
 # Start recoring in tmux
-tmux new-session -d -s record ffmpeg -f x11grab -video_size 1024x800 -i :$SCR -codec:v libx264 -r 20 ./app.mp4
+tmux new-session -d -s record ffmpeg -f x11grab -draw_mouse 0 -video_size 1024x800 -i :$SCR -codec:v libx264 -r 20 ./app.mp4
 
 # Start tests
 node dist/src/spec/webdriverio.js
@@ -22,4 +36,8 @@ node dist/src/spec/webdriverio.js
 # Stop recording
 tmux send-keys -t record q
 
-kill $PID_XVFB $PID_CHROMEDRIVER
+# Ensure video is written
+sleep 5
+
+# Process the video
+./prepareVideo.sh
