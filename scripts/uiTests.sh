@@ -16,6 +16,10 @@ Xvfb :$SCR -screen 0 "$DIMENSIONS"x24 -ac &
 export PID_XVFB=$!
 sleep 2
 
+# Debug with VNC
+# while [ "$TEST_EXIT_CODE" = "" ]; do x11vnc -usepw -display :$SCR; done &
+# export PID_VNC=$!
+
 # Start mqtt broker
 mosquitto &
 export PID_MOSQUITTO=$!
