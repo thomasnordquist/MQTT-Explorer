@@ -34,7 +34,7 @@ function cleanUploadUrl(url: string) {
 }
 
 async function uploadAsset() {
-  const tag: string | undefined = process.env.TRAVIS_TAG
+  const tag: string | undefined = process.env.GIT_TAG
   const files = process.argv.slice(2)
 
   if (!tag || files.length === 0) {
