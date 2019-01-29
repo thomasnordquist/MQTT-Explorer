@@ -5,8 +5,8 @@ export async function showMenu(browser: Browser<void>) {
   const menuButton = await browser.$('//button[contains(@aria-label, "Menu")]')
   await clickOn(menuButton, browser)
 
-  const brokerStatistics = await browser.$('//div[contains(@class, "BrokerStatistics")]/div[4]')
-  moveToCenterOfElement(brokerStatistics, browser)
+  // const brokerStatistics = await browser.$('//div[contains(@class, "BrokerStatistics")]/div[1]')
+  // moveToCenterOfElement(brokerStatistics, browser)
   await sleep(2000)
 
   const topicOrder = await browser.$('#select-node-order')
