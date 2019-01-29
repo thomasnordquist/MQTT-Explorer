@@ -11,7 +11,7 @@
     "test-backend": "cd backend && yarn run test && cd ..",
     "prepare-release": "./prepare-release.sh",
     "package": "ts-node package.ts",
-    "ui-text": "./uiTests.sh",
+    "ui-test": "./uiTests.sh",
     "package-with-docker": "./package-with-docker.sh"
   },
   "repository": {
