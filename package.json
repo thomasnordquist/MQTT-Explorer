@@ -9,9 +9,11 @@
     "install": "cd app; yarn; cd ..",
     "build": "tsc && cd app && yarn run build && cd ..",
     "test-backend": "cd backend && yarn run test && cd ..",
-    "prepare-release": "./prepare-release.sh",
+    "prepare-release": "./scripts/prepare-release.sh",
     "package": "ts-node package.ts",
-    "package-with-docker": "./package-with-docker.sh"
+    "ui-test": "./scripts/uiTests.sh",
+    "upload-video-artifacts": "./scripts/uploadVideoAsset.ts ui-test.mp4 ui-test.gif",
+    "package-with-docker": "./scripts/package-with-docker.sh"
   },
   "repository": {
     "type": "git",
@@ -42,6 +44,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.1.7",
+    "@types/mime": "^2.0.0",
     "@types/mocha": "^5.2.5",
     "@types/mustache": "^0.8.32",
     "@types/node": "^10.12.18",
@@ -51,6 +54,7 @@
     "chai": "^4.2.0",
     "electron": "^4.0.2",
     "electron-builder": "^20.38.4",
+    "mime": "^2.4.0",
     "mocha": "^5.2.0",
     "mustache": "^3.0.1",
     "nyc": "^13.1.0",

@@ -1,17 +1,29 @@
 import { Element, Browser } from 'webdriverio'
 export { expandTopic } from './expandTopic'
 
-export function sleep(ms: number) {
+export function sleep(ms: number, required = false) {
   return new Promise((resolve) => {
-    setTimeout(resolve, ms)
+    if (required) {
+      setTimeout(resolve, ms)
+    } else {
+      setTimeout(resolve, ms)
+    }
   })
 }
 
-export function writeText(text: string, to: Browser<void>) {
-  text.split('').forEach(async (c) => {
-    await to.keys([c])
-    await sleep(50)
-  })
+export async function writeText(text: string, browser: Browser<void>, delay = 0) {
+  for (const c of text.split('')) {
+    await browser.keys([c])
+    await sleep(delay)
+  }
+}
+
+export async function delteTextWithBackspaces(element: Element<void>, browser: Browser<void>, delay = 0, count = 0) {
+  const length = count > 0 ? count : (await element.getValue()).length
+  for (let i = 0; i < length; i += 1) {
+    await browser.keys(['Backspace'])
+    await sleep(delay)
+  }
 }
 
 export async function moveToCenterOfElement(element: Element<void>, browser: Browser<void>) {
@@ -37,20 +49,30 @@ export async function moveToCenterOfElement(element: Element<void>, browser: Bro
     const stepY = deltaY / steps
     let currentStep = 0
     function getCloser() {
-      e.style.left = String(left + (stepX * currentStep)) + 5 + 'px'
-      e.style.top = String(top + (stepY * currentStep)) + 5 + 'px'
+      e.style.left = String(left + (stepX * currentStep)) + 'px'
+      e.style.top = String(top + (stepY * currentStep)) + 'px'
       if (currentStep < steps) {
         setTimeout(() => {
-    			currentStep += 1
-          getCloser()
+          currentStep += 1
+          if (currentStep === steps) {
+            e.style.left = String(targetX + 5) + 'px'
+            e.style.top = String(targetY + 1) + 'px'
+          } else {
+            getCloser()
+          }
         }, duration/steps)
       }
     }
 	  getCloser()
   }`
   await browser.execute(js)
-  await sleep(550)
+  await sleep(550, true)
   await element.moveTo()
+}
+
+export async function clickOnHistory(browser: Browser<void>) {
+  const messageHistory = await browser.$('//span/*[contains(text(), "History")]')
+  await clickOn(messageHistory, browser)
 }
 
 export async function clickOn(element: Element<void>, browser: Browser<void>, clicks = 1) {
@@ -71,25 +93,24 @@ export async function createFakeMousePointer(browser: Browser<void>) {
   + 'document.body.appendChild(i)'
 
   await browser.execute(addCursorImage)
-
-  const onMouseMove = `document.onmousemove = (event) => {
-      const e = document.getElementById('bier')
-      e.style.left = (event.pageX+1) + 'px'
-      e.style.top = event.pageY + 'px'
-  }`
-  await browser.execute(onMouseMove)
 }
 
-export async function showText(text: string, duration: number = 0, browser: Browser<void>) {
+export async function showText(text: string, duration: number = 0, browser: Browser<void>, location: 'top' | 'bottom' | 'middle' = 'bottom') {
+  const positions = {
+    top: 0,
+    bottom: -65,
+    middle: -32,
+  }
   const js = `
+    const postition = "${positions[location]}vh"
     let previousDiv = document.getElementById('tests-text-overlay')
     previousDiv && previousDiv.remove()
     let div = document.createElement('div')
     div.id = "tests-text-overlay"
-    div.style = "background-color: rgba(0, 0, 0, 0.8);position: fixed;left: 5vw;z-index: 1000000;margin: 30vw auto 50vw;border-radius: 16px;right: 5vw;bottom: -65vh;"
+    div.style = "background-color: rgba(0, 0, 0, 0.8);position: fixed;left: 5vw;z-index: 1000000;margin: 30vw auto 50vw;border-radius: 16px;right: 5vw;bottom: "+ postition +";"
     let div2 = document.createElement('div')
     div2.style = "text-align: center;font-size: 4em;color: white;"
-    div2.innerHTML = "${text}"
+    div2.innerHTML = \`${text}\`
     div.appendChild(div2)
     document.body.appendChild(div)
     if (${duration} > 0) {

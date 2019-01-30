@@ -144,6 +144,7 @@ class Publish extends React.Component<Props, State> {
         size="small"
         color="primary"
         onClick={this.publish}
+        id="publish-button"
       >
         <Navigation style={{ marginRight: '8px' }} /> Publish
       </Button>

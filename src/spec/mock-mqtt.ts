@@ -17,7 +17,7 @@ function startServer(): Promise<mqtt.MqttClient> {
 
 function connectMqtt(): Promise<mqtt.MqttClient> {
   return new Promise((resolve) => {
-    const client = mqtt.connect('mqtt://localhost:1883', { username: 'thomas', password: 'bierbier' })
+    const client = mqtt.connect('mqtt://127.0.0.1:1883', { username: 'thomas', password: 'bierbier' })
     client.once('connect', () => {
       resolve(client)
     })
@@ -52,6 +52,15 @@ function generateData(client: mqtt.MqttClient) {
   client.publish('livingroom/lamp-1/brightness', '48', { retain: true, qos: 0 })
   client.publish('livingroom/lamp-2/state', 'off', { retain: true, qos: 0 })
   client.publish('livingroom/lamp-2/brightness', '48', { retain: true, qos: 0 })
+
+  client.publish('kitchen/lamp/state', 'off', { retain: true, qos: 0 })
+  client.subscribe('kitchen/lamp/set')
+  client.on('message', (topic, payload) => {
+    if (topic === 'kitchen/lamp/set') {
+      setTimeout(() => client.publish('kitchen/lamp/state', payload, { retain: true, qos: 0 }), 500)
+    }
+  })
+
   intervals.push(setInterval(() => client.publish('kitchen/temperature', temperature()), 1500))
   intervals.push(setInterval(() => client.publish('kitchen/humidity', temperature(60, -5, 0)), 1800))
 
@@ -66,12 +75,32 @@ function generateData(client: mqtt.MqttClient) {
   // Used for demonstrating "clean up"
   client.publish('test 123', 'Hello world', { retain: true, qos: 0 })
   client.publish('hello', 'sunshine', { retain: true, qos: 0 })
+
+  // Just stuff
   client.publish('01-80-C2-00-00-0F/LWT', 'offline', { retain: true, qos: 0 })
 
   intervals.push(setInterval(() => {
     client.publish('3d-printer/OctoPrint/temperature/bed', '{"_timestamp":1548589083,"actual":25.9,"target":0}')
     client.publish('3d-printer/OctoPrint/temperature/tool0', '{"_timestamp":1548589093,"actual":26.4,"target":0}')
   }, 3333))
+
+  let state = true
+  intervals.push(setInterval(() => {
+    state = !state
+    const enitityId = Math.round(Math.random() * 3000)
+    client.publish(
+      'actuality/showcase', `{
+        "tags":{
+          "entityId":${enitityId},
+          "entityType":"person",
+          "host":"d44ad81e10f9",
+          "server":"${state ? 'http://localhost/dataActuality' : 'http://localhost/dataStorage' }",
+          "status":"${state ? 'live' : 'inactive'}"},
+        "timestamp":${Date.now()}
+      }`.replace(/\s/g, ''),
+      { retain: true, qos: 0 },
+    )
+  }, 2102))
 }
 
 export default startServer
