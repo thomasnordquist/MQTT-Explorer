@@ -19,10 +19,11 @@ The app is prebuilt for Windows ([portable](https:&#x2F;&#x2F;github.com&#x2F;th
 
 More architectures and package types: [Downloads](https://github.com/thomasnordquist/MQTT-Explorer/releases)
 
+## What does MQTT-Explorer do?
+![screencast](https://user-images.githubusercontent.com/7721625/51978075-5bc0eb00-2489-11e9-953a-0965b154557b.gif)
+
+## Screenshots
 ![screen1](https://user-images.githubusercontent.com/7721625/51770198-6c6a0d80-20e5-11e9-94d5-a0174634253c.png)
-
-![screen2](https://user-images.githubusercontent.com/7721625/51770345-c7036980-20e5-11e9-94dc-5d6fa9dbf86b.png)
-
 
 ## Develop
 PRs and issues are welcome
