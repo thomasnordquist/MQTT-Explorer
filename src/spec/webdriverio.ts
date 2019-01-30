@@ -41,7 +41,7 @@ async function doStuff() {
   const browser = await webdriverio.remote(options)
   await createFakeMousePointer(browser)
 
-  await connectTo('localhost', browser)
+  await connectTo('127.0.0.1', browser)
   await sleep(1000)
 
   await sleep(1000)

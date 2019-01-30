@@ -12,5 +12,6 @@ ENV LC_ALL en_US.UTF-8
 
 CMD /bin/bash
 
+COPY cloneBuildAndTest.sh ./
 VOLUME /app
 EXPOSE 5900
