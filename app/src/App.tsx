@@ -45,7 +45,7 @@ class App extends React.PureComponent<Props, {}> {
             </div>
             <div>
               <SplitPane
-                step={48}
+                step={20}
                 primary="second"
                 className={`${settingsVisible ? contentShift : content} ${heightProperty}`}
                 split="vertical"
