@@ -51,6 +51,7 @@ class App extends React.PureComponent<Props, {}> {
                 split="vertical"
                 minSize={250}
                 defaultSize={500}
+                resizerStyle={{ width: '2px', margin: '0 -10px 0 0px' }}
                 allowResize={true}
                 style={{ position: 'relative' }}
                 pane1Style={{ overflow: 'hidden' }}
