@@ -14,6 +14,7 @@ import UpdateNotifier from './UpdateNotifier'
 import { connect } from 'react-redux'
 import ErrorBoundary from './ErrorBoundary'
 import { default as SplitPane } from 'react-split-pane'
+import ConnectionManager from './components/ConnectionSetup/ConnectionManager'
 
 interface Props {
   name: string
@@ -65,7 +66,7 @@ class App extends React.PureComponent<Props, {}> {
             </div>
           </div>
           <UpdateNotifier />
-          <Connection />
+          <ConnectionManager />
         </ErrorBoundary>
       </div >
     )

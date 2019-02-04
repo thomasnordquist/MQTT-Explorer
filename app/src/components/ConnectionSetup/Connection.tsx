@@ -126,14 +126,6 @@ class Connection extends React.Component<Props, State> {
 
   public static styles: StyleRulesCallback<string> = (theme: Theme) => {
     return {
-      root: {
-        minWidth: 550,
-        maxWidth: 650,
-        backgroundColor: theme.palette.background.default,
-        margin: '14vh auto auto auto',
-        padding: `${2 * theme.spacing.unit}px`,
-        outline: 'none',
-      },
       title: {
         color: theme.palette.text.primary,
       },
@@ -193,84 +185,80 @@ class Connection extends React.Component<Props, State> {
     return (
       <div>
         {renderError}
-        <Modal open={this.props.visible} disableAutoFocus={true}>
-            <Paper className={classes.root}>
-              <Toolbar>
-                <Typography className={classes.title} variant="h6" color="inherit">MQTT Connection</Typography>
-              </Toolbar>
-              <form className={classes.container} noValidate={true} autoComplete="off">
-                <Grid container={true} spacing={24}>
-                  <Grid item={true} xs={2}>
-                    {this.renderProtocols()}
-                  </Grid>
-                  <Grid item={true} xs={7}>
-                    <TextField
-                      label="Host"
-                      className={classes.textField}
-                      value={this.state.connectionSettings.host}
-                      onChange={this.handleChange('host')}
-                      margin="normal"
-                    />
-                  </Grid>
-                  <Grid item={true} xs={3}>
-                    <TextField
-                      label="Port"
-                      className={classes.textField}
-                      value={this.state.connectionSettings.port}
-                      onChange={this.handleChange('port')}
-                      margin="normal"
-                    />
-                  </Grid>
-                  <Grid item={true} xs={5}>
-                    <TextField
-                      label="Username"
-                      className={classes.textField}
-                      value={this.state.connectionSettings.username}
-                      onChange={this.handleChange('username')}
-                      margin="normal"
-                    />
-                  </Grid>
-                  <Grid item={true} xs={5}>
-                    <FormControl className={`${classes.textField} ${classes.inputFormControl}`}>
-                      <InputLabel htmlFor="adornment-password">Password</InputLabel>
-                      <Input
-                        id="adornment-password"
-                        type={this.state.showPassword ? 'text' : 'password'}
-                        value={this.state.connectionSettings.password}
-                        onChange={this.handleChange('password')}
-                        endAdornment={passwordVisibilityButton}
-                      />
-                    </FormControl>
-                  </Grid>
-                  <Grid item={true} xs={5}>
-                    <FormControl className={`${classes.textField} ${classes.inputFormControl}`}>
-                      <InputLabel htmlFor="client-id">Client ID</InputLabel>
-                      <Input
-                        placeholder={this.randomClientId}
-                        className={classes.textField}
-                        value={this.state.connectionSettings.clientId || ''}
-                        onChange={this.handleChange('clientId')}
-                        startAdornment={<span />}
-                      />
-                    </FormControl>
-                  </Grid>
-                  <Grid item={true} xs={4}>
-                    {this.renderCertValidationSwitch()}
-                  </Grid>
-                  <Grid item={true} xs={3}>
-                    {this.renderTlsSwitch()}
-                  </Grid>
-                </Grid>
-                <br />
-                <div style={{ textAlign: 'right' }}>
-                  <Button variant="contained" color="secondary" className={classes.button} onClick={() => this.saveConnectionSettings()}>
-                    Save
-                  </Button>
-                  {this.renderConnectButton()}
-                </div>
-              </form>
-            </Paper>
-        </Modal>
+        <Toolbar>
+          <Typography className={classes.title} variant="h6" color="inherit">MQTT Connection</Typography>
+        </Toolbar>
+        <form className={classes.container} noValidate={true} autoComplete="off">
+          <Grid container={true} spacing={24}>
+            <Grid item={true} xs={2}>
+              {this.renderProtocols()}
+            </Grid>
+            <Grid item={true} xs={7}>
+              <TextField
+                label="Host"
+                className={classes.textField}
+                value={this.state.connectionSettings.host}
+                onChange={this.handleChange('host')}
+                margin="normal"
+              />
+            </Grid>
+            <Grid item={true} xs={3}>
+              <TextField
+                label="Port"
+                className={classes.textField}
+                value={this.state.connectionSettings.port}
+                onChange={this.handleChange('port')}
+                margin="normal"
+              />
+            </Grid>
+            <Grid item={true} xs={5}>
+              <TextField
+                label="Username"
+                className={classes.textField}
+                value={this.state.connectionSettings.username}
+                onChange={this.handleChange('username')}
+                margin="normal"
+              />
+            </Grid>
+            <Grid item={true} xs={5}>
+              <FormControl className={`${classes.textField} ${classes.inputFormControl}`}>
+                <InputLabel htmlFor="adornment-password">Password</InputLabel>
+                <Input
+                  id="adornment-password"
+                  type={this.state.showPassword ? 'text' : 'password'}
+                  value={this.state.connectionSettings.password}
+                  onChange={this.handleChange('password')}
+                  endAdornment={passwordVisibilityButton}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item={true} xs={5}>
+              <FormControl className={`${classes.textField} ${classes.inputFormControl}`}>
+                <InputLabel htmlFor="client-id">Client ID</InputLabel>
+                <Input
+                  placeholder={this.randomClientId}
+                  className={classes.textField}
+                  value={this.state.connectionSettings.clientId || ''}
+                  onChange={this.handleChange('clientId')}
+                  startAdornment={<span />}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item={true} xs={4}>
+              {this.renderCertValidationSwitch()}
+            </Grid>
+            <Grid item={true} xs={3}>
+              {this.renderTlsSwitch()}
+            </Grid>
+          </Grid>
+          <br />
+          <div style={{ textAlign: 'right' }}>
+            <Button variant="contained" color="secondary" className={classes.button} onClick={() => this.saveConnectionSettings()}>
+              Save
+            </Button>
+            {this.renderConnectButton()}
+          </div>
+        </form>
       </div>
     )
   }

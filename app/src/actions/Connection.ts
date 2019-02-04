@@ -7,6 +7,8 @@ import * as q from '../../../backend/src/Model'
 import { showTree } from './Tree'
 import * as url from 'url'
 import { TopicViewModel } from '../TopicViewModel'
+import { ConnnectionOptions } from '../model/ConnectionOptions'
+import { default as persistantStorage, StorageIdentifier } from '../PersistantStorage'
 
 export const connect = (options: MqttOptions, connectionId: string) => (dispatch: Dispatch<any>, getState: () => AppState) => {
   dispatch(connecting(connectionId))
@@ -25,6 +27,10 @@ export const connect = (options: MqttOptions, connectionId: string) => (dispatch
       dispatch(disconnect())
     }
   })
+}
+
+export const storedConnectionsIdentifier: StorageIdentifier<ConnnectionOptions[]> = {
+  id: 'connections',
 }
 
 export const connected: (tree: q.Tree<TopicViewModel>, host: string) => Action = (tree: q.Tree<TopicViewModel>, host: string)  => ({
