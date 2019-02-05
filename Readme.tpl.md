@@ -80,4 +80,4 @@ Example telemetry:
 ```
 
 ## License
-Not yet decided which license exactly, but the basic idea is: "You may do whatever you want with this tool, except sell it."
+[AGPL 3](./LICENSE)
