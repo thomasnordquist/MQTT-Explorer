@@ -1,16 +1,20 @@
 import { ActionTypes, Action, ConnectionState } from '../reducers/Connection'
 import { MqttOptions } from '../../../backend/src/DataSource'
 import { Dispatch } from 'redux'
-import { rendererEvents, addMqttConnectionEvent, makeConnectionStateEvent, removeConnection } from '../../../events'
+import { addMqttConnectionEvent, makeConnectionStateEvent, removeConnection } from '../../../events'
 import { AppState } from '../reducers'
 import * as q from '../../../backend/src/Model'
 import { showTree } from './Tree'
 import * as url from 'url'
 import { TopicViewModel } from '../TopicViewModel'
+import { getRendererEvents } from '../communication'
 
-export const connect = (options: MqttOptions, connectionId: string) => (dispatch: Dispatch<any>, getState: () => AppState) => {
+export const connect = (options: MqttOptions, connectionId: string) => async (dispatch: Dispatch<any>, getState: () => AppState) => {
   dispatch(connecting(connectionId))
+
+  const rendererEvents = await getRendererEvents()
   rendererEvents.emit(addMqttConnectionEvent, { options, id: connectionId })
+
   const event = makeConnectionStateEvent(connectionId)
   const host = url.parse(options.url).hostname
 
@@ -45,7 +49,7 @@ export const showError = (error?: string) => ({
 
 export const disconnect = () => (dispatch: Dispatch<any>, getState: () => AppState)  => {
   const { connectionId, tree } = getState().connection
-  rendererEvents.emit(removeConnection, connectionId)
+  getRendererEvents().then(rendererEvents => rendererEvents.emit(removeConnection, connectionId))
   tree && tree.stopUpdating()
 
   dispatch(showTree(undefined))

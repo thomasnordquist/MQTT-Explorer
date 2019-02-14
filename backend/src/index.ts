@@ -3,7 +3,6 @@ import {
   EventDispatcher,
   MqttMessage,
   addMqttConnectionEvent,
-  backendEvents,
   checkForUpdates,
   makeConnectionMessageEvent,
   makeConnectionStateEvent,
@@ -12,6 +11,7 @@ import {
   updateAvailable,
 } from '../../events'
 import { DataSource, MqttSource } from './DataSource'
+import { backendEvents } from './communication/SocketIo'
 
 import { UpdateInfo } from 'builder-util-runtime'
 

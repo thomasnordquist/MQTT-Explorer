@@ -1,7 +1,8 @@
 import { ActionTypes, Action } from '../reducers/Publish'
 import { AppState } from '../reducers'
 import { Dispatch } from 'redux'
-import { rendererEvents, makePublishEvent } from '../../../events'
+import { makePublishEvent } from '../../../events'
+import { getRendererEvents } from '../communication'
 
 export const setTopic = (topic?: string): Action  => {
   return {
@@ -46,7 +47,8 @@ export const publish = (connectionId: string) => (dispatch: Dispatch<Action>, ge
     retain: state.publish.retain,
     qos: state.publish.qos,
   }
-  rendererEvents.emit(publishEvent, mqttMessage)
+
+  getRendererEvents().then(rendererEvents => rendererEvents.emit(publishEvent, mqttMessage))
 }
 
 export const toggleRetain = (): Action => {

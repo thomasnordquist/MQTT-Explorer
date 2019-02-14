@@ -19,6 +19,7 @@
     "@types/react-resize-detector": "^3.1.0",
     "@types/react-split-pane": "^0.1.67",
     "@types/sha1": "^1.1.1",
+    "@types/socket.io": "^2.1.2",
     "@types/socket.io-client": "^1.4.32",
     "@types/vis": "^4.21.9",
     "awesome-typescript-loader": "^5.2.1",
@@ -53,5 +54,8 @@
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.14",
     "webpack-livereload-plugin": "^2.2.0"
+  },
+  "dependencies": {
+    "socket.io": "^2.2.0"
   }
 }

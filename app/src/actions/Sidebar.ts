@@ -1,6 +1,7 @@
 import { Dispatch, Action } from 'redux'
 import { AppState } from '../reducers'
-import { makePublishEvent, rendererEvents } from '../../../events'
+import { makePublishEvent } from '../../../events'
+import { getRendererEvents } from '../communication'
 
 export const clearRetainedTopic = () => (dispatch: Dispatch<Action>, getState: () => AppState)  => {
   const { selectedTopic } = getState().tree
@@ -17,5 +18,6 @@ export const clearRetainedTopic = () => (dispatch: Dispatch<Action>, getState: (
     retain: true,
     qos: 0 as 0,
   }
-  rendererEvents.emit(publishEvent, mqttMessage)
+
+  getRendererEvents().then(rendererEvents => rendererEvents.emit(publishEvent, mqttMessage))
 }

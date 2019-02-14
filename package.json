@@ -50,6 +50,8 @@
     "@types/node": "^10.12.18",
     "@types/semver": "^5.5.0",
     "@types/sha1": "^1.1.1",
+    "@types/socket.io": "^2.1.2",
+    "@types/socket.io-client": "^1.4.32",
     "axios": "^0.18.0",
     "chai": "^4.2.0",
     "electron": "^4.0.2",
@@ -76,6 +78,8 @@
     "electron-telemetry": "git+https://github.com/thomasnordquist/electron-telemetry.git#dist",
     "electron-updater": "^4.0.6",
     "mqtt": "^2.18.8",
-    "sha1": "^1.1.1"
+    "sha1": "^1.1.1",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0"
   }
 }
