@@ -16,8 +16,8 @@ The hierarchical view allows for a quick understanding what is going on on your 
 
 The app is available for Windows ({{windowsTargets}}), Linux ({{linuxTargets}}) and Mac ({{macTargets}}).
 
-## Demo
-![screencast](https://user-images.githubusercontent.com/7721625/51978075-5bc0eb00-2489-11e9-953a-0965b154557b.gif)
+## Screenshots
+![screen1](https://user-images.githubusercontent.com/7721625/51770198-6c6a0d80-20e5-11e9-94d5-a0174634253c.png)
 
 ## Download
 
@@ -29,8 +29,8 @@ The app is available for Windows ({{windowsTargets}}), Linux ({{linuxTargets}}) 
 
 [More Downloads](https://github.com/thomasnordquist/MQTT-Explorer/releases)
 
-## Screenshots
-![screen1](https://user-images.githubusercontent.com/7721625/51770198-6c6a0d80-20e5-11e9-94d5-a0174634253c.png)
+## Demo
+![screencast](https://user-images.githubusercontent.com/7721625/51978075-5bc0eb00-2489-11e9-953a-0965b154557b.gif)
 
 ## Performance
 This App is optimized to handle thousands of topics and at least hundreds of thousands messages per minute.
@@ -80,4 +80,4 @@ Example telemetry:
 ```
 
 ## License
-Not yet decided which license exactly, but the basic idea is: "You may do whatever you want with this tool, except sell it."
+[AGPL 3](./LICENSE)

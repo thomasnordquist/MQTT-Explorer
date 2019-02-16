@@ -43,12 +43,13 @@ class App extends React.PureComponent<Props, {}> {
             </div>
             <div>
               <SplitPane
-                step={48}
+                step={20}
                 primary="second"
                 className={`${settingsVisible ? contentShift : content} ${heightProperty}`}
                 split="vertical"
                 minSize={250}
                 defaultSize={500}
+                resizerStyle={{ width: '2px', margin: '0 -10px 0 0px' }}
                 allowResize={true}
                 style={{ position: 'relative' }}
                 pane1Style={{ overflow: 'hidden' }}
