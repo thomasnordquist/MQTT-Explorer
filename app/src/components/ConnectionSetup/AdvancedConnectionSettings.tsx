@@ -54,7 +54,7 @@ class ConnectionSettings extends React.Component<Props, State> {
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.setState({ subscription: event.target.value })}
               />
             </Grid>
-            <Grid xs={2} className={classes.gridPadding}>
+            <Grid item={true} xs={2} className={classes.gridPadding}>
               <Button
                 className={classes.button}
                 color="secondary"

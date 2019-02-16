@@ -1,12 +1,12 @@
-import {
-  ActionTypes,
-  Action,
-} from '../reducers/ConnectionManager'
 import { AppState } from '../reducers'
 import { ConnectionOptions, createEmptyConnection, defaultConnections } from '../model/ConnectionOptions'
 import { default as persistantStorage, StorageIdentifier } from '../PersistantStorage'
 import { Dispatch } from 'redux'
-import { loadLegacyConnectionSettings } from '../model/LegacyConnectionSettings';
+import { loadLegacyConnectionSettings } from '../model/LegacyConnectionSettings'
+import {
+  ActionTypes,
+  Action,
+} from '../reducers/ConnectionManager'
 
 const storedConnectionsIdentifier: StorageIdentifier<{[s: string]: ConnectionOptions}> = {
   id: 'ConnectionManager_connections',
@@ -95,7 +95,7 @@ export function migrateLegacyConfiguration() {
   if (storage) {
     return
   }
-  let connections = loadLegacyConnectionSettings()
+  const connections = loadLegacyConnectionSettings()
   defaultConnections()
 }
 
@@ -106,4 +106,3 @@ export function addDefaultConnections() {
   }
   defaultConnections()
 }
-

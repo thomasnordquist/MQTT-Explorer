@@ -17,7 +17,7 @@ import {
 import AdvancedConnectionSettings from './AdvancedConnectionSettings'
 
 interface Props {
-  actions: typeof connectionManagerActions
+  actions: any
   classes: any
   connection?: ConnectionOptions
   visible: boolean

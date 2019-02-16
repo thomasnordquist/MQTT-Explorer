@@ -23,16 +23,13 @@ export function toMqttConnection(options: ConnectionOptions): MqttOptions | unde
     return
   }
 
-  const a = {
+  return {
     url: `${options.protocol}://${options.host}:${options.port}/${options.basePath || ''}`,
     username: options.username,
     password: options.password,
     tls: options.encryption,
     certValidation: options.certValidation,
   }
-  console.log(a)
-
-  return a
 }
 
 export function generateClienId() {

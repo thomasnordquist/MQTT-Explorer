@@ -7,7 +7,6 @@ import { connectionManagerActions } from '../../actions'
 import { ConnectionOptions } from '../../model/ConnectionOptions'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import {
-  Fab,
   List,
   ListItem,
   ListItemText,
@@ -18,7 +17,7 @@ interface Props {
   classes: any
   selected?: string
   connections: {[s: string]: ConnectionOptions}
-  actions: typeof connectionManagerActions
+  actions: any
 }
 
 class ProfileList extends React.Component<Props, {}> {
@@ -59,7 +58,13 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-const ConnectionItem = connect(null, mapDispatchToProps)((props: {connection: ConnectionOptions, actions: any, selected: boolean}) => {
+interface ConnectionItemProps {
+  connection: ConnectionOptions,
+  actions: any,
+  selected: boolean,
+}
+
+const connectionItemRenderer = (props: ConnectionItemProps) => {
   return (
     <ListItem
       button={true}
@@ -69,7 +74,9 @@ const ConnectionItem = connect(null, mapDispatchToProps)((props: {connection: Co
       <ListItemText primary={props.connection.name} />
     </ListItem>
   )
-})
+}
+
+const ConnectionItem = connect(null, mapDispatchToProps)(connectionItemRenderer)
 
 const mapStateToProps = (state: AppState) => {
   return {
