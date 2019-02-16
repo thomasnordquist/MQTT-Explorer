@@ -11,6 +11,7 @@ import {
   ListItem,
   ListItemText,
   ListSubheader,
+  Typography,
 } from '@material-ui/core'
 
 interface Props {
@@ -71,7 +72,9 @@ const connectionItemRenderer = (props: ConnectionItemProps) => {
       selected={props.selected}
       onClick={() => props.actions.selectConnection(props.connection.id)}
     >
-      <ListItemText primary={props.connection.name} />
+      <Typography style={{ width: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}>
+        {props.connection.name || 'mqtt broker'}
+      </Typography>
     </ListItem>
   )
 }

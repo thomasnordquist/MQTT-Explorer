@@ -83,6 +83,7 @@ const styles = (theme: Theme) => ({
     borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
     paddingTop: `${2 * theme.spacing.unit}px`,
     flex: 3,
+    overflow: 'hidden',
     backgroundColor: theme.palette.background.default,
     color: theme.palette.text.primary,
   },
