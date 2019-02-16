@@ -24,6 +24,7 @@ export interface AppState {
   settings: SettingsState,
   publish: PublishState
   connection: ConnectionState
+  connectionManager: ConnectionManagerState
 }
 
 export interface TooBigOfState {

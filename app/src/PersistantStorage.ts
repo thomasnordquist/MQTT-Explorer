@@ -14,7 +14,6 @@ class LocalStorage implements PersistantStorage {
 
   public load<Model>(identifier: StorageIdentifier<Model>): Model | undefined {
     const data = localStorage.getItem(identifier.id)
-
     return data && JSON.parse(data)
   }
 }

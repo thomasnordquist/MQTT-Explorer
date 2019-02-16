@@ -4,5 +4,6 @@ import * as treeActions from './Tree'
 import * as updateNotifierActions from './UpdateNotifier'
 import * as connectionActions from './Connection'
 import * as sidebarActons from './Sidebar'
+import * as connectionManagerActions from './ConnectionManager'
 
-export { settingsActions, treeActions, publishActions, updateNotifierActions, connectionActions, sidebarActons }
+export { settingsActions, treeActions, publishActions, updateNotifierActions, connectionActions, sidebarActons, connectionManagerActions }

@@ -1,17 +1,22 @@
 import * as React from 'react'
-
-import { AppBar, Button, IconButton, InputBase, Toolbar, Typography } from '@material-ui/core'
-import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
-
+import ClearAdornment from './helper/ClearAdornment'
 import CloudOff from '@material-ui/icons/CloudOff'
 import Menu from '@material-ui/icons/Menu'
 import Search from '@material-ui/icons/Search'
+import {
+  AppBar,
+  Button,
+  IconButton,
+  InputBase,
+  Toolbar,
+  Typography,
+} from '@material-ui/core'
+import { AppState } from '../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { connectionActions, settingsActions } from '../actions'
 import { fade } from '@material-ui/core/styles/colorManipulator'
-import { settingsActions, connectionActions } from '../actions'
-import { AppState } from '../reducers'
-import ClearAdornment from './helper/ClearAdornment'
+import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 
 const styles: StyleRulesCallback = theme => ({
   title: {
