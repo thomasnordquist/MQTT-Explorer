@@ -72,8 +72,9 @@ const styles = (theme: Theme) => ({
     color: theme.palette.text.primary,
   },
   root: {
-    margin: '13vw 10vw 0 10vw',
-    minWidth: '550px',
+    margin: '13vw auto 0 auto',
+    minWidth: '800px',
+    maxWidth: '850px',
     height: '440px',
     outline: 'none' as 'none',
     display: 'flex' as 'flex',

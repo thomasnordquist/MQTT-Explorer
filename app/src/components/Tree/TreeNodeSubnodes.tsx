@@ -105,7 +105,7 @@ const styles = (theme: Theme) => ({
     clear: 'both' as 'both',
   },
   listItem: {
-    padding: '3px 0px 0px 8px',
+    padding: '0px 0px 0px 8px',
   },
 })
 

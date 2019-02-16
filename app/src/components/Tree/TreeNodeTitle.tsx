@@ -27,7 +27,11 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
 
   public render() {
     return (
-      <span className={this.props.classes.title} onMouseOver={this.props.treeNode.message ? this.mouseOver : undefined}>
+      <span
+        className={`${this.props.classes.title} ${this.props.className}`}
+        onMouseOver={this.props.treeNode.message ? this.mouseOver : undefined}
+        style={this.props.style}
+      >
         {this.renderExpander()} {this.renderSourceEdge()} {this.renderCollapsedSubnodes()} {this.renderValue()}
       </span>
     )
@@ -69,17 +73,21 @@ const styles = (theme: Theme) => ({
     overflow: 'hidden' as 'hidden',
     textOverflow: 'ellipsis' as 'ellipsis',
     padding: '0',
-    marginLeft: '5px',
-    display: 'inline-block' as 'inline-block',
+    // display: 'inline-block' as 'inline-block',
   },
   sourceEdge: {
     fontWeight: 'bold' as 'bold',
     overflow: 'hidden' as 'hidden',
-    display: 'inline-block' as 'inline-block',
+    // display: 'inline-block' as 'inline-block',
   },
   title: {
+    borderRadius: '4px',
     lineHeight: '1em',
+    display: 'inline-block' as 'inline-block',
     whiteSpace: 'nowrap' as 'nowrap',
+    padding: '2px 4px 0px 4px',
+    height: '16px',
+    margin: '1px 0px 2px 0px',
   },
   collapsedSubnodes: {
     color: theme.palette.text.secondary,

@@ -30,10 +30,10 @@ const styles = (theme: Theme) => {
       marginTop: '-1px',
     },
     selected: {
-      backgroundColor: 'rgba(120, 120, 120, 0.55)',
+      backgroundColor: 'rgba(200, 200, 200, 0.55)',
     },
     hover: {
-      backgroundColor: 'rgba(80, 80, 80, 0.55)',
+      backgroundColor: 'rgba(100, 100, 100, 0.55)',
     },
   }
 }
@@ -187,23 +187,24 @@ class TreeNode extends React.Component<Props, State> {
     this.animationDirty = shouldStartAnimation
 
     const highlightClass = this.state.selected ? this.props.classes.selected : (this.state.mouseOver ? this.props.classes.hover : '')
+
     return (
       <div
         key={this.props.treeNode.hash()}
-        className={`${classes.node} ${this.props.className} ${highlightClass}`}
+        className={`${classes.node} ${this.props.className}`}
         onClick={this.didClickNode}
         onMouseOver={this.mouseOver}
         onMouseOut={this.mouseOut}
         ref={this.nodeRef}
       >
-        <span ref={this.titleRef} style={animation}>
-          <TreeNodeTitle
-            collapsed={this.collapsed()}
-            treeNode={this.props.treeNode}
-            name={this.props.name}
-            didSelectNode={this.didSelectTopic}
-          />
-        </span>
+        <TreeNodeTitle
+          style={animation}
+          collapsed={this.collapsed()}
+          treeNode={this.props.treeNode}
+          name={this.props.name}
+          didSelectNode={this.didSelectTopic}
+          className={highlightClass}
+        />
         {this.renderNodes()}
       </div>
     )
