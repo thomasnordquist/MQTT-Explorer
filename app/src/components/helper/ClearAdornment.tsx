@@ -8,6 +8,9 @@ interface Props {
   style?: React.CSSProperties
 }
 
+/**
+ * Clear button for text input fields
+ */
 class ClearAdornment extends React.Component<Props, {}> {
   public render() {
     if (this.props.value) {

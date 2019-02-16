@@ -5,6 +5,7 @@ import { PublishState, publishReducer } from './Publish'
 import { ConnectionState, connectionReducer } from './Connection'
 import { SettingsState, settingsReducer } from './Settings'
 import { TreeState, treeReducer } from './Tree'
+import { ConnectionManagerState, connectionManagerReducer } from './ConnectionManager'
 
 export enum ActionTypes {
   showUpdateNotification = 'SHOW_UPDATE_NOTIFICATION',
@@ -23,6 +24,7 @@ export interface AppState {
   settings: SettingsState,
   publish: PublishState
   connection: ConnectionState
+  connectionManager: ConnectionManagerState
 }
 
 export interface TooBigOfState {
@@ -67,6 +69,7 @@ const reducer = combineReducers({
   connection: connectionReducer,
   settings: settingsReducer,
   tree: treeReducer,
+  connectionManager: connectionManagerReducer,
 })
 
 export default reducer

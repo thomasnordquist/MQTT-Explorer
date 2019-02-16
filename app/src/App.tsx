@@ -1,19 +1,17 @@
 import * as React from 'react'
-import * as q from '../../backend/src/Model'
-
-import { Theme, withStyles } from '@material-ui/core/styles'
-
-import { AppState } from './reducers'
-import Connection from './components/ConnectionSetup/Connection'
+import ConnectionSetup from './components/ConnectionSetup/ConnectionSetup'
 import CssBaseline from '@material-ui/core/CssBaseline'
-const Settings = React.lazy(() => import('./components/Settings'))
+import ErrorBoundary from './ErrorBoundary'
 import Sidebar from './components/Sidebar/Sidebar'
 import TitleBar from './components/TitleBar'
 import Tree from './components/Tree/Tree'
 import UpdateNotifier from './UpdateNotifier'
+import { AppState } from './reducers'
 import { connect } from 'react-redux'
-import ErrorBoundary from './ErrorBoundary'
 import { default as SplitPane } from 'react-split-pane'
+import { Theme, withStyles } from '@material-ui/core/styles'
+
+const Settings = React.lazy(() => import('./components/Settings'))
 
 interface Props {
   name: string
@@ -66,7 +64,7 @@ class App extends React.PureComponent<Props, {}> {
             </div>
           </div>
           <UpdateNotifier />
-          <Connection />
+          <ConnectionSetup />
         </ErrorBoundary>
       </div >
     )
