@@ -55,28 +55,28 @@ export function createEmptyConnection(): ConnectionOptions {
 }
 
 export function defaultConnections() {
-  return [
-    {
+  return {
+    'iot.eclipse.org': {
       ...createEmptyConnection(),
       id: 'iot.eclipse.org',
       name: 'iot.eclipse.org',
       host: 'iot.eclipse.org',
     },
-    {
+    'test.mosquitto.org': {
       ...createEmptyConnection(),
       id: 'test.mosquitto.org',
       name: 'test.mosquitto.org',
       host: 'test.mosquitto.org',
     },
-    {
+    'broker.hivemq.com:8000': {
       ...createEmptyConnection(),
-      id: 'wss://broker.hivemq.com:8000/mqtt',
+      id: 'broker.hivemq.com:8000',
       name: 'broker.hivemq.com',
       host: 'broker.hivemq.com',
-      basePath: 'mqtt',
+      basePath: 'ws',
       encryption: true,
       protocol: 'ws',
       port: 8000,
     },
-  ]
+  }
 }

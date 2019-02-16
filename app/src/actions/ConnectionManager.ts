@@ -13,6 +13,12 @@ const storedConnectionsIdentifier: StorageIdentifier<{[s: string]: ConnectionOpt
 }
 
 export const loadConnectionSettings = () => (dispatch: Dispatch<any>, getState: () => AppState) => {
+  const requiresMigration = true
+  if (requiresMigration) {
+    const connections = defaultConnections()
+    persistantStorage.store(storedConnectionsIdentifier, connections)
+  }
+
   const connections = persistantStorage.load(storedConnectionsIdentifier)
   if (!connections) {
     return
