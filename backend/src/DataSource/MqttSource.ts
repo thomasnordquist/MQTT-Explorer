@@ -11,13 +11,13 @@ export interface MqttOptions {
   tls: boolean
   certValidation: boolean
   clientId?: string
+  subscriptions: string[]
 }
 
 export class MqttSource implements DataSource<MqttOptions> {
   public stateMachine: DataSourceStateMachine = new DataSourceStateMachine()
   private client: Client | undefined
   private messageCallback?: (topic: string, message: Buffer, packet: any) => void
-  private rootSubscription = '#'
   public topicSeparator = '/'
 
   public onMessage(messageCallback: (topic: string, message: Buffer, packet: any) => void) {
@@ -61,15 +61,12 @@ export class MqttSource implements DataSource<MqttOptions> {
 
     client.on('connect', () => {
       this.stateMachine.setConnected(true)
-      client.subscribe(this.rootSubscription, (err: Error) => {
-        if (err) {
-          this.stateMachine.setError(err)
-        }
-      })
-      client.subscribe('$SYS/#', (err: Error) => {
-        if (err) {
-          console.error('failed to subscribe to sys topic', err)
-        }
+      options.subscriptions.forEach((subscription) => {
+        client.subscribe(subscription, (err: Error) => {
+          if (err) {
+            this.stateMachine.setError(err)
+          }
+        })
       })
     })
 

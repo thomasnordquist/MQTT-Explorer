@@ -29,6 +29,7 @@ export function toMqttConnection(options: ConnectionOptions): MqttOptions | unde
     password: options.password,
     tls: options.encryption,
     certValidation: options.certValidation,
+    subscriptions: options.subscriptions,
   }
 }
 
@@ -46,7 +47,7 @@ export function createEmptyConnection(): ConnectionOptions {
     encryption: false,
     password: undefined,
     username: undefined,
-    subscriptions: ['#', '$SYS'],
+    subscriptions: ['#', '$SYS/#'],
     type: 'mqtt',
     host: '',
     port: 1883,
