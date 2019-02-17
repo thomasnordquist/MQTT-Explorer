@@ -5,12 +5,12 @@ import { Theme, withStyles } from '@material-ui/core/styles'
 
 const styles = (theme: Theme) => ({
   addButton: {
-    height: `${theme.spacing.unit * 4}px`,
-    width: `${theme.spacing.unit * 4}px`,
+    height: theme.spacing(4),
+    width: theme.spacing(4),
     minHeight: '0',
   },
   addIcon: {
-    height: `${theme.spacing.unit * 2}px`,
+    height: theme.spacing(2),
   },
 })
 

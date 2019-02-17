@@ -89,7 +89,7 @@ const styles = (theme: Theme) => ({
     maxWidth: 650,
     backgroundColor: theme.palette.background.default,
     margin: '10vh auto auto auto',
-    padding: `${2 * theme.spacing.unit}px`,
+    padding: theme.spacing(2),
     outline: 'none',
   },
   title: {
@@ -105,7 +105,7 @@ const styles = (theme: Theme) => ({
   },
   buttonPositioning: {
     textAlign: 'center' as 'center',
-    marginTop: `${theme.spacing.unit * 2}px`,
+    marginTop: theme.spacing(2),
   },
 })
 

@@ -47,12 +47,12 @@ const styles: StyleRulesCallback = theme => ({
   },
   title: {
     color: theme.palette.text.primary,
-    paddingTop: `${theme.spacing.unit}px`,
+    paddingTop: theme.spacing(1),
     ...theme.mixins.toolbar,
   },
   input: {
     minWidth: '150px',
-    margin: `auto ${theme.spacing.unit}px auto ${2 * theme.spacing.unit}px`,
+    margin: `auto ${theme.spacing(1)} auto ${theme.spacing(2)}px`,
   },
 })
 

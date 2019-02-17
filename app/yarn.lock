@@ -21,18 +21,18 @@
   resolved "https://registry.yarnpkg.com/@emotion/hash/-/hash-0.7.1.tgz#9833722341379fb7d67f06a4b00ab3c37913da53"
   integrity sha512-OYpa/Sg+2GDX+jibUfpZVn1YqSVRpYmTLF2eyAfrFTIJSbwyIrc+YscayoykvaOME/wV4BV0Sa0yqdMrgse6mA==
 
-"@material-ui/core@^3.9.0":
-  version "3.9.1"
-  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-3.9.1.tgz#994fa54f0936092556d231d1055b8f76b12be06e"
-  integrity sha512-26GtjuwxPPfSsUnYrTOC8zuCuhWPVhc4SsUSFTZq0n1QvpGi9UEZRFe8yp6FykQE+PmqyyY+eWdrfiXKSUKZ0w==
+"@material-ui/core@^4.0.0-alpha.0":
+  version "4.0.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.0.0-alpha.0.tgz#7342e6c672d2351a7657af9b92fe7a5411b7dd00"
+  integrity sha512-2bg325ZdSLRHbHMluoXvUzrnLu6WwMyiSfQhDZtwlpaFgWRZSwGskWQLGxNp/O9Lwu/SMYA2A0YHJtaMbvKqFw==
   dependencies:
     "@babel/runtime" "^7.2.0"
-    "@material-ui/system" "^3.0.0-alpha.0"
-    "@material-ui/utils" "^3.0.0-alpha.2"
+    "@material-ui/system" "^4.0.0-alpha.0"
+    "@material-ui/utils" "^4.0.0-alpha.0"
     "@types/jss" "^9.5.6"
     "@types/react-transition-group" "^2.0.8"
     brcast "^3.0.1"
-    classnames "^2.2.5"
+    clsx "^1.0.2"
     csstype "^2.5.2"
     debounce "^1.1.0"
     deepmerge "^3.0.0"
@@ -51,7 +51,6 @@
     prop-types "^15.6.0"
     react-event-listener "^0.6.2"
     react-transition-group "^2.2.1"
-    recompose "0.28.0 - 0.30.0"
     warning "^4.0.1"
 
 "@material-ui/icons@^3.0.1":
@@ -84,10 +83,10 @@
     prop-types "^15.6.0"
     warning "^4.0.1"
 
-"@material-ui/system@^3.0.0-alpha.0":
-  version "3.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@material-ui/system/-/system-3.0.0-alpha.2.tgz#096e80c8bb0f70aea435b9e38ea7749ee77b4e46"
-  integrity sha512-odmxQ0peKpP7RQBQ8koly06YhsPzcoVib1vByVPBH4QhwqBXuYoqlCjt02846fYspAqkrWzjxnWUD311EBbxOA==
+"@material-ui/system@^4.0.0-alpha.0":
+  version "4.0.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@material-ui/system/-/system-4.0.0-alpha.0.tgz#9972a797f04e1b96b84ad462243086fe89038f73"
+  integrity sha512-qJLLx+rBmj1AsnuOLja9eN0x/ajZWM6FgCUVV08ecQ2FHEb+TT5QK6b+Lcw5TNnHxakGC8wkmUkIYafwcqGA5g==
   dependencies:
     "@babel/runtime" "^7.2.0"
     deepmerge "^3.0.0"
@@ -102,6 +101,15 @@
     "@babel/runtime" "^7.2.0"
     prop-types "^15.6.0"
     react-is "^16.6.3"
+
+"@material-ui/utils@^4.0.0-alpha.0":
+  version "4.0.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@material-ui/utils/-/utils-4.0.0-alpha.0.tgz#b8ed6953ae07d36856a5867ffe759bc0e08147b4"
+  integrity sha512-w8zSXDuAyS0J5Z8mnU0+HgFf+GP3vGno8wecHT011DM7P3ZoS/2ngU2SqJGwRxuNk7N65tWX1h8NKvoevDPUyQ==
+  dependencies:
+    "@babel/runtime" "^7.2.0"
+    prop-types "^15.6.0"
+    react-is "^16.8.0"
 
 "@types/jss@^9.5.6":
   version "9.5.7"
@@ -1023,6 +1031,11 @@ cliui@^4.0.0:
     string-width "^2.1.1"
     strip-ansi "^4.0.0"
     wrap-ansi "^2.0.0"
+
+clsx@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.0.2.tgz#2e0d63a900d7fe33218d7a53dee9e3a0c7300e1d"
+  integrity sha512-NQZV7ri2Gfufu9q1P9JDV4MHhdJvUukOadjAoN12pK37P12nrYp/mC05BSoekv0KX/5hGHAe2WQeOlhaWhXC5Q==
 
 code-point-at@^1.0.0:
   version "1.1.0"
@@ -4492,6 +4505,11 @@ react-is@^16.6.3, react-is@^16.7.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.7.0.tgz#c1bd21c64f1f1364c6f70695ec02d69392f41bfa"
   integrity sha512-Z0VRQdF4NPDoI0tsXVMLkJLiwEBa+RP66g0xDHxgxysxSoCUccSten4RTF/UFvZF1dZvZ9Zu1sx+MDXwcOR34g==
 
+react-is@^16.8.0:
+  version "16.8.2"
+  resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.2.tgz#09891d324cad1cb0c1f2d91f70a71a4bee34df0f"
+  integrity sha512-D+NxhSR2HUCjYky1q1DwpNUD44cDpUXzSmmFyC3ug1bClcU/iDNy0YNn1iwme28fn+NFhpA13IndOd42CrFb+Q==
+
 react-json-view@^1.19.1:
   version "1.19.1"
   resolved "https://registry.yarnpkg.com/react-json-view/-/react-json-view-1.19.1.tgz#95d8e59e024f08a25e5dc8f076ae304eed97cf5c"
@@ -4597,6 +4615,16 @@ react-vis@^1.11.6:
     prop-types "^15.5.8"
     react-motion "^0.5.2"
 
+react@16.8:
+  version "16.8.2"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.8.2.tgz#83064596feaa98d9c2857c4deae1848b542c9c0c"
+  integrity sha512-aB2ctx9uQ9vo09HVknqv3DGRpI7OIGJhCx3Bt0QqoRluEjHSaObJl+nG12GDdYH6sTgE7YiPJ6ZUyMx9kICdXw==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.2"
+    scheduler "^0.13.2"
+
 react@^16.6.3:
   version "16.7.0"
   resolved "https://registry.yarnpkg.com/react/-/react-16.7.0.tgz#b674ec396b0a5715873b350446f7ea0802ab6381"
@@ -4606,16 +4634,6 @@ react@^16.6.3:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.12.0"
-
-react@^16.8.0-alpha.1:
-  version "16.8.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.8.0-alpha.1.tgz#c2b32689f3b466d3ce85a634dd9035f789d2cd97"
-  integrity sha512-vLwwnhM2dXrCsiQmcSxF2UdZVV5xsiXjK5Yetmy8dVqngJhQ3aw3YJhZN/YmyonxwdimH40wVqFQfsl4gSu2RA==
-  dependencies:
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-    prop-types "^15.6.2"
-    scheduler "^0.13.0-alpha.1"
 
 "readable-stream@1 || 2", readable-stream@^2.0.0, readable-stream@^2.0.1, readable-stream@^2.0.2, readable-stream@^2.0.4, readable-stream@^2.0.6, readable-stream@^2.1.5, readable-stream@^2.2.2, readable-stream@^2.3.3, readable-stream@^2.3.6, readable-stream@~2.3.6:
   version "2.3.6"
@@ -4886,10 +4904,10 @@ scheduler@^0.12.0:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
 
-scheduler@^0.13.0-alpha.1:
-  version "0.13.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.13.0-alpha.1.tgz#753977fb4fb35d8cdd559868a11e46b640955556"
-  integrity sha512-W0sH0848sVuPKg+I18vTYQyzVtA4X1lrVgSeXK6KnOPUltFdJcY5nkbTkjGUeS/E0x+eBsNYfSdhJtGjT95njw==
+scheduler@^0.13.2:
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.13.2.tgz#969eaee2764a51d2e97b20a60963b2546beff8fa"
+  integrity sha512-qK5P8tHS7vdEMCW5IPyt8v9MJOHqTrOUgPXib7tqm9vh834ibBX5BNhwkplX/0iOzHW5sXyluehYfS9yrkz9+w==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"

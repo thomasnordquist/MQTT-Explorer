@@ -45,7 +45,7 @@ class ConnectionSettings extends React.Component<Props, State> {
     return (
       <div>
         <form className={classes.container} noValidate={true} autoComplete="off">
-          <Grid container={true} spacing={24}>
+          <Grid container={true} spacing={3}>
             <Grid item={true} xs={10} className={classes.gridPadding}>
               <TextField
                 className={classes.fullWidth}
@@ -145,7 +145,7 @@ const styles: StyleRulesCallback<string> = (theme: Theme) => {
       backgroundColor: theme.palette.background.default,
     },
     button: {
-      marginTop: `${theme.spacing.unit * 3 + 2}px`,
+      marginTop: theme.spacing(3),
       float: 'right',
     },
   }

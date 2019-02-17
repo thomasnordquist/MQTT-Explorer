@@ -230,7 +230,7 @@ const styles: StyleRulesCallback<string> = (theme: Theme) => {
       height: '100%',
     },
     valuePaper: {
-      margin: `${theme.spacing.unit}px ${theme.spacing.unit}px ${theme.spacing.unit}px ${theme.spacing.unit}px`,
+      margin: theme.spacing(1),
     },
     heading: {
       fontSize: theme.typography.pxToRem(15),

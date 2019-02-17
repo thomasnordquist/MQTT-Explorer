@@ -232,14 +232,14 @@ const styles = (theme: Theme) => ({
     color: theme.typography.button.color,
   },
   close: {
-    padding: theme.spacing.unit / 2,
+    padding: '4px',
   },
   root: {
     minWidth: '350px',
     maxWidth: '500px',
     backgroundColor: theme.palette.background.default,
     margin: '20vh auto auto auto',
-    padding: `${2 * theme.spacing.unit}px`,
+    padding: theme.spacing(2),
     outline: 'none',
   },
   title: {
@@ -252,7 +252,7 @@ const styles = (theme: Theme) => ({
     maxHeight: '28vh',
   },
   paper: {
-    padding: `${theme.spacing.unit * 2}px`,
+    padding: theme.spacing(2),
     color: theme.palette.text.secondary,
   },
   download: {

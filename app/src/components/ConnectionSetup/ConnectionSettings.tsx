@@ -120,7 +120,7 @@ class ConnectionSettings extends React.Component<Props, State> {
       <div>
         {renderError}
         <form className={classes.container} noValidate={true} autoComplete="off">
-          <Grid container={true} spacing={24}>
+          <Grid container={true} spacing={3}>
             <Grid item={true} xs={5}>
               <TextField
                 label="Name"
@@ -344,7 +344,7 @@ const styles: StyleRulesCallback<string> = (theme: Theme) => {
       marginTop: 0,
     },
     button: {
-      margin: theme.spacing.unit,
+      margin: theme.spacing(1),
     },
     inputFormControl: {
       marginTop: '16px',

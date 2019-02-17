@@ -87,7 +87,7 @@ const styles = (theme: Theme) => ({
   left: {
     borderRightStyle: 'dotted' as 'dotted',
     borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
-    paddingTop: `${2 * theme.spacing.unit}px`,
+    paddingTop: theme.spacing(2),
     flex: 3,
     overflow: 'hidden',
     backgroundColor: theme.palette.background.default,
@@ -96,7 +96,7 @@ const styles = (theme: Theme) => ({
   right: {
     borderRadius: `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0`,
     backgroundColor: theme.palette.background.paper,
-    padding: `${2 * theme.spacing.unit}px`,
+    padding: theme.spacing(2),
     flex: 10,
   },
   connectionUri: {
@@ -106,7 +106,7 @@ const styles = (theme: Theme) => ({
     overflow: 'hidden' as 'hidden',
     color: theme.palette.text.hint,
     fontSize: '0.9em',
-    marginLeft: '24px',
+    marginLeft: theme.spacing(4),
   },
 })
 
