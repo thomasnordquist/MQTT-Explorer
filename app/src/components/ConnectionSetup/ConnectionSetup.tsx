@@ -41,7 +41,7 @@ class ConnectionSetup extends React.Component<Props, {}> {
         <Modal open={visible} disableAutoFocus={true}>
           <Paper className={classes.root}>
             <div className={classes.left}><ProfileList /></div>
-            <div className={classes.right}>
+            <div className={classes.right} key={connection && connection.id}>
               <Toolbar>
                 <Typography className={classes.title} variant="h6" color="inherit">MQTT Connection</Typography>
                 <Typography className={classes.connectionUri}>
