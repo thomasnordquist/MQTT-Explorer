@@ -5,7 +5,7 @@ import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
-import { ConnectionOptions } from '../../model/ConnectionOptions'
+import { ConnectionOptions, toMqttConnection } from '../../model/ConnectionOptions'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import {
   Modal,
@@ -34,7 +34,8 @@ class ConnectionSetup extends React.Component<Props, {}> {
   }
 
   public render() {
-    const { classes, visible } = this.props
+    const { classes, visible, connection } = this.props
+    const mqttConnection = connection && toMqttConnection(connection)
     return (
       <div>
         <Modal open={visible} disableAutoFocus={true}>
@@ -43,6 +44,9 @@ class ConnectionSetup extends React.Component<Props, {}> {
             <div className={classes.right}>
               <Toolbar>
                 <Typography className={classes.title} variant="h6" color="inherit">MQTT Connection</Typography>
+                <Typography className={classes.connectionUri}>
+                  {mqttConnection && mqttConnection.url}
+                </Typography>
               </Toolbar>
               {this.renderSettings()}
             </div>
@@ -70,6 +74,7 @@ class ConnectionSetup extends React.Component<Props, {}> {
 const styles = (theme: Theme) => ({
   title: {
     color: theme.palette.text.primary,
+    whiteSpace: 'nowrap' as 'nowrap',
   },
   root: {
     margin: '13vw auto 0 auto',
@@ -93,6 +98,15 @@ const styles = (theme: Theme) => ({
     backgroundColor: theme.palette.background.paper,
     padding: `${2 * theme.spacing.unit}px`,
     flex: 10,
+  },
+  connectionUri: {
+    width: '27em',
+    textOverflow: 'ellipsis' as 'ellipsis',
+    whiteSpace: 'nowrap' as 'nowrap',
+    overflow: 'hidden' as 'hidden',
+    color: theme.palette.text.hint,
+    fontSize: '0.9em',
+    marginLeft: '24px',
   },
 })
 

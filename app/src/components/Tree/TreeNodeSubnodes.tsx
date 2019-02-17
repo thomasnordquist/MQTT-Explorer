@@ -1,10 +1,7 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 
-import { AppState } from '../../reducers'
-
 import TreeNode from './TreeNode'
-import { connect } from 'react-redux'
 import { TopicOrder } from '../../reducers/Settings'
 import { Theme, withStyles } from '@material-ui/core'
 import { TopicViewModel } from '../../TopicViewModel'

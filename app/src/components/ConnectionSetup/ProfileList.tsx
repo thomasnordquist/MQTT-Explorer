@@ -4,12 +4,11 @@ import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
-import { ConnectionOptions } from '../../model/ConnectionOptions'
+import { ConnectionOptions, toMqttConnection } from '../../model/ConnectionOptions'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import {
   List,
   ListItem,
-  ListItemText,
   ListSubheader,
   Typography,
 } from '@material-ui/core'
@@ -63,21 +62,44 @@ interface ConnectionItemProps {
   connection: ConnectionOptions,
   actions: any,
   selected: boolean,
+  classes: any
 }
 
-const connectionItemRenderer = (props: ConnectionItemProps) => {
+const connectionItemStyle = (theme: Theme) => ({
+  name: {
+    width: '100%',
+    textOverflow: 'ellipsis' as 'ellipsis',
+    whiteSpace: 'nowrap' as 'nowrap',
+    overflow: 'hidden' as 'hidden',
+  },
+  details: {
+    width: '100%',
+    textOverflow: 'ellipsis' as 'ellipsis',
+    whiteSpace: 'nowrap' as 'nowrap',
+    overflow: 'hidden' as 'hidden',
+    color: theme.palette.text.hint,
+    fontSize: '0.7em',
+  },
+})
+
+const connectionItemRenderer = withStyles(connectionItemStyle)((props: ConnectionItemProps) => {
+  const connection = props.connection.host && toMqttConnection(props.connection)
   return (
     <ListItem
       button={true}
       selected={props.selected}
+      style={{ display: 'block' }}
       onClick={() => props.actions.selectConnection(props.connection.id)}
     >
-      <Typography style={{ width: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}>
+      <Typography className={props.classes.name}>
         {props.connection.name || 'mqtt broker'}
+      </Typography>
+      <Typography className={props.classes.details}>
+        { connection && connection.url }
       </Typography>
     </ListItem>
   )
-}
+})
 
 const ConnectionItem = connect(null, mapDispatchToProps)(connectionItemRenderer)
 

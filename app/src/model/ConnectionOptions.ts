@@ -6,7 +6,7 @@ export interface ConnectionOptions {
   type: 'mqtt'
   id: string
   host: string
-  protocol: 'mqtt' | 'ws' | 'wss'
+  protocol: 'mqtt' | 'ws'
   basePath?: string
   port: number
   name: string
