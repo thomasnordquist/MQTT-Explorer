@@ -68,7 +68,6 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
     }
 
     if (this.state.alreadyAdded < edges.length) {
-      const delta = Math.min(this.state.alreadyAdded, edges.length - this.state.alreadyAdded)
       this.renderMore()
     }
 
@@ -102,7 +101,7 @@ const styles = (theme: Theme) => ({
     clear: 'both' as 'both',
   },
   listItem: {
-    padding: '0px 0px 0px 8px',
+    padding: `0px 0px 0px ${theme.spacing.unit}px`,
   },
 })
 
