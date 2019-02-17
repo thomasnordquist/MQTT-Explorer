@@ -79,6 +79,9 @@ const styles = (theme: Theme) => ({
     fontWeight: 'bold' as 'bold',
     overflow: 'hidden' as 'hidden',
   },
+  expander: {
+    color: theme.palette.type === 'light' ? '#222' : '#eee',
+  },
   title: {
     borderRadius: '4px',
     lineHeight: '1em',
