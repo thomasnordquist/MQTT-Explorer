@@ -26,7 +26,7 @@ class ProfileList extends React.Component<Props, {}> {
   }
 
   private addConnectionButton() {
-    return <AddButton action={this.props.actions.createConnection} />
+    return <span id="addProfileButton" style={{ marginRight: '12px' }}><AddButton action={this.props.actions.createConnection} /></span>
   }
 
   public render() {
@@ -34,7 +34,7 @@ class ProfileList extends React.Component<Props, {}> {
       <List
         style={{ height: '100%' }}
         component="nav"
-        subheader={<ListSubheader component="div">{this.addConnectionButton()} Connections</ListSubheader>}
+        subheader={<ListSubheader component="div">{this.addConnectionButton()}Connections</ListSubheader>}
       >
         <div className={this.props.classes.list}>
           {Object.values(this.props.connections).map(connection => <ConnectionItem connection={connection} key={connection.id} selected={this.props.selected === connection.id} />)}
@@ -95,7 +95,7 @@ const connectionItemRenderer = withStyles(connectionItemStyle)((props: Connectio
         {props.connection.name || 'mqtt broker'}
       </Typography>
       <Typography className={props.classes.details}>
-        { connection && connection.url }
+        {connection && connection.url}
       </Typography>
     </ListItem>
   )
