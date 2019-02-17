@@ -69,15 +69,5 @@ export function defaultConnections() {
       name: 'test.mosquitto.org',
       host: 'test.mosquitto.org',
     },
-    'broker.hivemq.com:8000': {
-      ...createEmptyConnection(),
-      id: 'broker.hivemq.com:8000',
-      name: 'broker.hivemq.com',
-      host: 'broker.hivemq.com',
-      basePath: 'ws',
-      encryption: true,
-      protocol: 'ws',
-      port: 8000,
-    },
   }
 }
