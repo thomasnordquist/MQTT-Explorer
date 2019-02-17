@@ -55,7 +55,7 @@ export function createEmptyConnection(): ConnectionOptions {
   }
 }
 
-export function defaultConnections() {
+export function makeDefaultConnections() {
   return {
     'iot.eclipse.org': {
       ...createEmptyConnection(),

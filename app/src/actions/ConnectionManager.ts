@@ -2,7 +2,7 @@ import { AppState } from '../reducers'
 import { ConnectionOptions, createEmptyConnection, makeDefaultConnections } from '../model/ConnectionOptions'
 import { default as persistantStorage, StorageIdentifier } from '../PersistantStorage'
 import { Dispatch } from 'redux'
-import { loadLegacyConnectionOptions } from '../model/LegacyConnectionSettings'
+import { loadLegacyConnectionOptions, clearLegacyConnectionOptions } from '../model/LegacyConnectionSettings'
 import {
   ActionTypes,
   Action,
@@ -92,17 +92,18 @@ export const deleteConnection = (connectionId: string) => (dispatch: Dispatch<an
   }
 }
 
-export function ensureConnectionsHaveBeenInitialized() {
+function ensureConnectionsHaveBeenInitialized() {
   const connections = persistantStorage.load(storedConnectionsIdentifier)
 
   const requiresInitialization = !connections
   if (requiresInitialization) {
-    console.log('requires initialization')
     const migratedConnection = loadLegacyConnectionOptions()
     const defaultConnections = makeDefaultConnections()
     persistantStorage.store(storedConnectionsIdentifier, {
       ...migratedConnection,
       ...defaultConnections,
     })
+
+    clearLegacyConnectionOptions()
   }
 }
