@@ -1,7 +1,6 @@
 import * as React from 'react'
 import Delete from '@material-ui/icons/Delete'
 import Settings from '@material-ui/icons/Settings'
-import Notification from './Notification'
 import PowerSettingsNew from '@material-ui/icons/PowerSettingsNew'
 import Save from '@material-ui/icons/Save'
 import Visibility from '@material-ui/icons/Visibility'
@@ -35,7 +34,6 @@ interface Props {
   managerActions: typeof connectionManagerActions
   connected: boolean
   connecting: boolean
-  error?: string
 }
 
 const protocols = [
@@ -106,19 +104,8 @@ class ConnectionSettings extends React.Component<Props, State> {
       </InputAdornment>
     )
 
-    let renderError = null
-    if (this.props.error) {
-      renderError = (
-        <Notification
-          message={this.props.error}
-          onClose={() => { this.props.actions.showError(undefined) }}
-        />
-      )
-    }
-
     return (
       <div>
-        {renderError}
         <form className={classes.container} noValidate={true} autoComplete="off">
           <Grid container={true} spacing={3}>
             <Grid item={true} xs={5}>
@@ -324,7 +311,6 @@ const mapStateToProps = (state: AppState) => {
   return {
     connected: state.connection.connected,
     connecting: state.connection.connecting,
-    error: state.connection.error,
   }
 }
 

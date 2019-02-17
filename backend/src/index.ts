@@ -80,6 +80,3 @@ class UpdateNotifier {
 }
 
 export const updateNotifier = new UpdateNotifier()
-
-const configStorage = new ConfigStorage('blah.json')
-configStorage.init()

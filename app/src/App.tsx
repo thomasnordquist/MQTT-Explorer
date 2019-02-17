@@ -2,13 +2,16 @@ import * as React from 'react'
 import ConnectionSetup from './components/ConnectionSetup/ConnectionSetup'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import ErrorBoundary from './ErrorBoundary'
+import Notification from './components/Notification'
 import Sidebar from './components/Sidebar/Sidebar'
 import TitleBar from './components/TitleBar'
 import Tree from './components/Tree/Tree'
 import UpdateNotifier from './UpdateNotifier'
 import { AppState } from './reducers'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { default as SplitPane } from 'react-split-pane'
+import { globalActions } from './actions'
 import { Theme, withStyles } from '@material-ui/core/styles'
 
 const Settings = React.lazy(() => import('./components/Settings'))
@@ -18,12 +21,26 @@ interface Props {
   connectionId: string
   classes: any
   settingsVisible: boolean
+  error?: string
+  actions: any
 }
 
 class App extends React.PureComponent<Props, {}> {
   constructor(props: any) {
     super(props)
     this.state = { }
+  }
+
+  private renderError() {
+    if (this.props.error) {
+      const error = typeof this.props.error === 'string' ? this.props.error : JSON.stringify(this.props.error)
+      return (
+        <Notification
+          message={error}
+          onClose={() => { this.props.actions.showError(undefined) }}
+        />
+      )
+    }
   }
 
   public render() {
@@ -34,6 +51,7 @@ class App extends React.PureComponent<Props, {}> {
       <div className={centerContent}>
         <CssBaseline />
         <ErrorBoundary>
+          {this.renderError()}
           <React.Suspense fallback={<div>Loading...</div>}>
             <Settings />
           </React.Suspense>
@@ -75,6 +93,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     settingsVisible: state.settings.visible,
     connectionId: state.connection.connectionId,
+    error: state.globalState.error,
   }
 }
 
@@ -120,4 +139,10 @@ const styles = (theme: Theme) => {
   }
 }
 
-export default withStyles(styles)(connect(mapStateToProps)(App))
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: bindActionCreators(globalActions, dispatch),
+  }
+}
+
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(App))

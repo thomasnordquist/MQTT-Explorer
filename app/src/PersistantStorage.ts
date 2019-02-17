@@ -30,8 +30,13 @@ class RemoteStorage implements PersistantStorage {
   private expectAck(transactionId: string): Promise<void> {
     const ack = makeStorageAcknoledgementEvent(transactionId)
     return new Promise<void>((resolve, reject) => {
-      const callback = () => {
-        resolve()
+      const callback = (msg: any) => {
+        console.log(msg)
+        if (msg && msg.error) {
+          reject(msg.error)
+        } else {
+          resolve()
+        }
         rendererEvents.unsubscribe(ack, callback)
       }
       rendererEvents.subscribe(ack, callback)
@@ -52,8 +57,13 @@ class RemoteStorage implements PersistantStorage {
 
     const promise = new Promise<Model>((resolve, reject) => {
       const callback = (msg: any) => {
-        const data = msg.data && JSON.parse(msg.data)
-        resolve(data)
+        console.log(msg)
+
+        if (msg.error) {
+          reject(msg.error)
+        } else {
+          resolve(msg.data)
+        }
         rendererEvents.unsubscribe(responseEvent, callback)
       }
       rendererEvents.subscribe(responseEvent, callback)

@@ -12,6 +12,7 @@ import { Dispatch } from 'redux'
 import { MqttOptions } from '../../../backend/src/DataSource'
 import { showTree } from './Tree'
 import { TopicViewModel } from '../TopicViewModel'
+import { showError } from './Global'
 
 export const connect = (options: MqttOptions, connectionId: string) => (dispatch: Dispatch<any>, getState: () => AppState) => {
   dispatch(connecting(connectionId))
@@ -42,11 +43,6 @@ export const connected: (tree: q.Tree<TopicViewModel>, host: string) => Action =
 export const connecting: (connectionId: string) => Action = (connectionId: string)  => ({
   connectionId,
   type: ActionTypes.CONNECTION_SET_CONNECTING,
-})
-
-export const showError = (error?: string) => ({
-  error,
-  type: ActionTypes.CONNECTION_SET_SHOW_ERROR,
 })
 
 export const disconnect = () => (dispatch: Dispatch<any>, getState: () => AppState)  => {

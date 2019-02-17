@@ -1,8 +1,9 @@
 import { AppState } from '../reducers'
+import { clearLegacyConnectionOptions, loadLegacyConnectionOptions } from '../model/LegacyConnectionSettings'
 import { ConnectionOptions, createEmptyConnection, makeDefaultConnections } from '../model/ConnectionOptions'
 import { default as persistantStorage, StorageIdentifier } from '../PersistantStorage'
 import { Dispatch } from 'redux'
-import { loadLegacyConnectionOptions, clearLegacyConnectionOptions } from '../model/LegacyConnectionSettings'
+import { showError } from './Global'
 import {
   ActionTypes,
   Action,
@@ -13,8 +14,13 @@ const storedConnectionsIdentifier: StorageIdentifier<{[s: string]: ConnectionOpt
 }
 
 export const loadConnectionSettings = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
-  await ensureConnectionsHaveBeenInitialized()
-  const connections = await persistantStorage.load(storedConnectionsIdentifier)
+  let connections
+  try {
+    await ensureConnectionsHaveBeenInitialized()
+    connections = await persistantStorage.load(storedConnectionsIdentifier)
+  } catch (error) {
+    dispatch(showError(error))
+  }
 
   if (!connections) {
     return
@@ -27,8 +33,12 @@ export const loadConnectionSettings = () => async (dispatch: Dispatch<any>, getS
   }
 }
 
-export const saveConnectionSettings = () => (_dispatch: Dispatch<any>, getState: () => AppState) => {
-  persistantStorage.store(storedConnectionsIdentifier, getState().connectionManager.connections)
+export const saveConnectionSettings = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
+  try {
+    await persistantStorage.store(storedConnectionsIdentifier, getState().connectionManager.connections)
+  } catch (error) {
+    dispatch(showError(error))
+  }
 }
 
 export const updateConnection = (connectionId: string, changeSet: any): Action => ({

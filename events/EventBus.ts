@@ -25,7 +25,6 @@ class IpcMainEventBus implements EventBusInterface {
     console.log('subscribing', subscribeEvent.topic)
     this.ipc.on(subscribeEvent.topic, (event: any, arg: any) => {
       this.client = event.sender
-      console.log(subscribeEvent.topic, arg)
       callback(arg)
     })
   }

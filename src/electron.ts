@@ -1,11 +1,12 @@
-import { UpdateInfo } from '../events'
-import { BrowserWindow, app, Menu } from 'electron'
-import * as path from 'path'
-import { menuTemplate } from './MenuTemplate'
-import { autoUpdater } from 'electron-updater'
 import * as log from 'electron-log'
+import * as path from 'path'
+import ConfigStorage from '../backend/src/ConfigStorage'
+import { app, BrowserWindow, Menu } from 'electron'
+import { autoUpdater } from 'electron-updater'
 import { ConnectionManager, updateNotifier } from '../backend/src/index'
 import { electronTelemetryFactory } from 'electron-telemetry'
+import { menuTemplate } from './MenuTemplate'
+import { UpdateInfo } from '../events'
 const isDev = require('electron-is-dev')
 
 let electronTelemetry: any
@@ -23,6 +24,9 @@ log.info('App starting...')
 
 const connectionManager = new ConnectionManager()
 connectionManager.manageConnections()
+
+const configStorage = new ConfigStorage(path.join(app.getPath('appData'), app.getName(), 'settings.json'))
+configStorage.init()
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

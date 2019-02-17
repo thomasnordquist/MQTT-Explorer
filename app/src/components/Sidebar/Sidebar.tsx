@@ -147,7 +147,6 @@ class Sidebar extends React.Component<Props, State> {
   }
 
   private valueRenderWidthChange = (width: number) => {
-    console.log(width)
     this.setState({ valueRenderWidth: width })
   }
 

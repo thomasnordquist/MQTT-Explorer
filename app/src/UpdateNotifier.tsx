@@ -115,7 +115,6 @@ class UpdateNotifier extends React.Component<Props, State> {
       vertical: 'top',
       horizontal: 'right',
     }
-    console.log(this.state.newerVersions)
 
     return (
       <Snackbar
@@ -266,8 +265,8 @@ const styles = (theme: Theme) => ({
 
 const mapStateToProps = (state: AppState) => {
   return {
-    showUpdateNotification: state.tooBigReducer.showUpdateNotification,
-    showUpdateDetails: state.tooBigReducer.showUpdateDetails,
+    showUpdateNotification: state.globalState.showUpdateNotification,
+    showUpdateDetails: state.globalState.showUpdateDetails,
   }
 }
 

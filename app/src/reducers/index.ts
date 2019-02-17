@@ -10,16 +10,18 @@ import { ConnectionManagerState, connectionManagerReducer } from './ConnectionMa
 export enum ActionTypes {
   showUpdateNotification = 'SHOW_UPDATE_NOTIFICATION',
   showUpdateDetails = 'SHOW_UPDATE_DETAILS',
+  showError = 'SHOW_ERROR',
 }
 
 export interface CustomAction extends Action {
   type: ActionTypes,
   showUpdateNotification?: boolean
   showUpdateDetails?: boolean
+  error?: string
 }
 
 export interface AppState {
-  tooBigReducer: TooBigOfState
+  globalState: GlobalState
   tree: TreeState
   settings: SettingsState,
   publish: PublishState
@@ -27,16 +29,17 @@ export interface AppState {
   connectionManager: ConnectionManagerState
 }
 
-export interface TooBigOfState {
+export interface GlobalState {
   showUpdateNotification?: boolean
   showUpdateDetails: boolean
+  error?: string
 }
 
-const initialBigState: TooBigOfState = {
+const initialBigState: GlobalState = {
   showUpdateDetails: false,
 }
 
-const tooBigReducer: Reducer<TooBigOfState | undefined, CustomAction> = (state = initialBigState, action) => {
+const globalState: Reducer<GlobalState | undefined, CustomAction> = (state = initialBigState, action) => {
   if (!state) {
     throw Error('No initial state')
   }
@@ -47,6 +50,12 @@ const tooBigReducer: Reducer<TooBigOfState | undefined, CustomAction> = (state =
       return {
         ...state,
         showUpdateNotification: action.showUpdateNotification,
+      }
+
+    case ActionTypes.showError:
+      return {
+        ...state,
+        error: action.error,
       }
 
     case ActionTypes.showUpdateDetails:
@@ -64,7 +73,7 @@ const tooBigReducer: Reducer<TooBigOfState | undefined, CustomAction> = (state =
 }
 
 const reducer = combineReducers({
-  tooBigReducer,
+  globalState,
   publish: publishReducer,
   connection: connectionReducer,
   settings: settingsReducer,

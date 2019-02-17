@@ -5,8 +5,9 @@ interface StorageEvent {
 }
 
 export interface StoreCommand extends StorageEvent {
-  store: string,
-  data: any
+  store?: string,
+  data?: any
+  error?: any
 }
 
 export interface LoadCommand extends StorageEvent {

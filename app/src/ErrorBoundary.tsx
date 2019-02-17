@@ -1,5 +1,9 @@
 import * as React from 'react'
+import PersistantStorage from './PersistantStorage'
+import SentimentDissatisfied from '@material-ui/icons/SentimentDissatisfied'
+import Warning from '@material-ui/icons/Warning'
 import { electronRendererTelementry } from 'electron-telemetry'
+import { Theme, withStyles } from '@material-ui/core/styles'
 import {
   Button,
   Modal,
@@ -7,11 +11,6 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core'
-
-import Warning from '@material-ui/icons/Warning'
-import SentimentDissatisfied from '@material-ui/icons/SentimentDissatisfied'
-
-import { Theme, withStyles } from '@material-ui/core/styles'
 
 interface State {
   error?: Error
@@ -41,7 +40,7 @@ class ErrorBoundary extends React.Component<Props, State> {
   }
 
   private clearStorage = () => {
-    localStorage.clear()
+    PersistantStorage.clear()
     window.location = window.location
   }
 
