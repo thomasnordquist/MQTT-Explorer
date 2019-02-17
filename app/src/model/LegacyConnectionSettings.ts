@@ -13,17 +13,21 @@ interface LegacyConnectionSettings {
   password: string
 }
 
-export function loadLegacyConnectionSettings(): ConnectionOptions | undefined {
+export function clearLegacyConnectionOptions() {
+  window.localStorage.setItem('connectionSettings', '')
+}
+
+export function loadLegacyConnectionOptions(): {[s: string]: ConnectionOptions} | {} {
   const legacySettingsString = window.localStorage.getItem('connectionSettings')
   if (!legacySettingsString) {
-    return
+    return {}
   }
 
   let legacyConnection
   try {
     legacyConnection = JSON.parse(legacySettingsString) as LegacyConnectionSettings
   } catch {
-    return
+    return {}
   }
 
   const protocolMap: {[s: string]: string} = {
@@ -44,8 +48,12 @@ export function loadLegacyConnectionSettings(): ConnectionOptions | undefined {
     encryption: legacyConnection.tls,
   }
 
+  const emptyConnection = createEmptyConnection()
+
   return {
-    ...createEmptyConnection(),
-    ...migratedOptions,
+    [emptyConnection.id]: {
+      ...emptyConnection,
+      ...migratedOptions,
+    },
   }
 }

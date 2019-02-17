@@ -1,8 +1,8 @@
 import { AppState } from '../reducers'
-import { ConnectionOptions, createEmptyConnection, defaultConnections } from '../model/ConnectionOptions'
+import { ConnectionOptions, createEmptyConnection, makeDefaultConnections } from '../model/ConnectionOptions'
 import { default as persistantStorage, StorageIdentifier } from '../PersistantStorage'
 import { Dispatch } from 'redux'
-import { loadLegacyConnectionSettings } from '../model/LegacyConnectionSettings'
+import { loadLegacyConnectionOptions } from '../model/LegacyConnectionSettings'
 import {
   ActionTypes,
   Action,
@@ -13,13 +13,9 @@ const storedConnectionsIdentifier: StorageIdentifier<{[s: string]: ConnectionOpt
 }
 
 export const loadConnectionSettings = () => (dispatch: Dispatch<any>, getState: () => AppState) => {
-  const requiresMigration = true
-  if (requiresMigration) {
-    const connections = defaultConnections()
-    persistantStorage.store(storedConnectionsIdentifier, connections)
-  }
-
+  ensureConnectionsHaveBeenInitialized()
   const connections = persistantStorage.load(storedConnectionsIdentifier)
+
   if (!connections) {
     return
   }
@@ -96,19 +92,17 @@ export const deleteConnection = (connectionId: string) => (dispatch: Dispatch<an
   }
 }
 
-export function migrateLegacyConfiguration() {
-  const storage = persistantStorage.load(storedConnectionsIdentifier)
-  if (storage) {
-    return
-  }
-  const connections = loadLegacyConnectionSettings()
-  defaultConnections()
-}
+export function ensureConnectionsHaveBeenInitialized() {
+  const connections = persistantStorage.load(storedConnectionsIdentifier)
 
-export function addDefaultConnections() {
-  const storage = persistantStorage.load(storedConnectionsIdentifier)
-  if (storage) {
-    return
+  const requiresInitialization = !connections
+  if (requiresInitialization) {
+    console.log('requires initialization')
+    const migratedConnection = loadLegacyConnectionOptions()
+    const defaultConnections = makeDefaultConnections()
+    persistantStorage.store(storedConnectionsIdentifier, {
+      ...migratedConnection,
+      ...defaultConnections,
+    })
   }
-  defaultConnections()
 }

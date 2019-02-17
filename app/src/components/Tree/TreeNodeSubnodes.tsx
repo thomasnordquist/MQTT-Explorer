@@ -58,7 +58,7 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
   }
 
   public componentWillUnmount() {
-    window.cancelAnimationFrame(this.renderMoreAnimationFrame)
+    window.cancelIdleCallback(this.renderMoreAnimationFrame)
   }
 
   public render() {
