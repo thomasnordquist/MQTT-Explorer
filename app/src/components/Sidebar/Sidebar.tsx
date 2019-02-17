@@ -170,7 +170,6 @@ class Sidebar extends React.Component<Props, State> {
           size="small"
           color="secondary"
           variant="contained"
-          mini={true}
           style={{ marginTop: '-3px', padding: '0px 4px', minHeight: '24px' }}
           onClick={this.props.actions.clearRetainedTopic}
         >

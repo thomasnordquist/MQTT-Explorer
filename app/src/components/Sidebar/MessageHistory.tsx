@@ -61,7 +61,7 @@ class MessageHistory extends React.Component<Props, State> {
       <div>
         <History
           items={historyElements}
-          contentTypeIndicator={showPlot ? <BarChart /> : null}
+          contentTypeIndicator={showPlot ? <BarChart /> : undefined}
           onClick={this.displayMessage}
         >
           {showPlot ? this.renderPlot(numericMessages) : null}

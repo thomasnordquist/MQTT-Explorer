@@ -46,8 +46,8 @@ class ProfileList extends React.Component<Props, {}> {
 
 const styles = (theme: Theme) => ({
   list: {
-    marginTop: `${theme.spacing.unit}px`,
-    height: `calc(100% - ${theme.spacing.unit * 6}px)`,
+    marginTop: theme.spacing(1),
+    height: `calc(100% - ${theme.spacing(6)})`,
     overflowY: 'auto' as 'auto',
   },
 })

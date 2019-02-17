@@ -4,15 +4,15 @@ import { Badge, Typography } from '@material-ui/core'
 import { Theme, withStyles } from '@material-ui/core/styles'
 
 interface HistoryItem {
-  title: string
-  value: string
+  title: JSX.Element | string
+  value: string | any
 }
 
 interface Props {
   items: HistoryItem[]
   onClick?: (index: number, element: EventTarget) => void
   classes: any
-  contentTypeIndicator?: String
+  contentTypeIndicator?: JSX.Element
 }
 
 interface State {
