@@ -8,6 +8,7 @@ import { TopicOrder } from '../../reducers/Settings'
 import { TopicViewModel } from '../../TopicViewModel'
 import { treeActions } from '../../actions'
 import { bindActionCreators } from 'redux'
+const ReactKeyboardEventHandler = require('react-keyboard-event-handler')
 
 const MovingAverage = require('moving-average')
 
@@ -86,6 +87,12 @@ class Tree extends React.PureComponent<Props, State> {
     }, Math.max(0, timeUntilNextUpdate))
   }
 
+  private handleKeyEvent = (key: string, event: any) => {
+    event.stopPropagation()
+    event.preventDefault()
+    this.props.actions.handleKeyEvent(key)
+  }
+
   public render() {
     const { tree, filter } = this.props
     if (!tree) {
@@ -99,6 +106,11 @@ class Tree extends React.PureComponent<Props, State> {
 
     return (
       <div style={style}>
+        <ReactKeyboardEventHandler
+          isExclusive={true}
+          handleKeys={['space', 'enter', 'delete', 'backspace', 'left', 'up', 'down', 'right']}
+          onKeyEvent={this.handleKeyEvent}
+        />
         <TreeNode
           key={tree.hash()}
           animateChages={true}

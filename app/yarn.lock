@@ -4520,6 +4520,11 @@ react-json-view@^1.19.1:
     react-lifecycles-compat "^3.0.4"
     react-textarea-autosize "^6.1.0"
 
+react-keyboard-event-handler@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/react-keyboard-event-handler/-/react-keyboard-event-handler-1.4.1.tgz#3122ab3ceab3df0414a8afb58aa07e93fc34f30e"
+  integrity sha512-F7e/nHXyfY8Szle1lxTf7iJ7Vnnq9xGV5Jcu1nB1+lmLRkLiLFhMk4Kc1iOJWdxuhj9pg5xsB8IuAAVpawkTwg==
+
 react-lifecycles-compat@^3.0.2, react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"

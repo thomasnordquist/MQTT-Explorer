@@ -1,5 +1,4 @@
 import { Action, ActionTypes, TopicOrder } from '../reducers/Settings'
-import { ActionTypes as TreeActionTypes } from '../reducers/Tree'
 import { Dispatch } from 'redux'
 import { showTree } from './Tree'
 import { AppState } from '../reducers'
