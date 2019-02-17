@@ -26,13 +26,14 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
   }, 5)
 
   public render() {
+    const { classes, treeNode, style, className } = this.props
     return (
       <span
-        className={`${this.props.classes.title} ${this.props.className}`}
-        onMouseOver={this.props.treeNode.message ? this.mouseOver : undefined}
-        style={this.props.style}
+        className={`${classes.title} ${className}`}
+        onMouseOver={treeNode.message ? this.mouseOver : undefined}
+        style={style}
       >
-        {this.renderExpander()} {this.renderSourceEdge()} {this.renderCollapsedSubnodes()} {this.renderValue()}
+        <span className={classes.expander}>{this.renderExpander()}</span> {this.renderSourceEdge()} {this.renderCollapsedSubnodes()} {this.renderValue()}
       </span>
     )
   }
