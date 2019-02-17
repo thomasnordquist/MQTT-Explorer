@@ -55,9 +55,9 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
   }
 
   private renderMore() {
-    this.renderMoreAnimationFrame = window.requestAnimationFrame(() => {
+    this.renderMoreAnimationFrame = window.requestIdleCallback(() => {
       this.setState({ ...this.state, alreadyAdded: this.state.alreadyAdded * 1.5 })
-    })
+    }, { timeout: 500 })
   }
 
   public componentWillUnmount() {
