@@ -12,9 +12,9 @@ const storedConnectionsIdentifier: StorageIdentifier<{[s: string]: ConnectionOpt
   id: 'ConnectionManager_connections',
 }
 
-export const loadConnectionSettings = () => (dispatch: Dispatch<any>, getState: () => AppState) => {
-  ensureConnectionsHaveBeenInitialized()
-  const connections = persistantStorage.load(storedConnectionsIdentifier)
+export const loadConnectionSettings = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
+  await ensureConnectionsHaveBeenInitialized()
+  const connections = await persistantStorage.load(storedConnectionsIdentifier)
 
   if (!connections) {
     return
@@ -92,9 +92,8 @@ export const deleteConnection = (connectionId: string) => (dispatch: Dispatch<an
   }
 }
 
-function ensureConnectionsHaveBeenInitialized() {
-  const connections = persistantStorage.load(storedConnectionsIdentifier)
-
+async function ensureConnectionsHaveBeenInitialized() {
+  const connections = await persistantStorage.load(storedConnectionsIdentifier)
   const requiresInitialization = !connections
   if (requiresInitialization) {
     const migratedConnection = loadLegacyConnectionOptions()

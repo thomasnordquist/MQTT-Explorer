@@ -44,6 +44,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.1.7",
+    "@types/lowdb": "^1.0.6",
     "@types/mime": "^2.0.0",
     "@types/mocha": "^5.2.5",
     "@types/mustache": "^0.8.32",
@@ -75,6 +76,7 @@
     "electron-log": "^2.2.17",
     "electron-telemetry": "git+https://github.com/thomasnordquist/electron-telemetry.git#dist",
     "electron-updater": "^4.0.6",
+    "lowdb": "^1.0.0",
     "mqtt": "^2.18.8",
     "sha1": "^1.1.1"
   }

@@ -12,7 +12,7 @@ import {
   updateAvailable,
 } from '../../events'
 import { DataSource, MqttSource } from './DataSource'
-
+import ConfigStorage from './ConfigStorage'
 import { UpdateInfo } from 'builder-util-runtime'
 
 export class ConnectionManager {
@@ -80,3 +80,6 @@ class UpdateNotifier {
 }
 
 export const updateNotifier = new UpdateNotifier()
+
+const configStorage = new ConfigStorage('blah.json')
+configStorage.init()

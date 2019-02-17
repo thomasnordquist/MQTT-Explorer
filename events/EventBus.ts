@@ -21,10 +21,11 @@ class IpcMainEventBus implements EventBusInterface {
     this.ipc = ipc
   }
 
-  public subscribe<MessageType>(event: Event<MessageType>, callback:(msg: MessageType) => void) {
-    console.log('subscribing', event.topic)
-    this.ipc.on(event.topic, (event: any, arg: any) => {
+  public subscribe<MessageType>(subscribeEvent: Event<MessageType>, callback:(msg: MessageType) => void) {
+    console.log('subscribing', subscribeEvent.topic)
+    this.ipc.on(subscribeEvent.topic, (event: any, arg: any) => {
       this.client = event.sender
+      console.log(subscribeEvent.topic, arg)
       callback(arg)
     })
   }

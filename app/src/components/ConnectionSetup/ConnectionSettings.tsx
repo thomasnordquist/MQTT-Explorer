@@ -315,7 +315,6 @@ class ConnectionSettings extends React.Component<Props, State> {
 
     const mqttOptions = toMqttConnection(this.props.connection)
     if (mqttOptions) {
-      console.log(mqttOptions)
       this.props.actions.connect(mqttOptions, this.props.connection.id)
     }
   }
