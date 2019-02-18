@@ -24,13 +24,13 @@ class IpcMainEventBus implements EventBusInterface {
   public subscribe<MessageType>(subscribeEvent: Event<MessageType>, callback:(msg: MessageType) => void) {
     console.log('subscribing', subscribeEvent.topic)
     this.ipc.on(subscribeEvent.topic, (event: any, arg: any) => {
-      console.log(subscribeEvent.topic, arg)
       this.client = event.sender
       callback(arg)
     })
   }
 
   public unsubscribeAll<MessageType>(event: Event<MessageType>) {
+    console.log('unsubscribeAll', event.topic)
     this.ipc.removeAllListeners(event.topic)
   }
 
@@ -40,8 +40,6 @@ class IpcMainEventBus implements EventBusInterface {
 
   public emit<MessageType>(event: Event<MessageType>, msg: MessageType) {
     if (!this.client.isDestroyed()) {
-      console.log(event.topic, msg)
-
       this.client.send(event.topic, msg)
     }
   }
@@ -83,7 +81,6 @@ class IpcRendererEventBus implements EventBusInterface {
   }
 
   public emit<MessageType>(event: Event<MessageType>, msg: MessageType) {
-    console.log(event.topic, msg)
     this.ipc.send(event.topic, msg)
   }
 }
