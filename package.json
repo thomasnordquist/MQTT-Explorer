@@ -71,6 +71,7 @@
     "webdriverio": "5.4"
   },
   "dependencies": {
+    "about-window": "^1.12.1",
     "electron-debug": "^2.0.0",
     "electron-is-dev": "^1.0.1",
     "electron-log": "^2.2.17",

@@ -189,6 +189,11 @@
   dependencies:
     "@wdio/config" "^5.4.6"
 
+about-window@^1.12.1:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/about-window/-/about-window-1.12.1.tgz#b81c10f6de58d38bce2aa5f31f61a82e6c3d6c2b"
+  integrity sha512-P/fJACq7RBFpv5Ql0kIqpOYgFqQ8WdoZoB7wrKmDvwTSKVOMbUZMYnQYtnOW6dHmMCYuNrmQFf+MxvuhE+KrzQ==
+
 ajv-keywords@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.2.0.tgz#e86b819c602cf8821ad637413698f1dec021847a"
