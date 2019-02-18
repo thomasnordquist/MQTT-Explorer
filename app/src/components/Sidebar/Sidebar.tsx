@@ -4,6 +4,7 @@ import Clear from '@material-ui/icons/Clear'
 import Copy from '../Copy'
 import DateFormatter from '../helper/DateFormatter'
 import Delete from '@material-ui/icons/Delete'
+import DeleteForever from '@material-ui/icons/DeleteForever'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import MessageHistory from './MessageHistory'
 import NodeStats from './NodeStats'
@@ -26,8 +27,10 @@ import {
   Popper,
   Typography,
   Tooltip,
+  Badge,
 } from '@material-ui/core'
 import CustomIconButton from '../CustomIconButton';
+import { max } from 'moment';
 
 const throttle = require('lodash.throttle')
 
@@ -102,19 +105,33 @@ class Sidebar extends React.Component<Props, State> {
   }
 
   private renderRecursiveTopicDeleteButton() {
-    if (!this.props.node) {
+    const deleteLimit = 50
+    const topicCount = this.props.node ? this.props.node.childTopicCount() : 0
+    if (!this.props.node || topicCount <= 1) {
       return null
     }
 
-    return <CustomIconButton onClick={() => this.deleteTopic(this.props.node, true)}><Delete style={{ color: 'red' }} /></CustomIconButton>
+    return (
+      <CustomIconButton onClick={() => this.deleteTopic(this.props.node, true, deleteLimit)}>
+        <Tooltip title={`Deletes up to ${deleteLimit} sub-topics with a single click`}>
+          <Badge
+            classes={{ badge: this.props.classes.badge }}
+            badgeContent={<span style={{ whiteSpace: 'nowrap' }}>{topicCount >= deleteLimit ? '50+' : topicCount}</span>}
+            color="secondary"
+          >
+            <DeleteForever color="action" />
+          </Badge>
+        </Tooltip>
+      </CustomIconButton>
+    )
   }
 
-  private deleteTopic = (topic?: q.TreeNode<TopicViewModel>, recursive: boolean = false) => {
+  private deleteTopic = (topic?: q.TreeNode<TopicViewModel>, recursive: boolean = false, maxCount = 50) => {
     if (!topic) {
       return
     }
 
-    this.props.actions.clearTopic(topic, recursive)
+    this.props.actions.clearTopic(topic, recursive, maxCount)
   }
 
   private renderNode() {
