@@ -30,7 +30,7 @@ The app is available for Windows ([portable](https:&#x2F;&#x2F;github.com&#x2F;t
 [More Downloads](https://github.com/thomasnordquist/MQTT-Explorer/releases)
 
 ## Demo
-![screencast](https://user-images.githubusercontent.com/7721625/51978075-5bc0eb00-2489-11e9-953a-0965b154557b.gif)
+![screencast](https://user-images.githubusercontent.com/7721625/52979302-3f073b80-33d5-11e9-9953-b70ebb349439.gif)
 
 ## Performance
 This App is optimized to handle thousands of topics and at least hundreds of thousands messages per minute.

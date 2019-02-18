@@ -2,7 +2,6 @@
 [![Downloads](https://img.shields.io/github/release/thomasnordquist/mqtt-explorer.svg)](https://travis-ci.org/thomasnordquist/MQTT-Explorer/releases)
 [![Downloads](https://img.shields.io/github/downloads/thomasnordquist/mqtt-explorer/total.svg)](https://travis-ci.org/thomasnordquist/MQTT-Explorer/releases)
 [![Build_Status](https://travis-ci.org/thomasnordquist/MQTT-Explorer.svg)](https://travis-ci.org/thomasnordquist/MQTT-Explorer)
-![](https://img.shields.io/github/commits-since/thomasnordquist/mqtt-explorer/latest.svg?style=flat)
 
 ### Version {{ version }}
 
@@ -31,7 +30,7 @@ The app is available for Windows ({{windowsTargets}}), Linux ({{linuxTargets}}) 
 [More Downloads](https://github.com/thomasnordquist/MQTT-Explorer/releases)
 
 ## Demo
-![screencast](https://user-images.githubusercontent.com/7721625/51978075-5bc0eb00-2489-11e9-953a-0965b154557b.gif)
+![screencast](https://user-images.githubusercontent.com/7721625/52979302-3f073b80-33d5-11e9-9953-b70ebb349439.gif)
 
 ## Performance
 This App is optimized to handle thousands of topics and at least hundreds of thousands messages per minute.
