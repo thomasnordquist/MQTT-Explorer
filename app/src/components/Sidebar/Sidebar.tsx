@@ -1,5 +1,20 @@
-import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
+import * as React from 'react'
+import Clear from '@material-ui/icons/Clear'
+import Copy from '../Copy'
+import DateFormatter from '../helper/DateFormatter'
+import Delete from '@material-ui/icons/Delete'
+import ExpandMore from '@material-ui/icons/ExpandMore'
+import MessageHistory from './MessageHistory'
+import NodeStats from './NodeStats'
+import Topic from './Topic'
+import { AppState } from '../../reducers'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { default as ReactResizeDetector } from 'react-resize-detector'
+import { sidebarActons } from '../../actions'
+import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
+import { TopicViewModel } from '../../TopicViewModel'
 
 import {
   Button,
@@ -12,22 +27,8 @@ import {
   Typography,
   Tooltip,
 } from '@material-ui/core'
-import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
+import CustomIconButton from '../CustomIconButton';
 
-import { sidebarActons } from '../../actions'
-
-import { AppState } from '../../reducers'
-import Copy from '../Copy'
-import DateFormatter from '../helper/DateFormatter'
-import ExpandMore from '@material-ui/icons/ExpandMore'
-import Clear from '@material-ui/icons/Clear'
-import MessageHistory from './MessageHistory'
-import NodeStats from './NodeStats'
-import Topic from './Topic'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { TopicViewModel } from '../../TopicViewModel'
-import { default as ReactResizeDetector } from 'react-resize-detector'
 const throttle = require('lodash.throttle')
 
 const Publish = React.lazy(() => import('./Publish/Publish'))
@@ -92,17 +93,43 @@ class Sidebar extends React.Component<Props, State> {
 
   private detailsStyle = { padding: '0px 16px 8px 8px', display: 'block' }
 
+  private renderTopicDeleteButton() {
+    if (!this.props.node) {
+      return null
+    }
+
+    return <CustomIconButton onClick={() => this.deleteTopic(this.props.node)}><Delete /></CustomIconButton>
+  }
+
+  private renderRecursiveTopicDeleteButton() {
+    if (!this.props.node) {
+      return null
+    }
+
+    return <CustomIconButton onClick={() => this.deleteTopic(this.props.node, true)}><Delete style={{ color: 'red' }} /></CustomIconButton>
+  }
+
+  private deleteTopic = (topic?: q.TreeNode<TopicViewModel>, recursive: boolean = false) => {
+    if (!topic) {
+      return
+    }
+
+    this.props.actions.clearTopic(topic, recursive)
+  }
+
   private renderNode() {
     const { classes, node } = this.props
 
     const copyTopic = node ? <Copy value={node.path()} /> : null
+    const deleteTopic = this.renderTopicDeleteButton()
+    const deleteRecursiveTopic = this.renderRecursiveTopicDeleteButton()
     const copyValue = node && node.message ? <Copy value={node.message.value} /> : null
     const summeryStyle = { minHeight: '0' }
     return (
       <div>
         <ExpansionPanel key="topic" defaultExpanded={true} disabled={!Boolean(this.props.node)}>
           <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summeryStyle}>
-            <Typography className={classes.heading}>Topic {copyTopic}</Typography>
+            <Typography className={classes.heading}>Topic {copyTopic} {deleteTopic} {deleteRecursiveTopic}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={this.detailsStyle}>
             <Topic node={this.props.node} didSelectNode={this.updateNode} />

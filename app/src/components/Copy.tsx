@@ -4,6 +4,7 @@ import FileCopy from '@material-ui/icons/FileCopy'
 import Check from '@material-ui/icons/Check'
 import green from '@material-ui/core/colors/green'
 import { withStyles, Theme } from '@material-ui/core/styles'
+import CustomIconButton from './CustomIconButton';
 
 const copy = require('copy-text-to-clipboard')
 
@@ -32,13 +33,17 @@ class Copy extends React.Component<Props, State> {
 
   public render() {
     const icon = !this.state.didCopy
-      ? <FileCopy fontSize="inherit" style={{ cursor: 'pointer' }} onClick={this.handleClick} />
+      ? <FileCopy fontSize="inherit" />
       : <Check fontSize="inherit" style={{ cursor: 'default' }} />
 
     return (
       <span>
         <Tooltip placement="top" title="Copy to clipboard">
-          <span style={{ fontSize: '16px' }}>{icon}</span>
+          <span style={{ fontSize: '16px' }}>
+          <CustomIconButton onClick={this.handleClick} >
+            {icon}
+          </CustomIconButton>
+          </span>
         </Tooltip>
         <span>
           <Snackbar

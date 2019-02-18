@@ -31,7 +31,6 @@ class RemoteStorage implements PersistantStorage {
     const ack = makeStorageAcknoledgementEvent(transactionId)
     return new Promise<void>((resolve, reject) => {
       const callback = (msg: any) => {
-        console.log(msg)
         if (msg && msg.error) {
           reject(msg.error)
         } else {
@@ -57,8 +56,6 @@ class RemoteStorage implements PersistantStorage {
 
     const promise = new Promise<Model>((resolve, reject) => {
       const callback = (msg: any) => {
-        console.log(msg)
-
         if (msg.error) {
           reject(msg.error)
         } else {
