@@ -21,6 +21,7 @@ import { connect } from 'react-redux'
 import { settingsActions, treeActions } from '../actions'
 import { TopicOrder } from '../reducers/Settings'
 import BrokerStatistics from './BrokerStatistics'
+import { shell } from 'electron';
 
 export const autoExpandLimitSet = [{
   limit: 0,
@@ -55,6 +56,11 @@ const styles: StyleRulesCallback = theme => ({
   input: {
     minWidth: '150px',
     margin: `auto ${theme.spacing(1)} auto ${theme.spacing(2)}px`,
+  },
+  author: {
+    margin: 'auto 8px 8px auto',
+    color: theme.palette.text.hint,
+    cursor: 'pointer' as 'pointer',
   },
 })
 
@@ -101,9 +107,18 @@ class Settings extends React.Component<Props, {}> {
           {this.renderNodeOrder()}
           {this.renderhighlightTopicUpdates()}
         </div>
+        <Tooltip placement="top" title="App Author">
+          <Typography className={classes.author} onClick={this.openGithubPage}>
+            by Thomas Nordquist
+          </Typography>
+        </Tooltip>
         <BrokerStatistics />
       </Drawer>
     )
+  }
+
+  private openGithubPage = () => {
+    shell.openExternal('https://github.com/thomasnordquist')
   }
 
   private renderhighlightTopicUpdates() {

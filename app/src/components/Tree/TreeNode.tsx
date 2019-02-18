@@ -233,6 +233,10 @@ class TreeNode extends React.Component<Props, State> {
   }
 
   private renderNodes() {
+    if (this.collapsed()) {
+      return null
+    }
+
     return (
       <TreeNodeSubnodes
         animateChanges={this.props.animateChages}
