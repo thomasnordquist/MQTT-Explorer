@@ -30,7 +30,7 @@ const styles = (theme: Theme) => {
       marginTop: '-1px',
     },
     selected: {
-      backgroundColor: 'rgba(200, 200, 200, 0.55)',
+      backgroundColor: 'rgba(170, 170, 170, 0.55)',
     },
     hover: {
       backgroundColor: 'rgba(100, 100, 100, 0.55)',
@@ -51,6 +51,7 @@ interface Props {
   autoExpandLimit: number
   lastUpdate: number
   didSelectTopic: any
+  highlightTopicUpdates: boolean
 }
 
 interface State {
@@ -64,12 +65,10 @@ class TreeNode extends React.Component<Props, State> {
   private dirtyEdges: boolean = true
   private dirtyMessage: boolean = true
   private animationDirty: boolean = false
-  private lastRenderTime = 0
 
   private cssAnimationWasSetAt?: number
 
   private willUpdateTime: number = performance.now()
-  private titleRef?: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>()
   private nodeRef?: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>()
 
   private subnodesDidchange = () => {
@@ -129,7 +128,6 @@ class TreeNode extends React.Component<Props, State> {
   public componentWillUnmount() {
     const { treeNode } = this.props
     this.removeSubscriber(treeNode)
-    this.titleRef = undefined
     this.nodeRef = undefined
   }
 
@@ -182,7 +180,7 @@ class TreeNode extends React.Component<Props, State> {
     const isDirty = this.dirtyEdges || this.dirtyMessage || this.dirtySubnodes
     this.dirtyEdges = this.dirtyMessage = this.dirtySubnodes = false
 
-    const shouldStartAnimation = (isDirty && !this.animationDirty) && !this.props.isRoot
+    const shouldStartAnimation = (isDirty && !this.animationDirty) && !this.props.isRoot && this.props.highlightTopicUpdates
     const animation = shouldStartAnimation ? { willChange: 'auto', translateZ: 0, animation: 'example 0.5s' } : {}
     this.animationDirty = shouldStartAnimation
 
@@ -244,6 +242,7 @@ class TreeNode extends React.Component<Props, State> {
         topicOrder={this.props.topicOrder}
         lastUpdate={this.props.treeNode.lastUpdate}
         didSelectTopic={this.props.didSelectTopic}
+        highlightTopicUpdates={this.props.highlightTopicUpdates}
       />
     )
   }

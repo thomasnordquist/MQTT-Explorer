@@ -22,9 +22,9 @@ interface Props {
   tree?: q.Tree<TopicViewModel>
   filter: string
   host?: string
-
   topicOrder: TopicOrder
   autoExpandLimit: number
+  highlightTopicUpdates: boolean
 }
 
 interface State {
@@ -111,6 +111,7 @@ class Tree extends React.PureComponent<Props, State> {
           topicOrder={this.props.topicOrder}
           lastUpdate={tree.lastUpdate}
           didSelectTopic={this.props.actions.selectTopic}
+          highlightTopicUpdates={this.props.highlightTopicUpdates}
         />
       </div>
     )
@@ -128,6 +129,7 @@ const mapStateToProps = (state: AppState) => {
     host: state.connection.host,
     autoExpandLimit: state.settings.autoExpandLimit,
     topicOrder: state.settings.topicOrder,
+    highlightTopicUpdates: state.settings.highlightTopicUpdates,
   }
 }
 

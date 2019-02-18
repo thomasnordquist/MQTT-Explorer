@@ -94,6 +94,7 @@ const mapStateToProps = (state: AppState) => {
     settingsVisible: state.settings.visible,
     connectionId: state.connection.connectionId,
     error: state.globalState.error,
+    highlightTopicUpdates: state.settings.highlightTopicUpdates,
   }
 }
 

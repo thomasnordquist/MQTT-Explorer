@@ -10,6 +10,7 @@ import {
   MenuItem,
   Select,
   Typography,
+  Switch,
 } from '@material-ui/core'
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 
@@ -58,6 +59,7 @@ const styles: StyleRulesCallback = theme => ({
 
 interface Props {
   autoExpandLimit: number
+  highlightTopicUpdates: boolean
   visible: boolean
   store?: any
   topicOrder: TopicOrder
@@ -96,9 +98,26 @@ class Settings extends React.Component<Props, {}> {
 
           {this.renderAutoExpand()}
           {this.renderNodeOrder()}
+          {this.renderhighlightTopicUpdates()}
         </div>
         <BrokerStatistics />
       </Drawer>
+    )
+  }
+
+  private renderhighlightTopicUpdates() {
+    const { highlightTopicUpdates, actions } = this.props
+
+    return (
+      <div style={{ padding: '8px', display: 'flex' }}>
+        <InputLabel htmlFor="toggle-highlight-activity" style={{ flex: '1', marginTop: '8px' }}>Show Activity</InputLabel>
+        <Switch
+          name="toggle-highlight-activity"
+          checked={highlightTopicUpdates}
+          onChange={actions.togglehighlightTopicUpdates}
+          color="primary"
+        />
+      </div>
     )
   }
 
@@ -132,7 +151,7 @@ class Settings extends React.Component<Props, {}> {
 
     return (
       <div style={{ padding: '8px', display: 'flex' }}>
-        <InputLabel htmlFor="auto-expand" style={{ flex: '1', marginTop: '8px' }}>Topic order</InputLabel>
+        <InputLabel htmlFor="auto-expand" style={{ flex: '1', marginTop: '8px' }}>Topic Order</InputLabel>
         <Select
           value={topicOrder}
           onChange={this.onChangeSorting}
@@ -160,6 +179,7 @@ const mapStateToProps = (state: AppState) => {
     autoExpandLimit: state.settings.autoExpandLimit,
     topicOrder: state.settings.topicOrder,
     visible: state.settings.visible,
+    highlightTopicUpdates: state.settings.highlightTopicUpdates,
   }
 }
 

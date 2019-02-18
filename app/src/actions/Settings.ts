@@ -21,6 +21,12 @@ export const toggleSettingsVisibility = (): Action => {
   }
 }
 
+export const togglehighlightTopicUpdates = (): Action => {
+  return {
+    type: ActionTypes.SETTINGS_TOGGLE_HIGHLIGHT_ACTIVITY,
+  }
+}
+
 export const setTopicOrder = (topicOrder: TopicOrder = TopicOrder.none): Action => {
   return {
     topicOrder,

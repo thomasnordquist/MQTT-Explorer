@@ -13,20 +13,23 @@ export interface SettingsState {
   visible: boolean
   topicOrder: TopicOrder
   topicFilter?: string
+  highlightTopicUpdates: boolean
 }
-export type Action = SetAutoExpandLimit | ToggleVisibility | SetTopicOrder | FilterTopics
+export type Action = SetAutoExpandLimit | ToggleVisibility | SetTopicOrder | FilterTopics | TogglehighlightTopicUpdates
 
 export enum ActionTypes {
   SETTINGS_SET_AUTO_EXPAND_LIMIT = 'SETTINGS_SET_AUTO_EXPAND_LIMIT',
   SETTINGS_TOGGLE_VISIBILITY = 'SETTINGS_TOGGLE_VISIBILITY',
   SETTINGS_SET_TOPIC_ORDER = 'SETTINGS_SET_TOPIC_ORDER',
   SETTINGS_FILTER_TOPICS = 'SETTINGS_FILTER_TOPICS',
+  SETTINGS_TOGGLE_HIGHLIGHT_ACTIVITY = 'SETTINGS_TOGGLE_HIGHLIGHT_ACTIVITY',
 }
 
 const initialState: SettingsState = {
   autoExpandLimit: 0,
   topicOrder: TopicOrder.none,
   visible: false,
+  highlightTopicUpdates: true,
 }
 
 export const settingsReducer = createReducer(initialState, {
@@ -34,7 +37,13 @@ export const settingsReducer = createReducer(initialState, {
   SETTINGS_TOGGLE_VISIBILITY: toggleVisibility,
   SETTINGS_SET_TOPIC_ORDER: setTopicOrder,
   SETTINGS_FILTER_TOPICS: filterTopics,
+  SETTINGS_TOGGLE_HIGHLIGHT_ACTIVITY: togglehighlightTopicUpdates,
 })
+
+export interface SetAutoExpandLimit {
+  type: ActionTypes.SETTINGS_SET_AUTO_EXPAND_LIMIT
+  autoExpandLimit: number
+}
 
 function setAutoExpandLimit(state: SettingsState, action: SetAutoExpandLimit) {
   return {
@@ -43,9 +52,19 @@ function setAutoExpandLimit(state: SettingsState, action: SetAutoExpandLimit) {
   }
 }
 
-export interface SetAutoExpandLimit {
-  type: ActionTypes.SETTINGS_SET_AUTO_EXPAND_LIMIT
-  autoExpandLimit: number
+export interface TogglehighlightTopicUpdates {
+  type: ActionTypes.SETTINGS_TOGGLE_HIGHLIGHT_ACTIVITY
+}
+
+function togglehighlightTopicUpdates(state: SettingsState, _action: TogglehighlightTopicUpdates) {
+  return {
+    ...state,
+    highlightTopicUpdates: !state.highlightTopicUpdates,
+  }
+}
+
+export interface ToggleVisibility {
+  type: ActionTypes.SETTINGS_TOGGLE_VISIBILITY
 }
 
 function toggleVisibility(state: SettingsState, action: ToggleVisibility) {
@@ -53,10 +72,6 @@ function toggleVisibility(state: SettingsState, action: ToggleVisibility) {
     ...state,
     visible: !state.visible,
   }
-}
-
-export interface ToggleVisibility {
-  type: ActionTypes.SETTINGS_TOGGLE_VISIBILITY
 }
 
 function setTopicOrder(state: SettingsState, action: SetTopicOrder) {
