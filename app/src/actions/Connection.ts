@@ -9,7 +9,7 @@ import {
 } from '../../../events'
 import { AppState } from '../reducers'
 import { Dispatch } from 'redux'
-import { MqttOptions } from '../../../backend/src/DataSource'
+import { MqttOptions, DataSourceState } from '../../../backend/src/DataSource'
 import { showTree } from './Tree'
 import { TopicViewModel } from '../TopicViewModel'
 import { showError } from './Global'
@@ -31,6 +31,27 @@ export const connect = (options: MqttOptions, connectionId: string) => (dispatch
       dispatch(showError(dataSourceState.error))
       dispatch(disconnect())
     }
+    dispatch(updateHealth(dataSourceState))
+  })
+}
+
+const updateHealth = (dataSourceState: DataSourceState) => (dispatch: Dispatch<any>, getState: () => AppState) => {
+  let state
+  if (dataSourceState.connecting) {
+    state = 'connecting'
+  } else if (!dataSourceState.connected) {
+    state = 'offline'
+  } else if (dataSourceState.connected) {
+    state = 'online'
+  } else {
+    state = undefined
+  }
+
+  console.log(state)
+
+  dispatch({
+    type: ActionTypes.CONNECTION_SET_HEALTH,
+    health: state,
   })
 }
 

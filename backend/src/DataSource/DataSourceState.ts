@@ -25,16 +25,17 @@ export class DataSourceStateMachine {
 
   public setError(error: Error) {
     this.state = {
+      ...this.state,
       error: error.message,
-      connected: false,
-      connecting: false,
+      // connected: false,
+      // connecting: false,
     }
     this.onUpdate.dispatch(this.state)
   }
 
   public setConnecting() {
     this.state = {
-      error: undefined,
+      ...this.state,
       connected: false,
       connecting: true,
     }
