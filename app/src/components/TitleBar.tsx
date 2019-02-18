@@ -94,7 +94,7 @@ class TitleBar extends React.Component<Props, {}> {
           <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={actions.settings.toggleSettingsVisibility}>
             <Menu />
           </IconButton>
-          <Typography className={classes.title} variant="h6" color="inherit">MQTT-Explorer</Typography>
+          <Typography className={classes.title} variant="h6" color="inherit">MQTT Explorer</Typography>
           {this.renderSearch()}
           <Button style={{ margin: 'auto 8px auto auto' }} onClick={actions.connection.disconnect}>
             Disconnect <CloudOff style={{ marginRight: '8px', paddingLeft: '8px' }}/>
