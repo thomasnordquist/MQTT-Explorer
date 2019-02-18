@@ -10,7 +10,7 @@ const applicationMenu = {
       click: () => {
         console.log(path.join(__dirname, 'icon.png'))
         openAboutWindow({
-          icon_path: path.join(__dirname, 'icon.png'),
+          icon_path: path.join(__dirname, '..', '..', 'icon.png'),
           license: 'AGPL-3.0',
           homepage: 'https://thomasnordquist.github.io/MQTT-Explorer/',
           bug_report_url: 'https://github.com/thomasnordquist/MQTT-Explorer/issues',
