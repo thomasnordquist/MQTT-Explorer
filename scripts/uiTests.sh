@@ -17,7 +17,7 @@ export PID_XVFB=$!
 sleep 2
 
 # Debug with VNC
-while [ "$TEST_EXIT_CODE" = "" ]; do x11vnc -passwd "bierbier" -display :$SCR; done &
+while [ "$TEST_EXIT_CODE" = "" ]; do x11vnc -localhost -passwd "bierbier" -display :$SCR; done &
 export PID_VNC=$!
 
 # Start mqtt broker
