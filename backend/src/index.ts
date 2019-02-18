@@ -20,7 +20,10 @@ export class ConnectionManager {
 
   public manageConnections() {
     backendEvents.subscribe(addMqttConnectionEvent, this.handleConnectionRequest)
-    backendEvents.subscribe(removeConnection, (connectionId: string) => this.removeConnection(connectionId))
+    backendEvents.subscribe(removeConnection, (connectionId: string) => {
+      backendEvents.unsubscribeAll(makePublishEvent(connectionId))
+      this.removeConnection(connectionId)
+    })
   }
 
   private handleConnectionRequest = (event: AddMqttConnection) => {
