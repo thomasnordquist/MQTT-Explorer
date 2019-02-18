@@ -11,7 +11,7 @@ import { AppState } from './reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { default as SplitPane } from 'react-split-pane'
-import { globalActions } from './actions'
+import { globalActions, settingsActions } from './actions'
 import { Theme, withStyles } from '@material-ui/core/styles'
 
 const Settings = React.lazy(() => import('./components/Settings'))
@@ -22,13 +22,18 @@ interface Props {
   classes: any
   settingsVisible: boolean
   error?: string
-  actions: any
+  actions: typeof globalActions
+  settingsActions: typeof settingsActions
 }
 
 class App extends React.PureComponent<Props, {}> {
   constructor(props: any) {
     super(props)
     this.state = { }
+  }
+
+  public componentDidMount() {
+    this.props.settingsActions.loadSettings()
   }
 
   private renderError() {
@@ -143,6 +148,7 @@ const styles = (theme: Theme) => {
 const mapDispatchToProps = (dispatch: any) => {
   return {
     actions: bindActionCreators(globalActions, dispatch),
+    settingsActions: bindActionCreators(settingsActions, dispatch),
   }
 }
 

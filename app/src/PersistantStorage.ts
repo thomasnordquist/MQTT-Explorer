@@ -44,7 +44,7 @@ class RemoteStorage implements PersistantStorage {
     })
   }
 
-  public store<Model>(identifier: StorageIdentifier<Model>,  data: Model): Promise<void> {
+  public store<Model>(identifier: StorageIdentifier<Model>, data: Model): Promise<void> {
     const transactionId = v4()
     const expectation = this.expectAck(transactionId)
     rendererEvents.emit(storageStoreEvent, { data, transactionId, store: identifier.id })

@@ -33,8 +33,8 @@ export default class ConfigStorage {
         await db.set(event.store, event.data).write()
         backendEvents.emit(ack, undefined)
       } catch (error) {
-        console.error(error)
         backendEvents.emit(ack, { error, transactionId: event.transactionId, store: event.store })
+        throw error
       }
     })
 
@@ -45,8 +45,8 @@ export default class ConfigStorage {
         const data = await db.get(event.store).value()
         backendEvents.emit(responseEvent, { data, transactionId: event.transactionId, store: event.store })
       } catch (error) {
-        console.error(error)
         backendEvents.emit(responseEvent, { error, transactionId: event.transactionId, store: event.store })
+        throw error
       }
     })
 
@@ -60,8 +60,8 @@ export default class ConfigStorage {
         backendEvents.emit(makeStorageAcknoledgementEvent(event.transactionId), undefined)
       } catch (error) {
         backendEvents.emit(makeStorageAcknoledgementEvent(event.transactionId), { error, transactionId: event.transactionId })
+        throw error
       }
-
     })
   }
 }

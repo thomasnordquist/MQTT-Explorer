@@ -35,6 +35,7 @@ export const loadConnectionSettings = () => async (dispatch: Dispatch<any>, getS
 
 export const saveConnectionSettings = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
   try {
+    console.log('store settings')
     await persistantStorage.store(storedConnectionsIdentifier, getState().connectionManager.connections)
   } catch (error) {
     dispatch(showError(error))

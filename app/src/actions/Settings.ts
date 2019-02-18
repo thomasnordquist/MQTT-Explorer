@@ -1,37 +1,76 @@
-import { Action, ActionTypes, TopicOrder } from '../reducers/Settings'
-import { ActionTypes as TreeActionTypes } from '../reducers/Tree'
-import { Dispatch } from 'redux'
-import { showTree } from './Tree'
-import { AppState } from '../reducers'
 import * as q from '../../../backend/src/Model'
-import { batchActions } from 'redux-batched-actions'
+import { AppState } from '../reducers'
 import { autoExpandLimitSet } from '../components/Settings'
+import { batchActions } from 'redux-batched-actions'
+import { default as persistantStorage, StorageIdentifier } from '../PersistantStorage'
+import { Dispatch } from 'redux'
+import { showError } from './Global'
+import { showTree } from './Tree'
 import { TopicViewModel } from '../TopicViewModel'
+import {
+  ActionTypes,
+  SettingsState,
+  TopicOrder,
+} from '../reducers/Settings'
 
-export const setAutoExpandLimit = (autoExpandLimit: number = 0): Action => {
-  return {
+const settingsIdentifier: StorageIdentifier<Partial<SettingsState>> = {
+  id: 'Settings',
+}
+
+export const loadSettings = () => async (dispatch: Dispatch<any>, _getState: () => AppState)  => {
+  try {
+    const settings = await persistantStorage.load(settingsIdentifier)
+    dispatch({
+      settings,
+      type: ActionTypes.SETTINGS_DID_LOAD_SETTINGS,
+    })
+  } catch (error) {
+    dispatch(showError(error))
+  }
+}
+
+export const storeSettings = () => async (dispatch: Dispatch<any>, getState: () => AppState)  => {
+  const settings = {
+    ...getState().settings,
+    topicFilter: undefined,
+    visible: undefined,
+  }
+
+  try {
+    await persistantStorage.store(settingsIdentifier, settings)
+  } catch (error) {
+    dispatch(showError(error))
+  }
+}
+
+export const setAutoExpandLimit = (autoExpandLimit: number = 0) => (dispatch: Dispatch<any>, getState: () => AppState) => {
+  dispatch({
     autoExpandLimit,
     type: ActionTypes.SETTINGS_SET_AUTO_EXPAND_LIMIT,
-  }
+  })
+  dispatch(storeSettings())
 }
 
-export const toggleSettingsVisibility = (): Action => {
-  return {
+export const toggleSettingsVisibility = () => (dispatch: Dispatch<any>, _getState: () => AppState) => {
+  dispatch({
     type: ActionTypes.SETTINGS_TOGGLE_VISIBILITY,
-  }
+  })
+  dispatch(storeSettings())
 }
 
-export const togglehighlightTopicUpdates = (): Action => {
-  return {
+export const togglehighlightTopicUpdates = () => (dispatch: Dispatch<any>, _getState: () => AppState) => {
+  dispatch({
     type: ActionTypes.SETTINGS_TOGGLE_HIGHLIGHT_ACTIVITY,
-  }
+  })
+  dispatch(storeSettings())
 }
 
-export const setTopicOrder = (topicOrder: TopicOrder = TopicOrder.none): Action => {
-  return {
+export const setTopicOrder = (topicOrder: TopicOrder = TopicOrder.none) => (dispatch: Dispatch<any>, _getState: () => AppState) => {
+  dispatch({
     topicOrder,
     type: ActionTypes.SETTINGS_SET_TOPIC_ORDER,
-  }
+  })
+  dispatch(storeSettings())
 }
 
 export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, getState: () => AppState)  => {

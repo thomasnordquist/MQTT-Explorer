@@ -23,6 +23,7 @@ export enum ActionTypes {
   SETTINGS_SET_TOPIC_ORDER = 'SETTINGS_SET_TOPIC_ORDER',
   SETTINGS_FILTER_TOPICS = 'SETTINGS_FILTER_TOPICS',
   SETTINGS_TOGGLE_HIGHLIGHT_ACTIVITY = 'SETTINGS_TOGGLE_HIGHLIGHT_ACTIVITY',
+  SETTINGS_DID_LOAD_SETTINGS = 'SETTINGS_DID_LOAD_SETTINGS',
 }
 
 const initialState: SettingsState = {
@@ -38,7 +39,20 @@ export const settingsReducer = createReducer(initialState, {
   SETTINGS_SET_TOPIC_ORDER: setTopicOrder,
   SETTINGS_FILTER_TOPICS: filterTopics,
   SETTINGS_TOGGLE_HIGHLIGHT_ACTIVITY: togglehighlightTopicUpdates,
+  SETTINGS_DID_LOAD_SETTINGS: didLoadSettings,
 })
+
+export interface DidLoadSettings {
+  type: ActionTypes.SETTINGS_DID_LOAD_SETTINGS
+  settings: Partial<SettingsState>
+}
+
+function didLoadSettings(state: SettingsState, action: DidLoadSettings) {
+  return {
+    ...state,
+    ...action.settings,
+  }
+}
 
 export interface SetAutoExpandLimit {
   type: ActionTypes.SETTINGS_SET_AUTO_EXPAND_LIMIT
