@@ -17,6 +17,7 @@ import { connect } from 'react-redux'
 import { connectionActions, settingsActions } from '../actions'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
+import ConnectionHealthIndicator from './ConnectionHealthIndicator';
 
 const styles: StyleRulesCallback = theme => ({
   title: {
@@ -99,6 +100,7 @@ class TitleBar extends React.Component<Props, {}> {
           <Button style={{ margin: 'auto 8px auto auto' }} onClick={actions.connection.disconnect}>
             Disconnect <CloudOff style={{ marginRight: '8px', paddingLeft: '8px' }}/>
           </Button>
+          <ConnectionHealthIndicator />
         </Toolbar>
       </AppBar>
     )

@@ -55,6 +55,10 @@ export class MqttSource implements DataSource<MqttOptions> {
       this.stateMachine.setConnected(false)
     })
 
+    client.on('end', () => {
+      this.stateMachine.setConnected(false)
+    })
+
     client.on('reconnect', () => {
       this.stateMachine.setConnecting()
     })

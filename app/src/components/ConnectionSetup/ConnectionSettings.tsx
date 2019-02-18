@@ -14,7 +14,6 @@ import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
 
 import {
   Button,
-  CircularProgress,
   FormControl,
   FormControlLabel,
   Grid,
@@ -26,6 +25,7 @@ import {
   Switch,
   TextField,
 } from '@material-ui/core'
+import ConnectionHealthIndicator from '../ConnectionHealthIndicator'
 
 interface Props {
   connection: ConnectionOptions
@@ -284,7 +284,7 @@ class ConnectionSettings extends React.Component<Props, State> {
     if (this.props.connecting) {
       return (
         <Button variant="contained" color="primary" className={classes.button} onClick={actions.disconnect}>
-          <CircularProgress size={22} style={{ marginRight: '10px' }} color="secondary" /> Abort
+          <ConnectionHealthIndicator />&nbsp;&nbsp;Abort
         </Button>
       )
     }

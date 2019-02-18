@@ -61,6 +61,7 @@ export class ConnectionManager {
     if (connection) {
       connection.disconnect()
       delete this.connections[hash]
+      connection.stateMachine.onUpdate.removeAllListeners()
     }
   }
 

@@ -4,6 +4,7 @@ import * as q from '../../../backend/src/Model'
 import { MqttOptions } from '../../../backend/src/DataSource'
 import { TopicViewModel } from '../TopicViewModel'
 
+export type ConnectionHealth = 'offline' | 'online' | 'connecting'
 export interface ConnectionState {
   host?: string
   tree?: q.Tree<TopicViewModel>
@@ -12,6 +13,7 @@ export interface ConnectionState {
   error?: string
   connected: boolean
   connecting: boolean
+  health?: ConnectionHealth
 }
 
 export type Action = SetConnecting | SetConnected | SetDisconnected | ShowError
@@ -21,6 +23,7 @@ export enum ActionTypes {
   CONNECTION_SET_CONNECTED = 'CONNECTION_SET_CONNECTED',
   CONNECTION_SET_DISCONNECTED = 'CONNECTION_SET_DISCONNECTED',
   CONNECTION_SET_SHOW_ERROR = 'CONNECTION_SET_SHOW_ERROR',
+  CONNECTION_SET_HEALTH = 'CONNECTION_SET_HEALTH',
 }
 
 export interface SetConnecting {
@@ -38,6 +41,11 @@ export interface SetDisconnected {
   type: ActionTypes.CONNECTION_SET_DISCONNECTED
 }
 
+export interface SetHealth {
+  health: ConnectionHealth
+  type: ActionTypes.CONNECTION_SET_DISCONNECTED
+}
+
 export interface ShowError {
   type: ActionTypes.CONNECTION_SET_SHOW_ERROR
   error?: Error
@@ -46,6 +54,7 @@ export interface ShowError {
 const initialState: ConnectionState = {
   connected: false,
   connecting: false,
+  health: 'disconnected',
 }
 
 export const connectionReducer = createReducer(initialState, {
@@ -53,6 +62,7 @@ export const connectionReducer = createReducer(initialState, {
   CONNECTION_SET_CONNECTED: setConnected,
   CONNECTION_SET_DISCONNECTED: setDisconnected,
   CONNECTION_SET_SHOW_ERROR: showError,
+  CONNECTION_SET_HEALTH: setHealth,
 })
 
 function setConnecting(state: ConnectionState, action: SetConnecting): ConnectionState {
@@ -61,6 +71,13 @@ function setConnecting(state: ConnectionState, action: SetConnecting): Connectio
     connecting: true,
     connected: false,
     connectionId: action.connectionId,
+  }
+}
+
+function setHealth(state: ConnectionState, action: SetHealth): ConnectionState {
+  return {
+    ...state,
+    health: action.health,
   }
 }
 
