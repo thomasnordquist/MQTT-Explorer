@@ -2,6 +2,7 @@ import * as q from '../../../../backend/src/Model'
 import * as React from 'react'
 import Clear from '@material-ui/icons/Clear'
 import Copy from '../Copy'
+import CustomIconButton from '../CustomIconButton'
 import DateFormatter from '../helper/DateFormatter'
 import Delete from '@material-ui/icons/Delete'
 import DeleteForever from '@material-ui/icons/DeleteForever'
@@ -29,8 +30,6 @@ import {
   Tooltip,
   Badge,
 } from '@material-ui/core'
-import CustomIconButton from '../CustomIconButton';
-import { max } from 'moment';
 
 const throttle = require('lodash.throttle')
 
@@ -101,13 +100,19 @@ class Sidebar extends React.Component<Props, State> {
       return null
     }
 
-    return <CustomIconButton onClick={() => this.deleteTopic(this.props.node)}><Delete /></CustomIconButton>
+    return (
+      <CustomIconButton onClick={() => this.deleteTopic(this.props.node)}>
+        <Tooltip title="Clear this topic">
+          <Delete />
+        </Tooltip>
+      </CustomIconButton>
+    )
   }
 
   private renderRecursiveTopicDeleteButton() {
     const deleteLimit = 50
     const topicCount = this.props.node ? this.props.node.childTopicCount() : 0
-    if (!this.props.node || topicCount <= 1) {
+    if (!this.props.node || topicCount === 0) {
       return null
     }
 

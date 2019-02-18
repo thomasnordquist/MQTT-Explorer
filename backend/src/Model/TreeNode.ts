@@ -47,6 +47,9 @@ export class TreeNode<ViewModel> {
       this.lastUpdate = Date.now()
     })
     this.onEdgesChange.subscribe(() => {
+      this.cachedChildTopics = undefined
+      this.cachedChildTopicCount = undefined
+      this.cachedLeafMessageCount = undefined
       this.lastUpdate = Date.now()
     })
     this.onMessage.subscribe(() => {
@@ -102,11 +105,43 @@ export class TreeNode<ViewModel> {
     return previous.branch().concat([this])
   }
 
+  private isTopicEmptyLeaf() {
+    const hasNoMessage = (!this.message || !this.message.value)
+    return hasNoMessage && this.isLeaf()
+  }
+
+  private isLeaf() {
+    return this.edgeArray.length === 0
+  }
+
+  private removeFromParent() {
+    const previous = this.previous()
+    if (!previous || !this.sourceEdge) {
+      return
+    }
+    previous.removeEdge(this.sourceEdge)
+  }
+
+  public removeEdge(edge: Edge<any>) {
+    delete this.edges[edge.name]
+    this.edgeArray = Object.values(this.edges)
+    this.onMerge.dispatch()
+
+    if (this.isTopicEmptyLeaf()) {
+      debugger
+      this.removeFromParent()
+    }
+  }
+
   public updateWithNode(node: TreeNode<ViewModel>) {
     if (node.message) {
       this.setMessage(node.message)
       this.onMessage.dispatch(node.message)
       this.mqttMessage = node.mqttMessage
+    }
+
+    if (this.isTopicEmptyLeaf()) {
+      this.removeFromParent()
     }
 
     this.mergeEdges(node)
