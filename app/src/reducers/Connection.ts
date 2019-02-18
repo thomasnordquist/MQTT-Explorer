@@ -54,7 +54,7 @@ export interface ShowError {
 const initialState: ConnectionState = {
   connected: false,
   connecting: false,
-  health: 'disconnected',
+  health: undefined,
 }
 
 export const connectionReducer = createReducer(initialState, {

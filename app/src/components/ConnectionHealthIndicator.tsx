@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { ConnectionHealth } from '../reducers/Connection'
 import { green, orange, red } from '@material-ui/core/colors'
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
-import { Tooltip } from '@material-ui/core';
+import { Tooltip } from '@material-ui/core'
 
 const styles: StyleRulesCallback = theme => ({
   offline: {
