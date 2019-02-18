@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Snackbar, SnackbarContent } from '@material-ui/core'
+import { Snackbar, SnackbarContent, Tooltip } from '@material-ui/core'
 import FileCopy from '@material-ui/icons/FileCopy'
 import Check from '@material-ui/icons/Check'
 import green from '@material-ui/core/colors/green'
@@ -35,25 +35,29 @@ class Copy extends React.Component<Props, State> {
       ? <FileCopy fontSize="inherit" style={{ cursor: 'pointer' }} onClick={this.handleClick} />
       : <Check fontSize="inherit" style={{ cursor: 'default' }} />
 
-    return <span>
-      <span style={{ fontSize: '16px' }}>{icon}</span>
+    return (
       <span>
-        <Snackbar
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          open={this.state.snackBarOpen}
-          autoHideDuration={2000}
-          onClose={() => { this.setState({ snackBarOpen: false }) }}
-        >
-          <SnackbarContent
-            className={this.props.classes.snackbar}
-            message="Copied to clipboard"
-          />
-        </Snackbar>
+        <Tooltip placement="top" title="Copy to clipboard">
+          <span style={{ fontSize: '16px' }}>{icon}</span>
+        </Tooltip>
+        <span>
+          <Snackbar
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            open={this.state.snackBarOpen}
+            autoHideDuration={2000}
+            onClose={() => { this.setState({ snackBarOpen: false }) }}
+          >
+            <SnackbarContent
+              className={this.props.classes.snackbar}
+              message="Copied to clipboard"
+            />
+          </Snackbar>
+        </span>
       </span>
-    </span>
+    )
   }
 
   private handleClick = (event: React.MouseEvent) => {

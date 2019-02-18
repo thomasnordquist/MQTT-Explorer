@@ -24,7 +24,6 @@ const styles: StyleRulesCallback = theme => ({
     height: '224px',
     backgroundColor: 'rebeccapurple',
     marginBottom: 0,
-    marginTop: 'auto',
     padding: '8px',
   },
 })
