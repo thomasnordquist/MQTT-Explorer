@@ -2,6 +2,7 @@
 [![Downloads](https://img.shields.io/github/release/thomasnordquist/mqtt-explorer.svg)](https://travis-ci.org/thomasnordquist/MQTT-Explorer/releases)
 [![Downloads](https://img.shields.io/github/downloads/thomasnordquist/mqtt-explorer/total.svg)](https://travis-ci.org/thomasnordquist/MQTT-Explorer/releases)
 [![Build_Status](https://travis-ci.org/thomasnordquist/MQTT-Explorer.svg)](https://travis-ci.org/thomasnordquist/MQTT-Explorer)
+![](https://img.shields.io/github/commits-since/thomasnordquist/mqtt-explorer/latest.svg?style=flat)
 
 ### Version {{ version }}
 

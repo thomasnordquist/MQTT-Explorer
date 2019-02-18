@@ -18,7 +18,7 @@ import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 import ChevronRight from '@material-ui/icons/ChevronRight'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { settingsActions, treeActions } from '../actions'
+import { settingsActions } from '../actions'
 import { TopicOrder } from '../reducers/Settings'
 import BrokerStatistics from './BrokerStatistics'
 import { shell } from 'electron';
