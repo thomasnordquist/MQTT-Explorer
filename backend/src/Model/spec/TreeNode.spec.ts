@@ -43,10 +43,10 @@ describe('TreeNode', () => {
 
   it('updateWithNode should add nodes to the tree', () => {
     const topics1 = 'foo/bar'.split('/')
-    const leaf1 = TreeNodeFactory.fromEdgesAndValue(topics1, undefined)
+    const leaf1 = TreeNodeFactory.fromEdgesAndValue(topics1, 'foo')
 
     const topics2 = 'foo/bar/baz'.split('/')
-    const leaf2 = TreeNodeFactory.fromEdgesAndValue(topics2, undefined)
+    const leaf2 = TreeNodeFactory.fromEdgesAndValue(topics2, 'bar')
 
     leaf1.firstNode().updateWithNode(leaf2.firstNode())
 
