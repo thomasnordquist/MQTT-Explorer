@@ -45,12 +45,12 @@ async function doStuff() {
   await sleep(1000)
 
   await sleep(1000)
-  await showText('Overview of topics', 2000, browser, 'top')
+  await showText('Topics overview', 2000, browser, 'top')
   await sleep(2000)
-  await showText('Indicates which topics change', 2000, browser, 'bottom')
+  await showText('Indicate topic updates', 2000, browser, 'bottom')
   await sleep(3000)
 
-  await showText('Plot topics', 2000, browser)
+  await showText('Plot topic history', 2000, browser)
   await showNumericPlot(browser)
   await sleep(2000)
 
