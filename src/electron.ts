@@ -15,7 +15,7 @@ if (!isDev) {
 }
 
 const isDebugEnabled = Boolean(process.argv.find(arg => arg === 'debug'))
-const isFullscreen = Boolean(process.argv.find(arg => arg === '--fullscreen'))
+const runningUiTestOnCi = Boolean(process.argv.find(arg => arg === '--runningUiTestOnCi'))
 
 require('electron-debug')({ enabled: isDebugEnabled })
 
@@ -36,8 +36,8 @@ function createWindow() {
   const iconPath = path.join(__dirname, 'icon.png')
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 1024,
-    height: 700,
+    width: runningUiTestOnCi ? 1280 : 1024,
+    height: runningUiTestOnCi ? 720 : 700,
     show: false,
     webPreferences: {
       nodeIntegration: true,
@@ -48,7 +48,7 @@ function createWindow() {
 
   mainWindow.once('ready-to-show', () => {
     if (mainWindow) {
-      isFullscreen && mainWindow.setFullScreen(true)
+      runningUiTestOnCi && mainWindow.setFullScreen(true)
       mainWindow.show()
     }
   })

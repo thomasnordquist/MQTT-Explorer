@@ -21,7 +21,7 @@ import { showMenu } from './scenarios/showMenu'
 import { createFakeMousePointer, sleep, showText, hideText, clickOnHistory } from './util'
 
 const binary = os.platform() === 'darwin' ? 'Electron.app/Contents/MacOS/Electron' : 'electron'
-const fullscreen = os.platform() === 'darwin' ? [] : ['--fullscreen']
+const runningUiTestOnCi = os.platform() === 'darwin' ? [] : ['--runningUiTestOnCi']
 
 const options = {
   host: 'localhost', // Use localhost as chrome driver server
@@ -30,7 +30,7 @@ const options = {
     browserName: 'electron',
     chromeOptions: {
       binary: `${__dirname}/../../../node_modules/electron/dist/${binary}`,
-      args: [`--app=${__dirname}/../../..`, '--force-device-scale-factor=1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-extensions'].concat(fullscreen),
+      args: [`--app=${__dirname}/../../..`, '--force-device-scale-factor=1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-extensions'].concat(runningUiTestOnCi),
     },
     windowTypes: ['app', 'webview'],
   },
