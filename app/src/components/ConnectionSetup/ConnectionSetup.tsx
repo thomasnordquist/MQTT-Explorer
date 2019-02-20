@@ -71,16 +71,17 @@ class ConnectionSetup extends React.Component<Props, {}> {
   }
 }
 
+const connectionHeight = '440px'
 const styles = (theme: Theme) => ({
   title: {
     color: theme.palette.text.primary,
     whiteSpace: 'nowrap' as 'nowrap',
   },
   root: {
-    margin: '13vw auto 0 auto',
+    margin: `calc((100vh - ${connectionHeight}) / 2) auto 0 auto`,
     minWidth: '800px',
     maxWidth: '850px',
-    height: '440px',
+    height: connectionHeight,
     outline: 'none' as 'none',
     display: 'flex' as 'flex',
   },
