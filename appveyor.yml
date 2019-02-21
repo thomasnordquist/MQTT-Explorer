@@ -13,9 +13,10 @@ install:
   - ps: Install-Product node 10 x64
 
 build_script:
+  - del C:\Program Files\Git\usr\bin\rm.exe
   - set PATH2=%PATH%
 #  - set PATH=C:\Windows\System32;C:\Windows;C:\Windows\System32\Wbem;C:\msys64\usr\bin
-  - rmdir /s C:\cygwin
+  - rmdir /s /q C:\cygwin
   - yarn
   - yarn prepare-release
   - yarn package win
