@@ -32,6 +32,9 @@
       "category": "Development",
       "maintainer": "Thomas Nordquist"
     },
+    "windows": {
+      "applicationId": "de.t7n.apps.mqttexplorer"
+    },
     "directories": {
       "app": "./",
       "buildResources": "res",
