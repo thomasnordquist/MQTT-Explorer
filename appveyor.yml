@@ -10,10 +10,13 @@ install:
   - ps: Install-Product node 10
 
 build_script:
-#  - rm .travis.yml
   - yarn
   - yarn prepare-release
   - yarn package win
+
+artifacts:
+  - path: 'build\clean\build\MQTT-Explorer*.appx'
+  - path: 'build\clean\build\MQTT-Explorer*.exe'
 
 
 test_script:

@@ -3,13 +3,30 @@ import * as path from 'path'
 import { spawn, ChildProcess } from 'child_process'
 import { chdir } from 'process'
 
-async function waitFor(child: ChildProcess) {
-  child.stdout.on('data', (data: Buffer) => {
+async function exec(cmd: string, args: string[] = []) {
+  const child = spawn(cmd, args, { shell: true })
+  redirectOutputFor(child)
+  await waitFor(child)
+}
+
+function redirectOutputFor(child: ChildProcess) {
+  const printStdout = (data: Buffer) => {
     process.stdout.write(data.toString())
-  })
-  child.stderr.on('data', (data: Buffer) => {
+  }
+  const printStderr = (data: Buffer) => {
     process.stderr.write(data.toString())
+  }
+  child.stdout.on('data', printStdout)
+  child.stderr.on('data', printStderr)
+
+  child.once('close', () => {
+    child.stdout.off('data', printStdout)
+    child.stderr.off('data', printStderr)
   })
+}
+
+async function waitFor(child: ChildProcess) {
+
   return new Promise((resolve) => {
     child.once('close', () => resolve())
   })
@@ -21,28 +38,26 @@ async function prepareRelease() {
   await fs.remove(targetDir)
   await fs.mkdirp(targetDir)
 
-  let process = spawn('git', ['clone', '.git', targetDir], { shell: true })
-  await waitFor(process)
+  // Create fresh clone of the local git repo
+  await exec('git', ['clone', '.git', targetDir])
 
+  // Enter git repo
   chdir(targetDir)
 
   // Install app dependencies
   chdir('app')
-  process = spawn('yarn', [], { shell: true })
-  await waitFor(process)
+  await exec('yarn')
   chdir('..')
 
   // Install electron dependencies
-  process = spawn('yarn', [], { shell: true })
-  await waitFor(process)
+  await exec('yarn')
 
   // Build App and Electron backend
-  process = spawn('yarn', ['build'], { shell: true })
-  await waitFor(process)
+  await exec('yarn', ['build'])
 
   // Clean up
   await fs.remove('node_modules')
-  process = spawn('yarn', ['install', '--production'], { shell: true })
+  await exec('yarn', ['install', '--production'])
   await fs.remove(path.join('app', 'node_modules'))
 
   chdir(originalDir)
