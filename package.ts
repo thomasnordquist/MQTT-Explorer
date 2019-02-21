@@ -25,7 +25,7 @@ const win: builder.CliOptions = {
   ia32: true,
   armv7l: false,
   arm64: false,
-  win: ['portable', 'nsis'],
+  win: ['portable', 'nsis', 'appx'],
   projectDir: './build/clean',
   publish: 'always',
 }
