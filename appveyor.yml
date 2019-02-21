@@ -11,10 +11,6 @@ environment:
 
 install:
   - ps: Install-Product node 10 x64
-  - ls
-  - cd app
-  - yarn
-  - cd ..
   - yarn
   - yarn prepare-release
   - yarn package win
