@@ -18,7 +18,6 @@ build_script:
   - yarn prepare-release
   - yarn package win
 
-build: off
 
 test_script:
   - yarn test
