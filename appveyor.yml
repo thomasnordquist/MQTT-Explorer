@@ -15,7 +15,7 @@ install:
 build_script:
   - set PATH2=%PATH%
 #  - set PATH=C:\Windows\System32;C:\Windows;C:\Windows\System32\Wbem;C:\msys64\usr\bin
-  - rmdir C:\cygwin
+  - rmdir /s C:\cygwin
   - yarn
   - yarn prepare-release
   - yarn package win
