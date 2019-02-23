@@ -11,6 +11,7 @@ const throttle = require('lodash.throttle')
 
 interface Props {
   node?: q.TreeNode<TopicViewModel>
+  selected?: q.Message
   onSelect: (message: q.Message) => void
 }
 
@@ -52,6 +53,7 @@ class MessageHistory extends React.Component<Props, State> {
     const historyElements = history.reverse().map(message => ({
       title: <DateFormatter date={message.received} />,
       value: message.value,
+      selected: message === this.props.selected,
     }))
 
     const numericMessages = history.filter(message => !isNaN(parseFloat(message.value)))

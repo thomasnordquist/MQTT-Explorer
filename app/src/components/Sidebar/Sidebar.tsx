@@ -169,10 +169,7 @@ class Sidebar extends React.Component<Props, State> {
               <ValueRenderer node={this.props.node} />
             </React.Suspense>
             </div>
-            <div><MessageHistory onSelect={this.handleMessageHistorySelect} node={this.props.node} /></div>
-            <Popper open={Boolean(this.state.compareMessage)} anchorEl={this.valueRef.current} placement="left" transition={true}>
-              {this.showValueComparison}
-            </Popper>
+            <div><MessageHistory onSelect={this.handleMessageHistorySelect} selected={this.state.compareMessage} node={this.props.node} /></div>
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel defaultExpanded={true}>
@@ -194,18 +191,6 @@ class Sidebar extends React.Component<Props, State> {
       </div>
     )
   }
-
-  private valueRenderWidthChange = (width: number) => {
-    this.setState({ valueRenderWidth: width })
-  }
-
-  private showValueComparison = (a: any) => (
-    <Fade {...a.TransitionProps} timeout={350}>
-      <Paper style={{ maxWidth: this.state.valueRenderWidth }}>
-        <ValueRenderer message={this.state.compareMessage} />
-      </Paper>
-    </Fade>
-  )
 
   private messageMetaInfo() {
     if (!this.props.node || !this.props.node.message || !this.props.node.mqttMessage) {
