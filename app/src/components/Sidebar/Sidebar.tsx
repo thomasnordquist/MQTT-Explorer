@@ -166,7 +166,7 @@ class Sidebar extends React.Component<Props, State> {
             <div ref={this.valueRef}>
             <React.Suspense fallback={<div>Loading...</div>}>
               <ReactResizeDetector handleWidth={true} onResize={this.valueRenderWidthChange} />
-              <ValueRenderer message={this.props.node && this.props.node.message} />
+              <ValueRenderer node={this.props.node} />
             </React.Suspense>
             </div>
             <div><MessageHistory onSelect={this.handleMessageHistorySelect} node={this.props.node} /></div>

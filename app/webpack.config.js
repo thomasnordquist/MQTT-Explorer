@@ -1,6 +1,7 @@
 const LiveReloadPlugin = require('webpack-livereload-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 
 module.exports = {
     entry: {
@@ -66,6 +67,10 @@ module.exports = {
     plugins: [
       new LiveReloadPlugin({}),
       new HtmlWebpackPlugin({ template: './index.html', file: './build/index.html', inject: false }),
+      new MonacoWebpackPlugin({
+        // available options are documented at https://github.com/Microsoft/monaco-editor-webpack-plugin#options
+        languages: ['json']
+      })
     //   new BundleAnalyzerPlugin(),
     ],
 
