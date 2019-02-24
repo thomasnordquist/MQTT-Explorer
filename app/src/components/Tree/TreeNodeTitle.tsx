@@ -11,29 +11,19 @@ export interface TreeNodeProps extends React.HTMLAttributes<HTMLElement> {
   collapsed?: boolean | undefined
   classes: any
   didSelectNode: any
+  toggleCollapsed: any
 }
 
 class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
-  private mouseOver = (event: React.MouseEvent) => {
-    event.preventDefault()
-    this.selectTopic()
-  }
-
-  private selectTopic = debounce(() => {
-    if (this.props.treeNode.message) {
-      this.props.didSelectNode(this.props.treeNode)
-    }
-  }, 5)
-
   public render() {
     const { classes, treeNode, style, className } = this.props
     return (
       <span
         className={`${classes.title} ${className}`}
-        onMouseOver={treeNode.message ? this.mouseOver : undefined}
         style={style}
       >
-        <span className={classes.expander}>{this.renderExpander()}</span> {this.renderSourceEdge()} {this.renderCollapsedSubnodes()} {this.renderValue()}
+        <span className={classes.expander} onClick={this.props.toggleCollapsed}>{this.renderExpander()}</span>
+        {this.renderSourceEdge()} {this.renderCollapsedSubnodes()} {this.renderValue()}
       </span>
     )
   }
@@ -81,6 +71,8 @@ const styles = (theme: Theme) => ({
   },
   expander: {
     color: theme.palette.type === 'light' ? '#222' : '#eee',
+    cursor: 'pointer' as 'pointer',
+    paddingRight: theme.spacing(0.25),
   },
   title: {
     borderRadius: '4px',
@@ -88,7 +80,7 @@ const styles = (theme: Theme) => ({
     display: 'inline-block' as 'inline-block',
     whiteSpace: 'nowrap' as 'nowrap',
     padding: '1px 4px 0px 4px',
-    height: '16px',
+    height: '14px',
     margin: '1px 0px 2px 0px',
   },
   collapsedSubnodes: {
