@@ -1,12 +1,13 @@
 import * as q from '../../../../backend/src/Model'
 import * as React from 'react'
-import MonacoEditor, { MonacoDiffEditor, MonacoEditorBaseProps, MonacoEditorProps } from 'react-monaco-editor'
-import ReactResizeDetector from 'react-resize-detector'
+import { MonacoDiffEditor } from 'react-monaco-editor'
+import { default as ReactResizeDetector } from 'react-resize-detector'
 import { Theme, withTheme } from '@material-ui/core/styles'
 import * as diff from 'diff'
 
 interface Props {
   node?: q.TreeNode<any>,
+  compareWith?: q.Message
   theme: Theme
 }
 
@@ -36,31 +37,27 @@ class ValueRenderer extends React.Component<Props, State> {
     const message = node.message
     const previousMessages = node.messageHistory.toArray()
     const previousMessage = previousMessages[previousMessages.length - 2]
-    debugger
+    const compareMessage = this.props.compareWith || previousMessage || message
+
     let json
     try {
       json = JSON.parse(message.value)
     } catch (error) {
-      return this.renderRawValue(message.value)
+      return this.renderRawValue(message.value, compareMessage.value)
     }
 
     if (typeof json === 'string') {
-      return this.renderRawValue(message.value)
+      return this.renderRawValue(message.value, compareMessage.value)
     } else if (typeof json === 'number') {
-      return this.renderRawValue(message.value)
+      return this.renderRawValue(message.value, compareMessage.value)
     } else if (typeof json === 'boolean') {
-      return this.renderRawValue(message.value)
+      return this.renderRawValue(message.value, compareMessage.value)
     } else {
-      const theme = (this.props.theme.palette.type === 'dark') ? 'monokai' : 'bright:inverted'
       const current = this.messageToPrettyJson(message)
-      const previous = this.messageToPrettyJson(previousMessage)
+      const compare = this.messageToPrettyJson(compareMessage)
+      const language = current && compare ? 'json' : undefined
 
-      return (
-        <div>
-          <ReactResizeDetector handleWidth={true} onResize={this.updateWidth} />
-          {this.renderDiff(current, previous || current)}
-        </div>
-      )
+      return this.renderDiff(current, compare, language)
     }
   }
 
@@ -86,20 +83,26 @@ class ValueRenderer extends React.Component<Props, State> {
     theme: 'vs-dark',
   }
 
-  private renderDiff(current: string = '', previous: string = '') {
+  private renderDiff(current: string = '', previous: string = '', language: 'json' | undefined) {
+    const theme = (this.props.theme.palette.type === 'dark') ? 'monokai' : 'bright:inverted'
+
     const value = this.state.modifiedValue !== undefined ? this.state.modifiedValue : current
     const lines = this.expectedLineCountFor(value, previous)
     const height = this.heightForLines(lines)
     return (
-      <MonacoDiffEditor
-        language="json"
-        height={Math.min(height, 200)}
-        options={{ ...this.editorOptions, renderSideBySide: false }}
-        onChange={value => this.setState({ modifiedValue: value })}
-        original={previous}
-        width={this.state.width}
-        value={value}
-      />
+      <div>
+        <ReactResizeDetector handleWidth={true} onResize={this.updateWidth} />
+        <MonacoDiffEditor
+          key="editor"
+          language={language}
+          height={Math.min(height, 200)}
+          options={{ ...this.editorOptions, renderSideBySide: false }}
+          onChange={value => this.setState({ modifiedValue: value })}
+          original={previous}
+          width={this.state.width}
+          value={value}
+        />
+      </div>
     )
   }
 
@@ -114,11 +117,10 @@ class ValueRenderer extends React.Component<Props, State> {
     const added = changes
       .map((change) => {
         const added = (change.added && change.count) || 0
-        const removed = (change.removed && change.count) || 0
 
         return Math.abs(added)
       })
-      .reduce((a, b) => a + b, 0)
+      .reduce((a: number, b: number) => a + b, 0)
 
     const originalLines = originalStr.split('\n').length
 
@@ -142,19 +144,8 @@ class ValueRenderer extends React.Component<Props, State> {
     this.setState({ width })
   }
 
-  private renderRawValue(value: string) {
-    const style: React.CSSProperties = {
-      padding: '8px 12px 8px 12px',
-      backgroundColor: 'rgba(100, 100, 100, 0.55)',
-      wordBreak: 'break-all',
-      width: '100%',
-      overflow: 'auto hidden',
-      display: 'block',
-      lineHeight: '1.2em',
-      color: this.props.theme.palette.text.primary,
-    }
-
-    return <pre style={style}><code>{value}</code></pre>
+  private renderRawValue(value: string, compare?: string) {
+    return this.renderDiff(value, compare, undefined)
   }
 }
 
