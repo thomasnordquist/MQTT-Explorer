@@ -1,11 +1,8 @@
-import * as diff from 'diff'
 import * as q from '../../../../backend/src/Model'
 import * as React from 'react'
+import CodeDiff from '../CodeDiff'
 import { default as ReactResizeDetector } from 'react-resize-detector'
 import { Theme, withTheme } from '@material-ui/core/styles'
-import CodeDiff from '../CodeDiff';
-
-const sha1 = require('sha1')
 
 interface Props {
   node?: q.TreeNode<any>,
@@ -15,14 +12,12 @@ interface Props {
 
 interface State {
   width: number
-  node?: q.TreeNode<any>
-  currentMessage?: q.Message
 }
 
 class ValueRenderer extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
-    this.state = { width: 0, node: props.node }
+    this.state = { width: 0 }
   }
 
   public render() {
@@ -71,21 +66,12 @@ class ValueRenderer extends React.Component<Props, State> {
     }
   }
 
-  public static getDerivedStateFromProps(props: Props, state: State) {
-    const discardEdit = props.node !== state.node || (props.node && props.node.message !== state.currentMessage)
-    return {
-      ...state,
-      node: props.node,
-      currentMessage: props.node && props.node.message,
-    }
-  }
-
-  private renderDiff(current: string = '', previous: string = '') {
+  private renderDiff(current: string = '', previous: string = '', language?: 'json') {
     return (
       <CodeDiff
-        key={sha1(current + previous)}
         previous={previous}
         current={current}
+        language={language}
       />
     )
   }
