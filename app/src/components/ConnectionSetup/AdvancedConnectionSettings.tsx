@@ -79,6 +79,7 @@ class ConnectionSettings extends React.Component<Props, State> {
                 className={classes.fullWidth}
                 label="MQTT Client ID"
                 margin="normal"
+                value={this.props.connection.clientId}
                 onChange={this.handleChange('clientId')}
               />
             </Grid>
