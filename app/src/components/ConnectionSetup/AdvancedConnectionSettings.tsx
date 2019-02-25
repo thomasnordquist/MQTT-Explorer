@@ -69,7 +69,7 @@ class ConnectionSettings extends React.Component<Props, State> {
                 className={classes.topicList}
                 component="nav"
               >
-                <div className={this.props.classes.list}>
+                <div className={classes.list}>
                   {this.renderSubscriptions()}
                 </div>
               </List>
