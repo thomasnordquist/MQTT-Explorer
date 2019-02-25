@@ -1,4 +1,5 @@
 import * as React from 'react'
+import CodeDiff from './components/CodeDiff'
 import ConnectionSetup from './components/ConnectionSetup/ConnectionSetup'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import ErrorBoundary from './ErrorBoundary'

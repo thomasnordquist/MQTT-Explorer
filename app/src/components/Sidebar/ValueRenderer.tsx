@@ -1,9 +1,11 @@
+import * as diff from 'diff'
 import * as q from '../../../../backend/src/Model'
 import * as React from 'react'
-import { MonacoDiffEditor } from 'react-monaco-editor'
 import { default as ReactResizeDetector } from 'react-resize-detector'
 import { Theme, withTheme } from '@material-ui/core/styles'
-import * as diff from 'diff'
+import CodeDiff from '../CodeDiff';
+
+const sha1 = require('sha1')
 
 interface Props {
   node?: q.TreeNode<any>,
@@ -13,7 +15,6 @@ interface Props {
 
 interface State {
   width: number
-  modifiedValue?: string
   node?: q.TreeNode<any>
   currentMessage?: q.Message
 }
@@ -25,13 +26,22 @@ class ValueRenderer extends React.Component<Props, State> {
   }
 
   public render() {
-    return <div style={{ padding: '8px 0px 8px 8px' }}>{this.renderValue()}</div>
+    if (!this.props.node) {
+      return null
+    }
+
+    return (
+      <div style={{ padding: '8px 0px 8px 8px' }}>
+        <ReactResizeDetector handleWidth={true} onResize={this.updateWidth} />
+        {this.renderValue()}
+      </div>
+    )
   }
 
   public renderValue() {
     const { node } = this.props
     if (!node || !node.message) {
-      return null
+      return <span key="empty" />
     }
 
     const message = node.message
@@ -53,8 +63,8 @@ class ValueRenderer extends React.Component<Props, State> {
     } else if (typeof json === 'boolean') {
       return this.renderRawValue(message.value, compareMessage.value)
     } else {
-      const current = this.messageToPrettyJson(message)
-      const compare = this.messageToPrettyJson(compareMessage)
+      const current = this.messageToPrettyJson(message) || message.value
+      const compare = this.messageToPrettyJson(compareMessage) || compareMessage.value
       const language = current && compare ? 'json' : undefined
 
       return this.renderDiff(current, compare, language)
@@ -67,64 +77,17 @@ class ValueRenderer extends React.Component<Props, State> {
       ...state,
       node: props.node,
       currentMessage: props.node && props.node.message,
-      modifiedValue: discardEdit ? undefined : state.modifiedValue,
     }
   }
 
-  private heightForLines(lines: number) {
-    return 0 + (lines * 18)
-  }
-
-  private editorOptions = {
-    lineHeigh: 16,
-    lineNumbers: 'off' as 'off',
-    scrollBeyondLastLine: false,
-    minimap: { enabled: false },
-    theme: 'vs-dark',
-  }
-
-  private renderDiff(current: string = '', previous: string = '', language: 'json' | undefined) {
-    const theme = (this.props.theme.palette.type === 'dark') ? 'monokai' : 'bright:inverted'
-
-    const value = this.state.modifiedValue !== undefined ? this.state.modifiedValue : current
-    const lines = this.expectedLineCountFor(value, previous)
-    const height = this.heightForLines(lines)
+  private renderDiff(current: string = '', previous: string = '') {
     return (
-      <div>
-        <ReactResizeDetector handleWidth={true} onResize={this.updateWidth} />
-        <MonacoDiffEditor
-          key="editor"
-          language={language}
-          height={Math.min(height, 200)}
-          options={{ ...this.editorOptions, renderSideBySide: false }}
-          onChange={value => this.setState({ modifiedValue: value })}
-          original={previous}
-          width={this.state.width}
-          value={value}
-        />
-      </div>
+      <CodeDiff
+        key={sha1(current + previous)}
+        previous={previous}
+        current={current}
+      />
     )
-  }
-
-  private expectedLineCountFor(current?: string, original?: string): number {
-    if (current === undefined) {
-      return 0
-    }
-
-    const originalStr = original || ''
-    const changes = diff.diffLines(originalStr, current)
-
-    const added = changes
-      .map((change) => {
-        const added = (change.added && change.count) || 0
-
-        return Math.abs(added)
-      })
-      .reduce((a: number, b: number) => a + b, 0)
-
-    const originalLines = originalStr.split('\n').length
-
-    return originalLines + added
   }
 
   private messageToPrettyJson(message?: q.Message): string | undefined {
@@ -141,11 +104,13 @@ class ValueRenderer extends React.Component<Props, State> {
   }
 
   private updateWidth = (width: number) => {
-    this.setState({ width })
+    if (width !== this.state.width) {
+      this.setState({ width })
+    }
   }
 
-  private renderRawValue(value: string, compare?: string) {
-    return this.renderDiff(value, compare, undefined)
+  private renderRawValue(value: string, compare: string) {
+    return this.renderDiff(value, compare)
   }
 }
 
