@@ -1,8 +1,8 @@
 import * as diff from 'diff'
-import * as React from 'react'
 import * as Prism from 'prismjs'
+import * as React from 'react'
 import { Theme, withStyles } from '@material-ui/core'
-require('prismjs/components/prism-json')
+import 'prismjs/components/prism-json'
 import 'prismjs/themes/prism-tomorrow.css'
 
 interface Props {
