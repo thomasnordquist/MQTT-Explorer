@@ -35,8 +35,7 @@
     "appx": {
       "applicationId": "de.t7n.apps.mqttexplorer",
       "identityName": "51031thomas.nordquist.MQTT-Explorer",
-      "publisherDisplayName": "Thomas Nordquist",
-      "publisher": "0A6DE643-4AA2-4FF2-9729-6935C9ED8C13"
+      "publisherDisplayName": "Thomas Nordquist"
     },
     "directories": {
       "app": "./",
