@@ -11,8 +11,8 @@ import {
   removeConnection,
   updateAvailable,
 } from '../../events'
+
 import { DataSource, MqttSource } from './DataSource'
-import ConfigStorage from './ConfigStorage'
 import { UpdateInfo } from 'builder-util-runtime'
 
 export class ConnectionManager {
@@ -21,13 +21,18 @@ export class ConnectionManager {
   public manageConnections() {
     backendEvents.subscribe(addMqttConnectionEvent, this.handleConnectionRequest)
     backendEvents.subscribe(removeConnection, (connectionId: string) => {
-      backendEvents.unsubscribeAll(makePublishEvent(connectionId))
       this.removeConnection(connectionId)
     })
   }
 
   private handleConnectionRequest = (event: AddMqttConnection) => {
     const connectionId = event.id
+
+    // Prevent double connections when reloading
+    if (this.connections[connectionId]) {
+      this.removeConnection(connectionId)
+    }
+
     const options = event.options
     const connection = new MqttSource()
     this.connections[connectionId] = connection
@@ -56,18 +61,19 @@ export class ConnectionManager {
     })
   }
 
-  public removeConnection(hash: string) {
-    const connection = this.connections[hash]
+  public removeConnection(conenctionId: string) {
+    const connection = this.connections[conenctionId]
     if (connection) {
+      backendEvents.unsubscribeAll(makePublishEvent(conenctionId))
       connection.disconnect()
-      delete this.connections[hash]
+      delete this.connections[conenctionId]
       connection.stateMachine.onUpdate.removeAllListeners()
     }
   }
 
   public closeAllConnections() {
     Object.keys(this.connections)
-      .forEach(hash => this.removeConnection(hash))
+      .forEach(conenctionId => this.removeConnection(conenctionId))
   }
 }
 

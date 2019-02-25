@@ -8,7 +8,6 @@ const applicationMenu = {
     {
       label: 'About Application',
       click: () => {
-        console.log(path.join(__dirname, 'icon.png'))
         openAboutWindow({
           icon_path: path.join(__dirname, '..', '..', 'icon.png'),
           license: 'AGPL-3.0',
@@ -75,9 +74,50 @@ const editMenu = {
   ],
 }
 
+const viewMenu = {
+  label: 'View',
+  submenu: [
+    {
+      label: 'Default size',
+      accelerator: 'CmdOrCtrl+0',
+      click: () => {
+        const window = BrowserWindow.getFocusedWindow()
+        if (window) {
+          window.webContents.setZoomFactor(1)
+        }
+      },
+    },
+    {
+      label: 'Increase size',
+      accelerator: 'CmdOrCtrl+Plus',
+      click: () => {
+        const window = BrowserWindow.getFocusedWindow()
+        if (window) {
+          window.webContents.getZoomFactor((zoom) => {
+            window.webContents.setZoomFactor(Math.min(zoom + 0.1, 2.0))
+          })
+        }
+      },
+    },
+    {
+      label: 'Reduce size',
+      accelerator: 'CmdOrCtrl+-',
+      click: () => {
+        const window = BrowserWindow.getFocusedWindow()
+        if (window) {
+          window.webContents.getZoomFactor((zoom) => {
+            window.webContents.setZoomFactor(Math.max(zoom - 0.1, 0.5))
+          })
+        }
+      },
+    },
+  ],
+}
+
 const template = [
   applicationMenu,
   editMenu,
+  viewMenu,
 ]
 
 export const menuTemplate = Menu.buildFromTemplate(template)

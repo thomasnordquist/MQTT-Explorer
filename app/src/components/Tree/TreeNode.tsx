@@ -29,6 +29,9 @@ const styles = (theme: Theme) => {
       cursor: 'pointer',
       marginTop: '-1px',
     },
+    subnodes: {
+      marginLeft: theme.spacing(1.5),
+    },
     selected: {
       backgroundColor: 'rgba(170, 170, 170, 0.55)',
     },
@@ -187,29 +190,40 @@ class TreeNode extends React.Component<Props, State> {
     const highlightClass = this.state.selected ? this.props.classes.selected : (this.state.mouseOver ? this.props.classes.hover : '')
 
     return (
-      <div
-        key={this.props.treeNode.hash()}
-        className={`${classes.node} ${this.props.className}`}
-        onClick={this.didClickNode}
-        onMouseOver={this.mouseOver}
-        onMouseOut={this.mouseOut}
-        ref={this.nodeRef}
-      >
-        <TreeNodeTitle
-          style={animation}
-          collapsed={this.collapsed()}
-          treeNode={this.props.treeNode}
-          name={this.props.name}
-          didSelectNode={this.didSelectTopic}
-          className={highlightClass}
-        />
-        {this.renderNodes()}
+      <div>
+        <div
+          key={this.props.treeNode.hash()}
+          className={`${classes.node} ${this.props.className}`}
+          onMouseOver={this.mouseOver}
+          onMouseOut={this.mouseOut}
+          onClick={this.didClickTitle}
+          ref={this.nodeRef}
+        >
+          <TreeNodeTitle
+            style={animation}
+            toggleCollapsed={this.toggleCollapsed}
+            didSelectNode={this.didSelectTopic}
+            collapsed={this.collapsed()}
+            treeNode={this.props.treeNode}
+            name={this.props.name}
+            className={highlightClass}
+          />
+        </div>
+        <div className={classes.subnodes}>
+          {this.renderNodes()}
+        </div>
       </div>
     )
   }
 
   private didSelectTopic = () => {
     this.props.didSelectTopic(this.props.treeNode)
+  }
+
+  private didClickTitle = (event: React.MouseEvent) => {
+    event.preventDefault()
+    this.props.didSelectTopic(this.props.treeNode)
+    this.toggle()
   }
 
   private mouseOver = (event: React.MouseEvent) => {
@@ -226,10 +240,9 @@ class TreeNode extends React.Component<Props, State> {
     this.setState({ mouseOver: hover })
   }, 45)
 
-  private didClickNode = (event: React.MouseEvent) => {
+  private toggleCollapsed = (event: React.MouseEvent) => {
     event.stopPropagation()
     this.toggle()
-    this.didSelectTopic()
   }
 
   private renderNodes() {

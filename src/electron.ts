@@ -40,7 +40,6 @@ function createWindow() {
     height: runningUiTestOnCi ? 720 : 700,
     show: false,
     webPreferences: {
-      zoomFactor: runningUiTestOnCi ? 1.15 : undefined,
       nodeIntegration: true,
       devTools: true,
     },

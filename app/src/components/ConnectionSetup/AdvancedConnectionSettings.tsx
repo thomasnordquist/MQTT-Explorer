@@ -69,7 +69,7 @@ class ConnectionSettings extends React.Component<Props, State> {
                 className={classes.topicList}
                 component="nav"
               >
-                <div className={this.props.classes.list}>
+                <div className={classes.list}>
                   {this.renderSubscriptions()}
                 </div>
               </List>
@@ -79,6 +79,7 @@ class ConnectionSettings extends React.Component<Props, State> {
                 className={classes.fullWidth}
                 label="MQTT Client ID"
                 margin="normal"
+                value={this.props.connection.clientId}
                 onChange={this.handleChange('clientId')}
               />
             </Grid>

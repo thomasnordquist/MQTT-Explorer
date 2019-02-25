@@ -6,6 +6,7 @@ import { Theme, withStyles } from '@material-ui/core/styles'
 interface HistoryItem {
   title: JSX.Element | string
   value: string | any
+  selected?: boolean
 }
 
 interface Props {
@@ -28,18 +29,18 @@ class MessageHistory extends React.Component<Props, State> {
   }
 
   public renderHistory() {
-    const style = {
-      backgroundColor: 'rgba(80, 80, 80, 0.6)',
+    const style = (element: HistoryItem) => ({
+      backgroundColor: element.selected ? 'rgba(120, 120, 120, 0.6)' : 'rgba(80, 80, 80, 0.6)',
       margin: '8px',
       padding: '8px 8px 0 8px',
       cursor: this.props.onClick ? 'pointer' : 'inherit',
-    }
+    })
 
     const messageStyle: React.CSSProperties = { textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }
     const elements = this.props.items.map((element, index) => (
       <div
         key={index}
-        style={style}
+        style={style(element)}
         onClick={(event: React.MouseEvent) => this.props.onClick && this.props.onClick(index, event.target)}
       >
         <div><i>{element.title}</i></div>

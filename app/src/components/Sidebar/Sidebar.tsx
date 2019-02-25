@@ -165,14 +165,10 @@ class Sidebar extends React.Component<Props, State> {
             {this.messageMetaInfo()}
             <div ref={this.valueRef}>
             <React.Suspense fallback={<div>Loading...</div>}>
-              <ReactResizeDetector handleWidth={true} onResize={this.valueRenderWidthChange} />
-              <ValueRenderer message={this.props.node && this.props.node.message} />
+              <ValueRenderer node={this.props.node} compareWith={this.state.compareMessage} />
             </React.Suspense>
             </div>
-            <div><MessageHistory onSelect={this.handleMessageHistorySelect} node={this.props.node} /></div>
-            <Popper open={Boolean(this.state.compareMessage)} anchorEl={this.valueRef.current} placement="left" transition={true}>
-              {this.showValueComparison}
-            </Popper>
+            <div><MessageHistory onSelect={this.handleMessageHistorySelect} selected={this.state.compareMessage} node={this.props.node} /></div>
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel defaultExpanded={true}>
@@ -194,18 +190,6 @@ class Sidebar extends React.Component<Props, State> {
       </div>
     )
   }
-
-  private valueRenderWidthChange = (width: number) => {
-    this.setState({ valueRenderWidth: width })
-  }
-
-  private showValueComparison = (a: any) => (
-    <Fade {...a.TransitionProps} timeout={350}>
-      <Paper style={{ maxWidth: this.state.valueRenderWidth }}>
-        <ValueRenderer message={this.state.compareMessage} />
-      </Paper>
-    </Fade>
-  )
 
   private messageMetaInfo() {
     if (!this.props.node || !this.props.node.message || !this.props.node.mqttMessage) {
