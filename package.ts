@@ -30,6 +30,16 @@ const win: builder.CliOptions = {
   publish: 'always',
 }
 
+const winAppx: builder.CliOptions = {
+  x64: true,
+  ia32: true,
+  armv7l: false,
+  arm64: false,
+  win: ['appx'],
+  projectDir: './build/clean',
+  publish: 'never',
+}
+
 const mac: builder.CliOptions = {
   x64: true,
   ia32: true,
@@ -41,10 +51,12 @@ const mac: builder.CliOptions = {
 }
 
 async function executeBuild() {
-  console.log(process.argv[2])
   switch (process.argv[2]) {
     case 'win':
       await builder.build(win)
+      break
+    case 'appx':
+      await builder.build(winAppx)
       break
     case 'linux':
       await builder.build(linux)

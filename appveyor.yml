@@ -1,0 +1,32 @@
+image: Visual Studio 2017
+platform: x64
+
+cache:
+  - node_modules
+  - '%LOCALAPPDATA%\electron\Cache'
+  - '%LOCALAPPDATA%\electron-builder\cache'
+
+install:
+  - ps: Install-Product node 10
+
+build_script:
+  - yarn
+  - yarn build
+
+test_script:
+  - yarn test
+
+before_deploy:
+  - yarn prepare-release
+  - yarn package appx
+
+deploy:
+  - provider: Environment
+    name: production
+    on:
+      branch: master # only this will work
+      APPVEYOR_REPO_TAG: true # condition will never be evaluated
+
+artifacts:
+  - path: 'build\clean\build\MQTT-Explorer*.appx'
+
