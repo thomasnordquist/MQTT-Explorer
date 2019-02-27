@@ -12,20 +12,11 @@ install:
 build_script:
   - yarn
   - yarn build
-
-test_script:
-  - yarn test
-
-before_deploy:
   - yarn prepare-release
   - yarn package appx
 
-deploy:
-  - provider: Environment
-    name: production
-    on:
-      branch: master # only this will work
-#      APPVEYOR_REPO_TAG: true # condition will never be evaluated
+test_script:
+  - yarn test
 
 artifacts:
   - path: 'build\clean\build\MQTT-Explorer*.appx'
