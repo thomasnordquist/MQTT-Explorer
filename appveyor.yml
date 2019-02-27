@@ -25,7 +25,7 @@ deploy:
     name: production
     on:
       branch: master # only this will work
-      APPVEYOR_REPO_TAG: true # condition will never be evaluated
+#      APPVEYOR_REPO_TAG: true # condition will never be evaluated
 
 artifacts:
   - path: 'build\clean\build\MQTT-Explorer*.appx'
