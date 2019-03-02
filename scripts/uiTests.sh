@@ -9,7 +9,7 @@ function finish {
 
 trap finish EXIT
 
-DIMENSIONS="1280x720"
+DIMENSIONS="1024x720"
 SCR=99
 # Start new window manager
 Xvfb :$SCR -screen 0 "$DIMENSIONS"x24 -ac &
