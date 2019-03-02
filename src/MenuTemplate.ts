@@ -1,8 +1,8 @@
-import { Menu, app, BrowserWindow, webContents } from 'electron'
+import { Menu, app, BrowserWindow, webContents, MenuItemConstructorOptions, MenuItem } from 'electron'
 import openAboutWindow from 'about-window'
 import * as path from 'path'
 
-const applicationMenu = {
+const applicationMenu: MenuItemConstructorOptions = {
   label: 'Application',
   submenu: [
     {
@@ -23,7 +23,7 @@ const applicationMenu = {
     {
       label: 'Dev Tools',
       accelerator: 'CmdOrCtrl+Alt+I',
-      role: 'toggleDevTools',
+      role: 'toggledevtools' as 'toggledevtools',
     },
     {
       label: 'Quit',
@@ -35,41 +35,41 @@ const applicationMenu = {
   ],
 }
 
-const editMenu = {
+const editMenu: MenuItemConstructorOptions = {
   label: 'Edit',
   submenu: [
     {
       label: 'Undo',
       accelerator: 'CmdOrCtrl+Z',
-      selector: 'undo:',
+      role: 'undo',
     },
     {
       label: 'Redo',
       accelerator: 'Shift+CmdOrCtrl+Z',
-      selector: 'redo:',
+      role: 'redo',
     },
     {
-      type: 'separator' as 'separator',
+      type: 'separator',
     },
     {
       label: 'Cut',
       accelerator: 'CmdOrCtrl+X',
-      selector: 'cut:',
+      role: 'cut',
     },
     {
       label: 'Copy',
       accelerator: 'CmdOrCtrl+C',
-      selector: 'copy:',
+      role: 'copy',
     },
     {
       label: 'Paste',
       accelerator: 'CmdOrCtrl+V',
-      selector: 'paste:',
+      role: 'paste',
     },
     {
       label: 'Select All',
       accelerator: 'CmdOrCtrl+A',
-      selector: 'selectAll:',
+      role: 'selectall',
     },
   ],
 }
@@ -93,9 +93,8 @@ const viewMenu = {
       click: () => {
         const window = BrowserWindow.getFocusedWindow()
         if (window) {
-          window.webContents.getZoomFactor((zoom) => {
-            window.webContents.setZoomFactor(Math.min(zoom + 0.1, 2.0))
-          })
+          const zoom = window.webContents.getZoomFactor()
+          window.webContents.setZoomFactor(Math.min(zoom + 0.1, 2.0))
         }
       },
     },
@@ -105,16 +104,15 @@ const viewMenu = {
       click: () => {
         const window = BrowserWindow.getFocusedWindow()
         if (window) {
-          window.webContents.getZoomFactor((zoom) => {
-            window.webContents.setZoomFactor(Math.max(zoom - 0.1, 0.5))
-          })
+          const zoom = window.webContents.getZoomFactor()
+          window.webContents.setZoomFactor(Math.max(zoom - 0.1, 0.5))
         }
       },
     },
   ],
 }
 
-const template = [
+const template: Array<(MenuItemConstructorOptions) | (MenuItem)> = [
   applicationMenu,
   editMenu,
   viewMenu,

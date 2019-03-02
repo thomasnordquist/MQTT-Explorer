@@ -9,15 +9,14 @@ import { menuTemplate } from './MenuTemplate'
 import { UpdateInfo } from '../events'
 const isDev = require('electron-is-dev')
 
-let electronTelemetry: any
 if (!isDev) {
-  electronTelemetry = electronTelemetryFactory('9b0c8ca04a361eb8160d98c5')
+  const electronTelemetry = electronTelemetryFactory('9b0c8ca04a361eb8160d98c5')
 }
 
-const isDebugEnabled = Boolean(process.argv.find(arg => arg === 'debug'))
+// const isDebugEnabled = Boolean(process.argv.find(arg => arg === 'debug'))
 const runningUiTestOnCi = Boolean(process.argv.find(arg => arg === '--runningUiTestOnCi'))
 
-require('electron-debug')({ enabled: isDebugEnabled })
+// require('electron-debug')({ enabled: isDebugEnabled })
 
 autoUpdater.logger = log
 log.info('App starting...')
