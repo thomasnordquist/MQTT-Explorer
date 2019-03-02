@@ -10,9 +10,9 @@
   "license": "ISC",
   "devDependencies": {
     "@material-ui/core": "^4.0.0-alpha.1",
-    "@material-ui/icons": "^4.0.0-alpha.1",
-    "@material-ui/lab": "^4.0.0-alpha.0",
-    "@material-ui/styles": "^4.0.0-alpha.1",
+    "@material-ui/icons": "^3.0.2",
+    "@material-ui/lab": "^3.0.0-alpha.30",
+    "@material-ui/styles": "^3.0.0-alpha.10",
     "@types/diff": "^4.0.1",
     "@types/node": "^10.12.18",
     "@types/prismjs": "^1.9.1",
