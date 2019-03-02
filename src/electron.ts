@@ -16,8 +16,6 @@ if (!isDev) {
 // const isDebugEnabled = Boolean(process.argv.find(arg => arg === 'debug'))
 const runningUiTestOnCi = Boolean(process.argv.find(arg => arg === '--runningUiTestOnCi'))
 
-// require('electron-debug')({ enabled: isDebugEnabled })
-
 autoUpdater.logger = log
 log.info('App starting...')
 

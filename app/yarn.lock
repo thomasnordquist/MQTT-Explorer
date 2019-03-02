@@ -3239,7 +3239,7 @@ jss-vendor-prefixer@^7.0.0:
   dependencies:
     css-vendor "^0.3.8"
 
-jss@^10.0.0-alpha.12, jss@^10.0.0-alpha.7:
+jss@^10.0.0-alpha.7:
   version "10.0.0-alpha.12"
   resolved "https://registry.yarnpkg.com/jss/-/jss-10.0.0-alpha.12.tgz#bc2bf245850527a90de2aa08cf68c92bcf5db569"
   integrity sha512-1HHH0oEcsnOnDYPGogd2NM9Aj94xnPLAPV4KfwLkSYTxtAmrBAK/eN25+Y/7BD5pSxb0vQkLbfX7QIWvy4rqeQ==
