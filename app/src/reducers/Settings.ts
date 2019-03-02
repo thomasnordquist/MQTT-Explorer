@@ -8,14 +8,19 @@ export enum TopicOrder {
   topics = '#topics',
 }
 
+export type ValueRendererDisplayMode = 'diff' | 'raw'
+
 export interface SettingsState {
   autoExpandLimit: number
   visible: boolean
   topicOrder: TopicOrder
   topicFilter?: string
   highlightTopicUpdates: boolean
+  valueRendererDisplayMode: ValueRendererDisplayMode
+  selectTopicWithMouseOver: boolean
 }
-export type Action = SetAutoExpandLimit | ToggleVisibility | SetTopicOrder | FilterTopics | TogglehighlightTopicUpdates
+
+export type Action = SetAutoExpandLimit | ToggleVisibility | SetTopicOrder | FilterTopics | TogglehighlightTopicUpdates | SetValueRendererDisplayMode
 
 export enum ActionTypes {
   SETTINGS_SET_AUTO_EXPAND_LIMIT = 'SETTINGS_SET_AUTO_EXPAND_LIMIT',
@@ -24,6 +29,9 @@ export enum ActionTypes {
   SETTINGS_FILTER_TOPICS = 'SETTINGS_FILTER_TOPICS',
   SETTINGS_TOGGLE_HIGHLIGHT_ACTIVITY = 'SETTINGS_TOGGLE_HIGHLIGHT_ACTIVITY',
   SETTINGS_DID_LOAD_SETTINGS = 'SETTINGS_DID_LOAD_SETTINGS',
+  SETTINGS_SET_VALUE_RENDERER_DISPLAY_MODE = 'SETTINGS_SET_VALUE_RENDERER_DISPLAY_MODE',
+  SETTINGS_SET_SELECT_TOPIC_WITH_MOUSE_OVER = 'SETTINGS_SET_SELECT_TOPIC_WITH_MOUSE_OVER',
+
 }
 
 const initialState: SettingsState = {
@@ -31,6 +39,8 @@ const initialState: SettingsState = {
   topicOrder: TopicOrder.none,
   visible: false,
   highlightTopicUpdates: true,
+  valueRendererDisplayMode: 'diff',
+  selectTopicWithMouseOver: false,
 }
 
 export const settingsReducer = createReducer(initialState, {
@@ -40,6 +50,8 @@ export const settingsReducer = createReducer(initialState, {
   SETTINGS_FILTER_TOPICS: filterTopics,
   SETTINGS_TOGGLE_HIGHLIGHT_ACTIVITY: togglehighlightTopicUpdates,
   SETTINGS_DID_LOAD_SETTINGS: didLoadSettings,
+  SETTINGS_SET_VALUE_RENDERER_DISPLAY_MODE: setValueRendererDisplayMode,
+  SETTINGS_SET_SELECT_TOPIC_WITH_MOUSE_OVER: setSelectTopicWithMouseOver,
 })
 
 export interface DidLoadSettings {
@@ -51,6 +63,30 @@ function didLoadSettings(state: SettingsState, action: DidLoadSettings) {
   return {
     ...state,
     ...action.settings,
+  }
+}
+
+export interface SetSelectTopicWithMouseOver {
+  type: ActionTypes.SETTINGS_SET_SELECT_TOPIC_WITH_MOUSE_OVER
+  selectTopicWithMouseOver: boolean
+}
+
+export function setSelectTopicWithMouseOver(state: SettingsState, action: SetSelectTopicWithMouseOver) {
+  return {
+    ...state,
+    selectTopicWithMouseOver: action.selectTopicWithMouseOver,
+  }
+}
+
+export interface SetValueRendererDisplayMode {
+  type: ActionTypes.SETTINGS_SET_VALUE_RENDERER_DISPLAY_MODE
+  valueRendererDisplayMode: ValueRendererDisplayMode
+}
+
+export function setValueRendererDisplayMode(state: SettingsState, action: SetValueRendererDisplayMode) {
+  return {
+    ...state,
+    valueRendererDisplayMode: action.valueRendererDisplayMode,
   }
 }
 

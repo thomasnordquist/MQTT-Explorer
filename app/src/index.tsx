@@ -40,7 +40,7 @@ setTimeout(() => {
 ReactDOM.render(
     <MuiThemeProvider theme={theme}>
       <Provider store={store}>
-        <App name="" />
+        <App />
       </Provider>
     </MuiThemeProvider>,
     document.getElementById('app'),

@@ -18,7 +18,6 @@ import { Theme, withStyles } from '@material-ui/core/styles'
 const Settings = React.lazy(() => import('./components/Settings'))
 
 interface Props {
-  name: string
   connectionId: string
   classes: any
   settingsVisible: boolean

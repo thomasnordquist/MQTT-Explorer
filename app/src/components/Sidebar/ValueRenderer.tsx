@@ -1,11 +1,16 @@
 import * as q from '../../../../backend/src/Model'
 import * as React from 'react'
 import CodeDiff from '../CodeDiff'
+import { AppState } from '../../reducers'
+import { connect } from 'react-redux'
 import { default as ReactResizeDetector } from 'react-resize-detector'
+import { ValueRendererDisplayMode } from '../../reducers/Settings'
 
 interface Props {
-  node?: q.TreeNode<any>,
+  message: q.Message
+  messageHistory: q.RingBuffer<q.Message>
   compareWith?: q.Message
+  renderMode: ValueRendererDisplayMode
 }
 
 interface State {
@@ -19,10 +24,6 @@ class ValueRenderer extends React.Component<Props, State> {
   }
 
   public render() {
-    if (!this.props.node) {
-      return null
-    }
-
     return (
       <div style={{ padding: '8px 0px 8px 8px' }}>
         <ReactResizeDetector handleWidth={true} onResize={this.updateWidth} />
@@ -32,15 +33,14 @@ class ValueRenderer extends React.Component<Props, State> {
   }
 
   public renderValue() {
-    const { node } = this.props
-    if (!node || !node.message) {
-      return <span key="empty" />
-    }
+    const { message, messageHistory, compareWith, renderMode } = this.props
 
-    const message = node.message
-    const previousMessages = node.messageHistory.toArray()
+    const previousMessages = messageHistory.toArray()
     const previousMessage = previousMessages[previousMessages.length - 2]
-    const compareMessage = this.props.compareWith || previousMessage || message
+    let compareMessage = compareWith || previousMessage || message
+    if (renderMode === 'raw') {
+      compareMessage = message
+    }
 
     let json
     try {
@@ -98,4 +98,10 @@ class ValueRenderer extends React.Component<Props, State> {
   }
 }
 
-export default ValueRenderer
+const mapStateToProps = (state: AppState) => {
+  return {
+    renderMode: state.settings.valueRendererDisplayMode,
+  }
+}
+
+export default connect(mapStateToProps)(ValueRenderer)
