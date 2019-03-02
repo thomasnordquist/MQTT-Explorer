@@ -2,12 +2,10 @@ import * as q from '../../../../backend/src/Model'
 import * as React from 'react'
 import CodeDiff from '../CodeDiff'
 import { default as ReactResizeDetector } from 'react-resize-detector'
-import { Theme, withTheme } from '@material-ui/core/styles'
 
 interface Props {
   node?: q.TreeNode<any>,
   compareWith?: q.Message
-  theme: Theme
 }
 
 interface State {
@@ -100,4 +98,4 @@ class ValueRenderer extends React.Component<Props, State> {
   }
 }
 
-export default withTheme()(ValueRenderer)
+export default ValueRenderer
