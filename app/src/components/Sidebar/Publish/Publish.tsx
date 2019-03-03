@@ -169,7 +169,7 @@ class Publish extends React.Component<Props, State> {
 
     return (
       <Tooltip title="Format JSON">
-        <Fab style={{ width: '32px', height: '32px', marginLeft: '8px' }} onClick={this.formatJson} id="sidebar-publish-format-json">
+        <Fab style={{ width: '36px', height: '36px', marginLeft: '8px' }} onClick={this.formatJson} id="sidebar-publish-format-json">
           <FormatAlignLeft style={{ fontSize: '20px' }} />
         </Fab>
       </Tooltip>
