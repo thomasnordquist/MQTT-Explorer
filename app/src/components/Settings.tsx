@@ -1,6 +1,14 @@
 import * as React from 'react'
-
+import BrokerStatistics from './BrokerStatistics'
+import ChevronRight from '@material-ui/icons/ChevronRight'
 import { AppState } from '../reducers'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { settingsActions } from '../actions'
+import { shell } from 'electron'
+import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
+import { TopicOrder } from '../reducers/Settings'
+
 import {
   Divider,
   Drawer,
@@ -13,15 +21,7 @@ import {
   Switch,
   Tooltip,
 } from '@material-ui/core'
-import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
-
-import ChevronRight from '@material-ui/icons/ChevronRight'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { settingsActions } from '../actions'
-import { TopicOrder } from '../reducers/Settings'
-import BrokerStatistics from './BrokerStatistics'
-import { shell } from 'electron';
+const sha1 = require('sha1')
 
 export const autoExpandLimitSet = [{
   limit: 0,
@@ -44,6 +44,7 @@ const styles: StyleRulesCallback = theme => ({
   drawer: {
     backgroundColor: theme.palette.background.default,
     flexShrink: 0,
+    userSelect: 'none' as 'none',
   },
   paper: {
     width: '300px',
@@ -62,16 +63,20 @@ const styles: StyleRulesCallback = theme => ({
     color: theme.palette.text.hint,
     cursor: 'pointer' as 'pointer',
   },
+  switchBase: {
+    height: theme.spacing(4),
+  },
 })
 
 interface Props {
+  actions: typeof settingsActions
   autoExpandLimit: number
+  classes: any
   highlightTopicUpdates: boolean
-  visible: boolean
+  selectTopicWithMouseOver: boolean
   store?: any
   topicOrder: TopicOrder
-  classes: any
-  actions: typeof settingsActions
+  visible: boolean
 }
 
 class Settings extends React.Component<Props, {}> {
@@ -105,7 +110,8 @@ class Settings extends React.Component<Props, {}> {
 
           {this.renderAutoExpand()}
           {this.renderNodeOrder()}
-          {this.renderhighlightTopicUpdates()}
+          {this.renderHighlightTopicUpdates()}
+          {this.selectTopicsOnMouseOver()}
         </div>
         <Tooltip placement="top" title="App Author">
           <Typography className={classes.author} onClick={this.openGithubPage}>
@@ -121,20 +127,50 @@ class Settings extends React.Component<Props, {}> {
     shell.openExternal('https://github.com/thomasnordquist')
   }
 
-  private renderhighlightTopicUpdates() {
+  private renderHighlightTopicUpdates() {
     const { highlightTopicUpdates, actions } = this.props
+
+    return this.renderSwitch('Show Activity', highlightTopicUpdates, actions.togglehighlightTopicUpdates, 'Topics blink when a new message arrives')
+  }
+
+  private renderSwitch(title: string, checked: boolean, action: any, tooltip: string) {
+    const { classes } = this.props
+
+    const clickHandler = (e: React.MouseEvent) => {
+      e.stopPropagation()
+      e.preventDefault()
+      action()
+    }
 
     return (
       <div style={{ padding: '8px', display: 'flex' }}>
-        <InputLabel htmlFor="toggle-highlight-activity" style={{ flex: '1', marginTop: '8px' }}>Show Activity</InputLabel>
-        <Switch
-          name="toggle-highlight-activity"
-          checked={highlightTopicUpdates}
-          onChange={actions.togglehighlightTopicUpdates}
-          color="primary"
-        />
+        <Tooltip title={tooltip}>
+          <InputLabel
+            htmlFor={`toggle-${sha1(title)}`}
+            onClick={clickHandler}
+            style={{ flex: '1', paddingTop: '8px' }}
+          >
+            {title}
+          </InputLabel>
+        </Tooltip>
+        <Tooltip title={tooltip}>
+          <Switch
+            name={`toggle-${sha1(title)}`}
+            checked={checked}
+            onChange={action}
+            color="primary"
+            classes={{ switchBase: classes.switchBase }}
+          />
+        </Tooltip>
       </div>
     )
+  }
+
+  private selectTopicsOnMouseOver() {
+    const { actions, selectTopicWithMouseOver } = this.props
+    const toggle = () => actions.selectTopicWithMouseOver(!selectTopicWithMouseOver)
+
+    return this.renderSwitch('Quick Preview', selectTopicWithMouseOver, toggle, 'Select topics on mouse over')
   }
 
   private renderAutoExpand() {
@@ -196,6 +232,7 @@ const mapStateToProps = (state: AppState) => {
     topicOrder: state.settings.topicOrder,
     visible: state.settings.visible,
     highlightTopicUpdates: state.settings.highlightTopicUpdates,
+    selectTopicWithMouseOver: state.settings.selectTopicWithMouseOver,
   }
 }
 

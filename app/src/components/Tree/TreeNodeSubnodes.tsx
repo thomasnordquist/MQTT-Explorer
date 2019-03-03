@@ -18,6 +18,7 @@ export interface Props {
   autoExpandLimit: number
   didSelectTopic: any
   highlightTopicUpdates: boolean
+  selectTopicWithMouseOver: boolean
 }
 
 interface State {
@@ -83,6 +84,7 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
           lastUpdate={node.lastUpdate}
           didSelectTopic={this.props.didSelectTopic}
           highlightTopicUpdates={this.props.highlightTopicUpdates}
+          selectTopicWithMouseOver={this.props.selectTopicWithMouseOver}
         />
       )
     })

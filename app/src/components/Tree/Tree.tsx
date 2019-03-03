@@ -1,13 +1,12 @@
-import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
-
-import { AppState } from '../../reducers'
+import * as React from 'react'
 import TreeNode from './TreeNode'
+import { AppState } from '../../reducers'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { TopicOrder } from '../../reducers/Settings'
 import { TopicViewModel } from '../../TopicViewModel'
 import { treeActions } from '../../actions'
-import { bindActionCreators } from 'redux'
 
 const MovingAverage = require('moving-average')
 
@@ -25,6 +24,7 @@ interface Props {
   topicOrder: TopicOrder
   autoExpandLimit: number
   highlightTopicUpdates: boolean
+  selectTopicWithMouseOver: boolean
 }
 
 interface State {
@@ -112,6 +112,7 @@ class Tree extends React.PureComponent<Props, State> {
           lastUpdate={tree.lastUpdate}
           didSelectTopic={this.props.actions.selectTopic}
           highlightTopicUpdates={this.props.highlightTopicUpdates}
+          selectTopicWithMouseOver={this.props.selectTopicWithMouseOver}
         />
       </div>
     )
@@ -130,6 +131,7 @@ const mapStateToProps = (state: AppState) => {
     autoExpandLimit: state.settings.autoExpandLimit,
     topicOrder: state.settings.topicOrder,
     highlightTopicUpdates: state.settings.highlightTopicUpdates,
+    selectTopicWithMouseOver: state.settings.selectTopicWithMouseOver,
   }
 }
 

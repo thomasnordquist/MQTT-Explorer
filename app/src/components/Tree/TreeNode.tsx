@@ -1,12 +1,11 @@
-import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
-
-import { Theme, withStyles } from '@material-ui/core/styles'
-
+import * as React from 'react'
 import TreeNodeSubnodes from './TreeNodeSubnodes'
 import TreeNodeTitle from './TreeNodeTitle'
+import { Theme, withStyles } from '@material-ui/core/styles'
 import { TopicOrder } from '../../reducers/Settings'
 import { TopicViewModel } from '../../TopicViewModel'
+
 const debounce = require('lodash.debounce')
 
 declare var performance: any
@@ -55,6 +54,7 @@ interface Props {
   lastUpdate: number
   didSelectTopic: any
   highlightTopicUpdates: boolean
+  selectTopicWithMouseOver: boolean
 }
 
 interface State {
@@ -229,6 +229,9 @@ class TreeNode extends React.Component<Props, State> {
   private mouseOver = (event: React.MouseEvent) => {
     event.stopPropagation()
     this.setHover(true)
+    if (this.props.selectTopicWithMouseOver && this.props.treeNode && this.props.treeNode.message && this.props.treeNode.message.value) {
+      this.props.didSelectTopic(this.props.treeNode)
+    }
   }
 
   private mouseOut = (event: React.MouseEvent) => {
@@ -260,6 +263,7 @@ class TreeNode extends React.Component<Props, State> {
         lastUpdate={this.props.treeNode.lastUpdate}
         didSelectTopic={this.props.didSelectTopic}
         highlightTopicUpdates={this.props.highlightTopicUpdates}
+        selectTopicWithMouseOver={this.props.selectTopicWithMouseOver}
       />
     )
   }

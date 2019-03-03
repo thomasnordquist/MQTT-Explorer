@@ -6,7 +6,6 @@ import Copy from '../Copy'
 import CustomIconButton from '../CustomIconButton'
 import DateFormatter from '../helper/DateFormatter'
 import Delete from '@material-ui/icons/Delete'
-import DeleteForever from '@material-ui/icons/DeleteForever'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import MessageHistory from './MessageHistory'
 import NodeStats from './NodeStats'
@@ -99,7 +98,7 @@ class Sidebar extends React.Component<Props, State> {
   private detailsStyle = { padding: '0px 16px 8px 8px', display: 'block' }
 
   private renderTopicDeleteButton() {
-    if (!this.props.node) {
+    if (!this.props.node || (!this.props.node.message || !this.props.node.message.value)) {
       return null
     }
 
@@ -115,7 +114,7 @@ class Sidebar extends React.Component<Props, State> {
   private renderRecursiveTopicDeleteButton() {
     const deleteLimit = 50
     const topicCount = this.props.node ? this.props.node.childTopicCount() : 0
-    if (!this.props.node || topicCount === 0) {
+    if ((!this.props.node || topicCount === 0) || (this.props.node.message && topicCount === 1)) {
       return null
     }
 
@@ -127,7 +126,7 @@ class Sidebar extends React.Component<Props, State> {
             badgeContent={<span style={{ whiteSpace: 'nowrap' }}>{topicCount >= deleteLimit ? '50+' : topicCount}</span>}
             color="secondary"
           >
-            <DeleteForever color="action" />
+            <Delete color="action" />
           </Badge>
         </Tooltip>
       </CustomIconButton>
@@ -170,11 +169,11 @@ class Sidebar extends React.Component<Props, State> {
     const deleteTopic = this.renderTopicDeleteButton()
     const deleteRecursiveTopic = this.renderRecursiveTopicDeleteButton()
     const copyValue = node && node.message ? <Copy value={node.message.value} /> : null
-    const summeryStyle = { minHeight: '0' }
+    const summaryStyle = { minHeight: '0' }
     return (
       <div>
         <ExpansionPanel key="topic" defaultExpanded={true} disabled={!Boolean(this.props.node)}>
-          <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summeryStyle}>
+          <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summaryStyle}>
             <Typography className={classes.heading}>Topic {copyTopic} {deleteTopic} {deleteRecursiveTopic}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={this.detailsStyle}>
@@ -182,7 +181,7 @@ class Sidebar extends React.Component<Props, State> {
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel key="value" defaultExpanded={true}>
-          <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summeryStyle}>
+          <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summaryStyle}>
             <Typography className={classes.heading}>Value {copyValue}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={this.detailsStyle}>
@@ -196,7 +195,7 @@ class Sidebar extends React.Component<Props, State> {
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel defaultExpanded={true}>
-          <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summeryStyle}>
+          <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summaryStyle}>
             <Typography className={classes.heading}>Publish</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={this.detailsStyle}>
@@ -206,7 +205,7 @@ class Sidebar extends React.Component<Props, State> {
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel defaultExpanded={Boolean(this.props.node)}>
-          <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summeryStyle}>
+          <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summaryStyle}>
             <Typography className={classes.heading}>Stats</Typography>
           </ExpansionPanelSummary>
           {this.renderNodeStats()}
