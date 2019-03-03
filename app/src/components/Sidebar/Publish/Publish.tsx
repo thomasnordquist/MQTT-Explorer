@@ -19,6 +19,7 @@ import {
   Checkbox,
   MenuItem,
   Tooltip,
+  Fab,
 } from '@material-ui/core'
 
 // tslint:disable-next-line
@@ -27,12 +28,13 @@ import { AppState } from '../../../reducers'
 import History from '../History'
 import Message from './Model/Message'
 import Navigation from '@material-ui/icons/Navigation'
-import Clear from '@material-ui/icons/Clear'
+import FormatAlignLeft from '@material-ui/icons/FormatAlignLeft'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { publishActions } from '../../../actions'
 import ClearAdornment from '../../helper/ClearAdornment'
 import { TopicViewModel } from '../../../TopicViewModel'
+import CustomIconButton from '../../CustomIconButton';
 
 interface Props {
   node?: q.TreeNode<TopicViewModel>
@@ -151,11 +153,35 @@ class Publish extends React.Component<Props, State> {
     )
   }
 
+  private formatJson = () => {
+    if (this.props.payload) {
+      try {
+        const str = JSON.stringify(JSON.parse(this.props.payload), undefined, '  ')
+        this.updatePayload(str)
+      } catch { }
+    }
+  }
+
+  private renderFormatJson() {
+    if (this.props.editorMode !== 'json') {
+      return null
+    }
+
+    return (
+      <Tooltip title="Format JSON">
+        <Fab style={{ width: '32px', height: '32px', marginLeft: '8px' }} onClick={this.formatJson}>
+          <FormatAlignLeft style={{ fontSize: '20px' }} />
+        </Fab>
+      </Tooltip>
+    )
+  }
+
   private editorMode() {
     return (
       <div style={{ marginTop: '16px' }}>
         <div style={{ width: '100%', lineHeight: '64px' }}>
           {this.renderEditorModeSelection()}
+          {this.renderFormatJson()}
           <div style={{ float: 'right', marginRight: '16px' }}>
             {this.publishButton()}
           </div>

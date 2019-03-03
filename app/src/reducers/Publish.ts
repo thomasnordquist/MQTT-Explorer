@@ -44,7 +44,7 @@ export interface ToggleRetain {
 }
 
 const initialState: PublishState = {
-  editorMode: 'text',
+  editorMode: 'json',
   retain: false,
   qos: 0,
 }
