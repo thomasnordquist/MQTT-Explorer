@@ -75,6 +75,10 @@ async function doStuff() {
   await publishTopic(browser)
   await sleep(1000)
 
+  await showText('Write JSON with ease', 2000, browser, 'top')
+  await showJsonFormatting(browser)
+  await sleep(1000)
+
   await showText('Copy to Clipboard', 2000, browser)
   await copyTopicToClipboard(browser)
   await hideText(browser)
