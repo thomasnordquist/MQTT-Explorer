@@ -1,7 +1,7 @@
 import * as diff from 'diff'
 import * as Prism from 'prismjs'
 import * as React from 'react'
-import { Theme, withStyles } from '@material-ui/core'
+import { Theme, withStyles, Badge } from '@material-ui/core'
 import 'prismjs/components/prism-json'
 import 'prismjs/themes/prism-tomorrow.css'
 
@@ -19,7 +19,6 @@ class CodeDiff extends React.Component<Props, {}> {
 
   public render() {
     const changes = diff.diffLines(this.props.previous, this.props.current)
-
     const styledLines = Prism.highlight(this.props.current, Prism.languages.json).split('\n')
 
     let lineNumber = 0
@@ -27,13 +26,18 @@ class CodeDiff extends React.Component<Props, {}> {
       const hasStyledCode = change.removed !== true
       const changedLines = change.count || 0
       if (hasStyledCode && this.props.language === 'json') {
-        const html = styledLines.slice(lineNumber, lineNumber + changedLines).join('\n')
+        const currentLines = styledLines.slice(lineNumber, lineNumber + changedLines)
+        const lines = currentLines.map((l, k) => {
+          return <div key={k}><span className={this.cssClassForChange(change)} dangerouslySetInnerHTML={{ __html: l }} /></div>
+        })
         lineNumber += changedLines
 
-        return <div key={key}><span className={this.cssClassForChange(change)} dangerouslySetInnerHTML={{ __html: html }} /></div>
+        return <div key={key}>{lines}</div>
       }
 
-      return <div key={key}><span className={this.cssClassForChange(change)}>{change.value}</span></div>
+      return change.value.trim().split('\n').map((line, idx) => {
+        return <div key={`${key}-${idx}`}><span className={this.cssClassForChange(change)}>{line}</span></div>
+      })
     })
 
     return (
@@ -60,21 +64,44 @@ const style = (theme: Theme) => {
   const baseStyle = {
     width: '100%',
   }
+  const before = {
+    margin: '0 2px 0 -9px',
+    // width: '8px',
+  }
   return {
     codeBlock: {
       fontSize: '12px',
       maxHeight: '200px',
+      marginLeft: '-16px',
     },
     noChange: {
       ...baseStyle,
+      '&:before': {
+        ...before,
+        // content: "' '",
+      },
     },
     deletion: {
       ...baseStyle,
       backgroundColor: 'rgba(255, 10, 10, 0.3)',
+      '&:before': {
+        ...before,
+        content: "'-'",
+      },
+      '&:hover': {
+        backgroundColor: 'rgba(255, 10, 10, 0.6)',
+      },
     },
     addition: {
       ...baseStyle,
       backgroundColor: 'rgba(10, 255, 10, 0.3)',
+      '&:hover': {
+        backgroundColor: 'rgba(10, 255, 10, 0.5)',
+      },
+      '&:before': {
+        ...before,
+        content: "'+'",
+      },
     },
   }
 }
