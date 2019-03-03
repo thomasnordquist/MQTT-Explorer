@@ -43,9 +43,27 @@ class CodeDiff extends React.Component<Props, {}> {
     })
 
     return (
-      <pre className={`language-json ${this.props.classes.codeBlock}`}>
-        {code}
-      </pre>
+      <div>
+        <pre className={`language-json ${this.props.classes.codeBlock}`}>
+          {code}
+        </pre>
+        {this.renderChangeAmount(changes)}
+      </div>
+    )
+  }
+
+  private renderChangeAmount(changes: Diff.Change[]) {
+    const additions = changes.map(change => (change.added === true) ? (change.count || 0) : 0).reduce((a, b) => a + b)
+    const deletions = changes.map(change => (change.removed === true) ? (change.count || 0) : 0).reduce((a, b) => a + b)
+    if (additions === 0 && deletions === 0) {
+      return null
+    }
+
+    return (
+      <span style={{ display: 'block', textAlign: 'right' }}>
+        Diff: <span className={this.props.classes.additions}>+ {additions} line{additions === 1 ? '' : 's'}</span>
+        , <span className={this.props.classes.deletions}>- {deletions} line{deletions === 1 ? '' : 's'}</span>
+      </span>
     )
   }
 
@@ -79,6 +97,12 @@ const style = (theme: Theme) => {
     // width: '8px',
   }
   return {
+    additions: {
+      color: 'rgb(10, 255, 10)',
+    },
+    deletions: {
+      color: 'rgb(255, 10, 10)',
+    },
     line: {
       lineHeight: 'normal',
     },
