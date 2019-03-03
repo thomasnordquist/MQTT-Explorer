@@ -87,14 +87,13 @@ function generateData(client: mqtt.MqttClient) {
   let state = true
   intervals.push(setInterval(() => {
     state = !state
-    const enitityId = Math.round(Math.random() * 3000)
     client.publish(
       'actuality/showcase', `{
         "tags":{
-          "entityId":${enitityId},
+          "entityId": 33512,
           "entityType":"person",
           "host":"d44ad81e10f9",
-          "server":"${state ? 'http://localhost/dataActuality' : 'http://localhost/dataStorage' }",
+          "server":" 'http://localhost/dataActuality',
           "status":"${state ? 'live' : 'inactive'}"},
         "timestamp":${Date.now()}
       }`.replace(/\s/g, ''),

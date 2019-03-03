@@ -1,35 +1,41 @@
+import * as os from 'os'
+import * as webdriverio from 'webdriverio'
+import mockMqtt, { stop } from './mock-mqtt'
+import { clearOldTopics } from './scenarios/clearOldTopics'
+import { clearSearch, searchTree } from './scenarios/searchTree'
+import {
+  clickOnHistory,
+  createFakeMousePointer,
+  hideText,
+  showText,
+  sleep,
+} from './util'
+import { connectTo } from './scenarios/connect'
+import { copyTopicToClipboard } from './scenarios/copyTopicToClipboard'
+import { copyValueToClipboard } from './scenarios/copyValueToClipboard'
+import { disconnect } from './scenarios/disconnect'
+import { publishTopic } from './scenarios/publishTopic'
+import { showJsonFormatting } from './scenarios/showJsonFormatting'
+import { showJsonPreview } from './scenarios/showJsonPreview'
+import { showMenu } from './scenarios/showMenu'
+import { showNumericPlot } from './scenarios/showNumericPlot'
+import { showOffDiffCapability } from './scenarios/showOffDiffCapability'
+
 process.on('unhandledRejection', (error: Error) => {
   console.error('unhandledRejection', error.message, error.stack)
   process.exit(1)
 })
 
-import * as webdriverio from 'webdriverio'
-import * as os from 'os'
-import mockMqtt, { stop } from './mock-mqtt'
-import { connectTo } from './scenarios/connect'
-import { disconnect } from './scenarios/disconnect'
-import { showNumericPlot } from './scenarios/showNumericPlot'
-import { showJsonPreview } from './scenarios/showJsonPreview'
-import { compareJsonSideBySide } from './scenarios/compareJsonSideBySide'
-import { searchTree, clearSearch } from './scenarios/searchTree'
-import { copyTopicToClipboard } from './scenarios/copyTopicToClipboard'
-import { copyValueToClipboard } from './scenarios/copyValueToClipboard'
-import { publishTopic } from './scenarios/publishTopic'
-import { clearOldTopics } from './scenarios/clearOldTopics'
-import { showMenu } from './scenarios/showMenu'
-
-import { createFakeMousePointer, sleep, showText, hideText, clickOnHistory } from './util'
-
-const binary = os.platform() === 'darwin' ? 'Electron.app/Contents/MacOS/Electron' : 'electron'
 const runningUiTestOnCi = os.platform() === 'darwin' ? [] : ['--runningUiTestOnCi']
 
+console.log(`${__dirname}/../../../node_modules/.bin/electron`)
 const options = {
-  host: 'localhost', // Use localhost as chrome driver server
+  host: '127.0.0.1', // Use localhost as chrome driver server
   port: 9515, // "9515" is the port opened by chrome driver.
   capabilities: {
     browserName: 'electron',
     chromeOptions: {
-      binary: `${__dirname}/../../../node_modules/electron/dist/${binary}`,
+      binary: `${__dirname}/../../../node_modules/.bin/electron`,
       args: [`--app=${__dirname}/../../..`, '--force-device-scale-factor=1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-extensions'].concat(runningUiTestOnCi),
     },
     windowTypes: ['app', 'webview'],
@@ -37,7 +43,10 @@ const options = {
 }
 
 async function doStuff() {
+  console.log('mock mqtt')
   await mockMqtt()
+  console.log('start webdriver')
+
   const browser = await webdriverio.remote(options)
   await createFakeMousePointer(browser)
 
@@ -54,12 +63,11 @@ async function doStuff() {
   await showNumericPlot(browser)
   await sleep(2000)
 
-  await showText('Formatted messages', 2000, browser, 'top')
   await showJsonPreview(browser)
-  await sleep(2000)
+  await showText('Formatted messages', 1500, browser, 'top')
+  await sleep(1500)
 
-  await showText('Compare messages', 2000, browser, 'top')
-  await compareJsonSideBySide(browser)
+  await showOffDiffCapability(browser)
   await hideText(browser)
 
   await showText('Publish topics', 2000, browser, 'top')

@@ -35,8 +35,7 @@ class CodeDiff extends React.Component<Props, {}> {
         return <div key={key}>{lines}</div>
       }
 
-      return change.value
-        .slice(0, -1) // Remove trailing newline
+      return this.trimNewlineRight(change.value)
         .split('\n')
         .map((line, idx) => {
           return <div key={`${key}-${idx}`} className={this.props.classes.line}><span className={this.cssClassForChange(change)}>{line}</span></div>
@@ -48,6 +47,14 @@ class CodeDiff extends React.Component<Props, {}> {
         {code}
       </pre>
     )
+  }
+
+  private trimNewlineRight(str: string) {
+    if (str.slice(-1) === '\n') {
+      return str.slice(0, -1)
+    }
+
+    return str
   }
 
   private cssClassForChange(change: diff.Change) {

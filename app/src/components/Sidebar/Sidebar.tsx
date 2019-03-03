@@ -147,13 +147,13 @@ class Sidebar extends React.Component<Props, State> {
     }
 
     return (
-      <ToggleButtonGroup value={this.props.valueRendererDisplayMode} exclusive={true} onChange={handleValue}>
-        <ToggleButton value="diff">
+      <ToggleButtonGroup id="valueRendererDisplayMode" value={this.props.valueRendererDisplayMode} exclusive={true} onChange={handleValue}>
+        <ToggleButton value="diff" id="valueRendererDisplayMode-diff">
           <Tooltip title="Show difference between the current and the last message">
             <Code />
           </Tooltip>
         </ToggleButton>
-        <ToggleButton value="raw">
+        <ToggleButton value="raw" id="valueRendererDisplayMode-raw">
           <Tooltip title="Raw value">
             <Reorder />
           </Tooltip>
