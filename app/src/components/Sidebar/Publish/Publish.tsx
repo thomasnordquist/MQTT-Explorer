@@ -158,7 +158,9 @@ class Publish extends React.Component<Props, State> {
       try {
         const str = JSON.stringify(JSON.parse(this.props.payload), undefined, '  ')
         this.updatePayload(str)
-      } catch { }
+      } catch (error) {
+        this.props.globalActions.showError(`Format error: ${error.message}`)
+      }
     }
   }
 
@@ -325,6 +327,7 @@ class Publish extends React.Component<Props, State> {
 const mapDispatchToProps = (dispatch: any) => {
   return {
     actions: bindActionCreators(publishActions, dispatch),
+    globalActions: bindActionCreators(globalActions, dispatch),
   }
 }
 
