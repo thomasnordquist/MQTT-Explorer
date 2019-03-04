@@ -24,10 +24,13 @@ export const connect = (options: MqttOptions, connectionId: string) => (dispatch
   rendererEvents.subscribe(event, (dataSourceState) => {
     console.log(dataSourceState)
     if (dataSourceState.connected) {
-      const tree = new q.Tree<TopicViewModel>()
-      tree.updateWithConnection(rendererEvents, connectionId)
-      dispatch(connected(tree, host!))
-      dispatch(showTree(tree))
+      const didReconnect = Boolean(getState().connection.tree)
+      if (!didReconnect) {
+        const tree = new q.Tree<TopicViewModel>()
+        tree.updateWithConnection(rendererEvents, connectionId)
+        dispatch(showTree(tree))
+        dispatch(connected(tree, host!))
+      }
     } else if (dataSourceState.error) {
       dispatch(showError(dataSourceState.error))
       dispatch(disconnect())
