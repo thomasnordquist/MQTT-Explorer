@@ -1,5 +1,11 @@
 language: node_js
 
+deploy:
+  provider: snap
+  snap: build/clean/build/*.snap
+  channel: edge
+  skip_cleanup: true
+
 services:
   - xvfb
 
@@ -24,6 +30,7 @@ services:
 
 install:
   - yarn install
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update && sudo apt-get -y install snap squashfs-tools && sudo snap install snapcraft --classic; fi;
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker build docker --tag uitest; fi;
 
 script:
@@ -31,6 +38,7 @@ script:
   - yarn test
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker run -e GH_TOKEN=$GH_TOKEN -e GIT_TAG=$TRAVIS_TAG --rm -v `pwd`:/app uitest sh -c "cd app && docker/testMounted.sh"; fi
   - if [[ "$TRAVIS_TAG" != "" ]]; then yarn run prepare-release; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package -- linux; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package linux; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package snap; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package -- mac; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package -- win; fi
