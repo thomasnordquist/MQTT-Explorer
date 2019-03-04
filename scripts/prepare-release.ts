@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra'
 import * as path from 'path'
 import { chdir } from 'process'
-import { exec } from './util';
+import { exec } from './util'
 
 const targetDir = path.join('build', 'clean')
 async function prepareRelease() {

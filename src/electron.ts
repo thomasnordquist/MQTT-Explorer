@@ -1,3 +1,4 @@
+import * as fs from 'fs'
 import * as log from 'electron-log'
 import * as path from 'path'
 import ConfigStorage from '../backend/src/ConfigStorage'
@@ -7,10 +8,23 @@ import { ConnectionManager, updateNotifier } from '../backend/src/index'
 import { electronTelemetryFactory } from 'electron-telemetry'
 import { menuTemplate } from './MenuTemplate'
 import { UpdateInfo } from '../events'
+import { BuildInfo } from 'electron-telemetry/build/Model';
 const isDev = require('electron-is-dev')
 
 if (!isDev) {
-  const electronTelemetry = electronTelemetryFactory('9b0c8ca04a361eb8160d98c5')
+  let buildOptions: BuildInfo = ({ platform: 'unknown', package: 'unknown' } as any)
+
+  try {
+    const options = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'buildOptions.json')).toString())
+    if (typeof options.platform === 'string' && typeof options.package === 'string') {
+      buildOptions = options
+    }
+  } catch (error) {
+    console.log(error)
+  }
+
+  console.log(buildOptions)
+  const electronTelemetry = electronTelemetryFactory('9b0c8ca04a361eb8160d98c5', buildOptions)
 }
 
 // const isDebugEnabled = Boolean(process.argv.find(arg => arg === 'debug'))

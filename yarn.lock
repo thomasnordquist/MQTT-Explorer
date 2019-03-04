@@ -1147,7 +1147,7 @@ electron-publish@20.38.5:
 
 "electron-telemetry@git+https://github.com/thomasnordquist/electron-telemetry.git#dist":
   version "1.0.0"
-  resolved "git+https://github.com/thomasnordquist/electron-telemetry.git#24792a0d8d6c2b047855acfda7d740ee4e51b97f"
+  resolved "git+https://github.com/thomasnordquist/electron-telemetry.git#3d6c0c5e3fd9d8101dcb7a0435256572ed58b2b6"
   dependencies:
     axios "^0.18.0"
     pako "^1.0.8"

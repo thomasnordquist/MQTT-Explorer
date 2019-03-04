@@ -1,6 +1,8 @@
 import * as builder from 'electron-builder'
+import * as fs from 'fs'
+import * as path from 'path'
 
-const linux: builder.CliOptions = {
+const linuxAppImage: builder.CliOptions = {
   x64: true,
   ia32: true,
   armv7l: true,
@@ -20,12 +22,22 @@ const linuxSnap: builder.CliOptions = {
   publish: 'always',
 }
 
-const win: builder.CliOptions = {
+const winPortable: builder.CliOptions = {
   x64: true,
   ia32: true,
   armv7l: false,
   arm64: false,
-  win: ['portable', 'nsis'],
+  win: ['portable'],
+  projectDir: './build/clean',
+  publish: 'always',
+}
+
+const winNsis: builder.CliOptions = {
+  x64: true,
+  ia32: true,
+  armv7l: false,
+  arm64: false,
+  win: ['nsis'],
   projectDir: './build/clean',
   publish: 'always',
 }
@@ -53,27 +65,38 @@ const mac: builder.CliOptions = {
 async function executeBuild() {
   switch (process.argv[2]) {
     case 'win':
-      await builder.build(win)
+      await buildWithOptions(winPortable, { platform: 'win', package: 'portable' })
+      await buildWithOptions(winNsis, { platform: 'win', package: 'nsis' })
       break
     case 'appx':
-      await builder.build(winAppx)
+      await buildWithOptions(winAppx, { platform: 'win', package: 'appx' })
       break
     case 'linux':
-      await builder.build(linux)
+      await buildWithOptions(linuxAppImage, { platform: 'linux', package: 'AppImage' })
       break
     case 'snap':
       try {
-        await builder.build(linuxSnap)
+        await buildWithOptions(linuxSnap, { platform: 'linux', package: 'snap' })
       } catch {
         // ignore
       }
       break
     case 'mac':
-      await builder.build(mac)
+      await buildWithOptions(mac, { platform: 'linux', package: 'dmg' })
       break
     default:
-      await builder.build(mac)
+      await buildWithOptions(mac, { platform: 'linux', package: 'dmg' })
   }
+}
+
+export interface BuildInfo {
+  platform: 'win' | 'linux' | 'mac'
+  package: 'portable' | 'nsis' | 'appx' | 'AppImage' | 'snap' | 'dmg' | 'zip' | 'mas'
+}
+
+async function buildWithOptions(options: builder.CliOptions, buildInfo: BuildInfo) {
+  fs.writeFileSync(path.join(options.projectDir!, 'buildOptions.json'), JSON.stringify(buildInfo))
+  await builder.build(options)
 }
 
 function build() {
