@@ -66,7 +66,7 @@ class ConnectionSettings extends React.Component<Props, State> {
             </Grid>
             <Grid item={true} xs={12} style={{ padding: 0 }}>
               <List
-                className={classes.topicList}
+                className={`${classes.topicList} advanced-connection-settings-topic-list`}
                 component="nav"
               >
                 <div className={classes.list}>

@@ -89,7 +89,7 @@ class Sidebar extends React.Component<Props, State> {
 
   public render() {
     return (
-      <div className={this.props.classes.drawer}>
+      <div id="Sidebar" className={this.props.classes.drawer}>
         {this.renderNode()}
       </div>
     )

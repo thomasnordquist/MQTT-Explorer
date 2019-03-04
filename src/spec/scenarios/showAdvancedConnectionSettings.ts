@@ -24,6 +24,6 @@ export async function showAdvancedConnectionSettings(browser: Browser<void>) {
 }
 
 async function deleteFirstSubscribedTopic(browser: Browser<void>) {
-  const deleteButton = await browser.$('//*[contains(@class,"topicList")]//button')
+  const deleteButton = await browser.$('.advanced-connection-settings-topic-list button')
   await clickOn(deleteButton, browser)
 }

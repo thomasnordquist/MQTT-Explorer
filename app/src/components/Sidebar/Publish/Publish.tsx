@@ -31,10 +31,9 @@ import Navigation from '@material-ui/icons/Navigation'
 import FormatAlignLeft from '@material-ui/icons/FormatAlignLeft'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { publishActions } from '../../../actions'
+import { publishActions, globalActions } from '../../../actions'
 import ClearAdornment from '../../helper/ClearAdornment'
 import { TopicViewModel } from '../../../TopicViewModel'
-import CustomIconButton from '../../CustomIconButton';
 
 interface Props {
   node?: q.TreeNode<TopicViewModel>
@@ -42,6 +41,7 @@ interface Props {
   topic?: string
   payload?: string
   actions: typeof publishActions
+  globalActions: typeof globalActions
   retain: boolean
   editorMode: string
   qos: 0 | 1 | 2
