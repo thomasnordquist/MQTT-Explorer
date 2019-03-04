@@ -11,5 +11,5 @@
     "lib": ["es2017", "dom"],
     "sourceMap": true
   },
-  "include": ["src/electron.ts", "src/spec/electron.ts", "src/spec/webdriverio.ts"]
+  "include": ["src/electron.ts", "src/spec/electron.ts", "src/spec/webdriverio.ts", "scripts/*.ts"]
 }

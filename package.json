@@ -43,7 +43,8 @@
       "app": "./",
       "buildResources": "res",
       "output": "build"
-    }
+    },
+    "afterAllArtifactBuild": "./dist/scripts/afterPack.js"
   },
   "author": "Thomas Nordquist",
   "email": "xxnerowingerxx@gmail.com",
