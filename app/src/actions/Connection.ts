@@ -73,7 +73,11 @@ export const connecting: (connectionId: string) => Action = (connectionId: strin
 
 export const disconnect = () => (dispatch: Dispatch<any>, getState: () => AppState)  => {
   const { connectionId, tree } = getState().connection
-  rendererEvents.emit(removeConnection, connectionId)
+  if (connectionId) {
+    rendererEvents.emit(removeConnection, connectionId)
+    rendererEvents.unsubscribeAll(makeConnectionStateEvent(connectionId))
+  }
+
   tree && tree.stopUpdating()
 
   dispatch(showTree(undefined))
