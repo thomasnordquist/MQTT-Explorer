@@ -11,6 +11,7 @@ import reducers from './reducers'
 import App from './App'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from 'redux'
+import Demo from './components/demo'
 
 const composeEnhancers = /*(window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || */ compose
 const store = createStore(
@@ -41,6 +42,7 @@ ReactDOM.render(
     <MuiThemeProvider theme={theme}>
       <Provider store={store}>
         <App />
+        <Demo />
       </Provider>
     </MuiThemeProvider>,
     document.getElementById('app'),

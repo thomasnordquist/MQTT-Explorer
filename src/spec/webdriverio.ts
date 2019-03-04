@@ -3,13 +3,6 @@ import * as webdriverio from 'webdriverio'
 import mockMqtt, { stop } from './mock-mqtt'
 import { clearOldTopics } from './scenarios/clearOldTopics'
 import { clearSearch, searchTree } from './scenarios/searchTree'
-import {
-  clickOnHistory,
-  createFakeMousePointer,
-  hideText,
-  showText,
-  sleep,
-} from './util'
 import { connectTo } from './scenarios/connect'
 import { copyTopicToClipboard } from './scenarios/copyTopicToClipboard'
 import { copyValueToClipboard } from './scenarios/copyValueToClipboard'
@@ -20,6 +13,15 @@ import { showJsonPreview } from './scenarios/showJsonPreview'
 import { showMenu } from './scenarios/showMenu'
 import { showNumericPlot } from './scenarios/showNumericPlot'
 import { showOffDiffCapability } from './scenarios/showOffDiffCapability'
+import { showZoomLevel } from './scenarios/showZoomLevel'
+import { showAdvancedConnectionSettings } from './scenarios/showAdvancedConnectionSettings'
+import {
+  clickOnHistory,
+  createFakeMousePointer,
+  hideText,
+  showText,
+  sleep,
+} from './util'
 
 process.on('unhandledRejection', (error: Error) => {
   console.error('unhandledRejection', error.message, error.stack)
@@ -51,6 +53,7 @@ async function doStuff() {
   await createFakeMousePointer(browser)
 
   await connectTo('127.0.0.1', browser)
+
   await sleep(1000)
 
   await sleep(1000)
@@ -103,10 +106,18 @@ async function doStuff() {
 
   await sleep(2000)
   await disconnect(browser)
+
+  await showText('Customize Subscriptions', 3000, browser, 'top')
+  await showAdvancedConnectionSettings(browser)
+
+  await showText('Keyboard shortcuts', 1750, browser, 'middle')
+  await sleep(1750)
+  await showZoomLevel(browser)
+
+  await showText('The End', 3000, browser, 'middle')
   await sleep(3000)
 
   browser.closeWindow()
-
   stop()
 }
 

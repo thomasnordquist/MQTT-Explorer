@@ -17,6 +17,9 @@ export async function showJsonFormatting(browser: Browser<void>) {
   await sleep(300)
   await clickOn(formatJsonButton, browser)
   await sleep(1200)
+
+  const sidebarDrawer = await browser.$('//*[contains(@class, "Sidebar")]')
+  await sidebarDrawer.scrollIntoView()
 }
 
 async function writeTextPayload(payloadInput: any, text: string) {

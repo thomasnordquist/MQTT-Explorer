@@ -1,4 +1,4 @@
-import { clickOn, sleep, writeText, expandTopic } from '../util'
+import { clickOn } from '../util'
 import { Browser } from 'webdriverio'
 
 export async function copyTopicToClipboard(browser: Browser<void>) {

@@ -87,16 +87,19 @@ function generateData(client: mqtt.MqttClient) {
   let state = true
   intervals.push(setInterval(() => {
     state = !state
+    const js = {
+      tags:{
+        entityId: 33512,
+        entityType: 'person',
+        host: 'd44ad81e10f9',
+        server: 'http://localhost/dataActuality',
+        status: state ? 'live' : 'inactive',
+      },
+      timestamp: Date.now(),
+    }
     client.publish(
-      'actuality/showcase', `{
-        "tags":{
-          "entityId": 33512,
-          "entityType":"person",
-          "host":"d44ad81e10f9",
-          "server":" 'http://localhost/dataActuality',
-          "status":"${state ? 'live' : 'inactive'}"},
-        "timestamp":${Date.now()}
-      }`.replace(/\s/g, ''),
+      'actuality/showcase',
+      JSON.stringify(js),
       { retain: true, qos: 0 },
     )
   }, 2102))

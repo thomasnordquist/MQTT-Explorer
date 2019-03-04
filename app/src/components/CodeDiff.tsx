@@ -94,7 +94,6 @@ const style = (theme: Theme) => {
   }
   const before = {
     margin: '0 2px 0 -9px',
-    // width: '8px',
   }
   return {
     additions: {

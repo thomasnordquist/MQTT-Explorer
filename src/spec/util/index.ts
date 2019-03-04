@@ -1,4 +1,4 @@
-import { Element, Browser } from 'webdriverio'
+import { Browser, Element } from 'webdriverio'
 export { expandTopic } from './expandTopic'
 
 export function sleep(ms: number, required = false) {
@@ -26,47 +26,28 @@ export async function delteTextWithBackspaces(element: Element<void>, browser: B
   }
 }
 
+export async function writeTextToInput(name: string, text: string, browser: Browser<void>, wait: boolean = true) {
+  const input = await browser.$(`//label[contains(text(), "${name}")]/..//input`)
+  await clickOn(input, browser, 1)
+  wait && await sleep(500)
+  input.clearValue()
+  wait && await sleep(300)
+  await writeText(text, browser)
+}
+
 export async function moveToCenterOfElement(element: Element<void>, browser: Browser<void>) {
   const { x, y } = await element.getLocation()
   const { width, height } = await element.getSize()
 
-  const js = `{
-    const targetX = ${x + width / 2}
-    const targetY = ${y + height / 2}
-    const duration = 500
+  const targetX = x + width / 2
+  const targetY = y + height / 2
 
-    const maxStepSize = 10
-    const e = document.getElementById("bier")
-    const top = parseFloat(e.style.top)
-    const left = parseFloat(e.style.left)
-    const deltaY = targetY - top
-    const deltaX = targetX - left
+  const duration = 500
 
-    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
-    const steps = Math.ceil(distance / maxStepSize)
-
-    const stepX = deltaX / steps
-    const stepY = deltaY / steps
-    let currentStep = 0
-    function getCloser() {
-      e.style.left = String(left + (stepX * currentStep)) + 'px'
-      e.style.top = String(top + (stepY * currentStep)) + 'px'
-      if (currentStep < steps) {
-        setTimeout(() => {
-          currentStep += 1
-          if (currentStep === steps) {
-            e.style.left = String(targetX + 5) + 'px'
-            e.style.top = String(targetY + 1) + 'px'
-          } else {
-            getCloser()
-          }
-        }, duration/steps)
-      }
-    }
-	  getCloser()
-  }`
+  const js = `window.demo.moveMouse(${targetX}, ${targetY}, ${duration});`
   await browser.execute(js)
-  await sleep(550, true)
+  await sleep(duration + 500, true)
+
   await element.moveTo()
 }
 
@@ -84,47 +65,25 @@ export async function clickOn(element: Element<void>, browser: Browser<void>, cl
 }
 
 export async function createFakeMousePointer(browser: Browser<void>) {
-  const addCursorImage = 'const i=document.createElement("img");'
-  + 'i.src="../cursor.png";'
-  + 'i.width="32";'
-  + 'i.height="32";'
-  + 'i.id="bier";'
-  + 'i.style="position: fixed; z-index:10000000; filter: invert(100%);left: 0px; top: 0px;";'
-  + 'document.body.appendChild(i)'
+  const js = 'window.demo.enableMouse();'
 
-  await browser.execute(addCursorImage)
+  await browser.execute(js)
 }
 
-export async function showText(text: string, duration: number = 0, browser: Browser<void>, location: 'top' | 'bottom' | 'middle' = 'bottom') {
-  const positions = {
-    top: 0,
-    bottom: -65,
-    middle: -32,
-  }
-  const js = `
-    const postition = "${positions[location]}vh"
-    let previousDiv = document.getElementById('tests-text-overlay')
-    previousDiv && previousDiv.remove()
-    let div = document.createElement('div')
-    div.id = "tests-text-overlay"
-    div.style = "background-color: rgba(0, 0, 0, 0.8);position: fixed;left: 5vw;z-index: 1000000;margin: 30vw auto 50vw;border-radius: 16px;right: 5vw;bottom: "+ postition +";"
-    let div2 = document.createElement('div')
-    div2.style = "text-align: center;font-size: 4em;color: white;"
-    div2.innerHTML = \`${text}\`
-    div.appendChild(div2)
-    document.body.appendChild(div)
-    if (${duration} > 0) {
-      setTimeout(() => div.remove(), ${duration})
-    }
-  `
+export async function showText(text: string, duration: number = 0, browser: Browser<void>, location: 'top' | 'bottom' | 'middle' = 'bottom', keys = []) {
+  const js = `window.demo.showMessage('${text}', '${location}', ${duration});`
+
+  browser.execute(js)
+}
+
+export async function showKeys(text: string, duration: number = 0, browser: Browser<void>, location: 'top' | 'bottom' | 'middle' = 'bottom', keys: string[] = []) {
+  const js = `window.demo.showMessage('${text}', '${location}', ${duration}, ${JSON.stringify(keys)});`
+
   browser.execute(js)
 }
 
 export async function hideText(browser: Browser<void>) {
-  const js = `
-    let previousDiv = document.getElementById('tests-text-overlay')
-    previousDiv && previousDiv.remove()
-  `
+  const js = 'window.demo.hideMessage();'
   browser.execute(js)
   await sleep(600)
 }
