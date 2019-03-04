@@ -1,8 +1,7 @@
-import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
-
-import { Typography } from '@material-ui/core'
+import * as React from 'react'
 import { TopicViewModel } from '../../TopicViewModel'
+import { Typography } from '@material-ui/core'
 
 interface Props {
   node: q.TreeNode<TopicViewModel>

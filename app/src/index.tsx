@@ -1,17 +1,17 @@
-import './tracking'
-
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import reduxThunk from 'redux-thunk'
-import { batchDispatchMiddleware } from 'redux-batched-actions'
-
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
-import reducers from './reducers'
-
 import App from './App'
-import { Provider } from 'react-redux'
-import { createStore, applyMiddleware, compose } from 'redux'
 import Demo from './components/demo'
+import reducers from './reducers'
+import reduxThunk from 'redux-thunk'
+import { applyMiddleware, compose, createStore } from 'redux'
+import { batchDispatchMiddleware } from 'redux-batched-actions'
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
+import { Provider } from 'react-redux'
+import './tracking'
+
+
+
 
 const composeEnhancers = /*(window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || */ compose
 const store = createStore(

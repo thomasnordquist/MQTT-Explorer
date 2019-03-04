@@ -1,11 +1,11 @@
-import { Action, Reducer, combineReducers } from 'redux'
-
+import { Action, combineReducers, Reducer } from 'redux'
+import { connectionManagerReducer, ConnectionManagerState } from './ConnectionManager'
+import { connectionReducer, ConnectionState } from './Connection'
+import { publishReducer, PublishState } from './Publish'
+import { settingsReducer, SettingsState } from './Settings'
 import { trackEvent } from '../tracking'
-import { PublishState, publishReducer } from './Publish'
-import { ConnectionState, connectionReducer } from './Connection'
-import { SettingsState, settingsReducer } from './Settings'
-import { TreeState, treeReducer } from './Tree'
-import { ConnectionManagerState, connectionManagerReducer } from './ConnectionManager'
+import { treeReducer, TreeState } from './Tree'
+
 
 export enum ActionTypes {
   showUpdateNotification = 'SHOW_UPDATE_NOTIFICATION',

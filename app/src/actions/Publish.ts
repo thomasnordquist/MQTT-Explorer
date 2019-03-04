@@ -1,7 +1,7 @@
-import { ActionTypes, Action } from '../reducers/Publish'
+import { Action, ActionTypes } from '../reducers/Publish'
 import { AppState } from '../reducers'
 import { Dispatch } from 'redux'
-import { rendererEvents, makePublishEvent } from '../../../events'
+import { makePublishEvent, rendererEvents } from '../../../events'
 
 export const setTopic = (topic?: string): Action  => {
   return {

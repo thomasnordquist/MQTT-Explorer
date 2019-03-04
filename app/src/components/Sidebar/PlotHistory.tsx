@@ -1,10 +1,9 @@
-const { XYPlot, XAxis, LineMarkSeries, Hint, YAxis, HorizontalGridLines, LineSeries } = require('react-vis')
-import { default as ReactResizeDetector } from 'react-resize-detector'
-
-import DateFormatter from '../helper/DateFormatter'
-import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
+import * as React from 'react'
+import DateFormatter from '../helper/DateFormatter'
+import { default as ReactResizeDetector } from 'react-resize-detector'
 import 'react-vis/dist/style.css'
+const { XYPlot, LineMarkSeries, Hint, YAxis, HorizontalGridLines } = require('react-vis')
 
 interface Props {
   messages: q.Message[]

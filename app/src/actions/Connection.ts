@@ -1,19 +1,19 @@
 import * as q from '../../../backend/src/Model'
 import * as url from 'url'
 import { Action, ActionTypes } from '../reducers/Connection'
+import { AppState } from '../reducers'
+import { DataSourceState, MqttOptions } from '../../../backend/src/DataSource'
+import { Dispatch } from 'redux'
+import { globalActions } from '.'
+import { showError } from './Global'
+import { showTree } from './Tree'
+import { TopicViewModel } from '../TopicViewModel'
 import {
   addMqttConnectionEvent,
   makeConnectionStateEvent,
   removeConnection,
   rendererEvents,
 } from '../../../events'
-import { AppState } from '../reducers'
-import { Dispatch } from 'redux'
-import { MqttOptions, DataSourceState } from '../../../backend/src/DataSource'
-import { showTree } from './Tree'
-import { TopicViewModel } from '../TopicViewModel'
-import { showError } from './Global'
-import { globalActions } from '.';
 
 export const connect = (options: MqttOptions, connectionId: string) => (dispatch: Dispatch<any>, getState: () => AppState) => {
   dispatch(connecting(connectionId))

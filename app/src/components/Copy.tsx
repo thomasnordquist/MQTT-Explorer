@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { Snackbar, SnackbarContent, Tooltip } from '@material-ui/core'
-import FileCopy from '@material-ui/icons/FileCopy'
 import Check from '@material-ui/icons/Check'
+import CustomIconButton from './CustomIconButton'
+import FileCopy from '@material-ui/icons/FileCopy'
 import green from '@material-ui/core/colors/green'
-import { withStyles, Theme } from '@material-ui/core/styles'
-import CustomIconButton from './CustomIconButton';
+import { Snackbar, SnackbarContent, Tooltip } from '@material-ui/core'
+import { Theme, withStyles } from '@material-ui/core/styles'
 
 const copy = require('copy-text-to-clipboard')
 

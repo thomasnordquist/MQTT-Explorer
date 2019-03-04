@@ -1,10 +1,10 @@
-import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
-
+import * as React from 'react'
 import BarChart from '@material-ui/icons/BarChart'
 import DateFormatter from '../helper/DateFormatter'
 import History from './History'
 import { TopicViewModel } from '../../TopicViewModel'
+
 const PlotHistory = React.lazy(() => import('./PlotHistory'))
 
 const throttle = require('lodash.throttle')

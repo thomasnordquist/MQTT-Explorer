@@ -1,10 +1,10 @@
-import { AppState } from '../reducers'
-import { ActionTypes } from '../reducers/Tree'
 import * as q from '../../../backend/src/Model'
-import { Dispatch, AnyAction } from 'redux'
+import { ActionTypes } from '../reducers/Tree'
+import { AnyAction, Dispatch } from 'redux'
+import { AppState } from '../reducers'
+import { batchActions } from 'redux-batched-actions'
 import { setTopic } from './Publish'
 import { TopicViewModel } from '../TopicViewModel'
-import { batchActions } from 'redux-batched-actions'
 const debounce = require('lodash.debounce')
 
 export const selectTopic = (topic: q.TreeNode<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState)  => {

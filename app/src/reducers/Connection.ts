@@ -1,6 +1,6 @@
+import * as q from '../../../backend/src/Model'
 import { Action } from 'redux'
 import { createReducer } from './lib'
-import * as q from '../../../backend/src/Model'
 import { MqttOptions } from '../../../backend/src/DataSource'
 import { TopicViewModel } from '../TopicViewModel'
 

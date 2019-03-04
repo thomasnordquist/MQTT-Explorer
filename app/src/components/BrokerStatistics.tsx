@@ -1,12 +1,11 @@
-import * as React from 'react'
 import * as q from '../../../backend/src/Model'
-
+import * as React from 'react'
 import { AppState } from '../reducers'
-import { Typography } from '@material-ui/core'
-import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
-
 import { connect } from 'react-redux'
+import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 import { TopicViewModel } from '../TopicViewModel'
+import { Typography } from '@material-ui/core'
+
 const abbreviate = require('number-abbreviate')
 
 interface Stats {

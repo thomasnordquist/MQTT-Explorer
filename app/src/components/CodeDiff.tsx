@@ -1,7 +1,7 @@
 import * as diff from 'diff'
 import * as Prism from 'prismjs'
 import * as React from 'react'
-import { Theme, withStyles, Badge } from '@material-ui/core'
+import { Badge, Theme, withStyles } from '@material-ui/core'
 import 'prismjs/components/prism-json'
 import 'prismjs/themes/prism-tomorrow.css'
 

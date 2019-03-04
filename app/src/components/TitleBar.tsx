@@ -1,8 +1,15 @@
 import * as React from 'react'
 import ClearAdornment from './helper/ClearAdornment'
 import CloudOff from '@material-ui/icons/CloudOff'
+import ConnectionHealthIndicator from './ConnectionHealthIndicator'
 import Menu from '@material-ui/icons/Menu'
 import Search from '@material-ui/icons/Search'
+import { AppState } from '../reducers'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { connectionActions, settingsActions } from '../actions'
+import { fade } from '@material-ui/core/styles/colorManipulator'
+import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 import {
   AppBar,
   Button,
@@ -11,13 +18,6 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core'
-import { AppState } from '../reducers'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { connectionActions, settingsActions } from '../actions'
-import { fade } from '@material-ui/core/styles/colorManipulator'
-import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
-import ConnectionHealthIndicator from './ConnectionHealthIndicator';
 
 const styles: StyleRulesCallback = theme => ({
   title: {

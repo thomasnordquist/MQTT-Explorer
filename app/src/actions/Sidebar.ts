@@ -1,7 +1,7 @@
-import { Dispatch, Action } from 'redux'
+import * as q from '../../../backend/src/Model'
+import { Action, Dispatch } from 'redux'
 import { AppState } from '../reducers'
 import { makePublishEvent, rendererEvents } from '../../../events'
-import * as q from '../../../backend/src/Model'
 
 export const clearRetainedTopic = () => (dispatch: Dispatch<any>, getState: () => AppState) => {
   const { selectedTopic } = getState().tree

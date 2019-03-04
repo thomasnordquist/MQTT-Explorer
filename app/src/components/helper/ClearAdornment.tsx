@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { IconButton } from '@material-ui/core'
 import Clear from '@material-ui/icons/Clear'
+import { IconButton } from '@material-ui/core'
 
 interface Props {
   value?: string
