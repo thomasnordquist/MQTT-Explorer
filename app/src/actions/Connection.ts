@@ -13,6 +13,7 @@ import { MqttOptions, DataSourceState } from '../../../backend/src/DataSource'
 import { showTree } from './Tree'
 import { TopicViewModel } from '../TopicViewModel'
 import { showError } from './Global'
+import { globalActions } from '.';
 
 export const connect = (options: MqttOptions, connectionId: string) => (dispatch: Dispatch<any>, getState: () => AppState) => {
   dispatch(connecting(connectionId))
@@ -41,6 +42,7 @@ const updateHealth = (dataSourceState: DataSourceState) => (dispatch: Dispatch<a
     state = 'connecting'
   } else if (!dataSourceState.connected) {
     state = 'offline'
+    dispatch(globalActions.showError('Disconnected from server'))
   } else if (dataSourceState.connected) {
     state = 'online'
   } else {
