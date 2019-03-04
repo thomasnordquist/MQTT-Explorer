@@ -89,7 +89,7 @@ class App extends React.PureComponent<Props, {}> {
           <UpdateNotifier />
           <ConnectionSetup />
         </ErrorBoundary>
-      </div >
+      </div>
     )
   }
 }
