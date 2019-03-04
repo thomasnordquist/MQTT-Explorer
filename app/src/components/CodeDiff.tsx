@@ -1,13 +1,14 @@
 import * as diff from 'diff'
 import * as Prism from 'prismjs'
 import * as React from 'react'
-import { Badge, Theme, withStyles } from '@material-ui/core'
+import { Theme, withStyles } from '@material-ui/core'
 import 'prismjs/components/prism-json'
 import 'prismjs/themes/prism-tomorrow.css'
 
 interface Props {
   previous: string
   current: string
+  nameOfCompareMessage: string
   language?: 'json'
   classes: any
 }
@@ -60,9 +61,13 @@ class CodeDiff extends React.Component<Props, {}> {
     }
 
     return (
-      <span style={{ display: 'block', textAlign: 'right' }}>
-        Diff: <span className={this.props.classes.additions}>+ {additions} line{additions === 1 ? '' : 's'}</span>
-        , <span className={this.props.classes.deletions}>- {deletions} line{deletions === 1 ? '' : 's'}</span>
+      <span style={{ display: 'block', marginBottom: '8px', float: 'right' }}>
+        <span>
+          Comparing with <b>{this.props.nameOfCompareMessage}</b> message:&nbsp;
+
+          <span className={this.props.classes.additions}>+ {additions} line{additions === 1 ? '' : 's'}</span>
+          , <span className={this.props.classes.deletions}>- {deletions} line{deletions === 1 ? '' : 's'}</span>
+        </span>
       </span>
     )
   }

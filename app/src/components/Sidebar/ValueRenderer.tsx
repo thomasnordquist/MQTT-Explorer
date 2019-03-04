@@ -70,6 +70,7 @@ class ValueRenderer extends React.Component<Props, State> {
         previous={previous}
         current={current}
         language={language}
+        nameOfCompareMessage={this.props.compareWith ? 'selected' : 'previous'}
       />
     )
   }
