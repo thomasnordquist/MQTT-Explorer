@@ -35,7 +35,7 @@
       "maintainer": "Thomas Nordquist"
     },
     "appx": {
-      "applicationId": "mqtt-explorer",
+      "applicationId": "mqttexplorer",
       "identityName": "51031thomas.nordquist.MQTT-Explorer",
       "publisherDisplayName": "Thomas Nordquist",
       "publisher": "CN=0A6DE643-4AA2-4FF2-9729-6935C9ED8C13",
