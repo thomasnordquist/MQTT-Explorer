@@ -82,10 +82,10 @@ async function executeBuild() {
       }
       break
     case 'mac':
-      await buildWithOptions(mac, { platform: 'linux', package: 'dmg' })
+      await buildWithOptions(mac, { platform: 'mac', package: 'dmg' })
       break
     default:
-      await buildWithOptions(mac, { platform: 'linux', package: 'dmg' })
+      await buildWithOptions(mac, { platform: 'mac', package: 'dmg' })
   }
 }
 
