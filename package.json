@@ -23,17 +23,19 @@
     "appId": "mqtt-explorer",
     "nodeGypRebuild": false,
     "mac": {
-      "category": "de.t7n.apps.mqtt-explorer",
+      "appId": "de.t7n.apps.mqtt-explorer",
+      "category": "public.app-category.developer-tools",
       "publish": [
         "github"
-      ]
+      ],
+      "provisioningProfile": "res/MQTT_Explorer_Store_Distribution_Profile.provisionprofile"
     },
     "linux": {
       "category": "Development",
       "maintainer": "Thomas Nordquist"
     },
     "appx": {
-      "applicationId": "mqttexplorer",
+      "applicationId": "mqtt-explorer",
       "identityName": "51031thomas.nordquist.MQTT-Explorer",
       "publisherDisplayName": "Thomas Nordquist",
       "publisher": "CN=0A6DE643-4AA2-4FF2-9729-6935C9ED8C13",
