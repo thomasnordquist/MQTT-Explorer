@@ -7,7 +7,6 @@ const linuxAppImage: builder.CliOptions = {
   ia32: true,
   armv7l: true,
   arm64: false,
-  linux: ['AppImage'],
   projectDir: './build/clean',
   publish: 'always',
 }
@@ -17,7 +16,6 @@ const linuxSnap: builder.CliOptions = {
   ia32: false,
   armv7l: false,
   arm64: false,
-  linux: ['snap'],
   projectDir: './build/clean',
   publish: 'always',
 }
@@ -27,7 +25,6 @@ const winPortable: builder.CliOptions = {
   ia32: true,
   armv7l: false,
   arm64: false,
-  win: ['portable'],
   projectDir: './build/clean',
   publish: 'always',
 }
@@ -37,7 +34,6 @@ const winNsis: builder.CliOptions = {
   ia32: true,
   armv7l: false,
   arm64: false,
-  win: ['nsis'],
   projectDir: './build/clean',
   publish: 'always',
 }
@@ -47,9 +43,8 @@ const winAppx: builder.CliOptions = {
   ia32: true,
   armv7l: false,
   arm64: false,
-  win: ['appx'],
   projectDir: './build/clean',
-  publish: 'never',
+  publish: 'onTag',
 }
 
 const mac: builder.CliOptions = {
@@ -57,7 +52,6 @@ const mac: builder.CliOptions = {
   ia32: true,
   armv7l: false,
   arm64: false,
-  mac: ['dmg'],
   projectDir: './build/clean',
   publish: 'always',
 }
@@ -73,19 +67,15 @@ async function executeBuild() {
       break
     case 'linux':
       await buildWithOptions(linuxAppImage, { platform: 'linux', package: 'AppImage' })
-      break
-    case 'snap':
-      try {
-        await buildWithOptions(linuxSnap, { platform: 'linux', package: 'snap' })
-      } catch {
-        // ignore
-      }
+      await buildWithOptions(linuxSnap, { platform: 'linux', package: 'snap' })
       break
     case 'mac':
+      await buildWithOptions(mac, { platform: 'mac', package: 'mas' })
       await buildWithOptions(mac, { platform: 'mac', package: 'dmg' })
+      await buildWithOptions(mac, { platform: 'mac', package: 'zip' })
       break
     default:
-      await buildWithOptions(mac, { platform: 'mac', package: 'dmg' })
+      throw new Error('No target selected')
   }
 }
 
@@ -96,7 +86,11 @@ export interface BuildInfo {
 
 async function buildWithOptions(options: builder.CliOptions, buildInfo: BuildInfo) {
   fs.writeFileSync(path.join(options.projectDir!, 'buildOptions.json'), JSON.stringify(buildInfo))
-  await builder.build(options)
+
+  await builder.build({
+    ...options,
+    [buildInfo.platform]: [buildInfo.package],
+  })
 }
 
 function build() {

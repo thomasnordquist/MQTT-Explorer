@@ -1,12 +1,5 @@
 language: node_js
 
-deploy:
-  skip_cleanup: true
-    provider: script
-  script: echo $SNAP_TOKEN | snap run snapcraft login --with - && snap run snapcraft push build/clean/build/*.snap --release edge"
-  on:
-    branch: master
-
 services:
   - xvfb
 
@@ -40,6 +33,5 @@ script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker run -e GH_TOKEN=$GH_TOKEN -e GIT_TAG=$TRAVIS_TAG --rm -v `pwd`:/app uitest sh -c "cd app && docker/testMounted.sh"; fi
   - if [[ "$TRAVIS_TAG" != "" ]]; then yarn run prepare-release; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package linux; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then yarn run package snap; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package -- mac; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package -- win; fi

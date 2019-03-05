@@ -57,7 +57,7 @@ async function doStuff() {
   await sleep(1000)
 
   await sleep(1000)
-  await showText('Topics overview', 2000, browser, 'top')
+  await showText('Topic overview', 2000, browser, 'top')
   await sleep(2000)
   await showText('Indicate topic updates', 2000, browser, 'bottom')
   await sleep(3000)
