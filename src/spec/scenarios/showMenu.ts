@@ -9,6 +9,8 @@ export async function showMenu(browser: Browser<void>) {
   // moveToCenterOfElement(brokerStatistics, browser)
   await sleep(2000)
 
+  await browser.saveScreenshot('screen4.png')
+
   const topicOrder = await browser.$('#select-node-order')
   await clickOn(topicOrder, browser)
   await sleep(1000)

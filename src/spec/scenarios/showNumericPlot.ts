@@ -5,7 +5,7 @@ export async function showNumericPlot(browser: Browser<void>) {
   await expandTopic('livingroom/temperature', browser)
 
   await clickOnHistory(browser)
-
+  await browser.saveScreenshot('screen2.png')
   await sleep(1000)
   await expandTopic('livingroom/humidity', browser)
 }
