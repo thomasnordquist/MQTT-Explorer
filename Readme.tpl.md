@@ -38,12 +38,15 @@ The hierarchical view allows for a quick understanding what is going on on your 
 ![screencast](https://user-images.githubusercontent.com/7721625/52979302-3f073b80-33d5-11e9-9953-b70ebb349439.gif)
 
 ## Performance
-This App is optimized to handle thousands of topics and at least hundreds of thousands messages per minute.
-So don't worry if you got >=30k topics and >=100.000 messages per minute.
 
-One can also subscribe to custom topics insted of the "root wildcard #", therefore limiting the amount of messages.
+This App is optimized to handle thousands of topics and at hundreds of thousands messages per minute.
+
+In very large productive environments brokers may handle an exteme load of topics.
+Subscribing with a wildcard topic is in this scenario not adviced.
+To avoid a scenario where the MQTT-Explorer would have to handle millions of updates, one can set up custom subscriptions in the "Advanced" connection settings.
 
 ## Develop
+
 PRs and issues are welcome
 
 Install with `npm run install`, build with `npm run build`
@@ -53,22 +56,27 @@ Start with `npm run start`
 The `app` directory contains all the rendering logic, the `backend` directory currently contains the models, tests, connection management.
 
 ## Automated Tests
+
 To achieve a reliable product automated tests run regulary on travis.
+
 - Data model
 - MQTT integration
 - UI-Tests (The demo is a recorded ui test)
 
 ## Telemetry
-The App sends telemetry and error reports, this enables me to quickly react on bugs/errors I produced.
-This is a difficutlt task since this App runs on three different operating systems and architectures.
+
+No personal data is processed, sent or stored.
+
+The app sends telemetry and error reports, this enables me to quickly react on bugs/errors and understand what's going on.
+The app runs on winows, linux and mac and has thousands of users. Responding quickly to bugs is essential.
+This greatly helps to improve the software quality and reliability.
 
 It basically sends: app version, processor architecture, operating system, used memory, user interactions and error stacks.
 
-This greatly helps to improve the software quality and reliability.
-No data about you or your data is send or stored.
-Even thoug the data is purely technical, an option to disable telemetry is planned. [#52](https://github.com/thomasnordquist/MQTT-Explorer/issues/52)
+<details>
+<summary>Example telemetry</summary>
+<p>
 
-Example telemetry:
 ```javascript
 { system: { arch: 'x64', platform: 'darwin' },
   appVersion: '0.0.7',
@@ -83,6 +91,11 @@ Example telemetry:
   now: 1547714887921,
   transactionId: '53bf9aac-e695-40cc-9a81-b1cf3398843d' }
 ```
+
+</p>
+</details>
+
+Even thoug the data is purely technical, an option to disable telemetry is planned. [#52](https://github.com/thomasnordquist/MQTT-Explorer/issues/52)
 
 ## License
 [AGPL 3](./LICENSE)
