@@ -4,6 +4,8 @@
 [![Build_Status](https://travis-ci.org/thomasnordquist/MQTT-Explorer.svg?branch=master)](https://travis-ci.org/thomasnordquist/MQTT-Explorer)
 [![Build status](https://ci.appveyor.com/api/projects/status/c35tkm29rm4m5364/branch/master?svg=true)](https://ci.appveyor.com/project/thomasnordquist/mqtt-explorer/branch/master)
 
+<img src="./icon.png" height="48" />
+
 ### Version {{ version }}
 
 A MQTT Tool to get a quick overview of your MQTT topics and integrate new devices/services more efficiently.
