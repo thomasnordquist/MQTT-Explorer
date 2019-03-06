@@ -6,19 +6,23 @@ import { exec } from './util'
 interface AfterPackContext {
   outDir: string
   appOutDir: string
-  // packager: PlatformPackager<any>
+  packager: any// PlatformPackager<any>
   electronPlatformName: string
-  // arch: Arch
-  // targets: Array<Target>
+  arch: any//Arch
+  targets: any//Array<Target>
 }
 
 export default async function (info: AfterPackContext) {
-  console.log(JSON.stringify(info, undefined, '  '))
+  console.log(info)
+  console.log(info.targets)
+  console.log(info.packager)
+  console.log(info.arch)
+
   addAppNameToTiles(info)
 }
 
 export function addAppNameToTiles(info: AfterPackContext) {
-  const manifestPath = path.join(info.outDir, 'AppxManifest.xml')
+  const manifestPath = path.join(info.appOutDir, 'AppxManifest.xml')
   const data = fs.readFileSync(manifestPath).toString()
   const newData = data.replace('uap:DefaultTile', 'uap:DefaultTile ShowName="allLogos"')
   fs.writeFileSync(manifestPath, newData)

@@ -5,6 +5,12 @@ function scale44() {
     convert $BASE_IMAGE -resize "$1"x"$1" -resize 66% -gravity center -background transparent -extent "$1"x"$1" appx/Square44x44Logo.targetsize-"$1".png
 }
 
+function storeLogo() {
+    SCALE=$1
+    PIXELS=$2
+    convert $BASE_IMAGE -resize "$PIXELS"x"$PIXELS" appx/StoreLogo-scale-"$SCALE"_altform-unplated.png
+}
+
 function store150() {
     SCALE=$1
     PIXELS=$2
@@ -26,3 +32,10 @@ store150 150 225
 store150 200 300
 store150 300 450
 store150 400 600
+
+storeLogo 100 50
+storeLogo 150 75
+storeLogo 200 100
+storeLogo 400 200
+convert $BASE_IMAGE -resize 50x50 appx/StoreLogo.png
+
