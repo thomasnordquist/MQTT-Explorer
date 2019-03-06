@@ -114,6 +114,13 @@
     reflect-metadata "^0.1.12"
     tslib "^1.8.1"
 
+"@types/adm-zip@^0.4.32":
+  version "0.4.32"
+  resolved "https://registry.yarnpkg.com/@types/adm-zip/-/adm-zip-0.4.32.tgz#6de01309af60677065d2e52b417a023303220931"
+  integrity sha512-hv1O7ySn+XvP5OeDQcJFWwVb2v+GFGO1A9aMTQ5B/bzxb7WW21O8iRhVdsKKr8QwuiagzGmPP+gsUAYZ6bRddQ==
+  dependencies:
+    "@types/node" "*"
+
 "@types/chai@^4.1.7":
   version "4.1.7"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.7.tgz#1b8e33b61a8c09cbe1f85133071baa0dbf9fa71a"
@@ -200,6 +207,11 @@ about-window@^1.12.1:
   version "1.12.1"
   resolved "https://registry.yarnpkg.com/about-window/-/about-window-1.12.1.tgz#b81c10f6de58d38bce2aa5f31f61a82e6c3d6c2b"
   integrity sha512-P/fJACq7RBFpv5Ql0kIqpOYgFqQ8WdoZoB7wrKmDvwTSKVOMbUZMYnQYtnOW6dHmMCYuNrmQFf+MxvuhE+KrzQ==
+
+adm-zip@^0.4.13:
+  version "0.4.13"
+  resolved "https://registry.yarnpkg.com/adm-zip/-/adm-zip-0.4.13.tgz#597e2f8cc3672151e1307d3e95cddbc75672314a"
+  integrity sha512-fERNJX8sOXfel6qCBCMPvZLzENBEhZTzKqg6vrOW5pvoEaQuJhRU4ndTAh6lHOxn1I6jnz2NHra56ZODM751uw==
 
 ajv-keywords@^3.2.0:
   version "3.2.0"
