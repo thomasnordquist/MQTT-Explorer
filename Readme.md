@@ -74,8 +74,8 @@ This greatly helps to improve the software quality and reliability.
 It basically sends: app version, processor architecture, operating system, used memory, user interactions and error stacks.
 
 <details>
-<summary>Example telemetry</summary>
-<p>
+<summary><p>Example telemetry</p>
+</summary>
 
 ```javascript
 { system: { arch: 'x64', platform: 'darwin' },
@@ -92,7 +92,6 @@ It basically sends: app version, processor architecture, operating system, used 
   transactionId: '53bf9aac-e695-40cc-9a81-b1cf3398843d' }
 ```
 
-</p>
 </details>
 
 Even thoug the data is purely technical, an option to disable telemetry is planned. [#52](https://github.com/thomasnordquist/MQTT-Explorer/issues/52)
