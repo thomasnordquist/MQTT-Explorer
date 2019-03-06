@@ -9,3 +9,7 @@ logo: https://user-images.githubusercontent.com/7721625/52227945-5280b580-28b1-1
 plugins:
   - jekyll-seo-tag
 google_analytics: UA-133696837-1
+
+markdown: kramdown
+kramdown:
+  parse_block_html: true
