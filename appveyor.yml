@@ -19,5 +19,5 @@ test_script:
   - yarn test
 
 artifacts:
-  - path: 'build\clean\build\MQTT-Explorer*.appx'
+  - path: 'build\clean\build\*.appx'
 
