@@ -21,6 +21,7 @@
   },
   "build": {
     "appId": "mqtt-explorer",
+    "productName": "MQTT Explorer",
     "nodeGypRebuild": false,
     "mac": {
       "appId": "de.t7n.apps.mqtt-explorer",
@@ -28,7 +29,8 @@
       "publish": [
         "github"
       ],
-      "provisioningProfile": "res/MQTT_Explorer_Store_Distribution_Profile.provisionprofile"
+      "provisioningProfile": "res/MQTT_Explorer_Store_Distribution_Profile.provisionprofile",
+      "entitlements": "res/entitlements.mas.plist"
     },
     "linux": {
       "category": "Development",

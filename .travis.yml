@@ -30,6 +30,7 @@ install:
 script:
   - yarn run build
   - yarn test
+  - export TRAVIS_BUILD_NUMBER="" # Override travis build number since it is uses for tagging the binary version https://github.com/electron-userland/electron-builder/issues/3730
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker run -e GH_TOKEN=$GH_TOKEN -e GIT_TAG=$TRAVIS_TAG --rm -v `pwd`:/app uitest sh -c "cd app && docker/testMounted.sh"; fi
   - if [[ "$TRAVIS_TAG" != "" ]]; then yarn run prepare-release; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package linux; fi

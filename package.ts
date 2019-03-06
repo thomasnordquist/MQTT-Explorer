@@ -81,7 +81,7 @@ async function executeBuild() {
 
 export interface BuildInfo {
   platform: 'win' | 'linux' | 'mac'
-  package: 'portable' | 'nsis' | 'appx' | 'AppImage' | 'snap' | 'dmg' | 'zip' | 'mas'
+  package: 'portable' | 'nsis' | 'appx' | 'AppImage' | 'snap' | 'dmg' | 'zip' | 'mas' | 'mas-dev'
 }
 
 async function buildWithOptions(options: builder.CliOptions, buildInfo: BuildInfo) {
