@@ -81,16 +81,27 @@ async function executeBuild() {
 
 export interface BuildInfo {
   platform: 'win' | 'linux' | 'mac'
-  package: 'portable' | 'nsis' | 'appx' | 'AppImage' | 'snap' | 'dmg' | 'zip' | 'mas' | 'mas-dev'
+  package: Packages
 }
+
+type Packages = 'portable' | 'nsis' | 'appx' | 'AppImage' | 'snap' | 'dmg' | 'zip' | 'mas' | 'mas-dev'
 
 async function buildWithOptions(options: builder.CliOptions, buildInfo: BuildInfo) {
   fs.writeFileSync(path.join(options.projectDir!, 'buildOptions.json'), JSON.stringify(buildInfo))
+  ensureAppNameForPackage(buildInfo.package)
 
   await builder.build({
     ...options,
     [buildInfo.platform]: [buildInfo.package],
   })
+}
+
+// AppX must hav a different name since the store name is already taken (but not used)
+function ensureAppNameForPackage(packageOption: Packages) {
+  const jsonLocation = path.join('build', 'clean', 'package.json')
+  const packageJson = JSON.parse(fs.readFileSync(jsonLocation).toString())
+  packageJson.build.productName = packageOption === 'appx' ? 'MQTT-Explorer' : 'MQTT Explorer'
+  fs.writeFileSync(jsonLocation, JSON.stringify(packageJson, undefined, '  '))
 }
 
 function build() {
