@@ -24,18 +24,22 @@ The hierarchical view allows for a quick understanding what is going on on your 
 
 | Platform | | Downloads |
 |:----------:|:-------------:|:------:|
-| ![windows](https://user-images.githubusercontent.com/7721625/51445407-b4172080-1d04-11e9-8c70-d8413d1d6d8b.png) | Windows | <a href="https://www.microsoft.com/store/apps/9PP8SFM082WD?ocid=badge"><img src="https://assets.windowsphone.com/85864462-9c82-451e-9355-a3d5f874397a/English_get-it-from-MS_InvariantCulture_Default.png" width="150" /></a><br/>{{windowsTargets}} |
+| ![windows](https://user-images.githubusercontent.com/7721625/51445407-b4172080-1d04-11e9-8c70-d8413d1d6d8b.png) | Windows | <a href="https://www.microsoft.com/store/apps/9PP8SFM082WD?ocid=badge"><img src="https://assets.windowsphone.com/85864462-9c82-451e-9355-a3d5f874397a/English_get-it-from-MS_InvariantCulture_Default.png" width="165" /></a><br/>{{windowsTargets}} |
+| ![ubuntu](https://user-images.githubusercontent.com/7721625/51445401-a5306e00-1d04-11e9-9b9b-20e196b82142.png) | Ubuntu | <a href="https://snapcraft.io/mqtt-explorer" title="Get it from the Snap Store"><img src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg" width="165" /><br/>[Ubuntu Store](snap://mqtt-explorer)</a> |
+| ![mac](https://user-images.githubusercontent.com/7721625/51445390-921d9e00-1d04-11e9-8339-351469ef20ae.png) | Mac | <a href="https://geo.itunes.apple.com/us/app/mqtt-explorer/id1455214828?mt=12&app=apps"><img src="https://linkmaker.itunes.apple.com/en-us/badge-lrg.svg?releaseDate=2019-03-07T00:00:00Z&kind=desktopapp&bubble=macos_apps" width="165" height="40"/></a><br />{{macTargets}} |
 | ![linux](https://user-images.githubusercontent.com/7721625/51445392-947ff800-1d04-11e9-8c7f-a30efb755651.png) | Linux | {{linuxTargets}}<br>*Run AppImage:<br>Make it executable and double-click it.* |
-| ![ubuntu](https://user-images.githubusercontent.com/7721625/51445401-a5306e00-1d04-11e9-9b9b-20e196b82142.png) | Ubuntu | <a href="https://snapcraft.io/mqtt-explorer" title="Get it from the Snap Store"><img src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg" width="150" /><br/>[Ubuntu Store](snap://mqtt-explorer) |
-| ![mac](https://user-images.githubusercontent.com/7721625/51445390-921d9e00-1d04-11e9-8339-351469ef20ae.png) | Mac | {{macTargets}} |
 
 [More Downloads](https://github.com/thomasnordquist/MQTT-Explorer/releases)
 
 ## Screenshots
-![screen1](https://user-images.githubusercontent.com/7721625/51770198-6c6a0d80-20e5-11e9-94d5-a0174634253c.png)
 
-## Demo
-![screencast](https://user-images.githubusercontent.com/7721625/52979302-3f073b80-33d5-11e9-9953-b70ebb349439.gif)
+|   |   |   |
+|:---:|:---:|:---:|
+| [![screen1_small](https://user-images.githubusercontent.com/7721625/53954800-84b34c00-40d7-11e9-842d-bf655c569600.jpg)](https://user-images.githubusercontent.com/7721625/53954364-52551f00-40d6-11e9-93cf-d5a9601897ea.png) | [![screen2_small](https://user-images.githubusercontent.com/7721625/53954801-84b34c00-40d7-11e9-913a-42572e675620.jpg)](https://user-images.githubusercontent.com/7721625/53954365-52551f00-40d6-11e9-823f-afd66f19ed01.png) | [![screen3_small](https://user-images.githubusercontent.com/7721625/53954802-854be280-40d7-11e9-973c-08f23c8dbf89.jpg)](https://user-images.githubusercontent.com/7721625/53954366-52551f00-40d6-11e9-9738-74db830d03ac.png) |
+
+
+## Video
+![screencast](https://user-images.githubusercontent.com/7721625/53954172-b7f4db80-40d5-11e9-852c-f8d85e511a00.gif)
 
 ## Performance
 

@@ -1,4 +1,4 @@
-# 0.2.1
+# 0.2.3
 
 - Highlight differences in the last received message with a "diff" view
 - Magnify app content with "Ctrl +", "Ctrl -", "Ctrl 0"
