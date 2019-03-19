@@ -75,7 +75,7 @@ async function executeBuild() {
       await buildWithOptions(mac, { platform: 'mac', package: 'zip' })
       break
     default:
-      throw new Error('No target selected')
+      await buildWithOptions({ ...mac, projectDir: '' }, { platform: 'mac', package: 'mas-dev' })
   }
 }
 
@@ -88,7 +88,7 @@ type Packages = 'portable' | 'nsis' | 'appx' | 'AppImage' | 'snap' | 'dmg' | '
 
 async function buildWithOptions(options: builder.CliOptions, buildInfo: BuildInfo) {
   fs.writeFileSync(path.join(options.projectDir!, 'buildOptions.json'), JSON.stringify(buildInfo))
-  ensureAppNameForPackage(buildInfo.package)
+  ensureAppNameForPackage(options, buildInfo.package)
 
   await builder.build({
     ...options,
@@ -97,8 +97,8 @@ async function buildWithOptions(options: builder.CliOptions, buildInfo: BuildInf
 }
 
 // AppX must hav a different name since the store name is already taken (but not used)
-function ensureAppNameForPackage(packageOption: Packages) {
-  const jsonLocation = path.join('build', 'clean', 'package.json')
+function ensureAppNameForPackage(options: builder.CliOptions, packageOption: Packages) {
+  const jsonLocation = path.join((options.projectDir as string), 'package.json')
   const packageJson = JSON.parse(fs.readFileSync(jsonLocation).toString())
   packageJson.build.productName = packageOption === 'appx' ? 'MQTT-Explorer' : 'MQTT Explorer'
   fs.writeFileSync(jsonLocation, JSON.stringify(packageJson, undefined, '  '))
