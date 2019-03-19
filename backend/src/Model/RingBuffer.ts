@@ -62,9 +62,11 @@ export class RingBuffer<T extends Lengthwise> {
   }
 
   private dropFirst() {
-    const freedSpace = this.items[this.start].length
-    this.usage -= freedSpace
+    const firstItem = this.items[this.start]
     delete this.items[this.start]
     this.start += 1
+
+    const freedSpace = firstItem.length
+    this.usage -= freedSpace
   }
 }
