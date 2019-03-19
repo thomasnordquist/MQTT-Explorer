@@ -17,7 +17,7 @@ export class RingBuffer<T extends Lengthwise> {
     if (ringBuffer) {
       this.items = ringBuffer.toArray()
       this.end = this.items.length
-      this.usage = this.items.length
+      this.usage = ringBuffer.usage
     }
   }
 
