@@ -7,16 +7,16 @@ interface Props {
 
 class DateFormatter extends React.Component<Props, {}> {
   public render() {
-    const momentObject = this.localizedMoment()
-    return <span>{momentObject.format('L')} {momentObject.format('LTS')}</span>
+    const locale = window.navigator.language
+    return <span>{locale ? this.localizedDate(locale) : this.legacyDate()}</span>
   }
 
-  private getLocale() {
-    return window.navigator.language
+  private legacyDate() {
+    return `${this.props.date.toLocaleDateString()} ${this.props.date.toLocaleTimeString()}`
   }
 
-  private localizedMoment() {
-    return moment(this.props.date).locale(this.getLocale())
+  private localizedDate(locale: string) {
+    return moment(this.props.date).locale(locale).format('L LTS')
   }
 }
 
