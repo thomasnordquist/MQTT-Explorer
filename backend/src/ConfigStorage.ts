@@ -6,7 +6,7 @@ import {
   storageClearEvent,
   storageLoadEvent,
   storageStoreEvent,
-  makeStorageAcknoledgementEvent,
+  makeStorageAcknowledgementEvent,
 } from '../../events/StorageEvents'
 
 export default class ConfigStorage {
@@ -27,7 +27,7 @@ export default class ConfigStorage {
 
   public async init() {
     backendEvents.subscribe(storageStoreEvent, async (event) => {
-      const ack = makeStorageAcknoledgementEvent(event.transactionId)
+      const ack = makeStorageAcknowledgementEvent(event.transactionId)
       try {
         const db = await this.getDb()
         await db.set(event.store, event.data).write()
@@ -57,9 +57,9 @@ export default class ConfigStorage {
         for (const key of keys) {
           await db.unset(key).write()
         }
-        backendEvents.emit(makeStorageAcknoledgementEvent(event.transactionId), undefined)
+        backendEvents.emit(makeStorageAcknowledgementEvent(event.transactionId), undefined)
       } catch (error) {
-        backendEvents.emit(makeStorageAcknoledgementEvent(event.transactionId), { error, transactionId: event.transactionId })
+        backendEvents.emit(makeStorageAcknowledgementEvent(event.transactionId), { error, transactionId: event.transactionId })
         throw error
       }
     })

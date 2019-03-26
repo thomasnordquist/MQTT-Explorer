@@ -22,7 +22,7 @@ export const storageLoadEvent: Event<LoadCommand> = {
   topic: 'storage/load',
 }
 
-export function makeStorageAcknoledgementEvent(transactionId: string): Event<StoreCommand> {
+export function makeStorageAcknowledgementEvent(transactionId: string): Event<StoreCommand> {
   return {
     topic: `storage/ack/${transactionId}`,
   }

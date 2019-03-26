@@ -1,7 +1,7 @@
 import { AppState } from '../reducers'
 import { clearLegacyConnectionOptions, loadLegacyConnectionOptions } from '../model/LegacyConnectionSettings'
 import { ConnectionOptions, createEmptyConnection, makeDefaultConnections, CertificateParameters } from '../model/ConnectionOptions'
-import { default as persistantStorage, StorageIdentifier } from '../PersistantStorage'
+import { default as persistentStorage, StorageIdentifier } from '../PersistentStorage'
 import { Dispatch } from 'redux'
 import { showError } from './Global'
 import { remote } from 'electron'
@@ -21,7 +21,7 @@ export const loadConnectionSettings = () => async (dispatch: Dispatch<any>, getS
   let connections
   try {
     await ensureConnectionsHaveBeenInitialized()
-    connections = await persistantStorage.load(storedConnectionsIdentifier)
+    connections = await persistentStorage.load(storedConnectionsIdentifier)
   } catch (error) {
     dispatch(showError(error))
   }
@@ -87,7 +87,7 @@ async function openCertificate(): Promise<CertificateParameters> {
 export const saveConnectionSettings = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
   try {
     console.log('store settings')
-    await persistantStorage.store(storedConnectionsIdentifier, getState().connectionManager.connections)
+    await persistentStorage.store(storedConnectionsIdentifier, getState().connectionManager.connections)
   } catch (error) {
     dispatch(showError(error))
   }
@@ -111,7 +111,7 @@ export const deleteSubscription = (subscription: string, connectionId: string): 
   type: ActionTypes.CONNECTION_MANAGER_DELETE_SUBSCRIPTION,
 })
 
-export const createConnection = () => (dispatch: Dispatch<any>, getState: () => AppState) => {
+export const createConnection = () => (dispatch: Dispatch<any>) => {
   const newConnection = createEmptyConnection()
   dispatch(addConnection(newConnection))
   dispatch(selectConnection(newConnection.id))
@@ -155,12 +155,12 @@ export const deleteConnection = (connectionId: string) => (dispatch: Dispatch<an
 }
 
 async function ensureConnectionsHaveBeenInitialized() {
-  const connections = await persistantStorage.load(storedConnectionsIdentifier)
+  const connections = await persistentStorage.load(storedConnectionsIdentifier)
   const requiresInitialization = !connections
   if (requiresInitialization) {
     const migratedConnection = loadLegacyConnectionOptions()
     const defaultConnections = makeDefaultConnections()
-    persistantStorage.store(storedConnectionsIdentifier, {
+    persistentStorage.store(storedConnectionsIdentifier, {
       ...migratedConnection,
       ...defaultConnections,
     })

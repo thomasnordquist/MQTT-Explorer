@@ -1,5 +1,5 @@
 import * as React from 'react'
-import PersistantStorage from './PersistantStorage'
+import PersistentStorage from './PersistentStorage'
 import SentimentDissatisfied from '@material-ui/icons/SentimentDissatisfied'
 import Warning from '@material-ui/icons/Warning'
 import { electronRendererTelementry } from 'electron-telemetry'
@@ -40,7 +40,7 @@ class ErrorBoundary extends React.Component<Props, State> {
   }
 
   private clearStorage = () => {
-    PersistantStorage.clear()
+    PersistentStorage.clear()
     window.location = window.location
   }
 

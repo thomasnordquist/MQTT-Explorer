@@ -1,8 +1,9 @@
 import * as React from 'react'
 import Add from '@material-ui/icons/Add'
+import ClearAdornment from '../helper/ClearAdornment'
 import Delete from '@material-ui/icons/Delete'
-import Undo from '@material-ui/icons/Undo'
 import Lock from '@material-ui/icons/Lock'
+import Undo from '@material-ui/icons/Undo'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
@@ -20,7 +21,6 @@ import {
   Tooltip,
   Typography,
 } from '@material-ui/core'
-import ClearAdornment from '../helper/ClearAdornment';
 
 interface Props {
   connection: ConnectionOptions

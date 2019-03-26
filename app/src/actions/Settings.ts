@@ -2,7 +2,7 @@ import * as q from '../../../backend/src/Model'
 import { AppState } from '../reducers'
 import { autoExpandLimitSet } from '../components/Settings'
 import { batchActions } from 'redux-batched-actions'
-import { default as persistantStorage, StorageIdentifier } from '../PersistantStorage'
+import { default as persistentStorage, StorageIdentifier } from '../PersistentStorage'
 import { Dispatch } from 'redux'
 import { showError } from './Global'
 import { showTree } from './Tree'
@@ -19,7 +19,7 @@ const settingsIdentifier: StorageIdentifier<Partial<SettingsState>> = {
 
 export const loadSettings = () => async (dispatch: Dispatch<any>, _getState: () => AppState)  => {
   try {
-    const settings = await persistantStorage.load(settingsIdentifier)
+    const settings = await persistentStorage.load(settingsIdentifier)
     dispatch({
       settings,
       type: ActionTypes.SETTINGS_DID_LOAD_SETTINGS,
@@ -37,7 +37,7 @@ export const storeSettings = () => async (dispatch: Dispatch<any>, getState: () 
   }
 
   try {
-    await persistantStorage.store(settingsIdentifier, settings)
+    await persistentStorage.store(settingsIdentifier, settings)
   } catch (error) {
     dispatch(showError(error))
   }
@@ -74,7 +74,7 @@ export const toggleSettingsVisibility = () => (dispatch: Dispatch<any>, _getStat
   dispatch(storeSettings())
 }
 
-export const togglehighlightTopicUpdates = () => (dispatch: Dispatch<any>, _getState: () => AppState) => {
+export const toggleHighlightTopicUpdates = () => (dispatch: Dispatch<any>, _getState: () => AppState) => {
   dispatch({
     type: ActionTypes.SETTINGS_TOGGLE_HIGHLIGHT_ACTIVITY,
   })

@@ -130,7 +130,7 @@ class Settings extends React.Component<Props, {}> {
   private renderHighlightTopicUpdates() {
     const { highlightTopicUpdates, actions } = this.props
 
-    return this.renderSwitch('Show Activity', highlightTopicUpdates, actions.togglehighlightTopicUpdates, 'Topics blink when a new message arrives')
+    return this.renderSwitch('Show Activity', highlightTopicUpdates, actions.toggleHighlightTopicUpdates, 'Topics blink when a new message arrives')
   }
 
   private renderSwitch(title: string, checked: boolean, action: any, tooltip: string) {

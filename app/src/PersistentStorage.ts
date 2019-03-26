@@ -6,20 +6,20 @@ import {
   makeStorageResponseEvent,
   storageLoadEvent,
   storageClearEvent,
-  makeStorageAcknoledgementEvent,
+  makeStorageAcknowledgementEvent,
 } from '../../events/StorageEvents'
 
 export interface StorageIdentifier<Model> {
   id: string
 }
 
-export interface PersistantStorage {
+export interface PersistentStorage {
   store<Model>(identifier: StorageIdentifier<Model>, data: Model): Promise<void>
   load<Model>(identifier: StorageIdentifier<Model>): Promise<Model | undefined>
   clear(): Promise<void>
 }
 
-class RemoteStorage implements PersistantStorage {
+class RemoteStorage implements PersistentStorage {
   private timeoutCallback(event: any, callback: any, reject: any) {
     setTimeout(() => {
       reject('remote storage timeout')
@@ -28,7 +28,7 @@ class RemoteStorage implements PersistantStorage {
   }
 
   private expectAck(transactionId: string): Promise<void> {
-    const ack = makeStorageAcknoledgementEvent(transactionId)
+    const ack = makeStorageAcknowledgementEvent(transactionId)
     return new Promise<void>((resolve, reject) => {
       const callback = (msg: any) => {
         if (msg && msg.error) {

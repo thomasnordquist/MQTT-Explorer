@@ -4,11 +4,11 @@ import * as path from 'path'
 import ConfigStorage from '../backend/src/ConfigStorage'
 import { app, BrowserWindow, Menu } from 'electron'
 import { autoUpdater } from 'electron-updater'
+import { BuildInfo } from 'electron-telemetry/build/Model'
 import { ConnectionManager, updateNotifier } from '../backend/src/index'
 import { electronTelemetryFactory } from 'electron-telemetry'
 import { menuTemplate } from './MenuTemplate'
 import { UpdateInfo } from '../events'
-import { BuildInfo } from 'electron-telemetry/build/Model';
 const isDev = require('electron-is-dev')
 
 if (!isDev) {
