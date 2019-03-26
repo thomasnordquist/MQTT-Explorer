@@ -34,6 +34,7 @@ export function toMqttConnection(options: ConnectionOptions): MqttOptions | unde
     username: options.username,
     password: options.password,
     tls: options.encryption,
+    clientId: options.clientId,
     certValidation: options.certValidation,
     subscriptions: options.subscriptions,
     certificateAuthority: options.selfSignedCertificate ? options.selfSignedCertificate.data : undefined,
