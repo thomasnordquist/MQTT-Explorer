@@ -11,19 +11,21 @@
 
 ## Version {{ version }}
 
-A MQTT Tool to get a quick overview of your MQTT topics and integrate new devices/services more efficiently.
+MQTT Explorer is a comprehensive MQTT Client that provides a structured overview of your MQTT topics and makes working with devices/services on your broker dead-simple.
+
+### Features
 
 - Visualize topics and topic activity
 - Delete retained topics
 - Search/filter topics
-- Delete topic recursively
+- Delete topics recursively
 - Publish topics
 - Plot numeric topics
-- Keep a history of each topic
+- Retain a history of each topic
+- ...
 
-**MQTT Explorer** strives to be THE MQTT swiss-army-knife.
-The perfect tool to integrate new services, IoT devices in your network.  
-The hierarchical view of your broker allows for a quick understanding what is going on.
+The hierarchical view makes this tool so easy to use and differentiates the **MQTT Explorer** from other great MQTT clients like [MQTTLens](https://chrome.google.com/webstore/detail/mqttlens/hemojaaeigabkbcookmlgmdigohjobjm), [MQTTBox](http://workswithweb.com/mqttbox.html) and [MQTT.fx](https://mqttfx.jensd.de/).  
+This MQTT Client strives to be a MQTT swiss-army-knife, the perfect tool to integrate new services and IoT devices on your network.
 
 ## Download
 
@@ -45,10 +47,20 @@ If you feel like a feature is missing or you found a bug, please leave me a [com
 
 ## Performance
 
-This App is optimized to handle thousands of topics and at hundreds of thousands messages per minute.
+This MQTT Client is optimized to handle thousands of topics and at hundreds of thousands messages per minute.
 
 Custom subscriptions can limit the amount of messages **MQTT Explorer** needs to process, subscriptions can be managed in the advanced connection settings.  
 In very large productive environments brokers may handle an extreme load of topics, subscribing with a wildcard topic is in this scenario not advised.
+
+## IoT Applications
+
+List of useful IoT applications using MQTT to integrate devices / services
+
+- [Home Assistant](https://www.home-assistant.io/) - Open source home automation gateway
+- [OpenHAB](https://www.openhab.org/) - Smart Home Gateway
+- [Node-RED](https://nodered.org/) - Flow-based programming for the Internet of Things
+- [zigbee2mqtt](https://github.com/Koenkk/zigbee2mqtt) - A ZigBee to MQTT bridge
+- [Tasmota](https://github.com/arendst/Sonoff-Tasmota) - ESP8266 firmware with MQTT support
 
 ## Develop
 
@@ -68,16 +80,6 @@ To achieve a reliable product automated tests run regularly on travis.
 - UI-Tests (The demo is a recorded ui test)
 
 A [mosquitto](https://mosquitto.org/) MQTT broker is required to run the ui-tests.
-
-## IoT Applications
-
-List of useful IoT applications using MQTT to integrate devices / services
-
-- [Home Assistant](https://www.home-assistant.io/) - Open source home automation gateway
-- [OpenHAB](https://www.openhab.org/) - Smart Home Gateway
-- [Node-RED](https://nodered.org/) - Flow-based programming for the Internet of Things
-- [zigbee2mqtt](https://github.com/Koenkk/zigbee2mqtt) - A ZigBee to MQTT bridge
-- [Tasmota](https://github.com/arendst/Sonoff-Tasmota) - ESP8266 firmware with MQTT support
 
 ## Telemetry
 
