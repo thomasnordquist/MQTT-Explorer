@@ -2,6 +2,11 @@ import { MqttOptions } from '../../../backend/src/DataSource'
 import { v4 } from 'uuid'
 const sha1 = require('sha1')
 
+export interface CertificateParameters {
+  name: string
+  /** @property data base64 encoded data */
+  data: string
+}
 export interface ConnectionOptions {
   type: 'mqtt'
   id: string
@@ -14,6 +19,7 @@ export interface ConnectionOptions {
   password?: string
   encryption: boolean
   certValidation: boolean
+  selfSignedCertificate?: CertificateParameters
   clientId?: string
   subscriptions: string[]
 }
@@ -30,10 +36,11 @@ export function toMqttConnection(options: ConnectionOptions): MqttOptions | unde
     tls: options.encryption,
     certValidation: options.certValidation,
     subscriptions: options.subscriptions,
+    certificateAuthority: options.selfSignedCertificate ? options.selfSignedCertificate.data : undefined,
   }
 }
 
-export function generateClienId() {
+function generateClientId() {
   const clientIdSha = sha1(`${Math.random()}`).slice(0, 8)
   return `mqtt-explorer-${clientIdSha}`
 }
@@ -41,7 +48,7 @@ export function generateClienId() {
 export function createEmptyConnection(): ConnectionOptions {
   return {
     certValidation: true,
-    clientId: generateClienId(),
+    clientId: generateClientId(),
     id: v4() as string,
     name: 'new connection',
     encryption: false,

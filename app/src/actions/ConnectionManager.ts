@@ -1,9 +1,13 @@
 import { AppState } from '../reducers'
 import { clearLegacyConnectionOptions, loadLegacyConnectionOptions } from '../model/LegacyConnectionSettings'
-import { ConnectionOptions, createEmptyConnection, makeDefaultConnections } from '../model/ConnectionOptions'
+import { ConnectionOptions, createEmptyConnection, makeDefaultConnections, CertificateParameters } from '../model/ConnectionOptions'
 import { default as persistantStorage, StorageIdentifier } from '../PersistantStorage'
 import { Dispatch } from 'redux'
 import { showError } from './Global'
+import { remote } from 'electron'
+import * as fs from 'fs'
+import * as path from 'path'
+
 import {
   ActionTypes,
   Action,
@@ -33,6 +37,53 @@ export const loadConnectionSettings = () => async (dispatch: Dispatch<any>, getS
   }
 }
 
+export const selectCertificate = (connectionId: string) => async (dispatch: Dispatch<any>, getState: () => AppState) => {
+  try {
+    const certificate = await openCertificate()
+    console.log(certificate)
+    dispatch(updateConnection(connectionId, {
+      selfSignedCertificate: certificate,
+    }))
+  } catch (error) {
+    console.log(error)
+    dispatch(showError(error))
+  }
+}
+
+async function openCertificate(): Promise<CertificateParameters> {
+  const rejectReasons = {
+    noCertificateSelected: 'No certificate selected',
+    certificateSizeDoesNotMatch: 'Certificate size larger/smaller then expected.',
+  }
+
+  return new Promise((resolve, reject) => {
+    remote.dialog.showOpenDialog({ properties: ['openFile'], securityScopedBookmarks: true }, (filePaths?: string[]) => {
+      const selectedFile = filePaths && filePaths[0]
+      if (!selectedFile) {
+        reject(rejectReasons.noCertificateSelected)
+        return
+      }
+
+      fs.readFile(selectedFile, (error, data) => {
+        if (error) {
+          reject(error)
+          return
+        }
+
+        if (data.length > 16_384 || data.length < 128) {
+          reject(rejectReasons.certificateSizeDoesNotMatch)
+          return
+        }
+
+        resolve({
+          data: data.toString('base64'),
+          name: path.basename(selectedFile),
+        })
+      })
+    })
+  })
+}
+
 export const saveConnectionSettings = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
   try {
     console.log('store settings')
@@ -42,7 +93,7 @@ export const saveConnectionSettings = () => async (dispatch: Dispatch<any>, getS
   }
 }
 
-export const updateConnection = (connectionId: string, changeSet: any): Action => ({
+export const updateConnection = (connectionId: string, changeSet: Partial<ConnectionOptions>): Action => ({
   connectionId,
   changeSet,
   type: ActionTypes.CONNECTION_MANAGER_UPDATE_CONNECTION,

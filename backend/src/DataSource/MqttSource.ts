@@ -12,6 +12,7 @@ export interface MqttOptions {
   certValidation: boolean
   clientId?: string
   subscriptions: string[]
+  certificateAuthority?: string
 }
 
 export class MqttSource implements DataSource<MqttOptions> {
@@ -42,6 +43,7 @@ export class MqttSource implements DataSource<MqttOptions> {
       username: options.username,
       password: options.password,
       clientId: options.clientId,
+      ca: options.certificateAuthority ? Buffer.from(options.certificateAuthority, 'base64') : undefined,
     })
 
     this.client = client

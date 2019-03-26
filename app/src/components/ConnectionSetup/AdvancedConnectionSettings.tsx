@@ -2,6 +2,7 @@ import * as React from 'react'
 import Add from '@material-ui/icons/Add'
 import Delete from '@material-ui/icons/Delete'
 import Undo from '@material-ui/icons/Undo'
+import Lock from '@material-ui/icons/Lock'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
@@ -16,7 +17,10 @@ import {
   List,
   ListItem,
   ListItemText,
+  Tooltip,
+  Typography,
 } from '@material-ui/core'
+import ClearAdornment from '../helper/ClearAdornment';
 
 interface Props {
   connection: ConnectionOptions
@@ -74,7 +78,7 @@ class ConnectionSettings extends React.Component<Props, State> {
                 </div>
               </List>
             </Grid>
-            <Grid item={true} xs={9} className={classes.gridPadding}>
+            <Grid item={true} xs={7} className={classes.gridPadding}>
               <TextField
                 className={classes.fullWidth}
                 label="MQTT Client ID"
@@ -84,6 +88,20 @@ class ConnectionSettings extends React.Component<Props, State> {
               />
             </Grid>
             <Grid item={true} xs={3} className={classes.gridPadding}>
+              <div>
+                <Tooltip title="Select certificate to verify authenticity of a self-signed certificate" placement="top">
+                  <Button
+                    variant="contained"
+                    className={classes.button}
+                    onClick={() => this.props.managerActions.selectCertificate(this.props.connection.id)}
+                  >
+                    <Lock /> Certificate
+                  </Button>
+                </Tooltip>
+                {this.renderCertificateInfo()}
+              </div>
+            </Grid>
+            <Grid item={true} xs={2} className={classes.gridPadding}>
               <Button
                 variant="contained"
                 className={classes.button}
@@ -96,6 +114,29 @@ class ConnectionSettings extends React.Component<Props, State> {
         </form>
       </div>
     )
+  }
+
+  private renderCertificateInfo() {
+    if (!this.props.connection.selfSignedCertificate) {
+      return null
+    }
+
+    return (
+      <span>
+        <Tooltip title={this.props.connection.selfSignedCertificate.name}>
+          <Typography className={this.props.classes.certificateName}>
+            <ClearAdornment action={this.clearCertificate} value={this.props.connection.selfSignedCertificate.name} />
+            {this.props.connection.selfSignedCertificate.name}
+          </Typography>
+      </Tooltip>
+     </span>
+    )
+  }
+
+  private clearCertificate = () => {
+    this.props.managerActions.updateConnection(this.props.connection.id, {
+      selfSignedCertificate: undefined,
+    })
   }
 
   private renderSubscriptions() {
@@ -148,6 +189,14 @@ const styles: StyleRulesCallback<string> = (theme: Theme) => {
     button: {
       marginTop: theme.spacing(3),
       float: 'right',
+    },
+    certificateName: {
+      width: '100%',
+      height: 'calc(1em + 4px)',
+      overflow: 'hidden' as 'hidden',
+      whiteSpace: 'nowrap' as 'nowrap',
+      textOverflow: 'ellipsis' as 'ellipsis',
+      color: theme.palette.text.hint,
     },
   }
 }
