@@ -40,7 +40,7 @@ interface State {
   compareMessage?: q.Message
 }
 
-class Panel extends React.Component<Props, State> {
+class ValuePanel extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = { }
@@ -80,7 +80,8 @@ class Panel extends React.Component<Props, State> {
       <ValueRenderer
         message={node.message}
         messageHistory={node.messageHistory}
-        compareWith={this.state.compareMessage} />
+        compareWith={this.state.compareMessage}
+      />
     )
   }
 
@@ -175,4 +176,4 @@ const styles: StyleRulesCallback<string> = (theme: Theme) => {
   }
 }
 
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Panel))
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(ValuePanel))
