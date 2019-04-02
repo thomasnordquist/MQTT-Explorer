@@ -1,6 +1,6 @@
-import * as q from '../../../../backend/src/Model'
+import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
-import DateFormatter from '../helper/DateFormatter'
+import DateFormatter from '../../helper/DateFormatter'
 import { default as ReactResizeDetector } from 'react-resize-detector'
 import 'react-vis/dist/style.css'
 const { XYPlot, LineMarkSeries, Hint, YAxis, HorizontalGridLines } = require('react-vis')

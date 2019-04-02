@@ -1,10 +1,10 @@
-import * as q from '../../../../backend/src/Model'
+import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
-import CodeDiff from '../CodeDiff'
-import { AppState } from '../../reducers'
+import CodeDiff from '../../CodeDiff'
+import { AppState } from '../../../reducers'
 import { connect } from 'react-redux'
 import { default as ReactResizeDetector } from 'react-resize-detector'
-import { ValueRendererDisplayMode } from '../../reducers/Settings'
+import { ValueRendererDisplayMode } from '../../../reducers/Settings'
 
 interface Props {
   message: q.Message
