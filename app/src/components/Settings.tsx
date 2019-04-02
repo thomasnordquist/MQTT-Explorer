@@ -4,7 +4,7 @@ import ChevronRight from '@material-ui/icons/ChevronRight'
 import { AppState } from '../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { settingsActions } from '../actions'
+import { settingsActions, globalActions } from '../actions'
 import { shell } from 'electron'
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 import { TopicOrder } from '../reducers/Settings'
@@ -70,6 +70,7 @@ const styles: StyleRulesCallback = theme => ({
 
 interface Props {
   actions: typeof settingsActions
+  globalActions: typeof globalActions
   autoExpandLimit: number
   classes: any
   highlightTopicUpdates: boolean
@@ -77,6 +78,7 @@ interface Props {
   store?: any
   topicOrder: TopicOrder
   visible: boolean
+  theme: 'light' | 'dark'
 }
 
 class Settings extends React.Component<Props, {}> {
@@ -112,6 +114,7 @@ class Settings extends React.Component<Props, {}> {
           {this.renderNodeOrder()}
           {this.renderHighlightTopicUpdates()}
           {this.selectTopicsOnMouseOver()}
+          {this.toggleTheme()}
         </div>
         <Tooltip placement="top" title="App Author">
           <Typography className={classes.author} onClick={this.openGithubPage}>
@@ -171,6 +174,12 @@ class Settings extends React.Component<Props, {}> {
     const toggle = () => actions.selectTopicWithMouseOver(!selectTopicWithMouseOver)
 
     return this.renderSwitch('Quick Preview', selectTopicWithMouseOver, toggle, 'Select topics on mouse over')
+  }
+
+  private toggleTheme() {
+    const { globalActions, theme } = this.props
+
+    return this.renderSwitch('Theme', theme === 'light', globalActions.toggleTheme, 'Select a theme')
   }
 
   private renderAutoExpand() {
@@ -233,12 +242,14 @@ const mapStateToProps = (state: AppState) => {
     visible: state.settings.visible,
     highlightTopicUpdates: state.settings.highlightTopicUpdates,
     selectTopicWithMouseOver: state.settings.selectTopicWithMouseOver,
+    theme: state.globalState.theme,
   }
 }
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
     actions: bindActionCreators(settingsActions, dispatch),
+    globalActions: bindActionCreators(globalActions, dispatch),
   }
 }
 

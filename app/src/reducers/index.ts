@@ -6,11 +6,12 @@ import { settingsReducer, SettingsState } from './Settings'
 import { trackEvent } from '../tracking'
 import { treeReducer, TreeState } from './Tree'
 
-
 export enum ActionTypes {
   showUpdateNotification = 'SHOW_UPDATE_NOTIFICATION',
   showUpdateDetails = 'SHOW_UPDATE_DETAILS',
   showError = 'SHOW_ERROR',
+  setDarkTheme = 'GLOBAL_SET_DARK_THEME',
+  setLightTheme = 'GLOBAL_SET_LIGHT_THEME',
 }
 
 export interface CustomAction extends Action {
@@ -33,13 +34,15 @@ export interface GlobalState {
   showUpdateNotification?: boolean
   showUpdateDetails: boolean
   error?: string
+  theme: 'light' | 'dark'
 }
 
-const initialBigState: GlobalState = {
+const initialGlobalState: GlobalState = {
   showUpdateDetails: false,
+  theme: 'dark',
 }
 
-const globalState: Reducer<GlobalState | undefined, CustomAction> = (state = initialBigState, action) => {
+const globalState: Reducer<GlobalState | undefined, CustomAction> = (state = initialGlobalState, action) => {
   if (!state) {
     throw Error('No initial state')
   }
@@ -56,6 +59,18 @@ const globalState: Reducer<GlobalState | undefined, CustomAction> = (state = ini
       return {
         ...state,
         error: action.error,
+      }
+
+    case ActionTypes.setDarkTheme:
+      return {
+        ...state,
+        theme: 'dark',
+      }
+
+    case ActionTypes.setLightTheme:
+      return {
+        ...state,
+        theme: 'light',
       }
 
     case ActionTypes.showUpdateDetails:

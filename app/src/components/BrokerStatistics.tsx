@@ -106,12 +106,13 @@ class BrokerStatistics extends React.Component<Props, {}> {
 
   public renderStat(tree: q.Tree<TopicViewModel>, stat: Stats) {
     const node = tree.findNode(stat.topic)
-    if (!node) {
+    if (!node || !node.message) {
       return null
     }
 
-    let value = (node.message && node.message.value) ? parseFloat(Base64Message.toUnicodeString(node.message.value)) : NaN
-    value = !isNaN(value) ? abbreviate(value) : value
+    const str = node.message.value ? Base64Message.toUnicodeString(node.message.value) : ''
+    let value = (node.message && node.message.value) ? parseFloat(str) : NaN
+    value = !isNaN(value) ? abbreviate(value) : str
 
     return (
       <div key={stat.title}>

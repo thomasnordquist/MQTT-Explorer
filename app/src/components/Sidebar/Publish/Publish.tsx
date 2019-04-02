@@ -284,7 +284,7 @@ class Publish extends React.Component<Props, State> {
   private history() {
     const items = this.state.history.reverse().map(message => ({
       title: message.topic,
-      value: message.payload,
+      value: message.payload || '',
     }))
 
     return <History items={items} onClick={this.didSelectHistoryEntry} />
