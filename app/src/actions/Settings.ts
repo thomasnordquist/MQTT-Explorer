@@ -12,6 +12,7 @@ import {
   SettingsState,
   TopicOrder,
 } from '../reducers/Settings'
+import { Base64Message } from '../../../backend/src/Model/Base64Message';
 
 const settingsIdentifier: StorageIdentifier<Partial<SettingsState>> = {
   id: 'Settings',
@@ -110,7 +111,10 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
       return true
     }
 
-    const messageMatches = (node.message && typeof node.message.value === 'string' && node.message.value.toLowerCase().indexOf(filterStr) !== -1)
+    const messageMatches = node.message
+      && node.message.value
+      && Base64Message.toUnicodeString(node.message.value).toLowerCase().indexOf(filterStr) !== -1
+
     return Boolean(messageMatches)
   }
 

@@ -4,6 +4,7 @@ import BarChart from '@material-ui/icons/BarChart'
 import DateFormatter from '../../helper/DateFormatter'
 import History from '../History'
 import { TopicViewModel } from '../../../TopicViewModel'
+import { Base64Message } from '../../../../../backend/src/Model/Base64Message';
 
 const PlotHistory = React.lazy(() => import('./PlotHistory'))
 
@@ -56,7 +57,11 @@ class MessageHistory extends React.Component<Props, State> {
       selected: message && message === this.props.selected,
     }))
 
-    const numericMessages = history.filter(message => !isNaN(parseFloat(message.value)))
+    const numericMessages = history
+      .map((message: q.Message) => {
+        const number = message.value ? parseFloat(Base64Message.toUnicodeString(message.value)) : NaN
+        return { x: number, y: message.received.getTime() }
+      }).filter(data => !isNaN(data.x))
     const showPlot = numericMessages.length >= 2
 
     return (
@@ -72,10 +77,10 @@ class MessageHistory extends React.Component<Props, State> {
     )
   }
 
-  public renderPlot(numericMessages: q.Message[]) {
+  public renderPlot(data: {x: number, y: number}[]) {
     return (
       <React.Suspense fallback={<div>Loading...</div>}>
-        <PlotHistory messages={numericMessages} />
+        <PlotHistory data={data} />
       </React.Suspense>
     )
   }

@@ -86,11 +86,13 @@
     "webdriverio": "5.4"
   },
   "dependencies": {
+    "@types/js-base64": "^2.3.1",
     "about-window": "^1.12.1",
     "electron-is-dev": "^1.0.1",
     "electron-log": "^2.2.17",
     "electron-telemetry": "git+https://github.com/thomasnordquist/electron-telemetry.git#dist",
     "electron-updater": "^4.0.6",
+    "js-base64": "^2.5.1",
     "lowdb": "^1.0.0",
     "mqtt": "^2.18.8",
     "sha1": "^1.1.1"

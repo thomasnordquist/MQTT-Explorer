@@ -5,6 +5,7 @@ import { AppState } from '../../../reducers'
 import { connect } from 'react-redux'
 import { default as ReactResizeDetector } from 'react-resize-detector'
 import { ValueRendererDisplayMode } from '../../../reducers/Settings'
+import { Base64Message } from '../../../../../backend/src/Model/Base64Message';
 
 interface Props {
   message: q.Message
@@ -42,25 +43,33 @@ class ValueRenderer extends React.Component<Props, State> {
       compareMessage = message
     }
 
+    if (!message.value) {
+      return null
+    }
+
+    const compareValue = compareMessage.value || message.value
+    const str = Base64Message.toUnicodeString(message.value)
+    const compareStr = Base64Message.toUnicodeString(compareValue)
+
     let json
     try {
-      json = JSON.parse(message.value)
+      json = JSON.parse(str)
     } catch (error) {
-      return this.renderRawValue(message.value, compareMessage.value)
+      return this.renderRawValue(str, compareStr)
     }
 
     if (typeof json === 'string') {
-      return this.renderRawValue(message.value, compareMessage.value)
+      return this.renderRawValue(str, compareStr)
     } else if (typeof json === 'number') {
-      return this.renderRawValue(message.value, compareMessage.value)
+      return this.renderRawValue(str, compareStr)
     } else if (typeof json === 'boolean') {
-      return this.renderRawValue(message.value, compareMessage.value)
+      return this.renderRawValue(str, compareStr)
     } else {
-      const current = this.messageToPrettyJson(message) || message.value
-      const compare = this.messageToPrettyJson(compareMessage) || compareMessage.value
+      const current = this.messageToPrettyJson(str) || str
+      const compare = this.messageToPrettyJson(compareStr) || compareStr
       const language = current && compare ? 'json' : undefined
 
-      return this.renderDiff(current, compare, language)
+      return this.renderDiff(str, compareStr, language)
     }
   }
 
@@ -75,13 +84,9 @@ class ValueRenderer extends React.Component<Props, State> {
     )
   }
 
-  private messageToPrettyJson(message?: q.Message): string | undefined {
-    if (!message || !message.value) {
-      return undefined
-    }
-
+  private messageToPrettyJson(str: string): string | undefined {
     try {
-      const json = JSON.parse(message.value)
+      const json = JSON.parse(str)
       return JSON.stringify(json, undefined, '  ')
     } catch {
       return undefined

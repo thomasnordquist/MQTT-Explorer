@@ -32,7 +32,7 @@ export class Tree<ViewModel> extends TreeNode<ViewModel> {
   public applyUnmergedChanges() {
     this.unmergedMessages.forEach((msg) => {
       const edges = msg.topic.split('/')
-      const node = TreeNodeFactory.fromEdgesAndValue<ViewModel, any>(edges, msg.payload)
+      const node = TreeNodeFactory.fromEdgesAndValue<ViewModel>(edges, msg.payload)
       node.mqttMessage = msg
 
       if (!this.nodeFilter || this.nodeFilter(node)) {

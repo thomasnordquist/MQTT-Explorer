@@ -1,3 +1,4 @@
+import { Base64Message } from './Base64Message'
 import { Edge, Tree, TreeNode } from './'
 
 interface HasLength {
@@ -18,10 +19,10 @@ export abstract class TreeNodeFactory {
     node.sourceEdge!.target = node
   }
 
-  public static fromEdgesAndValue<ViewModel, T extends HasLength>(edgeNames: string[], value?: T): TreeNode<ViewModel> {
+  public static fromEdgesAndValue<ViewModel>(edgeNames: string[], value?: Base64Message | null): TreeNode<ViewModel> {
     const node = new TreeNode<ViewModel>()
     node.setMessage({
-      value,
+      value: value || undefined,
       length: value ? value.length : 0,
       received: new Date(),
     })

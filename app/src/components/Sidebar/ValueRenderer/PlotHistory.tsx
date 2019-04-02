@@ -3,10 +3,11 @@ import * as React from 'react'
 import DateFormatter from '../../helper/DateFormatter'
 import { default as ReactResizeDetector } from 'react-resize-detector'
 import 'react-vis/dist/style.css'
+import { Base64Message } from '../../../../../backend/src/Model/Base64Message';
 const { XYPlot, LineMarkSeries, Hint, YAxis, HorizontalGridLines } = require('react-vis')
 
 interface Props {
-  messages: q.Message[]
+  data: {x: number, y: number}[]
 }
 
 interface Stats {
@@ -25,12 +26,7 @@ class PlotHistory extends React.Component<Props, Stats> {
   }
 
   public render() {
-    const data = this.props.messages.map((message) => {
-      return {
-        x: message.received.getTime(),
-        y: parseFloat(message.value),
-      }
-    })
+    const data = this.props.data
 
     return (
       <div>

@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 import { TopicViewModel } from '../TopicViewModel'
 import { Typography } from '@material-ui/core'
+import { Base64Message } from '../../../backend/src/Model/Base64Message';
 
 const abbreviate = require('number-abbreviate')
 
@@ -109,7 +110,7 @@ class BrokerStatistics extends React.Component<Props, {}> {
       return null
     }
 
-    let value = node.message && node.message.value
+    let value = (node.message && node.message.value) ? parseFloat(Base64Message.toUnicodeString(node.message.value)) : NaN
     value = !isNaN(value) ? abbreviate(value) : value
 
     return (

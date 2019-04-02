@@ -1,6 +1,7 @@
 import { DataSourceState, MqttOptions } from '../backend/src/DataSource'
 
 import { UpdateInfo } from 'builder-util-runtime'
+import { Base64Message } from '../backend/src/Model/Base64Message';
 
 export { UpdateInfo } from 'builder-util-runtime'
 
@@ -37,7 +38,7 @@ export const updateAvailable: Event<UpdateInfo> = {
 
 export interface MqttMessage {
   topic: string,
-  payload: any,
+  payload: Base64Message | null,
   qos: 0 | 1 | 2,
   retain: boolean
 }

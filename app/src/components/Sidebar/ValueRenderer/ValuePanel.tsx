@@ -27,6 +27,7 @@ import {
   withStyles,
   Theme,
   } from '@material-ui/core'
+import { Base64Message } from '../../../../../backend/src/Model/Base64Message';
 
 interface Props {
   node?: q.TreeNode<any>
@@ -50,7 +51,7 @@ class ValuePanel extends React.Component<Props, State> {
     const { node, classes } = this.props
     const { detailsStyle, summaryStyle } = this.panelStyle()
 
-    const copyValue = node && node.message ? <Copy value={node.message.value} /> : null
+    const copyValue = (node && node.message && node.message.value) ? <Copy value={Base64Message.toUnicodeString(node.message.value)} /> : null
 
     return (
       <ExpansionPanel key="value" defaultExpanded={true}>

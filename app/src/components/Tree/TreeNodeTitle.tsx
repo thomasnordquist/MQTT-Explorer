@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import * as q from '../../../../backend/src/Model'
 import { withStyles, Theme } from '@material-ui/core'
 import { TopicViewModel } from '../../TopicViewModel'
+import { Base64Message } from '../../../../backend/src/Model/Base64Message';
 const debounce = require('lodash.debounce')
 
 export interface TreeNodeProps extends React.HTMLAttributes<HTMLElement> {
@@ -35,8 +36,8 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
   }
 
   private renderValue() {
-    return this.props.treeNode.message && this.props.treeNode.message.length > 0
-      ? <span className={this.props.classes.value}> = {this.props.treeNode.message.value.toString().slice(0, 120)}</span>
+    return this.props.treeNode.message && this.props.treeNode.message.value && this.props.treeNode.message.length > 0
+      ? <span className={this.props.classes.value}> = {Base64Message.toUnicodeString(this.props.treeNode.message.value).toString().slice(0, 120)}</span>
       : null
   }
 

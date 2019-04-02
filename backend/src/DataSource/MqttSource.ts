@@ -3,6 +3,7 @@ import * as Url from 'url'
 import { Client, connect as mqttConnect } from 'mqtt'
 import { DataSource, DataSourceStateMachine } from './'
 import { MqttMessage } from '../../../events'
+import { Base64Message } from '../Model/Base64Message';
 
 export interface MqttOptions {
   url: string
@@ -84,7 +85,12 @@ export class MqttSource implements DataSource<MqttOptions> {
   }
 
   public publish(msg: MqttMessage) {
-    this.client && this.client.publish(msg.topic, msg.payload, { qos: msg.qos, retain: msg.retain })
+    if (this.client) {
+      this.client.publish(
+        msg.topic,
+        msg.payload ? Base64Message.toUnicodeString(msg.payload) : '',
+        { qos: msg.qos, retain: msg.retain })
+    }
   }
 
   public disconnect() {
