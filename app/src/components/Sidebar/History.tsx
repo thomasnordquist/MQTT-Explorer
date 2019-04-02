@@ -5,7 +5,7 @@ import { Theme, withStyles } from '@material-ui/core/styles'
 
 interface HistoryItem {
   title: JSX.Element | string
-  value: string | any
+  value: string
   selected?: boolean
 }
 

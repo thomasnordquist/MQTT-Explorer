@@ -37,7 +37,7 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
 
   private renderValue() {
     return this.props.treeNode.message && this.props.treeNode.message.value && this.props.treeNode.message.length > 0
-      ? <span className={this.props.classes.value}> = {Base64Message.toUnicodeString(this.props.treeNode.message.value).toString().slice(0, 120)}</span>
+      ? <span className={this.props.classes.value}> = {Base64Message.toUnicodeString(this.props.treeNode.message.value).slice(0, 120)}</span>
       : null
   }
 

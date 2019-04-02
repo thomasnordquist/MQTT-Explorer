@@ -53,7 +53,7 @@ class MessageHistory extends React.Component<Props, State> {
     const history = node.messageHistory.toArray()
     const historyElements = history.reverse().map(message => ({
       title: <DateFormatter date={message.received} />,
-      value: message.value,
+      value: message.value ? Base64Message.toUnicodeString(message.value) : '',
       selected: message && message === this.props.selected,
     }))
 

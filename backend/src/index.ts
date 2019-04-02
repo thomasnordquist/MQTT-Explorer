@@ -1,3 +1,6 @@
+import { Base64Message } from './Model/Base64Message'
+import { DataSource, MqttSource } from './DataSource'
+import { UpdateInfo } from 'builder-util-runtime'
 import {
   AddMqttConnection,
   EventDispatcher,
@@ -12,8 +15,6 @@ import {
   updateAvailable,
 } from '../../events'
 
-import { DataSource, MqttSource } from './DataSource'
-import { UpdateInfo } from 'builder-util-runtime'
 
 export class ConnectionManager {
   private connections: {[s: string]: DataSource<any>} = {}
@@ -57,7 +58,7 @@ export class ConnectionManager {
         buffer = buffer.slice(0, 10000)
       }
 
-      backendEvents.emit(messageEvent, { topic, payload: buffer.toString(), qos: packet.qos, retain: packet.retain })
+      backendEvents.emit(messageEvent, { topic, payload: Base64Message.fromBuffer(buffer), qos: packet.qos, retain: packet.retain })
     })
   }
 
