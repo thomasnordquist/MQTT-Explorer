@@ -128,7 +128,6 @@ export class TreeNode<ViewModel> {
     this.onMerge.dispatch()
 
     if (this.isTopicEmptyLeaf()) {
-      debugger
       this.removeFromParent()
     }
   }
