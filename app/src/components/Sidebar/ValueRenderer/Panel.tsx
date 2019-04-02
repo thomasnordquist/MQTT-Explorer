@@ -13,7 +13,7 @@ import ValueRenderer from './ValueRenderer'
 import { AppState } from '../../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { settingsActions, sidebarActons } from '../../../actions'
+import { settingsActions, sidebarActions } from '../../../actions'
 import { ValueRendererDisplayMode } from '../../../reducers/Settings'
 
 import {
@@ -31,7 +31,7 @@ import {
 interface Props {
   node?: q.TreeNode<any>
   valueRendererDisplayMode: ValueRendererDisplayMode
-  sidebarActions: typeof sidebarActons
+  sidebarActions: typeof sidebarActions
   settingsActions: typeof settingsActions
   classes: any
 }
@@ -154,7 +154,7 @@ class Panel extends React.Component<Props, State> {
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    sidebarActions: bindActionCreators(sidebarActons, dispatch),
+    sidebarActions: bindActionCreators(sidebarActions, dispatch),
     settingsActions: bindActionCreators(settingsActions, dispatch),
   }
 }

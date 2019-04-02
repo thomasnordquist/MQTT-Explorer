@@ -10,7 +10,7 @@ import ValueRendererPanel from './ValueRenderer/Panel'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { settingsActions, sidebarActons } from '../../actions'
+import { settingsActions, sidebarActions } from '../../actions'
 import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
 import { TopicViewModel } from '../../TopicViewModel'
 
@@ -29,7 +29,7 @@ const Publish = React.lazy(() => import('./Publish/Publish'))
 
 interface Props {
   node?: q.TreeNode<TopicViewModel>
-  actions: typeof sidebarActons
+  actions: typeof sidebarActions
   settingsActions: typeof settingsActions
   classes: any
   connectionId?: string
@@ -189,7 +189,7 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    actions: bindActionCreators(sidebarActons, dispatch),
+    actions: bindActionCreators(sidebarActions, dispatch),
     settingsActions: bindActionCreators(settingsActions, dispatch),
   }
 }
