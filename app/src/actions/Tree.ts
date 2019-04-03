@@ -57,3 +57,13 @@ export const showTree = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatch<a
     type: ActionTypes.TREE_SHOW_TREE,
   })
 }
+
+export const togglePause = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState): AnyAction  => {
+  const paused = getState().tree.paused
+  const tree = getState().tree.tree
+  // tree && tree.applyUnmergedChanges()
+
+  return dispatch({
+    type: paused ? ActionTypes.TREE_RESUME_UPDATES : ActionTypes.TREE_PAUSE_UPDATES,
+  })
+}

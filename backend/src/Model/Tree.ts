@@ -2,6 +2,43 @@ import { TreeNode } from './'
 import { EventBusInterface, makeConnectionMessageEvent, MqttMessage, EventDispatcher } from '../../../events'
 import { TreeNodeFactory } from './TreeNodeFactory'
 
+class ChangeBuffer {
+  private buffer: MqttMessage[] = []
+  private size = 0
+  private maxSize = 100_000_000 // ~100MB
+  public length = 0
+  public estimatedMessageOverhead = 24
+
+  public push(val: MqttMessage) {
+    if (!this.isFull()) {
+      this.buffer.push(val)
+      this.size += this.estimatedMessageOverhead + (val.payload ? val.payload.length : 0)
+      this.length += 1
+    }
+  }
+
+  public getSize() {
+    return this.size
+  }
+
+  public isFull() {
+    return this.size >= this.maxSize
+  }
+
+  public fillState() {
+    return this.size / this.maxSize
+  }
+
+  public popAll(): MqttMessage[] {
+    const tmpBuffer = this.buffer
+    this.buffer = []
+    this.size = 0
+    this.length = 0
+
+    return tmpBuffer
+  }
+}
+
 export class Tree<ViewModel> extends TreeNode<ViewModel> {
   public connectionId?: string
   public updateSource?: EventBusInterface
@@ -9,7 +46,7 @@ export class Tree<ViewModel> extends TreeNode<ViewModel> {
   private subscriptionEvent?: any
   public isTree = true
   private cachedHash = `${Math.random()}`
-  private unmergedMessages: MqttMessage[] = []
+  private unmergedMessages: ChangeBuffer = new ChangeBuffer()
   public didReceive = new EventDispatcher<void, Tree<ViewModel>>(this)
 
   constructor() {
@@ -30,7 +67,7 @@ export class Tree<ViewModel> extends TreeNode<ViewModel> {
   }
 
   public applyUnmergedChanges() {
-    this.unmergedMessages.forEach((msg) => {
+    this.unmergedMessages.popAll().forEach((msg) => {
       const edges = msg.topic.split('/')
       const node = TreeNodeFactory.fromEdgesAndValue<ViewModel>(edges, msg.payload)
       node.mqttMessage = msg
@@ -39,7 +76,10 @@ export class Tree<ViewModel> extends TreeNode<ViewModel> {
         this.updateWithNode(node.firstNode())
       }
     })
-    this.unmergedMessages = []
+  }
+
+  public unmergedChanges(): ChangeBuffer {
+    return this.unmergedMessages
   }
 
   private handleNewData = (msg: MqttMessage) => {

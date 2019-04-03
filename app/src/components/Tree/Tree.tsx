@@ -25,6 +25,7 @@ interface Props {
   autoExpandLimit: number
   highlightTopicUpdates: boolean
   selectTopicWithMouseOver: boolean
+  paused: boolean
 }
 
 interface State {
@@ -78,7 +79,10 @@ class Tree extends React.PureComponent<Props, State> {
         this.updateTimer && clearTimeout(this.updateTimer)
         this.updateTimer = undefined
         this.renderTime = performance.now()
-        this.props.tree && this.props.tree.applyUnmergedChanges()
+
+        if (!this.props.paused) {
+          this.props.tree && this.props.tree.applyUnmergedChanges()
+        }
         window.requestIdleCallback(() => {
           this.setState({ lastUpdate: this.renderTime })
         }, { timeout: 100 })
@@ -126,6 +130,7 @@ class Tree extends React.PureComponent<Props, State> {
 const mapStateToProps = (state: AppState) => {
   return {
     tree: state.tree.tree,
+    paused: state.tree.paused,
     filter: state.tree.filter,
     host: state.connection.host,
     autoExpandLimit: state.settings.autoExpandLimit,

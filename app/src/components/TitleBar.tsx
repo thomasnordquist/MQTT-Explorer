@@ -7,7 +7,7 @@ import Search from '@material-ui/icons/Search'
 import { AppState } from '../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { connectionActions, settingsActions } from '../actions'
+import { connectionActions, settingsActions, treeActions } from '../actions'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 import {
@@ -18,6 +18,7 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core'
+import PauseButton from './PauseButton';
 
 const styles: StyleRulesCallback = theme => ({
   title: {
@@ -72,7 +73,7 @@ const styles: StyleRulesCallback = theme => ({
   disconnect: {
     margin: 'auto 8px auto auto',
     color: theme.palette.primary.contrastText,
-  }
+  },
 })
 
 interface Props {
@@ -101,10 +102,11 @@ class TitleBar extends React.Component<Props, {}> {
           </IconButton>
           <Typography className={classes.title} variant="h6" color="inherit">MQTT Explorer</Typography>
           {this.renderSearch()}
+          <PauseButton />
           <Button className={classes.disconnect} onClick={actions.connection.disconnect}>
             Disconnect <CloudOff style={{ marginRight: '8px', paddingLeft: '8px' }}/>
           </Button>
-          <ConnectionHealthIndicator />
+          <ConnectionHealthIndicator withBackground={true} />
         </Toolbar>
       </AppBar>
     )
