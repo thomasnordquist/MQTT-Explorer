@@ -12,11 +12,15 @@ const styles: StyleRulesCallback = theme => ({
     color: red[700],
   },
   online: {
-    color: green[500],
+    color: green[400],
   },
   connecting: {
     color: orange[600],
   },
+  icon: {
+    boxShadow: theme.shadows[10],
+    padding: '4px', borderRadius: '50%', backgroundColor: '#eee'
+  }
 })
 
 interface Props {
@@ -38,7 +42,9 @@ class ConnectionHealthIndicator extends React.Component<Props, {}> {
 
     return (
       <Tooltip title={`Connection health "${health}"`}>
-        <DeviceHubOutlined className={classes[health]} />
+        <div className={classes.icon}>
+          <DeviceHubOutlined className={classes[health]} />
+        </div>
       </Tooltip>
     )
   }

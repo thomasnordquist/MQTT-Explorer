@@ -69,6 +69,10 @@ const styles: StyleRulesCallback = theme => ({
     marginLeft: -12,
     marginRight: 20,
   },
+  disconnect: {
+    margin: 'auto 8px auto auto',
+    color: theme.palette.primary.contrastText,
+  }
 })
 
 interface Props {
@@ -97,7 +101,7 @@ class TitleBar extends React.Component<Props, {}> {
           </IconButton>
           <Typography className={classes.title} variant="h6" color="inherit">MQTT Explorer</Typography>
           {this.renderSearch()}
-          <Button style={{ margin: 'auto 8px auto auto' }} onClick={actions.connection.disconnect}>
+          <Button className={classes.disconnect} onClick={actions.connection.disconnect}>
             Disconnect <CloudOff style={{ marginRight: '8px', paddingLeft: '8px' }}/>
           </Button>
           <ConnectionHealthIndicator />

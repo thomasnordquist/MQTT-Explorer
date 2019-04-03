@@ -3,6 +3,7 @@ import 'brace/mode/json'
 import 'brace/mode/text'
 import 'brace/mode/xml'
 import 'brace/theme/monokai'
+import 'brace/theme/dawn'
 
 import * as React from 'react'
 import * as q from '../../../../../backend/src/Model'
@@ -20,6 +21,8 @@ import {
   MenuItem,
   Tooltip,
   Fab,
+  Theme,
+  withTheme,
 } from '@material-ui/core'
 
 // tslint:disable-next-line
@@ -45,6 +48,7 @@ interface Props {
   retain: boolean
   editorMode: string
   qos: 0 | 1 | 2
+  theme: Theme
 }
 
 interface State {
@@ -310,7 +314,7 @@ class Publish extends React.Component<Props, State> {
     return (
       <AceEditor
         mode={this.props.editorMode}
-        theme="monokai"
+        theme={this.props.theme.palette.type === 'dark' ? 'monokai' : 'dawn'}
         name="UNIQUE_ID_OF_DIV"
         width="100%"
         height="200px"
@@ -341,4 +345,4 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Publish)
+export default withTheme(connect(mapStateToProps, mapDispatchToProps)(Publish))

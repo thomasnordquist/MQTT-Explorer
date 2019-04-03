@@ -1,8 +1,8 @@
 import { Action, ActionTypes } from '../reducers/Publish'
 import { AppState } from '../reducers'
+import { Base64Message } from '../../../backend/src/Model/Base64Message'
 import { Dispatch } from 'redux'
 import { makePublishEvent, rendererEvents } from '../../../events'
-import { Base64Message } from '../../../backend/src/Model/Base64Message';
 
 export const setTopic = (topic?: string): Action  => {
   return {

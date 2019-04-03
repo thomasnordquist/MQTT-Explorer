@@ -2,10 +2,10 @@ import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
 import CodeDiff from '../../CodeDiff'
 import { AppState } from '../../../reducers'
+import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
 import { connect } from 'react-redux'
 import { default as ReactResizeDetector } from 'react-resize-detector'
 import { ValueRendererDisplayMode } from '../../../reducers/Settings'
-import { Base64Message } from '../../../../../backend/src/Model/Base64Message';
 
 interface Props {
   message: q.Message
@@ -42,7 +42,6 @@ class ValueRenderer extends React.Component<Props, State> {
     if (renderMode === 'raw') {
       compareMessage = message
     }
-
     if (!message.value) {
       return null
     }
@@ -69,7 +68,7 @@ class ValueRenderer extends React.Component<Props, State> {
       const compare = this.messageToPrettyJson(compareStr) || compareStr
       const language = current && compare ? 'json' : undefined
 
-      return this.renderDiff(str, compareStr, language)
+      return this.renderDiff(current, compare, language)
     }
   }
 

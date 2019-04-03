@@ -4,6 +4,7 @@ import * as React from 'react'
 import { Theme, withStyles } from '@material-ui/core'
 import 'prismjs/components/prism-json'
 import 'prismjs/themes/prism-tomorrow.css'
+import { CodeBlockColors } from './CodeBlockColors';
 
 interface Props {
   previous: string
@@ -44,7 +45,7 @@ class CodeDiff extends React.Component<Props, {}> {
     })
 
     return (
-      <div>
+      <div style={{ backgroundColor: '#ebebeb' }}>
         <pre className={`language-json ${this.props.classes.codeBlock}`}>
           {code}
         </pre>
@@ -99,6 +100,7 @@ const style = (theme: Theme) => {
   }
   const before = {
     margin: '0 2px 0 -9px',
+    color: CodeBlockColors.text,
   }
   return {
     additions: {
@@ -113,7 +115,29 @@ const style = (theme: Theme) => {
     codeBlock: {
       fontSize: '12px',
       maxHeight: '200px',
-      marginLeft: '-16px',
+      marginLeft: '33px !important',
+      backgroundColor: `${CodeBlockColors.background} !important`,
+      '& .token.number': {
+        color: CodeBlockColors.numeric,
+      },
+      '& .token.boolean': {
+        color: CodeBlockColors.numeric,
+      },
+      '& .token.property': {
+        color: CodeBlockColors.variable,
+      },
+      '& .token.string': {
+        color: CodeBlockColors.string,
+      },
+      '& .token': {
+        color: CodeBlockColors.text,
+      },
+      '& .token.operator': {
+        color: CodeBlockColors.text,
+      },
+      '& .token.punctuation': {
+        color: CodeBlockColors.text,
+      },
     },
     noChange: {
       ...baseStyle,

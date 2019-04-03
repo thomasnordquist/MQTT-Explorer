@@ -68,6 +68,7 @@ export const settingsReducer = createReducer(initialState, {
 
 export interface SetTheme {
   type: ActionTypes.SETTINGS_SET_THEME_LIGHT | ActionTypes.SETTINGS_SET_THEME_DARK
+  theme: 'light'
 }
 
 export interface DidLoadSettings {

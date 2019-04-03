@@ -6,6 +6,7 @@ import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 import { TopicViewModel } from '../TopicViewModel'
 import { Typography } from '@material-ui/core'
 import { Base64Message } from '../../../backend/src/Model/Base64Message';
+import lime from '@material-ui/core/colors/teal'
 
 const abbreviate = require('number-abbreviate')
 
@@ -22,7 +23,7 @@ const styles: StyleRulesCallback = theme => ({
   container: {
     width: '100%',
     height: '224px',
-    backgroundColor: 'rebeccapurple',
+    backgroundColor: theme.palette.type === 'dark' ? 'rebeccapurple' : '#ebebeb',
     marginBottom: 0,
     padding: '8px',
   },

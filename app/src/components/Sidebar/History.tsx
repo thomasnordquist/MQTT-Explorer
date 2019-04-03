@@ -14,6 +14,7 @@ interface Props {
   onClick?: (index: number, element: EventTarget) => void
   classes: any
   contentTypeIndicator?: JSX.Element
+  theme: Theme
 }
 
 interface State {
@@ -30,7 +31,7 @@ class MessageHistory extends React.Component<Props, State> {
 
   public renderHistory() {
     const style = (element: HistoryItem) => ({
-      backgroundColor: element.selected ? 'rgba(120, 120, 120, 0.6)' : 'rgba(80, 80, 80, 0.6)',
+      backgroundColor: element.selected ? this.props.theme.palette.action.selected : this.props.theme.palette.action.hover,
       margin: '8px',
       padding: '8px 8px 0 8px',
       cursor: this.props.onClick ? 'pointer' : 'inherit',
@@ -53,7 +54,7 @@ class MessageHistory extends React.Component<Props, State> {
     const visible = this.props.items.length > 0 && this.state.collapsed
 
     return (
-      <div style={{ backgroundColor: 'rgba(60, 60, 60, 0.6)', marginTop: '16px' }}>
+      <div className={this.props.classes.main}>
         <Typography
           component={'span'}
           onClick={this.toggle}
@@ -93,7 +94,11 @@ class MessageHistory extends React.Component<Props, State> {
 }
 
 const styles = (theme: Theme) => ({
+  main: {
+    backgroundColor: 'rgba(170, 170, 170, 0.2)',
+    marginTop: '16px',
+  },
   badge: { right:'-25px' },
 })
 
-export default withStyles(styles)(MessageHistory)
+export default withStyles(styles, { withTheme: true })(MessageHistory)

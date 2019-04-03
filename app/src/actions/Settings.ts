@@ -11,9 +11,9 @@ import {
   ActionTypes,
   SettingsState,
   TopicOrder,
-  Action,
 } from '../reducers/Settings'
 import { Base64Message } from '../../../backend/src/Model/Base64Message';
+import { globalActions } from '.';
 
 const settingsIdentifier: StorageIdentifier<Partial<SettingsState>> = {
   id: 'Settings',
@@ -29,6 +29,7 @@ export const loadSettings = () => async (dispatch: Dispatch<any>, _getState: () 
   } catch (error) {
     dispatch(showError(error))
   }
+  dispatch(globalActions.didLaunch())
 }
 
 export const storeSettings = () => async (dispatch: Dispatch<any>, getState: () => AppState)  => {

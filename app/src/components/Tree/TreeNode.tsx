@@ -32,10 +32,10 @@ const styles = (theme: Theme) => {
       marginLeft: theme.spacing(1.5),
     },
     selected: {
-      backgroundColor: 'rgba(170, 170, 170, 0.55)',
+      backgroundColor: theme.palette.type === 'dark' ? 'rgba(170, 170, 170, 0.55)' : 'rgba(170, 170, 170, 0.55)',
     },
     hover: {
-      backgroundColor: 'rgba(100, 100, 100, 0.55)',
+      backgroundColor: theme.palette.type === 'dark' ? 'rgba(100, 100, 100, 0.55)' : 'rgba(200, 200, 200, 0.55)',
     },
   }
 }
@@ -55,6 +55,7 @@ interface Props {
   didSelectTopic: any
   highlightTopicUpdates: boolean
   selectTopicWithMouseOver: boolean
+  theme: Theme
 }
 
 interface State {
@@ -184,7 +185,8 @@ class TreeNode extends React.Component<Props, State> {
     this.dirtyEdges = this.dirtyMessage = this.dirtySubnodes = false
 
     const shouldStartAnimation = (isDirty && !this.animationDirty) && !this.props.isRoot && this.props.highlightTopicUpdates
-    const animation = shouldStartAnimation ? { willChange: 'auto', translateZ: 0, animation: 'example 0.5s' } : {}
+    const animationName = this.props.theme.palette.type === 'light' ? 'updateLight' : 'updateDark'
+    const animation = shouldStartAnimation ? { willChange: 'auto', translateZ: 0, animation: `${animationName} 0.5s` } : {}
     this.animationDirty = shouldStartAnimation
 
     const highlightClass = this.state.selected ? this.props.classes.selected : (this.state.mouseOver ? this.props.classes.hover : '')
@@ -269,4 +271,4 @@ class TreeNode extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(TreeNode)
+export default withStyles(styles, { withTheme: true })(TreeNode)

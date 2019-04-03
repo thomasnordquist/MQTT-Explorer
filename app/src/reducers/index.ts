@@ -10,8 +10,7 @@ export enum ActionTypes {
   showUpdateNotification = 'SHOW_UPDATE_NOTIFICATION',
   showUpdateDetails = 'SHOW_UPDATE_DETAILS',
   showError = 'SHOW_ERROR',
-  setDarkTheme = 'GLOBAL_SET_DARK_THEME',
-  setLightTheme = 'GLOBAL_SET_LIGHT_THEME',
+  didLaunch = 'DID_LAUNCH',
 }
 
 export interface CustomAction extends Action {
@@ -34,10 +33,12 @@ export interface GlobalState {
   showUpdateNotification?: boolean
   showUpdateDetails: boolean
   error?: string
+  launching: boolean
 }
 
 const initialGlobalState: GlobalState = {
   showUpdateDetails: false,
+  launching: true,
 }
 
 const globalState: Reducer<GlobalState | undefined, CustomAction> = (state = initialGlobalState, action) => {
@@ -45,7 +46,7 @@ const globalState: Reducer<GlobalState | undefined, CustomAction> = (state = ini
     throw Error('No initial state')
   }
   trackEvent(action.type)
-
+  console.log(action.type)
   switch (action.type) {
     case ActionTypes.showUpdateNotification:
       return {
@@ -57,6 +58,12 @@ const globalState: Reducer<GlobalState | undefined, CustomAction> = (state = ini
       return {
         ...state,
         error: action.error,
+      }
+
+    case ActionTypes.didLaunch:
+      return {
+        ...state,
+        launching: false,
       }
 
     case ActionTypes.showUpdateDetails:
