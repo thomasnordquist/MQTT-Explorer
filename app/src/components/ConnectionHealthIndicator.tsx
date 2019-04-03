@@ -18,15 +18,20 @@ const styles: StyleRulesCallback = theme => ({
     color: orange[600],
   },
   icon: {
-    boxShadow: theme.shadows[10],
-    padding: '4px', borderRadius: '50%', backgroundColor: '#eee'
-  }
+    boxShadow: theme.shadows[2].split('),').map(s => `inset ${s}`).join('),'),
+    padding: '6px',
+    borderRadius: '50%',
+    backgroundColor: '#eee',
+    width: '35px',
+    height: '35px',
+  },
 })
 
 interface Props {
   classes: any
   connected: boolean
   health?: ConnectionHealth
+  withBackground?: boolean
 }
 
 class ConnectionHealthIndicator extends React.Component<Props, {}> {
@@ -42,9 +47,7 @@ class ConnectionHealthIndicator extends React.Component<Props, {}> {
 
     return (
       <Tooltip title={`Connection health "${health}"`}>
-        <div className={classes.icon}>
-          <DeviceHubOutlined className={classes[health]} />
-        </div>
+        <DeviceHubOutlined className={`${[classes[health]]} ${this.props.withBackground ? classes.icon : ''}`} />
       </Tooltip>
     )
   }
