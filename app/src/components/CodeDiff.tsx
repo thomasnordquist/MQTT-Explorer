@@ -117,6 +117,9 @@ const style = (theme: Theme) => {
       maxHeight: '200px',
       marginLeft: '33px !important',
       backgroundColor: `${CodeBlockColors.background} !important`,
+      '& span': {
+        color: CodeBlockColors.text,
+      },
       '& .token.number': {
         color: CodeBlockColors.numeric,
       },
