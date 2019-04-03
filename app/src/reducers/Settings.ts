@@ -18,9 +18,10 @@ export interface SettingsState {
   highlightTopicUpdates: boolean
   valueRendererDisplayMode: ValueRendererDisplayMode
   selectTopicWithMouseOver: boolean
+  theme: 'light' | 'dark'
 }
 
-export type Action = SetAutoExpandLimit | ToggleVisibility | SetTopicOrder | FilterTopics | TogglehighlightTopicUpdates | SetValueRendererDisplayMode
+export type Action = SetAutoExpandLimit | ToggleVisibility | SetTopicOrder | FilterTopics | TogglehighlightTopicUpdates | SetValueRendererDisplayMode | SetTheme
 
 export enum ActionTypes {
   SETTINGS_SET_AUTO_EXPAND_LIMIT = 'SETTINGS_SET_AUTO_EXPAND_LIMIT',
@@ -31,7 +32,8 @@ export enum ActionTypes {
   SETTINGS_DID_LOAD_SETTINGS = 'SETTINGS_DID_LOAD_SETTINGS',
   SETTINGS_SET_VALUE_RENDERER_DISPLAY_MODE = 'SETTINGS_SET_VALUE_RENDERER_DISPLAY_MODE',
   SETTINGS_SET_SELECT_TOPIC_WITH_MOUSE_OVER = 'SETTINGS_SET_SELECT_TOPIC_WITH_MOUSE_OVER',
-
+  SETTINGS_SET_THEME_LIGHT = 'SETTINGS_SET_THEME_LIGHT',
+  SETTINGS_SET_THEME_DARK = 'SETTINGS_SET_THEME_DARK',
 }
 
 const initialState: SettingsState = {
@@ -41,6 +43,14 @@ const initialState: SettingsState = {
   highlightTopicUpdates: true,
   valueRendererDisplayMode: 'diff',
   selectTopicWithMouseOver: false,
+  theme: 'dark',
+}
+
+const setTheme = (theme: 'light' | 'dark') => (state: SettingsState) => {
+  return {
+    ...state,
+    theme,
+  }
 }
 
 export const settingsReducer = createReducer(initialState, {
@@ -52,7 +62,13 @@ export const settingsReducer = createReducer(initialState, {
   SETTINGS_DID_LOAD_SETTINGS: didLoadSettings,
   SETTINGS_SET_VALUE_RENDERER_DISPLAY_MODE: setValueRendererDisplayMode,
   SETTINGS_SET_SELECT_TOPIC_WITH_MOUSE_OVER: setSelectTopicWithMouseOver,
+  SETTINGS_SET_THEME_LIGHT: setTheme('light'),
+  SETTINGS_SET_THEME_DARK: setTheme('dark'),
 })
+
+export interface SetTheme {
+  type: ActionTypes.SETTINGS_SET_THEME_LIGHT | ActionTypes.SETTINGS_SET_THEME_DARK
+}
 
 export interface DidLoadSettings {
   type: ActionTypes.SETTINGS_DID_LOAD_SETTINGS

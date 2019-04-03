@@ -34,12 +34,10 @@ export interface GlobalState {
   showUpdateNotification?: boolean
   showUpdateDetails: boolean
   error?: string
-  theme: 'light' | 'dark'
 }
 
 const initialGlobalState: GlobalState = {
   showUpdateDetails: false,
-  theme: 'dark',
 }
 
 const globalState: Reducer<GlobalState | undefined, CustomAction> = (state = initialGlobalState, action) => {
@@ -59,18 +57,6 @@ const globalState: Reducer<GlobalState | undefined, CustomAction> = (state = ini
       return {
         ...state,
         error: action.error,
-      }
-
-    case ActionTypes.setDarkTheme:
-      return {
-        ...state,
-        theme: 'dark',
-      }
-
-    case ActionTypes.setLightTheme:
-      return {
-        ...state,
-        theme: 'light',
       }
 
     case ActionTypes.showUpdateDetails:

@@ -11,6 +11,7 @@ import {
   ActionTypes,
   SettingsState,
   TopicOrder,
+  Action,
 } from '../reducers/Settings'
 import { Base64Message } from '../../../backend/src/Model/Base64Message';
 
@@ -151,4 +152,11 @@ function autoExpandLimitForTree(tree: q.Tree<TopicViewModel>) {
   const calculatedLimit = Math.max(7 - Math.log(count), 0) * 2
 
   return closestExistingLimit(calculatedLimit)
+}
+
+export const toggleTheme = () => (dispatch: Dispatch<any>, getState: () => AppState) => {
+  dispatch({
+    type: getState().settings.theme === 'light' ? ActionTypes.SETTINGS_SET_THEME_DARK : ActionTypes.SETTINGS_SET_THEME_LIGHT,
+  })
+  dispatch(storeSettings())
 }

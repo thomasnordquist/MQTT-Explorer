@@ -4,7 +4,7 @@ import ChevronRight from '@material-ui/icons/ChevronRight'
 import { AppState } from '../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { settingsActions, globalActions } from '../actions'
+import { settingsActions } from '../actions'
 import { shell } from 'electron'
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 import { TopicOrder } from '../reducers/Settings'
@@ -70,7 +70,6 @@ const styles: StyleRulesCallback = theme => ({
 
 interface Props {
   actions: typeof settingsActions
-  globalActions: typeof globalActions
   autoExpandLimit: number
   classes: any
   highlightTopicUpdates: boolean
@@ -177,9 +176,9 @@ class Settings extends React.Component<Props, {}> {
   }
 
   private toggleTheme() {
-    const { globalActions, theme } = this.props
+    const { actions, theme } = this.props
 
-    return this.renderSwitch('Theme', theme === 'light', globalActions.toggleTheme, 'Select a theme')
+    return this.renderSwitch('Theme', theme === 'light', actions.toggleTheme, 'Select a theme')
   }
 
   private renderAutoExpand() {
@@ -242,14 +241,13 @@ const mapStateToProps = (state: AppState) => {
     visible: state.settings.visible,
     highlightTopicUpdates: state.settings.highlightTopicUpdates,
     selectTopicWithMouseOver: state.settings.selectTopicWithMouseOver,
-    theme: state.globalState.theme,
+    theme: state.settings.theme,
   }
 }
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
     actions: bindActionCreators(settingsActions, dispatch),
-    globalActions: bindActionCreators(globalActions, dispatch),
   }
 }
 
