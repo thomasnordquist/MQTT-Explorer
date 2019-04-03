@@ -51,17 +51,22 @@ class MessageHistory extends React.Component<Props, State> {
     }
 
     const history = node.messageHistory.toArray()
-    const historyElements = history.reverse().map(message => ({
-      title: <DateFormatter date={message.received} />,
-      value: message.value ? Base64Message.toUnicodeString(message.value) : '',
-      selected: message && message === this.props.selected,
-    }))
+    let previousMessage: q.Message | undefined = node.message
+    const historyElements = history.reverse().map((message) => {
+      const element = {
+        title: <span><DateFormatter date={message.received} /> {previousMessage ? <i>(-<DateFormatter date={message.received} intervalSince={previousMessage.received} />)</i> : null}</span>,
+        value: message.value ? Base64Message.toUnicodeString(message.value) : '',
+        selected: message && message === this.props.selected,
+      }
+      previousMessage = message
+      return element
+    })
 
     const numericMessages = history
       .map((message: q.Message) => {
-        const number = message.value ? parseFloat(Base64Message.toUnicodeString(message.value)) : NaN
-        return { x: number, y: message.received.getTime() }
-      }).filter(data => !isNaN(data.x))
+        const value = message.value ? parseFloat(Base64Message.toUnicodeString(message.value)) : NaN
+        return { x: message.received.getTime(), y: value  }
+      }).filter(data => !isNaN(data.y))
     const showPlot = numericMessages.length >= 2
 
     return (
