@@ -5,6 +5,7 @@ import { default as ReactResizeDetector } from 'react-resize-detector'
 import 'react-vis/dist/style.css'
 import { Base64Message } from '../../../../../backend/src/Model/Base64Message';
 const { XYPlot, LineMarkSeries, Hint, YAxis, HorizontalGridLines } = require('react-vis')
+const abbreviate = require('number-abbreviate')
 
 interface Props {
   data: {x: number, y: number}[]
@@ -32,13 +33,16 @@ class PlotHistory extends React.Component<Props, Stats> {
       <div>
         <XYPlot width={this.state.width} height={150}>
           <HorizontalGridLines />
-          <YAxis />
+          <YAxis
+            width={45}
+            tickFormat={(num: number) => abbreviate(num)}
+          />
           <LineMarkSeries
             onValueMouseOver={this._rememberValue}
             onValueMouseOut={this._forgetValue}
             size={3}
             data={data}
-            curve="curveCardinal"
+            curve={data.length < 50 ? 'curveCardinal' : undefined}
           />
           {this.state.value ? <Hint format={this.hintFormatter} value={this.state.value} /> : null}
         </XYPlot>
