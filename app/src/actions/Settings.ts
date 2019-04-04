@@ -12,8 +12,8 @@ import {
   SettingsState,
   TopicOrder,
 } from '../reducers/Settings'
-import { Base64Message } from '../../../backend/src/Model/Base64Message';
-import { globalActions } from '.';
+import { Base64Message } from '../../../backend/src/Model/Base64Message'
+import { globalActions } from '.'
 
 const settingsIdentifier: StorageIdentifier<Partial<SettingsState>> = {
   id: 'Settings',

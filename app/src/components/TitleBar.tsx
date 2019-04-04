@@ -18,7 +18,7 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core'
-import PauseButton from './PauseButton';
+import PauseButton from './PauseButton'
 
 const styles: StyleRulesCallback = theme => ({
   title: {

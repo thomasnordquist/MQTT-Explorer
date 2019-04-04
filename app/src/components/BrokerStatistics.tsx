@@ -5,8 +5,8 @@ import { connect } from 'react-redux'
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 import { TopicViewModel } from '../TopicViewModel'
 import { Typography } from '@material-ui/core'
-import { Base64Message } from '../../../backend/src/Model/Base64Message';
-import lime from '@material-ui/core/colors/teal'
+import { Base64Message } from '../../../backend/src/Model/Base64Message'
+import teal from '@material-ui/core/colors/teal'
 
 const abbreviate = require('number-abbreviate')
 

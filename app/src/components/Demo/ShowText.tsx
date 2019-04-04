@@ -1,14 +1,12 @@
 import * as React from 'react'
 import { Theme, withStyles } from '@material-ui/core'
-import Key from './Key';
+import Key from './Key'
 
 interface State {
   message?: string
   keys: string[]
   location: string
 }
-
-
 
 class Demo extends React.Component<{classes: any}, State> {
   private timer: any

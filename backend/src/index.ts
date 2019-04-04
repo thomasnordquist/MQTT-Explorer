@@ -15,7 +15,6 @@ import {
   updateAvailable,
 } from '../../events'
 
-
 export class ConnectionManager {
   private connections: {[s: string]: DataSource<any>} = {}
 

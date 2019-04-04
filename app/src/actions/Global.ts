@@ -9,4 +9,3 @@ export const showError = (error?: string) => ({
 export const didLaunch = () => ({
   type: ActionTypes.didLaunch,
 })
-

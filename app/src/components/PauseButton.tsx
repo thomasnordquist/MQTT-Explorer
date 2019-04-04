@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { treeActions } from '../actions'
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
-import { Tooltip } from '@material-ui/core';
+import { Tooltip } from '@material-ui/core'
 
 const styles: StyleRulesCallback = theme => ({ })
 

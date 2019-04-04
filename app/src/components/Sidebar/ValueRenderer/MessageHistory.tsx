@@ -4,7 +4,7 @@ import BarChart from '@material-ui/icons/BarChart'
 import DateFormatter from '../../helper/DateFormatter'
 import History from '../History'
 import { TopicViewModel } from '../../../TopicViewModel'
-import { Base64Message } from '../../../../../backend/src/Model/Base64Message';
+import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
 
 const PlotHistory = React.lazy(() => import('./PlotHistory'))
 

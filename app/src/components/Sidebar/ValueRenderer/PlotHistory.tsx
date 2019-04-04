@@ -3,7 +3,7 @@ import * as React from 'react'
 import DateFormatter from '../../helper/DateFormatter'
 import { default as ReactResizeDetector } from 'react-resize-detector'
 import 'react-vis/dist/style.css'
-import { Base64Message } from '../../../../../backend/src/Model/Base64Message';
+import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
 const { XYPlot, LineMarkSeries, Hint, YAxis, HorizontalGridLines } = require('react-vis')
 const abbreviate = require('number-abbreviate')
 

@@ -4,7 +4,7 @@ import { Theme, withStyles } from '@material-ui/core/styles'
 
 interface Props {
   onClick: any,
-  classes: any
+  classes: any,
 }
 
 const styles = (theme: Theme) => ({

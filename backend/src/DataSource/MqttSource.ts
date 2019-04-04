@@ -3,7 +3,7 @@ import * as Url from 'url'
 import { Client, connect as mqttConnect } from 'mqtt'
 import { DataSource, DataSourceStateMachine } from './'
 import { MqttMessage } from '../../../events'
-import { Base64Message } from '../Model/Base64Message';
+import { Base64Message } from '../Model/Base64Message'
 
 export interface MqttOptions {
   url: string

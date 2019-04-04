@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import * as q from '../../../../backend/src/Model'
 import { withStyles, Theme } from '@material-ui/core'
 import { TopicViewModel } from '../../TopicViewModel'
-import { Base64Message } from '../../../../backend/src/Model/Base64Message';
+import { Base64Message } from '../../../../backend/src/Model/Base64Message'
 const debounce = require('lodash.debounce')
 
 export interface TreeNodeProps extends React.HTMLAttributes<HTMLElement> {

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import ShowText from './ShowText'
-import Mouse from './Mouse';
+import Mouse from './Mouse'
 
 (window as any).demo = {}
 

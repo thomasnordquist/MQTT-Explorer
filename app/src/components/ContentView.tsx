@@ -1,11 +1,11 @@
 import * as React from 'react'
-import SplitPane from 'react-split-pane'
+import ReactSplitPane from 'react-split-pane'
 import { Sidebar } from './Sidebar'
-import Tree from './Tree/Tree';
+import Tree from './Tree/Tree'
 
 export default function ContentView(props: {heightProperty: any, paneDefaults: any, connectionId: any}) {
   return (
-    <SplitPane
+    <ReactSplitPane
       step={20}
       primary="second"
       className={props.heightProperty}
@@ -23,6 +23,6 @@ export default function ContentView(props: {heightProperty: any, paneDefaults: a
       <div className={props.paneDefaults}>
         <Sidebar connectionId={props.connectionId} />
       </div>
-    </SplitPane>
+    </ReactSplitPane>
   )
 }

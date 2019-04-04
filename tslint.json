@@ -8,6 +8,7 @@
     "align": false,
     "variable-name": false,
     "jsx-no-lambda": false,
-    "indent": [true, "spaces", 2]
+    "indent": [true, "spaces", 2],
+    "import-name": false
   }
 }

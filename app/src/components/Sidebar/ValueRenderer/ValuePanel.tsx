@@ -11,6 +11,7 @@ import ToggleButton from '@material-ui/lab/ToggleButton'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import ValueRenderer from './ValueRenderer'
 import { AppState } from '../../../reducers'
+import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { settingsActions, sidebarActions } from '../../../actions'
@@ -27,7 +28,6 @@ import {
   withStyles,
   Theme,
   } from '@material-ui/core'
-import { Base64Message } from '../../../../../backend/src/Model/Base64Message';
 
 interface Props {
   node?: q.TreeNode<any>
