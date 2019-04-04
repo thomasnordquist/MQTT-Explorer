@@ -12,18 +12,11 @@ import {
   makeConnectionStateEvent,
   makePublishEvent,
   removeConnection,
-  updateAvailable,
+  updateAvailable
 } from '../../events'
 
 export class ConnectionManager {
   private connections: {[s: string]: DataSource<any>} = {}
-
-  public manageConnections() {
-    backendEvents.subscribe(addMqttConnectionEvent, this.handleConnectionRequest)
-    backendEvents.subscribe(removeConnection, (connectionId: string) => {
-      this.removeConnection(connectionId)
-    })
-  }
 
   private handleConnectionRequest = (event: AddMqttConnection) => {
     const connectionId = event.id
@@ -58,6 +51,13 @@ export class ConnectionManager {
       }
 
       backendEvents.emit(messageEvent, { topic, payload: Base64Message.fromBuffer(buffer), qos: packet.qos, retain: packet.retain })
+    })
+  }
+
+  public manageConnections() {
+    backendEvents.subscribe(addMqttConnectionEvent, this.handleConnectionRequest)
+    backendEvents.subscribe(removeConnection, (connectionId: string) => {
+      this.removeConnection(connectionId)
     })
   }
 

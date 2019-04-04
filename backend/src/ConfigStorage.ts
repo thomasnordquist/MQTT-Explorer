@@ -6,7 +6,7 @@ import {
   storageClearEvent,
   storageLoadEvent,
   storageStoreEvent,
-  makeStorageAcknowledgementEvent,
+  makeStorageAcknowledgementEvent
 } from '../../events/StorageEvents'
 
 export default class ConfigStorage {

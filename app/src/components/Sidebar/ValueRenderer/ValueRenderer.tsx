@@ -24,6 +24,36 @@ class ValueRenderer extends React.Component<Props, State> {
     this.state = { width: 0 }
   }
 
+  private renderDiff(current: string = '', previous: string = '', language?: 'json') {
+    return (
+      <CodeDiff
+        previous={previous}
+        current={current}
+        language={language}
+        nameOfCompareMessage={this.props.compareWith ? 'selected' : 'previous'}
+      />
+    )
+  }
+
+  private messageToPrettyJson(str: string): string | undefined {
+    try {
+      const json = JSON.parse(str)
+      return JSON.stringify(json, undefined, '  ')
+    } catch {
+      return undefined
+    }
+  }
+
+  private updateWidth = (width: number) => {
+    if (width !== this.state.width) {
+      this.setState({ width })
+    }
+  }
+
+  private renderRawValue(value: string, compare: string) {
+    return this.renderDiff(value, compare)
+  }
+
   public render() {
     return (
       <div style={{ padding: '8px 0px 8px 8px' }}>
@@ -38,7 +68,7 @@ class ValueRenderer extends React.Component<Props, State> {
 
     const previousMessages = messageHistory.toArray()
     const previousMessage = previousMessages[previousMessages.length - 2]
-    let compareMessage = compareWith || previousMessage || message
+    let compareMessage = compareWith || previousMessage || message
     if (renderMode === 'raw') {
       compareMessage = message
     }
@@ -70,36 +100,6 @@ class ValueRenderer extends React.Component<Props, State> {
 
       return this.renderDiff(current, compare, language)
     }
-  }
-
-  private renderDiff(current: string = '', previous: string = '', language?: 'json') {
-    return (
-      <CodeDiff
-        previous={previous}
-        current={current}
-        language={language}
-        nameOfCompareMessage={this.props.compareWith ? 'selected' : 'previous'}
-      />
-    )
-  }
-
-  private messageToPrettyJson(str: string): string | undefined {
-    try {
-      const json = JSON.parse(str)
-      return JSON.stringify(json, undefined, '  ')
-    } catch {
-      return undefined
-    }
-  }
-
-  private updateWidth = (width: number) => {
-    if (width !== this.state.width) {
-      this.setState({ width })
-    }
-  }
-
-  private renderRawValue(value: string, compare: string) {
-    return this.renderDiff(value, compare)
   }
 }
 

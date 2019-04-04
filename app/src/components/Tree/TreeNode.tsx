@@ -75,17 +75,9 @@ class TreeNode extends React.Component<Props, State> {
   private willUpdateTime: number = performance.now()
   private nodeRef?: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>()
 
-  private subnodesDidchange = () => {
-    this.dirtySubnodes = true
-  }
-
-  private messageDidChange = () => {
-    this.dirtyMessage = true
-  }
-
-  private edgesDidChange = () => {
-    this.dirtyMessage = true
-  }
+  private setHover = debounce((hover: boolean) => {
+    this.setState({ mouseOver: hover })
+  }, 45)
 
   constructor(props: Props) {
     super(props)
@@ -97,9 +89,16 @@ class TreeNode extends React.Component<Props, State> {
     }
   }
 
-  public componentDidMount() {
-    const { treeNode } = this.props
-    this.addSubscriber(treeNode)
+  private subnodesDidchange = () => {
+    this.dirtySubnodes = true
+  }
+
+  private messageDidChange = () => {
+    this.dirtyMessage = true
+  }
+
+  private edgesDidChange = () => {
+    this.dirtyMessage = true
   }
 
   private addSubscriber(treeNode: q.TreeNode<TopicViewModel>) {
@@ -122,49 +121,14 @@ class TreeNode extends React.Component<Props, State> {
     treeNode.onMessage.unsubscribe(this.messageDidChange)
   }
 
-  public componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.treeNode !== this.props.treeNode) {
-      this.removeSubscriber(this.props.treeNode)
-      this.addSubscriber(nextProps.treeNode)
-    }
-  }
-
-  public componentWillUnmount() {
-    const { treeNode } = this.props
-    this.removeSubscriber(treeNode)
-    this.nodeRef = undefined
-  }
-
   private stateHasChanged(newState: State) {
-    return this.state.collapsedOverride !== newState.collapsedOverride
-      || this.state.mouseOver !== newState.mouseOver
+    return this.state.collapsedOverride !== newState.collapsedOverride
+      || this.state.mouseOver !== newState.mouseOver
       || this.state.selected !== newState.selected
   }
 
   private propsHasChanged(newProps: Props) {
-    return this.props.autoExpandLimit !== newProps.autoExpandLimit
-  }
-
-  public shouldComponentUpdate(nextProps: Props, nextState: State) {
-    const shouldRenderToRemoveCssAnimation = this.cssAnimationWasSetAt !== undefined
-    return this.stateHasChanged(nextState)
-      || this.propsHasChanged(nextProps)
-      || (this.dirtyEdges || this.dirtyMessage || this.dirtySubnodes)
-      || this.animationDirty
-      || shouldRenderToRemoveCssAnimation
-  }
-
-  public componentDidUpdate() {
-    if (this.props.performanceCallback) {
-      const renderTime = performance.now() - this.willUpdateTime
-      this.props.performanceCallback(renderTime)
-    }
-  }
-
-  public componentWillUpdate() {
-    if (this.props.performanceCallback) {
-      this.willUpdateTime = performance.now()
-    }
+    return this.props.autoExpandLimit !== newProps.autoExpandLimit
   }
 
   private toggle() {
@@ -179,9 +143,97 @@ class TreeNode extends React.Component<Props, State> {
     return this.props.treeNode.edgeCount() > this.props.autoExpandLimit
   }
 
+  private didSelectTopic = () => {
+    this.props.didSelectTopic(this.props.treeNode)
+  }
+
+  private didClickTitle = (event: React.MouseEvent) => {
+    event.preventDefault()
+    this.props.didSelectTopic(this.props.treeNode)
+    this.toggle()
+  }
+
+  private mouseOver = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    this.setHover(true)
+    if (this.props.selectTopicWithMouseOver && this.props.treeNode && this.props.treeNode.message && this.props.treeNode.message.value) {
+      this.props.didSelectTopic(this.props.treeNode)
+    }
+  }
+
+  private mouseOut = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    this.setHover(false)
+  }
+
+  private toggleCollapsed = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    this.toggle()
+  }
+
+  private renderNodes() {
+    if (this.collapsed()) {
+      return null
+    }
+
+    return (
+      <TreeNodeSubnodes
+        animateChanges={this.props.animateChages}
+        collapsed={this.collapsed()}
+        treeNode={this.props.treeNode}
+        autoExpandLimit={this.props.autoExpandLimit}
+        topicOrder={this.props.topicOrder}
+        lastUpdate={this.props.treeNode.lastUpdate}
+        didSelectTopic={this.props.didSelectTopic}
+        highlightTopicUpdates={this.props.highlightTopicUpdates}
+        selectTopicWithMouseOver={this.props.selectTopicWithMouseOver}
+      />
+    )
+  }
+
+  public componentDidMount() {
+    const { treeNode } = this.props
+    this.addSubscriber(treeNode)
+  }
+
+  public componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.treeNode !== this.props.treeNode) {
+      this.removeSubscriber(this.props.treeNode)
+      this.addSubscriber(nextProps.treeNode)
+    }
+  }
+
+  public componentWillUnmount() {
+    const { treeNode } = this.props
+    this.removeSubscriber(treeNode)
+    this.nodeRef = undefined
+  }
+
+  public shouldComponentUpdate(nextProps: Props, nextState: State) {
+    const shouldRenderToRemoveCssAnimation = this.cssAnimationWasSetAt !== undefined
+    return this.stateHasChanged(nextState)
+      || this.propsHasChanged(nextProps)
+      || (this.dirtyEdges || this.dirtyMessage || this.dirtySubnodes)
+      || this.animationDirty
+      || shouldRenderToRemoveCssAnimation
+  }
+
+  public componentDidUpdate() {
+    if (this.props.performanceCallback) {
+      const renderTime = performance.now() - this.willUpdateTime
+      this.props.performanceCallback(renderTime)
+    }
+  }
+
+  public componentWillUpdate() {
+    if (this.props.performanceCallback) {
+      this.willUpdateTime = performance.now()
+    }
+  }
+
   public render() {
     const { classes } = this.props
-    const isDirty = this.dirtyEdges || this.dirtyMessage || this.dirtySubnodes
+    const isDirty = this.dirtyEdges || this.dirtyMessage || this.dirtySubnodes
     this.dirtyEdges = this.dirtyMessage = this.dirtySubnodes = false
 
     const shouldStartAnimation = (isDirty && !this.animationDirty) && !this.props.isRoot && this.props.highlightTopicUpdates
@@ -215,58 +267,6 @@ class TreeNode extends React.Component<Props, State> {
           {this.renderNodes()}
         </div>
       </div>
-    )
-  }
-
-  private didSelectTopic = () => {
-    this.props.didSelectTopic(this.props.treeNode)
-  }
-
-  private didClickTitle = (event: React.MouseEvent) => {
-    event.preventDefault()
-    this.props.didSelectTopic(this.props.treeNode)
-    this.toggle()
-  }
-
-  private mouseOver = (event: React.MouseEvent) => {
-    event.stopPropagation()
-    this.setHover(true)
-    if (this.props.selectTopicWithMouseOver && this.props.treeNode && this.props.treeNode.message && this.props.treeNode.message.value) {
-      this.props.didSelectTopic(this.props.treeNode)
-    }
-  }
-
-  private mouseOut = (event: React.MouseEvent) => {
-    event.stopPropagation()
-    this.setHover(false)
-  }
-
-  private setHover = debounce((hover: boolean) => {
-    this.setState({ mouseOver: hover })
-  }, 45)
-
-  private toggleCollapsed = (event: React.MouseEvent) => {
-    event.stopPropagation()
-    this.toggle()
-  }
-
-  private renderNodes() {
-    if (this.collapsed()) {
-      return null
-    }
-
-    return (
-      <TreeNodeSubnodes
-        animateChanges={this.props.animateChages}
-        collapsed={this.collapsed()}
-        treeNode={this.props.treeNode}
-        autoExpandLimit={this.props.autoExpandLimit}
-        topicOrder={this.props.topicOrder}
-        lastUpdate={this.props.treeNode.lastUpdate}
-        didSelectTopic={this.props.didSelectTopic}
-        highlightTopicUpdates={this.props.highlightTopicUpdates}
-        selectTopicWithMouseOver={this.props.selectTopicWithMouseOver}
-      />
     )
   }
 }

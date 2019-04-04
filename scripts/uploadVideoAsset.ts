@@ -73,7 +73,7 @@ async function uploadFile(uploadUrl: string, file: string) {
   const data = fs.readFileSync(file)
   const mimeType = mime.getType(path.extname(file))
 
-  return await axios({
+  return axios({
     data,
     method: 'post',
     url: `${uploadUrl}?name=${path.basename(file)}&access_token=${githubToken}`,

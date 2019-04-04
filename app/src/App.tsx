@@ -33,10 +33,6 @@ class App extends React.PureComponent<Props, {}> {
     this.state = { }
   }
 
-  public componentDidMount() {
-    this.props.settingsActions.loadSettings()
-  }
-
   private renderError() {
     if (this.props.error) {
       const error = typeof this.props.error === 'string' ? this.props.error : JSON.stringify(this.props.error)
@@ -47,6 +43,10 @@ class App extends React.PureComponent<Props, {}> {
         />
       )
     }
+  }
+
+  public componentDidMount() {
+    this.props.settingsActions.loadSettings()
   }
 
   public render() {

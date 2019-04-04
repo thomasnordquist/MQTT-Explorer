@@ -13,13 +13,6 @@ const unitMapping = {
 }
 
 class DateFormatter extends React.Component<Props, {}> {
-  public render() {
-    const locale = window.navigator.language
-    if (this.props.intervalSince) {
-      return <span>{this.intervalSince(this.props.intervalSince)}</span>
-    }
-    return <span>{locale ? this.localizedDate(locale) : this.legacyDate()}</span>
-  }
 
   private intervalSince(intervalSince: Date) {
     const interval = intervalSince.getTime() - this.props.date.getTime()
@@ -48,6 +41,13 @@ class DateFormatter extends React.Component<Props, {}> {
     }
 
     return 's'
+  }
+  public render() {
+    const locale = window.navigator.language
+    if (this.props.intervalSince) {
+      return <span>{this.intervalSince(this.props.intervalSince)}</span>
+    }
+    return <span>{locale ? this.localizedDate(locale) : this.legacyDate()}</span>
   }
 }
 

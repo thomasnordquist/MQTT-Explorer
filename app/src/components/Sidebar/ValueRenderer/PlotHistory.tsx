@@ -8,7 +8,7 @@ const { XYPlot, LineMarkSeries, Hint, YAxis, HorizontalGridLines } = require('re
 const abbreviate = require('number-abbreviate')
 
 interface Props {
-  data: {x: number, y: number}[]
+  data: Array<{x: number, y: number}>
 }
 
 interface Stats {
@@ -24,6 +24,23 @@ class PlotHistory extends React.Component<Props, Stats> {
 
   private resize = (width: number, height: number) => {
     this.setState({ width: width - 12 })
+  }
+
+  private hintFormatter = (point: any) => {
+    return [
+      { title: <b>Time</b>, value: <DateFormatter date={new Date(point.x)} /> },
+      { title: <b>Value</b>, value: point.y },
+    ]
+  }
+
+  private _forgetValue = () => {
+    this.setState({
+      value: undefined,
+    })
+  }
+
+  private _rememberValue = (value: any) => {
+    this.setState({ value })
   }
 
   public render() {
@@ -49,23 +66,6 @@ class PlotHistory extends React.Component<Props, Stats> {
         <ReactResizeDetector handleWidth={true} onResize={this.resize} />
       </div>
     )
-  }
-
-  private hintFormatter = (point: any) => {
-    return [
-      { title: <b>Time</b>, value: <DateFormatter date={new Date(point.x)} /> },
-      { title: <b>Value</b>, value: point.y },
-    ]
-  }
-
-  private _forgetValue = () => {
-    this.setState({
-      value: undefined,
-    })
-  }
-
-  private _rememberValue = (value: any) => {
-    this.setState({ value })
   }
 }
 

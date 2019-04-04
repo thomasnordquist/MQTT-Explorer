@@ -90,105 +90,6 @@ class ConnectionSettings extends React.Component<Props, State> {
     })
   }
 
-  public render() {
-    const { classes, connection } = this.props
-
-    const passwordVisibilityButton = (
-      <InputAdornment position="end">
-        <IconButton
-          aria-label="Toggle password visibility"
-          onClick={this.handleClickShowPassword}
-        >
-          {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
-        </IconButton>
-      </InputAdornment>
-    )
-
-    return (
-      <div>
-        <form className={classes.container} noValidate={true} autoComplete="off">
-          <Grid container={true} spacing={3}>
-            <Grid item={true} xs={5}>
-              <TextField
-                label="Name"
-                className={classes.textField}
-                value={connection.name}
-                onChange={this.handleChange('name')}
-                margin="normal"
-              />
-            </Grid>
-            <Grid item={true} xs={4}>
-              {this.renderCertValidationSwitch()}
-            </Grid>
-            <Grid item={true} xs={3}>
-              {this.renderTlsSwitch()}
-            </Grid>
-            <Grid item={true} xs={2}>
-              {this.renderProtocols()}
-            </Grid>
-            <Grid item={true} xs={7}>
-              <TextField
-                label="Host"
-                className={classes.textField}
-                value={connection.host}
-                onChange={this.handleChange('host')}
-                margin="normal"
-              />
-            </Grid>
-            <Grid item={true} xs={3}>
-              <TextField
-                label="Port"
-                className={classes.textField}
-                value={connection.port}
-                onChange={this.handleChange('port')}
-                margin="normal"
-              />
-            </Grid>
-            {this.requiresBasePath() ? this.renderBasePathInput() : null}
-            <Grid item={true} xs={this.requiresBasePath() ? 4 : 6}>
-              <TextField
-                label="Username"
-                className={classes.textField}
-                value={connection.username}
-                onChange={this.handleChange('username')}
-                margin="normal"
-              />
-            </Grid>
-            <Grid item={true} xs={this.requiresBasePath() ? 4 : 6}>
-              <FormControl className={`${classes.textField} ${classes.inputFormControl}`}>
-                <InputLabel htmlFor="adornment-password">Password</InputLabel>
-                <Input
-                  id="adornment-password"
-                  type={this.state.showPassword ? 'text' : 'password'}
-                  value={connection.password}
-                  onChange={this.handleChange('password')}
-                  endAdornment={passwordVisibilityButton}
-                />
-              </FormControl>
-            </Grid>
-          </Grid>
-          <br />
-          <div>
-            <div style={{ float: 'left' }}>
-              <Button variant="contained" className={classes.button} onClick={() => this.props.managerActions.deleteConnection(this.props.connection.id)}>
-                Delete <Delete />
-              </Button>
-              <Button variant="contained" className={classes.button} onClick={this.props.managerActions.toggleAdvancedSettings}>
-                <Settings /> Advanced
-              </Button>
-            </div>
-            <div style={{ float : 'right' }}>
-              <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.managerActions.saveConnectionSettings}>
-                <Save /> Save
-              </Button>
-              {this.renderConnectButton()}
-            </div>
-          </div>
-        </form>
-      </div>
-    )
-  }
-
   private renderProtocols() {
     const { classes, connection } = this.props
 
@@ -304,6 +205,105 @@ class ConnectionSettings extends React.Component<Props, State> {
     if (mqttOptions) {
       this.props.actions.connect(mqttOptions, this.props.connection.id)
     }
+  }
+
+  public render() {
+    const { classes, connection } = this.props
+
+    const passwordVisibilityButton = (
+      <InputAdornment position="end">
+        <IconButton
+          aria-label="Toggle password visibility"
+          onClick={this.handleClickShowPassword}
+        >
+          {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+        </IconButton>
+      </InputAdornment>
+    )
+
+    return (
+      <div>
+        <form className={classes.container} noValidate={true} autoComplete="off">
+          <Grid container={true} spacing={3}>
+            <Grid item={true} xs={5}>
+              <TextField
+                label="Name"
+                className={classes.textField}
+                value={connection.name}
+                onChange={this.handleChange('name')}
+                margin="normal"
+              />
+            </Grid>
+            <Grid item={true} xs={4}>
+              {this.renderCertValidationSwitch()}
+            </Grid>
+            <Grid item={true} xs={3}>
+              {this.renderTlsSwitch()}
+            </Grid>
+            <Grid item={true} xs={2}>
+              {this.renderProtocols()}
+            </Grid>
+            <Grid item={true} xs={7}>
+              <TextField
+                label="Host"
+                className={classes.textField}
+                value={connection.host}
+                onChange={this.handleChange('host')}
+                margin="normal"
+              />
+            </Grid>
+            <Grid item={true} xs={3}>
+              <TextField
+                label="Port"
+                className={classes.textField}
+                value={connection.port}
+                onChange={this.handleChange('port')}
+                margin="normal"
+              />
+            </Grid>
+            {this.requiresBasePath() ? this.renderBasePathInput() : null}
+            <Grid item={true} xs={this.requiresBasePath() ? 4 : 6}>
+              <TextField
+                label="Username"
+                className={classes.textField}
+                value={connection.username}
+                onChange={this.handleChange('username')}
+                margin="normal"
+              />
+            </Grid>
+            <Grid item={true} xs={this.requiresBasePath() ? 4 : 6}>
+              <FormControl className={`${classes.textField} ${classes.inputFormControl}`}>
+                <InputLabel htmlFor="adornment-password">Password</InputLabel>
+                <Input
+                  id="adornment-password"
+                  type={this.state.showPassword ? 'text' : 'password'}
+                  value={connection.password}
+                  onChange={this.handleChange('password')}
+                  endAdornment={passwordVisibilityButton}
+                />
+              </FormControl>
+            </Grid>
+          </Grid>
+          <br />
+          <div>
+            <div style={{ float: 'left' }}>
+              <Button variant="contained" className={classes.button} onClick={() => this.props.managerActions.deleteConnection(this.props.connection.id)}>
+                Delete <Delete />
+              </Button>
+              <Button variant="contained" className={classes.button} onClick={this.props.managerActions.toggleAdvancedSettings}>
+                <Settings /> Advanced
+              </Button>
+            </div>
+            <div style={{ float : 'right' }}>
+              <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.managerActions.saveConnectionSettings}>
+                <Save /> Save
+              </Button>
+              {this.renderConnectButton()}
+            </div>
+          </div>
+        </form>
+      </div>
+    )
   }
 }
 

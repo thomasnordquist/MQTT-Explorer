@@ -4,7 +4,7 @@ import { Base64Message } from '../../../backend/src/Model/Base64Message'
 import { Dispatch } from 'redux'
 import { makePublishEvent, rendererEvents } from '../../../events'
 
-export const setTopic = (topic?: string): Action  => {
+export const setTopic = (topic?: string): Action => {
   return {
     topic,
     type: ActionTypes.PUBLISH_SET_TOPIC,

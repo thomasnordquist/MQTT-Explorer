@@ -19,15 +19,15 @@ class CustomIconButton extends React.Component<Props, {}> {
     super(props)
   }
 
+  private onClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    this.props.onClick(event)
+  }
+
   public render() {
     return (
       <IconButton className={this.props.classes.button} onClick={this.onClick}>{this.props.children}</IconButton>
     )
-  }
-
-  private onClick = (event: React.MouseEvent) => {
-    event.stopPropagation()
-    this.props.onClick(event)
   }
 }
 

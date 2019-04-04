@@ -29,6 +29,10 @@ class MessageHistory extends React.Component<Props, State> {
     }
   }
 
+  private toggle = () => {
+    this.setState({ collapsed: !this.state.collapsed })
+  }
+
   public renderHistory() {
     const style = (element: HistoryItem) => ({
       backgroundColor: element.selected ? this.props.theme.palette.action.selected : this.props.theme.palette.action.hover,
@@ -87,10 +91,6 @@ class MessageHistory extends React.Component<Props, State> {
       </div>
     )
   }
-
-  private toggle = () => {
-    this.setState({ collapsed: !this.state.collapsed })
-  }
 }
 
 const styles = (theme: Theme) => ({
@@ -98,7 +98,7 @@ const styles = (theme: Theme) => ({
     backgroundColor: 'rgba(170, 170, 170, 0.2)',
     marginTop: '16px',
   },
-  badge: { right:'-25px' },
+  badge: { right: '-25px' },
 })
 
 export default withStyles(styles, { withTheme: true })(MessageHistory)

@@ -46,24 +46,12 @@ class Sidebar extends React.Component<Props, State> {
     this.setState(this.state)
   }, 300)
 
+  private detailsStyle = { padding: '0px 16px 8px 8px', display: 'block' }
+
   constructor(props: any) {
     super(props)
     console.error('Find and fix me #state')
     this.state = { node: new q.Tree(), valueRenderWidth: 300 }
-  }
-
-  public componentWillReceiveProps(nextProps: Props) {
-    this.props.node && this.removeUpdateListener(this.props.node)
-    nextProps.node && this.registerUpdateListener(nextProps.node)
-    this.props.node && this.setState({ node: this.props.node })
-
-    if (this.props.node !== nextProps.node) {
-      this.setState({ compareMessage: undefined })
-    }
-  }
-
-  public componentWillUnmount() {
-    this.props.node && this.removeUpdateListener(this.props.node)
   }
 
   private registerUpdateListener(node: q.TreeNode<TopicViewModel>) {
@@ -76,18 +64,8 @@ class Sidebar extends React.Component<Props, State> {
     node.onMessage.unsubscribe(this.updateNode)
   }
 
-  public render() {
-    return (
-      <div id="Sidebar" className={this.props.classes.drawer}>
-        {this.renderNode()}
-      </div>
-    )
-  }
-
-  private detailsStyle = { padding: '0px 16px 8px 8px', display: 'block' }
-
   private renderTopicDeleteButton() {
-    if (!this.props.node || (!this.props.node.message || !this.props.node.message.value)) {
+    if (!this.props.node || (!this.props.node.message || !this.props.node.message.value)) {
       return null
     }
 
@@ -177,6 +155,28 @@ class Sidebar extends React.Component<Props, State> {
       <ExpansionPanelDetails style={this.detailsStyle}>
         <NodeStats node={this.props.node} />
       </ExpansionPanelDetails>
+    )
+  }
+
+  public componentWillReceiveProps(nextProps: Props) {
+    this.props.node && this.removeUpdateListener(this.props.node)
+    nextProps.node && this.registerUpdateListener(nextProps.node)
+    this.props.node && this.setState({ node: this.props.node })
+
+    if (this.props.node !== nextProps.node) {
+      this.setState({ compareMessage: undefined })
+    }
+  }
+
+  public componentWillUnmount() {
+    this.props.node && this.removeUpdateListener(this.props.node)
+  }
+
+  public render() {
+    return (
+      <div id="Sidebar" className={this.props.classes.drawer}>
+        {this.renderNode()}
+      </div>
     )
   }
 }

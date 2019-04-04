@@ -91,27 +91,6 @@ class TitleBar extends React.Component<Props, {}> {
     this.state = { }
   }
 
-  public render() {
-    const { actions, classes } = this.props
-
-    return (
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={actions.settings.toggleSettingsVisibility}>
-            <Menu />
-          </IconButton>
-          <Typography className={classes.title} variant="h6" color="inherit">MQTT Explorer</Typography>
-          {this.renderSearch()}
-          <PauseButton />
-          <Button className={classes.disconnect} onClick={actions.connection.disconnect}>
-            Disconnect <CloudOff style={{ marginRight: '8px', paddingLeft: '8px' }}/>
-          </Button>
-          <ConnectionHealthIndicator withBackground={true} />
-        </Toolbar>
-      </AppBar>
-    )
-  }
-
   private renderSearch() {
     const { classes, topicFilter } = this.props
 
@@ -137,6 +116,27 @@ class TitleBar extends React.Component<Props, {}> {
 
   private onFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.props.actions.settings.filterTopics(event.target.value)
+  }
+
+  public render() {
+    const { actions, classes } = this.props
+
+    return (
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={actions.settings.toggleSettingsVisibility}>
+            <Menu />
+          </IconButton>
+          <Typography className={classes.title} variant="h6" color="inherit">MQTT Explorer</Typography>
+          {this.renderSearch()}
+          <PauseButton />
+          <Button className={classes.disconnect} onClick={actions.connection.disconnect}>
+            Disconnect <CloudOff style={{ marginRight: '8px', paddingLeft: '8px' }}/>
+          </Button>
+          <ConnectionHealthIndicator withBackground={true} />
+        </Toolbar>
+      </AppBar>
+    )
   }
 }
 

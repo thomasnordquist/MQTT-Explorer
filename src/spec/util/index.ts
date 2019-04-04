@@ -26,7 +26,7 @@ export async function delteTextWithBackspaces(element: Element<void>, browser: B
   }
 }
 
-export async function writeTextToInput(name: string, text: string, browser: Browser<void>, wait: boolean = true) {
+export async function writeTextToInput(name: string, text: string, browser: Browser<void>, wait: boolean = true) {
   const input = await browser.$(`//label[contains(text(), "${name}")]/..//input`)
   await clickOn(input, browser, 1)
   wait && await sleep(500)
@@ -70,13 +70,13 @@ export async function createFakeMousePointer(browser: Browser<void>) {
   await browser.execute(js)
 }
 
-export async function showText(text: string, duration: number = 0, browser: Browser<void>, location: 'top' | 'bottom' | 'middle' = 'bottom', keys = []) {
+export async function showText(text: string, duration: number = 0, browser: Browser<void>, location: 'top' | 'bottom' | 'middle' = 'bottom', keys = []) {
   const js = `window.demo.showMessage('${text}', '${location}', ${duration});`
 
   browser.execute(js)
 }
 
-export async function showKeys(text: string, duration: number = 0, browser: Browser<void>, location: 'top' | 'bottom' | 'middle' = 'bottom', keys: string[] = []) {
+export async function showKeys(text: string, duration: number = 0, browser: Browser<void>, location: 'top' | 'bottom' | 'middle' = 'bottom', keys: string[] = []) {
   const js = `window.demo.showMessage('${text}', '${location}', ${duration}, ${JSON.stringify(keys)});`
 
   browser.execute(js)

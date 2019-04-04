@@ -20,7 +20,7 @@ import {
   createFakeMousePointer,
   hideText,
   showText,
-  sleep,
+  sleep
 } from './util'
 
 process.on('unhandledRejection', (error: Error) => {

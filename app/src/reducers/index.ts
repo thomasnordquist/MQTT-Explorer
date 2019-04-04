@@ -48,35 +48,35 @@ const globalState: Reducer<GlobalState | undefined, CustomAction> = (state = ini
   trackEvent(action.type)
   console.log(action.type)
   switch (action.type) {
-    case ActionTypes.showUpdateNotification:
-      return {
+  case ActionTypes.showUpdateNotification:
+    return {
         ...state,
         showUpdateNotification: action.showUpdateNotification,
       }
 
-    case ActionTypes.showError:
-      return {
+  case ActionTypes.showError:
+    return {
         ...state,
         error: action.error,
       }
 
-    case ActionTypes.didLaunch:
-      return {
+  case ActionTypes.didLaunch:
+    return {
         ...state,
         launching: false,
       }
 
-    case ActionTypes.showUpdateDetails:
-      if (action.showUpdateDetails === undefined) {
+  case ActionTypes.showUpdateDetails:
+    if (action.showUpdateDetails === undefined) {
         return state
       }
-      return {
+    return {
         ...state,
         showUpdateDetails: action.showUpdateDetails,
       }
 
-    default:
-      return state
+  default:
+    return state
   }
 }
 

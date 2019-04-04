@@ -3,7 +3,7 @@ import { ConnectionOptions } from '../model/ConnectionOptions'
 import { createReducer } from './lib'
 
 export interface ConnectionManagerState {
-  connections: {[s:string]: ConnectionOptions},
+  connections: {[s: string]: ConnectionOptions},
   selected?: string
   showAdvancedSettings: boolean
 }
@@ -29,7 +29,7 @@ export enum ActionTypes {
 
 export interface SetConnections {
   type: ActionTypes.CONNECTION_MANAGER_SET_CONNECTIONS
-  connections: {[s:string]: ConnectionOptions}
+  connections: {[s: string]: ConnectionOptions}
 }
 
 export interface SelectConnection {

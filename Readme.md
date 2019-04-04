@@ -113,6 +113,3 @@ It basically sends: app version, processor architecture, operating system, used 
 
 Even though the data is purely technical, an option to disable telemetry is planned. [#52](https://github.com/thomasnordquist/MQTT-Explorer/issues/52)
 
-## License
-
-[AGPL 3](./LICENSE)

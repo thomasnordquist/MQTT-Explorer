@@ -1,7 +1,7 @@
 import { Browser } from 'webdriverio'
 import {
   clickOn,
-  sleep,
+  sleep
 } from '../util'
 
 export async function showJsonFormatting(browser: Browser<void>) {

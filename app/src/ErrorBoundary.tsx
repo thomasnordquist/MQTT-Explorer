@@ -21,18 +21,13 @@ interface Props {
 }
 
 class ErrorBoundary extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
-    this.state = {}
-  }
-
-  public componentDidCatch(error: Error, errorInfo: any) {
-    electronRendererTelementry.trackError(error)
-    console.log('did catch', error)
-  }
 
   public static getDerivedStateFromError(error: Error) {
     return { error }
+  }
+  constructor(props: Props) {
+    super(props)
+    this.state = {}
   }
 
   private restart = () => {
@@ -42,6 +37,11 @@ class ErrorBoundary extends React.Component<Props, State> {
   private clearStorage = () => {
     PersistentStorage.clear()
     window.location = window.location
+  }
+
+  public componentDidCatch(error: Error, errorInfo: any) {
+    electronRendererTelementry.trackError(error)
+    console.log('did catch', error)
   }
 
   public render() {

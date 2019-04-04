@@ -92,7 +92,7 @@ const connectionItemRenderer = withStyles(connectionItemStyle)((props: Connectio
       onClick={() => props.actions.selectConnection(props.connection.id)}
     >
       <Typography className={props.classes.name}>
-        {props.connection.name || 'mqtt broker'}
+        {props.connection.name || 'mqtt broker'}
       </Typography>
       <Typography className={props.classes.details}>
         {connection && connection.url}

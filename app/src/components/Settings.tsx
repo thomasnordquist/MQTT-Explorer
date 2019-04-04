@@ -86,45 +86,6 @@ class Settings extends React.Component<Props, {}> {
     this.state = {}
   }
 
-  public render() {
-    const { classes, actions, visible } = this.props
-    return (
-      <Drawer
-        anchor="left"
-        className={classes.drawer}
-        open={visible}
-        variant="persistent"
-      >
-        <div
-          className={classes.paper}
-          tabIndex={0}
-          role="button"
-        >
-
-          <Typography className={classes.title} variant="h6" color="inherit">
-            <IconButton onClick={actions.toggleSettingsVisibility}>
-              <ChevronRight />
-            </IconButton>
-            Settings
-          </Typography>
-          <Divider />
-
-          {this.renderAutoExpand()}
-          {this.renderNodeOrder()}
-          {this.renderHighlightTopicUpdates()}
-          {this.selectTopicsOnMouseOver()}
-          {this.toggleTheme()}
-        </div>
-        <Tooltip placement="top" title="App Author">
-          <Typography className={classes.author} onClick={this.openGithubPage}>
-            by Thomas Nordquist
-          </Typography>
-        </Tooltip>
-        <BrokerStatistics />
-      </Drawer>
-    )
-  }
-
   private openGithubPage = () => {
     shell.openExternal('https://github.com/thomasnordquist')
   }
@@ -231,6 +192,45 @@ class Settings extends React.Component<Props, {}> {
 
   private onChangeSorting = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.props.actions.setTopicOrder(e.target.value as TopicOrder)
+  }
+
+  public render() {
+    const { classes, actions, visible } = this.props
+    return (
+      <Drawer
+        anchor="left"
+        className={classes.drawer}
+        open={visible}
+        variant="persistent"
+      >
+        <div
+          className={classes.paper}
+          tabIndex={0}
+          role="button"
+        >
+
+          <Typography className={classes.title} variant="h6" color="inherit">
+            <IconButton onClick={actions.toggleSettingsVisibility}>
+              <ChevronRight />
+            </IconButton>
+            Settings
+          </Typography>
+          <Divider />
+
+          {this.renderAutoExpand()}
+          {this.renderNodeOrder()}
+          {this.renderHighlightTopicUpdates()}
+          {this.selectTopicsOnMouseOver()}
+          {this.toggleTheme()}
+        </div>
+        <Tooltip placement="top" title="App Author">
+          <Typography className={classes.author} onClick={this.openGithubPage}>
+            by Thomas Nordquist
+          </Typography>
+        </Tooltip>
+        <BrokerStatistics />
+      </Drawer>
+    )
   }
 }
 

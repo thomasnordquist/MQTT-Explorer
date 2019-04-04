@@ -28,6 +28,35 @@ class PauseButton extends React.Component<Props, {changes: number}> {
     this.state = { changes: 0 }
   }
 
+  private renderResume() {
+    return (
+      <Tooltip title="Resumes updating the tree, after applying all recorded changes">
+        <Resume />
+      </Tooltip>
+    )
+  }
+
+  private renderPause() {
+    return (
+      <Tooltip title="Stops all updates, records changes until the buffer is full.">
+        <Pause />
+      </Tooltip>
+    )
+  }
+
+  private renderBufferStats() {
+    if (!this.props.tree) {
+      return
+    }
+
+    return (
+      <span>
+        {this.state.changes} changes<br />
+        buffer at {Math.round(this.props.tree.unmergedChanges().fillState() * 10000) / 100}%
+      </span>
+    )
+  }
+
   public componentDidMount() {
     this.timer = setInterval(() => {
       if (!this.props.paused || !this.props.tree) {
@@ -57,35 +86,6 @@ class PauseButton extends React.Component<Props, {changes: number}> {
         </span>
         {this.props.paused ? this.renderBufferStats() : null}
       </div>
-    )
-  }
-
-  private renderResume() {
-    return (
-      <Tooltip title="Resumes updating the tree, after applying all recorded changes">
-        <Resume />
-      </Tooltip>
-    )
-  }
-
-  private renderPause() {
-    return (
-      <Tooltip title="Stops all updates, records changes until the buffer is full.">
-        <Pause />
-      </Tooltip>
-    )
-  }
-
-  private renderBufferStats() {
-    if (!this.props.tree) {
-      return
-    }
-
-    return (
-      <span>
-        {this.state.changes} changes<br />
-        buffer at {Math.round(this.props.tree.unmergedChanges().fillState() * 10000) / 100}%
-      </span>
     )
   }
 }

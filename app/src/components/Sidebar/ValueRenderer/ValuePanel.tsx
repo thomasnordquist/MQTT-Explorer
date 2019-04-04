@@ -47,30 +47,6 @@ class ValuePanel extends React.Component<Props, State> {
     this.state = { }
   }
 
-  public render() {
-    const { node, classes } = this.props
-    const { detailsStyle, summaryStyle } = this.panelStyle()
-
-    const copyValue = (node && node.message && node.message.value) ? <Copy value={Base64Message.toUnicodeString(node.message.value)} /> : null
-
-    return (
-      <ExpansionPanel key="value" defaultExpanded={true}>
-          <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summaryStyle}>
-            <Typography className={classes.heading}>Value {copyValue}</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails style={detailsStyle}>
-            {this.messageMetaInfo()}
-            <div>
-              <React.Suspense fallback={<div>Loading...</div>}>
-                {this.renderValue()}
-              </React.Suspense>
-            </div>
-            <div><MessageHistory onSelect={this.handleMessageHistorySelect} selected={this.state.compareMessage} node={this.props.node} /></div>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-    )
-  }
-
   private renderValue() {
     const node = this.props.node
     if (!node || !node.message) {
@@ -87,7 +63,7 @@ class ValuePanel extends React.Component<Props, State> {
   }
 
   private messageMetaInfo() {
-    if (!this.props.node || !this.props.node.message || !this.props.node.mqttMessage) {
+    if (!this.props.node || !this.props.node.message || !this.props.node.mqttMessage) {
       return null
     }
 
@@ -151,6 +127,30 @@ class ValuePanel extends React.Component<Props, State> {
     } else {
       this.setState({ compareMessage: undefined })
     }
+  }
+
+  public render() {
+    const { node, classes } = this.props
+    const { detailsStyle, summaryStyle } = this.panelStyle()
+
+    const copyValue = (node && node.message && node.message.value) ? <Copy value={Base64Message.toUnicodeString(node.message.value)} /> : null
+
+    return (
+      <ExpansionPanel key="value" defaultExpanded={true}>
+          <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summaryStyle}>
+            <Typography className={classes.heading}>Value {copyValue}</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails style={detailsStyle}>
+            {this.messageMetaInfo()}
+            <div>
+              <React.Suspense fallback={<div>Loading...</div>}>
+                {this.renderValue()}
+              </React.Suspense>
+            </div>
+            <div><MessageHistory onSelect={this.handleMessageHistorySelect} selected={this.state.compareMessage} node={this.props.node} /></div>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+    )
   }
 }
 

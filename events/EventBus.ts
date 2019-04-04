@@ -3,7 +3,7 @@ import { IpcMain, IpcRenderer, ipcMain, ipcRenderer } from 'electron'
 import { Event } from './Events'
 
 export interface EventBusInterface {
-  subscribe<MessageType>(event: Event<MessageType>, callback:(msg: MessageType) => void): void
+  subscribe<MessageType>(event: Event<MessageType>, callback: (msg: MessageType) => void): void
   unsubscribeAll<MessageType>(event: Event<MessageType>): void
   emit<MessageType>(event: Event<MessageType>, msg: MessageType): void
   unsubscribe<MessageType>(event: Event<MessageType>, callback: any): void
@@ -21,7 +21,7 @@ class IpcMainEventBus implements EventBusInterface {
     this.ipc = ipc
   }
 
-  public subscribe<MessageType>(subscribeEvent: Event<MessageType>, callback:(msg: MessageType) => void) {
+  public subscribe<MessageType>(subscribeEvent: Event<MessageType>, callback: (msg: MessageType) => void) {
     console.log('subscribing', subscribeEvent.topic)
     this.ipc.on(subscribeEvent.topic, (event: any, arg: any) => {
       this.client = event.sender
@@ -53,7 +53,7 @@ class IpcRendererEventBus implements EventBusInterface {
     this.ipc = ipc
   }
 
-  public subscribe<MessageType>(event: Event<MessageType>, callback:(msg: MessageType) => void) {
+  public subscribe<MessageType>(event: Event<MessageType>, callback: (msg: MessageType) => void) {
     const wrappedCallback = (_event: any, arg: any) => {
       callback(arg)
     }

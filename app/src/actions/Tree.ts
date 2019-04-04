@@ -19,7 +19,7 @@ const debouncedSelectTopic = debounce((topic: q.TreeNode<TopicViewModel>, dispat
 
   // Update publish topic
   let setTopicDispatch: any | undefined
-  if (selectedTopic && (selectedTopic.path() === getState().publish.topic || !getState().publish.topic)) {
+  if (selectedTopic && (selectedTopic.path() === getState().publish.topic || !getState().publish.topic)) {
     setTopicDispatch = setTopic(topic.path())
   }
 

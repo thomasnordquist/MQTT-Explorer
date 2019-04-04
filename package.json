@@ -53,7 +53,7 @@
   "author": "Thomas Nordquist",
   "email": "xxnerowingerxx@gmail.com",
   "homepage": "https://github.com",
-  "license": "ISC",
+  "license": "-",
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/fs-extra": "^5.0.5",
@@ -78,9 +78,10 @@
     "source-map-support": "^0.5.9",
     "spectron": "^5.0.0",
     "ts-node": "^7.0.1",
-    "tslint": "^5.12.0",
+    "tslint": "^5.15.0",
     "tslint-config-airbnb": "^5.11.1",
     "tslint-react": "^3.6.0",
+    "tslint-react-recommended": "^1.0.15",
     "tslint-strict-null-checks": "^1.0.1",
     "typescript": "^3.2.2",
     "webdriverio": "5.4"

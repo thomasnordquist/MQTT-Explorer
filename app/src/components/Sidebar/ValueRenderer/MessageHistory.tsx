@@ -22,14 +22,21 @@ interface State {
 }
 
 class MessageHistory extends React.Component<Props, State> {
+
+  private updateNode = throttle(() => {
+    this.setState(this.state)
+  }, 300)
   constructor(props: any) {
     super(props)
     this.state = { }
   }
 
-  private updateNode = throttle(() => {
-    this.setState(this.state)
-  }, 300)
+  private displayMessage = (index: number, eventTarget: EventTarget) => {
+    const message = this.props.node && this.props.node.messageHistory.toArray().reverse()[index]
+    if (message) {
+      this.props.onSelect(message)
+    }
+  }
 
   public componentWillReceiveProps(nextProps: Props) {
     this.props.node && this.props.node.onMessage.unsubscribe(this.updateNode)
@@ -82,19 +89,12 @@ class MessageHistory extends React.Component<Props, State> {
     )
   }
 
-  public renderPlot(data: {x: number, y: number}[]) {
+  public renderPlot(data: Array<{x: number, y: number}>) {
     return (
       <React.Suspense fallback={<div>Loading...</div>}>
         <PlotHistory data={data} />
       </React.Suspense>
     )
-  }
-
-  private displayMessage = (index: number, eventTarget: EventTarget) => {
-    const message = this.props.node && this.props.node.messageHistory.toArray().reverse()[index]
-    if (message) {
-      this.props.onSelect(message)
-    }
   }
 }
 

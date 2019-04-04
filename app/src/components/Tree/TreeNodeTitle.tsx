@@ -16,18 +16,6 @@ export interface TreeNodeProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
-  public render() {
-    const { classes, treeNode, style, className } = this.props
-    return (
-      <span
-        className={`${classes.title} ${className}`}
-        style={style}
-      >
-        <span className={classes.expander} onClick={this.props.toggleCollapsed}>{this.renderExpander()}</span>
-        {this.renderSourceEdge()} {this.renderCollapsedSubnodes()} {this.renderValue()}
-      </span>
-    )
-  }
 
   private renderSourceEdge() {
     const name = this.props.name || (this.props.treeNode.sourceEdge && this.props.treeNode.sourceEdge.name)
@@ -56,6 +44,18 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
 
     const messages = this.props.treeNode.leafMessageCount()
     return <span className={this.props.classes.collapsedSubnodes}>({this.props.treeNode.childTopicCount()} topics, {messages} messages)</span>
+  }
+  public render() {
+    const { classes, treeNode, style, className } = this.props
+    return (
+      <span
+        className={`${classes.title} ${className}`}
+        style={style}
+      >
+        <span className={classes.expander} onClick={this.props.toggleCollapsed}>{this.renderExpander()}</span>
+        {this.renderSourceEdge()} {this.renderCollapsedSubnodes()} {this.renderValue()}
+      </span>
+    )
   }
 }
 

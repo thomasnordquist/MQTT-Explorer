@@ -41,7 +41,7 @@ class ConnectionHealthIndicator extends React.Component<Props, {}> {
 
   public render() {
     const { classes, health, connected } = this.props
-    if (!health || !connected) {
+    if (!health || !connected) {
       return null
     }
 
@@ -56,7 +56,7 @@ class ConnectionHealthIndicator extends React.Component<Props, {}> {
 const mapStateToProps = (state: AppState) => {
   return {
     health: state.connection.health,
-    connected: state.connection.connected || state.connection.connecting,
+    connected: state.connection.connected || state.connection.connecting,
   }
 }
 

@@ -46,7 +46,7 @@ class Topic extends React.Component<Props, {}> {
           >
             {edge!.name}
           </Button>
-        )],
+        )]
       )
 
     if (breadCrumps.length === 0) {
@@ -54,7 +54,7 @@ class Topic extends React.Component<Props, {}> {
     }
 
     const joinedBreadCrumps = breadCrumps.reduce((prev, current) =>
-      prev.concat([<span key={key += 1}>/</span>]).concat(current),
+      prev.concat([<span key={key += 1}>/</span>]).concat(current)
     )
 
     return <span style={{ lineHeight: '2.2em' }}>{joinedBreadCrumps}</span>

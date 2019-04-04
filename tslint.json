@@ -1,14 +1,26 @@
 {
-  "extends": ["tslint-config-airbnb", "tslint-react"],
+  "extends": ["tslint-config-airbnb", "tslint-react", "tslint-react-recommended"],
   "rules": {
     "semicolon": [true, "never"],
     "max-line-length": [true, 200],
     "member-access": true,
     "no-else-after-return": false,
     "align": false,
-    "variable-name": false,
     "jsx-no-lambda": false,
     "indent": [true, "spaces", 2],
-    "import-name": false
+    "import-name": false,
+    "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"],
+    "trailing-comma": [
+      true,
+      {
+        "multiline": {
+          "objects": "always",
+          "arrays": "always",
+          "functions": "never",
+          "typeLiterals": "ignore"
+        },
+        "esSpecCompliant": true
+      }
+    ]
   }
 }

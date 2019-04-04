@@ -18,18 +18,6 @@ class Demo extends React.Component<{}, State> {
     this.state = { enabled: false, target: { x: 0, y: 0 }, position: { x: 0, y: 0 }, stepSizeX: 1, stepSizeY: 1 }
   }
 
-  public componentDidMount() {
-    (window as any).demo.enableMouse = () => {
-      this.setState({ enabled: true })
-    }
-    (window as any).demo.moveMouse = (x: number, y: number, animationTime: number) => {
-      const stepSizeX = Math.abs(this.state.position.x - x) / (animationTime / this.frameInterval)
-      const stepSizeY = Math.abs(this.state.position.y - y) / (animationTime / this.frameInterval)
-      this.setState({ stepSizeX, stepSizeY, enabled: true, target: { x, y } })
-      this.moveCloser()
-    }
-  }
-
   private moveCloser(steps: number = 0) {
     const steSizeX = Math.min(this.state.stepSizeX, Math.abs(this.state.position.x - this.state.target.x))
     const steSizeY = Math.min(this.state.stepSizeY, Math.abs(this.state.position.y - this.state.target.y))
@@ -51,6 +39,18 @@ class Demo extends React.Component<{}, State> {
     this.timer = setTimeout(() => {
       this.moveCloser(steps + 1)
     }, this.frameInterval)
+  }
+
+  public componentDidMount() {
+    (window as any).demo.enableMouse = () => {
+      this.setState({ enabled: true })
+    }
+    (window as any).demo.moveMouse = (x: number, y: number, animationTime: number) => {
+      const stepSizeX = Math.abs(this.state.position.x - x) / (animationTime / this.frameInterval)
+      const stepSizeY = Math.abs(this.state.position.y - y) / (animationTime / this.frameInterval)
+      this.setState({ stepSizeX, stepSizeY, enabled: true, target: { x, y } })
+      this.moveCloser()
+    }
   }
 
   public render() {

@@ -102,15 +102,6 @@ class UpdateNotifier extends React.Component<Props, State> {
     this.props.actions.showUpdateDetails(false)
   }
 
-  public render() {
-    return (
-      <div>
-        {this.renderUpdateNotification()}
-        {this.renderUpdateDetails()}
-      </div>
-    )
-  }
-
   private renderUpdateNotification() {
     const snackbarAnchor: any = {
       vertical: 'top',
@@ -207,7 +198,7 @@ class UpdateNotifier extends React.Component<Props, State> {
 
   private renderDownloads() {
     const latestUpdate = this.state.newerVersions[0]
-    if (!latestUpdate || !latestUpdate.assets) {
+    if (!latestUpdate || !latestUpdate.assets) {
       return null
     }
 
@@ -223,6 +214,15 @@ class UpdateNotifier extends React.Component<Props, State> {
           </Button>
         </div>
       ))
+  }
+
+  public render() {
+    return (
+      <div>
+        {this.renderUpdateNotification()}
+        {this.renderUpdateDetails()}
+      </div>
+    )
   }
 }
 

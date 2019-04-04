@@ -3,7 +3,7 @@ import * as path from 'path'
 import { chdir } from 'process'
 import { exec } from './util'
 
-export default async function (info: any) {
+export default async function(info: any) {
   for (const snapFile of info.artifactPaths) {
     if (/\.snap$/.test(snapFile)) {
       const originalDir = __dirname

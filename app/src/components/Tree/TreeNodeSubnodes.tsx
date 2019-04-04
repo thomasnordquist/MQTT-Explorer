@@ -32,7 +32,7 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
     this.state = { alreadyAdded: 10 }
   }
 
-  private sortedNodes(): q.TreeNode<TopicViewModel>[] {
+  private sortedNodes(): Array<q.TreeNode<TopicViewModel>> {
     const { topicOrder, treeNode } = this.props
 
     let edges = treeNode.edgeArray

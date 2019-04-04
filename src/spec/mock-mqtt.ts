@@ -88,7 +88,7 @@ function generateData(client: mqtt.MqttClient) {
   intervals.push(setInterval(() => {
     state = !state
     const js = {
-      tags:{
+      tags: {
         entityId: 33512,
         entityType: 'person',
         host: 'd44ad81e10f9',
@@ -100,7 +100,7 @@ function generateData(client: mqtt.MqttClient) {
     client.publish(
       'actuality/showcase',
       JSON.stringify(js),
-      { retain: true, qos: 0 },
+      { retain: true, qos: 0 }
     )
   }, 2102))
 }

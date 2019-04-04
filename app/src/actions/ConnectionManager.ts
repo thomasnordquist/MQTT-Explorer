@@ -70,7 +70,7 @@ async function openCertificate(): Promise<CertificateParameters> {
           return
         }
 
-        if (data.length > 16_384 || data.length < 128) {
+        if (data.length > 16_384 || data.length < 128) {
           reject(rejectReasons.certificateSizeDoesNotMatch)
           return
         }

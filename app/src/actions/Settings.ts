@@ -62,7 +62,7 @@ export const selectTopicWithMouseOver = (selectTopicWithMouseOver: boolean) => (
   dispatch(storeSettings())
 }
 
-export const setValueDisplayMode = (valueRendererDisplayMode: 'diff' | 'raw') => (dispatch: Dispatch<any>, getState: () => AppState) => {
+export const setValueDisplayMode = (valueRendererDisplayMode: 'diff' | 'raw') => (dispatch: Dispatch<any>, getState: () => AppState) => {
   dispatch({
     valueRendererDisplayMode,
     type: ActionTypes.SETTINGS_SET_VALUE_RENDERER_DISPLAY_MODE,
@@ -100,7 +100,7 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
     type: ActionTypes.SETTINGS_FILTER_TOPICS,
   })
 
-  if (!filterStr || !tree) {
+  if (!filterStr || !tree) {
     dispatch(batchActions([setAutoExpandLimit(0), (showTree(tree) as any)]))
     return
   }

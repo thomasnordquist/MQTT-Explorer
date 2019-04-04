@@ -44,6 +44,40 @@ class ConnectionSettings extends React.Component<Props, State> {
     })
   }
 
+  private renderCertificateInfo() {
+    if (!this.props.connection.selfSignedCertificate) {
+      return null
+    }
+
+    return (
+      <span>
+        <Tooltip title={this.props.connection.selfSignedCertificate.name}>
+          <Typography className={this.props.classes.certificateName}>
+            <ClearAdornment action={this.clearCertificate} value={this.props.connection.selfSignedCertificate.name} />
+            {this.props.connection.selfSignedCertificate.name}
+          </Typography>
+      </Tooltip>
+     </span>
+    )
+  }
+
+  private clearCertificate = () => {
+    this.props.managerActions.updateConnection(this.props.connection.id, {
+      selfSignedCertificate: undefined,
+    })
+  }
+
+  private renderSubscriptions() {
+    const connection = this.props.connection
+    return connection.subscriptions.map(subscription => (
+      <Subscription
+        deleteAction={() => this.props.managerActions.deleteSubscription(subscription, connection.id)}
+        subscription={subscription}
+        key={subscription}
+      />
+    ))
+  }
+
   public render() {
     const { classes } = this.props
     return (
@@ -114,40 +148,6 @@ class ConnectionSettings extends React.Component<Props, State> {
         </form>
       </div>
     )
-  }
-
-  private renderCertificateInfo() {
-    if (!this.props.connection.selfSignedCertificate) {
-      return null
-    }
-
-    return (
-      <span>
-        <Tooltip title={this.props.connection.selfSignedCertificate.name}>
-          <Typography className={this.props.classes.certificateName}>
-            <ClearAdornment action={this.clearCertificate} value={this.props.connection.selfSignedCertificate.name} />
-            {this.props.connection.selfSignedCertificate.name}
-          </Typography>
-      </Tooltip>
-     </span>
-    )
-  }
-
-  private clearCertificate = () => {
-    this.props.managerActions.updateConnection(this.props.connection.id, {
-      selfSignedCertificate: undefined,
-    })
-  }
-
-  private renderSubscriptions() {
-    const connection = this.props.connection
-    return connection.subscriptions.map(subscription => (
-      <Subscription
-        deleteAction={() => this.props.managerActions.deleteSubscription(subscription, connection.id)}
-        subscription={subscription}
-        key={subscription}
-      />
-    ))
   }
 }
 

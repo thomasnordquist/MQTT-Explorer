@@ -26,9 +26,9 @@ const store = createStore(
   composeEnhancers(
     applyMiddleware(
       reduxThunk,
-      batchDispatchMiddleware,
-    ),
-  ),
+      batchDispatchMiddleware
+    )
+  )
 )
 
 function createTheme(type: 'light' | 'dark') {
@@ -77,5 +77,5 @@ ReactDOM.render(
   <Provider store={store}>
     <Application />
   </Provider>,
-  document.getElementById('app'),
+  document.getElementById('app')
 )

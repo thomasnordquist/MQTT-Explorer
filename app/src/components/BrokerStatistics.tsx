@@ -40,6 +40,15 @@ class BrokerStatistics extends React.Component<Props, {}> {
     this.state = {}
   }
 
+  private renderPair(tree: q.Tree<TopicViewModel>, a: Stats, b: Stats) {
+    return (
+      <div className={this.props.classes.flex}>
+        <div style={{ flex: 1 }}>{this.renderStat(tree, a)}</div>
+        <div style={{ flex: 1 }}>{this.renderStat(tree, b)}</div>
+      </div>
+    )
+  }
+
   public render() {
     const { tree, classes } = this.props
     if (!tree || !tree.findNode('$SYS/broker/clients/total')) {
@@ -92,15 +101,6 @@ class BrokerStatistics extends React.Component<Props, {}> {
         {this.renderPair(tree, stats.clients, stats.subscriptions)}
         {this.renderPair(tree, stats.sent5m, stats.received5m)}
         {this.renderPair(tree, stats.heap, stats.heapMax)}
-      </div>
-    )
-  }
-
-  private renderPair(tree: q.Tree<TopicViewModel>, a: Stats, b: Stats) {
-    return (
-      <div className={this.props.classes.flex}>
-        <div style={{ flex: 1 }}>{this.renderStat(tree, a)}</div>
-        <div style={{ flex: 1 }}>{this.renderStat(tree, b)}</div>
       </div>
     )
   }

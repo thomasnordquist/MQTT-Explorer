@@ -8,7 +8,7 @@ export class TreeNode<ViewModel> {
   public messageHistory: RingBuffer<Message> = new RingBuffer<Message>(3000, 100)
   public viewModel?: ViewModel
   public edges: {[s: string]: Edge<ViewModel>} = {}
-  public edgeArray: Edge<ViewModel>[] = []
+  public edgeArray: Array<Edge<ViewModel>> = []
   public collapsed = false
   public messages: number = 0
   public lastUpdate: number = Date.now()
@@ -18,20 +18,9 @@ export class TreeNode<ViewModel> {
   public isTree = false
 
   private cachedPath?: string
-  private cachedChildTopics?: TreeNode<ViewModel>[]
+  private cachedChildTopics?: Array<TreeNode<ViewModel>>
   private cachedLeafMessageCount?: number
   private cachedChildTopicCount?: number
-
-  public unconnectedClone() {
-    const node = new TreeNode<ViewModel>()
-    node.message = this.message
-    node.mqttMessage = this.mqttMessage
-    node.messageHistory = this.messageHistory.clone()
-    node.messages = this.messages
-    node.lastUpdate = this.lastUpdate
-
-    return node
-  }
 
   constructor(sourceEdge?: Edge<ViewModel>, message?: Message) {
     if (sourceEdge) {
@@ -55,6 +44,70 @@ export class TreeNode<ViewModel> {
     this.onMessage.subscribe(() => {
       this.lastUpdate = Date.now()
     })
+  }
+
+  private previous(): TreeNode<ViewModel> | undefined {
+    return this.sourceEdge ? this.sourceEdge.source || undefined : undefined
+  }
+
+  private isTopicEmptyLeaf() {
+    const hasNoMessage = (!this.message || !this.message.value)
+    return hasNoMessage && this.isLeaf()
+  }
+
+  private isLeaf() {
+    return this.edgeArray.length === 0
+  }
+
+  private removeFromParent() {
+    const previous = this.previous()
+    if (!previous || !this.sourceEdge) {
+      return
+    }
+    previous.removeEdge(this.sourceEdge)
+  }
+
+  private findChild(edges: string[]): TreeNode<ViewModel> | undefined {
+    if (edges.length === 0) {
+      return this
+    }
+
+    const nextEdge = this.edges[edges[0]]
+    if (!nextEdge) {
+      return undefined
+    }
+
+    return nextEdge.target.findChild(edges.slice(1))
+  }
+
+  private mergeEdges(node: TreeNode<ViewModel>) {
+    const edgeKeys = Object.keys(node.edges)
+    let edgesDidUpdate = false
+
+    for (const edgeKey of edgeKeys) {
+      const matchingEdge = this.edges[edgeKey]
+      if (matchingEdge) {
+        matchingEdge.target.updateWithNode(node.edges[edgeKey].target)
+      } else {
+        this.addEdge(node.edges[edgeKey], false)
+        edgesDidUpdate = true
+      }
+    }
+
+    if (edgesDidUpdate) {
+      this.onEdgesChange.dispatch()
+    }
+  }
+
+  public unconnectedClone() {
+    const node = new TreeNode<ViewModel>()
+    node.message = this.message
+    node.mqttMessage = this.mqttMessage
+    node.messageHistory = this.messageHistory.clone()
+    node.messages = this.messages
+    node.lastUpdate = this.lastUpdate
+
+    return node
   }
 
   public setMessage(message: Message) {
@@ -82,10 +135,6 @@ export class TreeNode<ViewModel> {
     return this.cachedPath
   }
 
-  private previous(): TreeNode<ViewModel> | undefined {
-    return this.sourceEdge ? this.sourceEdge.source || undefined : undefined
-  }
-
   public addEdge(edge: Edge<ViewModel>, emitUpdate: boolean = false) {
     this.edges[edge.name] = edge
     this.edgeArray.push(edge)
@@ -96,30 +145,13 @@ export class TreeNode<ViewModel> {
     }
   }
 
-  public branch(): TreeNode<ViewModel>[] {
+  public branch(): Array<TreeNode<ViewModel>> {
     const previous = this.previous()
     if (!previous) {
       return [this]
     }
 
     return previous.branch().concat([this])
-  }
-
-  private isTopicEmptyLeaf() {
-    const hasNoMessage = (!this.message || !this.message.value)
-    return hasNoMessage && this.isLeaf()
-  }
-
-  private isLeaf() {
-    return this.edgeArray.length === 0
-  }
-
-  private removeFromParent() {
-    const previous = this.previous()
-    if (!previous || !this.sourceEdge) {
-      return
-    }
-    previous.removeEdge(this.sourceEdge)
   }
 
   public removeEdge(edge: Edge<any>) {
@@ -171,7 +203,7 @@ export class TreeNode<ViewModel> {
     return this.edgeArray.length
   }
 
-  public childTopics(): TreeNode<ViewModel>[] {
+  public childTopics(): Array<TreeNode<ViewModel>> {
     if (this.cachedChildTopics === undefined) {
       const initialValue = this.message && this.message.value ? [this] : []
 
@@ -180,44 +212,12 @@ export class TreeNode<ViewModel> {
         .reduce((a, b) => a.concat(b), initialValue)
     }
 
-    return this.cachedChildTopics as TreeNode<ViewModel>[]
+    return this.cachedChildTopics as Array<TreeNode<ViewModel>>
   }
 
-  public findNode (path: String): TreeNode<ViewModel> | undefined {
+  public findNode(path: String): TreeNode<ViewModel> | undefined {
     const topics = path.split('/')
 
     return this.findChild(topics)
-  }
-
-  private findChild(edges: string[]): TreeNode<ViewModel> | undefined {
-    if (edges.length === 0) {
-      return this
-    }
-
-    const nextEdge = this.edges[edges[0]]
-    if (!nextEdge) {
-      return undefined
-    }
-
-    return nextEdge.target.findChild(edges.slice(1))
-  }
-
-  private mergeEdges(node: TreeNode<ViewModel>) {
-    const edgeKeys = Object.keys(node.edges)
-    let edgesDidUpdate = false
-
-    for (const edgeKey of edgeKeys) {
-      const matchingEdge = this.edges[edgeKey]
-      if (matchingEdge) {
-        matchingEdge.target.updateWithNode(node.edges[edgeKey].target)
-      } else {
-        this.addEdge(node.edges[edgeKey], false)
-        edgesDidUpdate = true
-      }
-    }
-
-    if (edgesDidUpdate) {
-      this.onEdgesChange.dispatch()
-    }
   }
 }

@@ -31,6 +31,16 @@ class Copy extends React.Component<Props, State> {
     this.state = { didCopy: false, snackBarOpen: false }
   }
 
+  private handleClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+
+    copy(this.props.value)
+    this.setState({ didCopy: true, snackBarOpen: true })
+    setTimeout(() => {
+      this.setState({ didCopy: false })
+    }, 1500)
+  }
+
   public render() {
     const icon = !this.state.didCopy
       ? <FileCopy fontSize="inherit" />
@@ -63,16 +73,6 @@ class Copy extends React.Component<Props, State> {
         </span>
       </span>
     )
-  }
-
-  private handleClick = (event: React.MouseEvent) => {
-    event.stopPropagation()
-
-    copy(this.props.value)
-    this.setState({ didCopy: true, snackBarOpen: true })
-    setTimeout(() => {
-      this.setState({ didCopy: false })
-    }, 1500)
   }
 }
 

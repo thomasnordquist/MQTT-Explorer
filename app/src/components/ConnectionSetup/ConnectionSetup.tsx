@@ -29,6 +29,20 @@ class ConnectionSetup extends React.Component<Props, {}> {
     super(props)
   }
 
+  private renderSettings() {
+    const { connection, showAdvancedSettings } = this.props
+    if (!connection) {
+      return null
+    }
+
+    return (
+      <div>
+        <Collapse in={!showAdvancedSettings}><ConnectionSettings connection={connection} /></Collapse>
+        <Collapse in={showAdvancedSettings}><AdvancedConnectionSettings connection={connection} /></Collapse>
+      </div>
+    )
+  }
+
   public componentDidMount() {
     this.props.actions.loadConnectionSettings()
   }
@@ -52,20 +66,6 @@ class ConnectionSetup extends React.Component<Props, {}> {
             </div>
           </Paper>
         </Modal>
-      </div>
-    )
-  }
-
-  private renderSettings() {
-    const { connection, showAdvancedSettings } = this.props
-    if (!connection) {
-      return null
-    }
-
-    return (
-      <div>
-        <Collapse in={!showAdvancedSettings}><ConnectionSettings connection={connection} /></Collapse>
-        <Collapse in={showAdvancedSettings}><AdvancedConnectionSettings connection={connection} /></Collapse>
       </div>
     )
   }

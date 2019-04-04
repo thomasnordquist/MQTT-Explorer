@@ -21,22 +21,6 @@ export class RingBuffer<T extends Lengthwise> {
     }
   }
 
-  public clone(): RingBuffer<T> {
-    return new RingBuffer(this.capacity, this.maxItems, this)
-  }
-
-  public toArray() {
-    return this.items.slice(this.start, this.end)
-  }
-
-  public add(item: T) {
-    const size = item.length
-    this.enforceCapacityConstraints(size)
-    this.usage += size
-    this.items[this.end] = item
-    this.end += 1
-  }
-
   private enforceCapacityConstraints(addedItemSize: number) {
     const remainingSize = this.capacity - (this.usage + addedItemSize)
     if (remainingSize < 0) {
@@ -68,5 +52,21 @@ export class RingBuffer<T extends Lengthwise> {
 
     const freedSpace = firstItem.length
     this.usage -= freedSpace
+  }
+
+  public clone(): RingBuffer<T> {
+    return new RingBuffer(this.capacity, this.maxItems, this)
+  }
+
+  public toArray() {
+    return this.items.slice(this.start, this.end)
+  }
+
+  public add(item: T) {
+    const size = item.length
+    this.enforceCapacityConstraints(size)
+    this.usage += size
+    this.items[this.end] = item
+    this.end += 1
   }
 }

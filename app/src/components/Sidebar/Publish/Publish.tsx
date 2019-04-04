@@ -56,6 +56,11 @@ interface State {
 }
 
 class Publish extends React.Component<Props, State> {
+
+  private editorOptions = {
+    showLineNumbers: false,
+    tabSize: 2,
+  }
   constructor(props: any) {
     super(props)
     this.state = { history: [] }
@@ -88,22 +93,12 @@ class Publish extends React.Component<Props, State> {
     }
   }
 
-  private addMessageToHistory(topic: string, payload?: string) {
+  private addMessageToHistory(topic: string, payload?: string) {
     // Remove duplicates
     let filteredHistory = this.state.history.filter(e => e.payload !== payload || e.topic !== topic)
     filteredHistory = filteredHistory.slice(-7)
     const history: Message[] = [...filteredHistory, { topic, payload, sent: new Date() }]
     this.setState({ history })
-  }
-
-  public render() {
-    return (
-      <div style={{ flexGrow: 1, marginLeft: '8px' }}>
-        {this.topic()}
-        {this.editor()}
-        {this.history()}
-      </div>
-    )
   }
 
   private clearTopic = () => {
@@ -136,11 +131,6 @@ class Publish extends React.Component<Props, State> {
     if (!e.target.value) {
       this.props.actions.setTopic(undefined)
     }
-  }
-
-  private editorOptions = {
-    showLineNumbers: false,
-    tabSize: 2,
   }
 
   private publishButton() {
@@ -232,7 +222,7 @@ class Publish extends React.Component<Props, State> {
 
   private onChangeQoS = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value, 10)
-    if (value !== 0 && value !== 1 && value !== 2) {
+    if (value !== 0 && value !== 1 && value !== 2) {
       return
     }
 
@@ -324,6 +314,16 @@ class Publish extends React.Component<Props, State> {
         setOptions={this.editorOptions}
         editorProps={{ $blockScrolling: true }}
       />
+    )
+  }
+
+  public render() {
+    return (
+      <div style={{ flexGrow: 1, marginLeft: '8px' }}>
+        {this.topic()}
+        {this.editor()}
+        {this.history()}
+      </div>
     )
   }
 }

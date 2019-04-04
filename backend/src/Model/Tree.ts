@@ -53,7 +53,12 @@ export class Tree<ViewModel> extends TreeNode<ViewModel> {
     super(undefined, undefined)
   }
 
-  public updateWithConnection(emitter: EventBusInterface, connectionId: string, nodeFilter?:(node: TreeNode<ViewModel>) => boolean) {
+  private handleNewData = (msg: MqttMessage) => {
+    this.unmergedMessages.push(msg)
+    this.didReceive.dispatch()
+  }
+
+  public updateWithConnection(emitter: EventBusInterface, connectionId: string, nodeFilter?: (node: TreeNode<ViewModel>) => boolean) {
     this.updateSource = emitter
     this.connectionId = connectionId
     this.nodeFilter = nodeFilter
@@ -80,11 +85,6 @@ export class Tree<ViewModel> extends TreeNode<ViewModel> {
 
   public unmergedChanges(): ChangeBuffer {
     return this.unmergedMessages
-  }
-
-  private handleNewData = (msg: MqttMessage) => {
-    this.unmergedMessages.push(msg)
-    this.didReceive.dispatch()
   }
 
   public stopUpdating() {

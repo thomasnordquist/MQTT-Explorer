@@ -42,6 +42,10 @@ class Tree extends React.PureComponent<Props, State> {
     this.state = { lastUpdate: 0 }
   }
 
+  private performanceCallback = (ms: number) => {
+    average.push(Date.now(), ms)
+  }
+
   public time(): number {
     const time = performance.now() - this.perf
     this.perf = performance.now()
@@ -120,10 +124,6 @@ class Tree extends React.PureComponent<Props, State> {
         />
       </div>
     )
-  }
-
-  private performanceCallback = (ms: number) => {
-    average.push(Date.now(), ms)
   }
 }
 
