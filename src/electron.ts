@@ -9,19 +9,17 @@ import { ConnectionManager, updateNotifier } from '../backend/src/index'
 import { electronTelemetryFactory } from 'electron-telemetry'
 import { menuTemplate } from './MenuTemplate'
 import { UpdateInfo } from '../events'
-const isDev = require('electron-is-dev')
+
+const isDev = Boolean(process.argv.find(arg => arg === '--development'))
 
 if (!isDev) {
-  let buildOptions: BuildInfo = ({ platform: 'unknown', package: 'unknown' } as any)
-
+  let buildOptions: BuildInfo = ({ platform: process.platform, package: 'unpacked' } as any)
   try {
     const options = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'buildOptions.json')).toString())
     if (typeof options.platform === 'string' && typeof options.package === 'string') {
       buildOptions = options
     }
-  } catch (error) {
-    console.log(error)
-  }
+  } catch (ignore) {}
 
   console.log(buildOptions)
   const electronTelemetry = electronTelemetryFactory('9b0c8ca04a361eb8160d98c5', buildOptions)

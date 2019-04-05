@@ -7,6 +7,7 @@
     "start": "electron .",
     "test": "yarn run test-backend",
     "install": "cd app && yarn && cd ..",
+    "dev": "electron . --development",
     "build": "tsc && cd app && yarn run build && cd ..",
     "test-backend": "cd backend && yarn run test && cd ..",
     "prepare-release": "ts-node scripts/prepare-release.ts",
@@ -53,7 +54,7 @@
   "author": "Thomas Nordquist",
   "email": "xxnerowingerxx@gmail.com",
   "homepage": "https://github.com",
-  "license": "-",
+  "license": "CC-BY-ND-4.0",
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/fs-extra": "^5.0.5",
@@ -89,7 +90,6 @@
   "dependencies": {
     "@types/js-base64": "^2.3.1",
     "about-window": "^1.12.1",
-    "electron-is-dev": "^1.0.1",
     "electron-log": "^2.2.17",
     "electron-telemetry": "git+https://github.com/thomasnordquist/electron-telemetry.git#dist",
     "electron-updater": "^4.0.6",
