@@ -36,7 +36,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { publishActions, globalActions } from '../../../actions'
 import ClearAdornment from '../../helper/ClearAdornment'
-import { TopicViewModel } from '../../../TopicViewModel'
+import { TopicViewModel } from '../../../model/TopicViewModel'
 
 interface Props {
   node?: q.TreeNode<TopicViewModel>
@@ -345,4 +345,4 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default withTheme(connect(mapStateToProps, mapDispatchToProps)(Publish))
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(Publish))

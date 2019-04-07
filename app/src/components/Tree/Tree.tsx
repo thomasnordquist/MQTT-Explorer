@@ -5,7 +5,7 @@ import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { TopicOrder } from '../../reducers/Settings'
-import { TopicViewModel } from '../../TopicViewModel'
+import { TopicViewModel } from '../../model/TopicViewModel'
 import { treeActions } from '../../actions'
 
 const MovingAverage = require('moving-average')

@@ -4,7 +4,7 @@ import * as React from 'react'
 import { Theme, withStyles } from '@material-ui/core'
 import 'prismjs/components/prism-json'
 import 'prismjs/themes/prism-tomorrow.css'
-import { CodeBlockColors } from '../CodeBlockColors'
+import { CodeBlockColors } from './CodeBlockColors'
 
 interface Props {
   previous: string

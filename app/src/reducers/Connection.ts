@@ -2,7 +2,7 @@ import * as q from '../../../backend/src/Model'
 import { Action } from 'redux'
 import { createReducer } from './lib'
 import { MqttOptions } from '../../../backend/src/DataSource'
-import { TopicViewModel } from '../TopicViewModel'
+import { TopicViewModel } from '../model/TopicViewModel'
 
 export type ConnectionHealth = 'offline' | 'online' | 'connecting'
 export interface ConnectionState {

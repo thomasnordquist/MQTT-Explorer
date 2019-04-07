@@ -4,7 +4,7 @@ import TreeNodeSubnodes from './TreeNodeSubnodes'
 import TreeNodeTitle from './TreeNodeTitle'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { TopicOrder } from '../../reducers/Settings'
-import { TopicViewModel } from '../../TopicViewModel'
+import { TopicViewModel } from '../../model/TopicViewModel'
 
 const debounce = require('lodash.debounce')
 

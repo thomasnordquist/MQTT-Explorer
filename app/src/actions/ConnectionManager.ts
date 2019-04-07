@@ -1,7 +1,7 @@
 import { AppState } from '../reducers'
 import { clearLegacyConnectionOptions, loadLegacyConnectionOptions } from '../model/LegacyConnectionSettings'
 import { ConnectionOptions, createEmptyConnection, makeDefaultConnections, CertificateParameters } from '../model/ConnectionOptions'
-import { default as persistentStorage, StorageIdentifier } from '../PersistentStorage'
+import { default as persistentStorage, StorageIdentifier } from '../utils/PersistentStorage'
 import { Dispatch } from 'redux'
 import { showError } from './Global'
 import { remote } from 'electron'

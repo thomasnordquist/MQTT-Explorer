@@ -5,7 +5,7 @@ import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
 import { treeActions } from '../../actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { TopicViewModel } from '../../TopicViewModel'
+import { TopicViewModel } from '../../model/TopicViewModel'
 
 interface Props {
   classes: any

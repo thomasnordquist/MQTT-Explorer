@@ -3,7 +3,7 @@ import { connectionManagerReducer, ConnectionManagerState } from './ConnectionMa
 import { connectionReducer, ConnectionState } from './Connection'
 import { publishReducer, PublishState } from './Publish'
 import { settingsReducer, SettingsState } from './Settings'
-import { trackEvent } from '../tracking'
+import { trackEvent } from '../utils/tracking'
 import { treeReducer, TreeState } from './Tree'
 
 export enum ActionTypes {
@@ -50,30 +50,30 @@ const globalState: Reducer<GlobalState | undefined, CustomAction> = (state = ini
   switch (action.type) {
   case ActionTypes.showUpdateNotification:
     return {
-        ...state,
-        showUpdateNotification: action.showUpdateNotification,
-      }
+      ...state,
+      showUpdateNotification: action.showUpdateNotification,
+    }
 
   case ActionTypes.showError:
     return {
-        ...state,
-        error: action.error,
-      }
+      ...state,
+      error: action.error,
+    }
 
   case ActionTypes.didLaunch:
     return {
-        ...state,
-        launching: false,
-      }
+      ...state,
+      launching: false,
+    }
 
   case ActionTypes.showUpdateDetails:
     if (action.showUpdateDetails === undefined) {
-        return state
-      }
+      return state
+    }
     return {
-        ...state,
-        showUpdateDetails: action.showUpdateDetails,
-      }
+      ...state,
+      showUpdateDetails: action.showUpdateDetails,
+    }
 
   default:
     return state

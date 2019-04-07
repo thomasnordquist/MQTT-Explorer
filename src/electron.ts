@@ -19,7 +19,7 @@ if (!isDev) {
     if (typeof options.platform === 'string' && typeof options.package === 'string') {
       buildOptions = options
     }
-  } catch (ignore) {}
+  } catch (loadingBuildOptionsMayFail) {}
 
   console.log(buildOptions)
   const electronTelemetry = electronTelemetryFactory('9b0c8ca04a361eb8160d98c5', buildOptions)
@@ -63,8 +63,13 @@ function createWindow() {
   })
 
   console.log('icon path', iconPath)
-  // and load the index.html of the app.
-  mainWindow.loadFile('app/build/index.html')
+
+  // Load the index.html of the app.
+  if (isDev) {
+    mainWindow.loadURL('http://localhost:8080')
+  } else {
+    mainWindow.loadFile('app/build/index.html')
+  }
 
   // Emitted when the window is closed.
   mainWindow.on('close', () => {

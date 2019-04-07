@@ -7,7 +7,7 @@ import { Dispatch } from 'redux'
 import { globalActions } from '.'
 import { showError } from './Global'
 import { showTree } from './Tree'
-import { TopicViewModel } from '../TopicViewModel'
+import { TopicViewModel } from '../model/TopicViewModel'
 import {
   addMqttConnectionEvent,
   makeConnectionStateEvent,
@@ -60,18 +60,18 @@ const updateHealth = (dataSourceState: DataSourceState) => (dispatch: Dispatch<a
   })
 }
 
-export const connected: (tree: q.Tree<TopicViewModel>, host: string) => Action = (tree: q.Tree<TopicViewModel>, host: string)  => ({
+export const connected: (tree: q.Tree<TopicViewModel>, host: string) => Action = (tree: q.Tree<TopicViewModel>, host: string) => ({
   tree,
   host,
   type: ActionTypes.CONNECTION_SET_CONNECTED,
 })
 
-export const connecting: (connectionId: string) => Action = (connectionId: string)  => ({
+export const connecting: (connectionId: string) => Action = (connectionId: string) => ({
   connectionId,
   type: ActionTypes.CONNECTION_SET_CONNECTING,
 })
 
-export const disconnect = () => (dispatch: Dispatch<any>, getState: () => AppState)  => {
+export const disconnect = () => (dispatch: Dispatch<any>, getState: () => AppState) => {
   const { connectionId, tree } = getState().connection
   if (connectionId) {
     rendererEvents.emit(removeConnection, connectionId)

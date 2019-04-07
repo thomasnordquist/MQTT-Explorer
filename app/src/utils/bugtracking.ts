@@ -1,4 +1,4 @@
 import { electronRendererTelementry } from 'electron-telemetry'
 
-const spareMeFromGc = electronRendererTelementry
+const telemetry = electronRendererTelementry
 electronRendererTelementry.registerErrorHandler()

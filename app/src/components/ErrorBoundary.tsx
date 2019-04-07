@@ -1,5 +1,5 @@
 import * as React from 'react'
-import PersistentStorage from './PersistentStorage'
+import PersistentStorage from '../utils/PersistentStorage'
 import SentimentDissatisfied from '@material-ui/icons/SentimentDissatisfied'
 import Warning from '@material-ui/icons/Warning'
 import { electronRendererTelementry } from 'electron-telemetry'

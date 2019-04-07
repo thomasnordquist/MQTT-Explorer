@@ -1,21 +1,18 @@
 import * as React from 'react'
-import ConnectionSetup from './components/ConnectionSetup/ConnectionSetup'
+import ConnectionSetup from './ConnectionSetup/ConnectionSetup'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import ErrorBoundary from './ErrorBoundary'
-import Notification from './components/Notification'
-import Sidebar from './components/Sidebar/Sidebar'
-import TitleBar from './components/TitleBar'
-import Tree from './components/Tree/Tree'
-import UpdateNotifier from './UpdateNotifier'
-import { AppState } from './reducers'
+import Notification from './Layout/Notification'
+import TitleBar from './Layout/TitleBar'
+import UpdateNotifier from '../UpdateNotifier'
+import { AppState } from '../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { default as SplitPane } from 'react-split-pane'
-import { globalActions, settingsActions } from './actions'
+import { globalActions, settingsActions } from '../actions'
 import { Theme, withStyles } from '@material-ui/core/styles'
 
-const Settings = React.lazy(() => import('./components/SettingsDrawer/Settings'))
-const ContentView = React.lazy(() => import('./components/ContentView'))
+const Settings = React.lazy(() => import('./SettingsDrawer/Settings'))
+const ContentView = React.lazy(() => import('./Layout/ContentView'))
 
 interface Props {
   connectionId: string

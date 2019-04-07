@@ -1,4 +1,4 @@
-import { rendererEvents } from '../../events'
+import { rendererEvents } from '../../../events'
 import { v4 } from 'uuid'
 
 import {
@@ -7,7 +7,7 @@ import {
   storageLoadEvent,
   storageClearEvent,
   makeStorageAcknowledgementEvent,
-} from '../../events/StorageEvents'
+} from '../../../events/StorageEvents'
 
 export interface StorageIdentifier<Model> {
   id: string

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import * as q from '../../../../backend/src/Model'
 import { withStyles, Theme } from '@material-ui/core'
-import { TopicViewModel } from '../../TopicViewModel'
+import { TopicViewModel } from '../../model/TopicViewModel'
 import { Base64Message } from '../../../../backend/src/Model/Base64Message'
 const debounce = require('lodash.debounce')
 

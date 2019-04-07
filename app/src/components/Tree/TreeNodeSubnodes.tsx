@@ -4,7 +4,7 @@ import * as q from '../../../../backend/src/Model'
 import TreeNode from './TreeNode'
 import { TopicOrder } from '../../reducers/Settings'
 import { Theme, withStyles } from '@material-ui/core'
-import { TopicViewModel } from '../../TopicViewModel'
+import { TopicViewModel } from '../../model/TopicViewModel'
 
 export interface Props {
   animateChanges: boolean

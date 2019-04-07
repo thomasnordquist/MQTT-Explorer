@@ -1,18 +1,18 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import amber from '@material-ui/core/colors/amber'
-import App from './App'
+import App from './components/App'
 import Demo from './components/Demo'
 import reducers, { AppState } from './reducers'
 import reduxThunk from 'redux-thunk'
+import brown from '@material-ui/core/colors/brown'
 import teal from '@material-ui/core/colors/teal'
 import { applyMiddleware, compose, createStore } from 'redux'
 import { batchDispatchMiddleware } from 'redux-batched-actions'
 import { connect, Provider } from 'react-redux'
 import { createMuiTheme, Theme } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
-import './tracking'
-
+import './utils/tracking'
 
 const composeEnhancers = /*(window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || */ compose
 const store = createStore(
@@ -42,6 +42,7 @@ function createTheme(type: 'light' | 'dark') {
         primary: {
           main: '#931e2e',
         },
+        // primary: brown,
         secondary: amber,
         // error: red,
         action: {

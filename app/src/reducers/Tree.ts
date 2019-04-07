@@ -1,7 +1,7 @@
 import * as q from '../../../backend/src/Model'
 import { Action } from 'redux'
 import { createReducer } from './lib'
-import { TopicViewModel } from '../TopicViewModel'
+import { TopicViewModel } from '../model/TopicViewModel'
 
 export interface TreeState {
   tree?: q.Tree<TopicViewModel>

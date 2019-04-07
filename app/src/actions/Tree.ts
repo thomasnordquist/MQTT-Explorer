@@ -4,14 +4,14 @@ import { AnyAction, Dispatch } from 'redux'
 import { AppState } from '../reducers'
 import { batchActions } from 'redux-batched-actions'
 import { setTopic } from './Publish'
-import { TopicViewModel } from '../TopicViewModel'
+import { TopicViewModel } from '../model/TopicViewModel'
 const debounce = require('lodash.debounce')
 
-export const selectTopic = (topic: q.TreeNode<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState)  => {
+export const selectTopic = (topic: q.TreeNode<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState) => {
   debouncedSelectTopic(topic, dispatch, getState)
 }
 
-const debouncedSelectTopic = debounce((topic: q.TreeNode<TopicViewModel>, dispatch: Dispatch<any>, getState: () => AppState)  => {
+const debouncedSelectTopic = debounce((topic: q.TreeNode<TopicViewModel>, dispatch: Dispatch<any>, getState: () => AppState) => {
   const { selectedTopic } = getState().tree
   if (selectedTopic === topic) {
     return
@@ -43,7 +43,7 @@ const debouncedSelectTopic = debounce((topic: q.TreeNode<TopicViewModel>, dispat
   }
 }, 70)
 
-export const showTree = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState): AnyAction  => {
+export const showTree = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState): AnyAction => {
   const visibleTree = getState().tree.tree
   const connectionTree = getState().connection.tree
 
@@ -58,10 +58,8 @@ export const showTree = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatch<a
   })
 }
 
-export const togglePause = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState): AnyAction  => {
+export const togglePause = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState): AnyAction => {
   const paused = getState().tree.paused
-  const tree = getState().tree.tree
-  // tree && tree.applyUnmergedChanges()
 
   return dispatch({
     type: paused ? ActionTypes.TREE_RESUME_UPDATES : ActionTypes.TREE_PAUSE_UPDATES,

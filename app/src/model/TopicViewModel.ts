@@ -1,4 +1,4 @@
-import { EventDispatcher } from '../../events'
+import { EventDispatcher } from '../../../events'
 
 export class TopicViewModel {
   private selected: boolean

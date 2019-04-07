@@ -10,6 +10,8 @@
     "indent": [true, "spaces", 2],
     "import-name": false,
     "no-submodule-imports": false,
+    "array-type": [true, "generic"],
+    "prefer-array-literal": false,
     "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"],
     "trailing-comma": [
       true,

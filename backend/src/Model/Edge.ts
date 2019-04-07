@@ -12,7 +12,7 @@ export class Edge<ViewModel> implements Hashable {
     this.name = name
   }
 
-  public edges() {
+  public edges(): Array<Edge<ViewModel>> {
     return this.target ? this.target.edgeArray : []
   }
 

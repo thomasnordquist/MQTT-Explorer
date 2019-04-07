@@ -1,7 +1,7 @@
 import * as q from '../../../../backend/src/Model'
 import * as React from 'react'
 import Copy from '../helper/Copy'
-import CustomIconButton from '../CustomIconButton'
+import CustomIconButton from '../helper/CustomIconButton'
 import Delete from '@material-ui/icons/Delete'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import NodeStats from './NodeStats'
@@ -12,7 +12,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { settingsActions, sidebarActions } from '../../actions'
 import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
-import { TopicViewModel } from '../../TopicViewModel'
+import { TopicViewModel } from '../../model/TopicViewModel'
 
 import {
   ExpansionPanel,
