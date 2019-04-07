@@ -1,18 +1,17 @@
 const LiveReloadPlugin = require('webpack-livereload-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
-
 
 module.exports = {
   entry: {
-    app: "./src/index.tsx",
-    bugtracking: "./src/utils/bugtracking.ts",
+    app: './src/index.tsx',
+    bugtracking: './src/utils/bugtracking.ts',
   },
   output: {
     chunkFilename: '[name].bundle.js',
-    filename: "[name].bundle.js",
-    path: __dirname + "/build"
+    filename: '[name].bundle.js',
+    path: `${__dirname}/build`,
   },
   optimization: {
     splitChunks: {
@@ -29,45 +28,45 @@ module.exports = {
           test: /[\\/]node_modules[\\/](react|react-dom|@material-ui|popper\.js|react|react-redux|prop-types|jss|redux|scheduler|react-transition-group)[\\/]/,
           name: 'vendors',
           chunks: 'all',
-          priority: -10
+          priority: -10,
         },
         default: {
           minChunks: 2,
           priority: -20,
-          reuseExistingChunk: true
-        }
-      }
-    }
+          reuseExistingChunk: true,
+        },
+      },
+    },
   },
   devServer: {
     // contentBase: './dist', // content not from webpack
-    hot: true
+    hot: true,
   },
   target: 'electron-renderer',
   mode: 'production',
-  devtool: "cheap-source-map",
+  devtool: 'cheap-source-map',
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
-    extensions: [".ts", ".tsx", ".js", ".json"]
+    extensions: ['.ts', '.tsx', '.js', '.json'],
   },
   module: {
     rules: [
       // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-      { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
+      { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
+      { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
-    ]
+    ],
   },
 
   plugins: [
     new LiveReloadPlugin({}),
     new HtmlWebpackPlugin({ template: './index.html', file: './build/index.html', inject: false }),
     new BundleAnalyzerPlugin(),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
   ],
 
   // When importing a module whose path matches one of the following, just
@@ -77,5 +76,5 @@ module.exports = {
   externals: {
     // "react": "React",
     // "react-dom": "ReactDOM"
-  }
+  },
 };
