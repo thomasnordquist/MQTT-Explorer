@@ -25,7 +25,7 @@ import {
   Switch,
   TextField,
 } from '@material-ui/core'
-import ConnectionHealthIndicator from '../ConnectionHealthIndicator'
+import ConnectionHealthIndicator from '../helper/ConnectionHealthIndicator'
 
 interface Props {
   connection: ConnectionOptions

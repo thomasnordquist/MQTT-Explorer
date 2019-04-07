@@ -1,6 +1,6 @@
 import * as q from '../../../../backend/src/Model'
 import * as React from 'react'
-import Copy from '../Copy'
+import Copy from '../helper/Copy'
 import CustomIconButton from '../CustomIconButton'
 import Delete from '@material-ui/icons/Delete'
 import ExpandMore from '@material-ui/icons/ExpandMore'

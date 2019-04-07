@@ -19,6 +19,7 @@ import lime from '@material-ui/core/colors/lime'
 import green from '@material-ui/core/colors/green'
 import teal from '@material-ui/core/colors/teal'
 import amber from '@material-ui/core/colors/amber'
+import brown from '@material-ui/core/colors/brown'
 
 const composeEnhancers = /*(window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || */ compose
 const store = createStore(
@@ -45,8 +46,11 @@ function createTheme(type: 'light' | 'dark') {
         background: {
           default: '#fafafa',
         },
-        primary: teal,
+        //primary: teal,
         secondary: amber,
+        primary: {
+          main: '#931e2e'
+        },
         // error: red,
         action: {
           disabledBackground: '#fafafa',

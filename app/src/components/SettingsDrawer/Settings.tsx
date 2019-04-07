@@ -1,13 +1,13 @@
 import * as React from 'react'
 import BrokerStatistics from './BrokerStatistics'
 import ChevronRight from '@material-ui/icons/ChevronRight'
-import { AppState } from '../reducers'
+import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { settingsActions } from '../actions'
+import { settingsActions } from '../../actions'
 import { shell } from 'electron'
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
-import { TopicOrder } from '../reducers/Settings'
+import { TopicOrder } from '../../reducers/Settings'
 
 import {
   Divider,

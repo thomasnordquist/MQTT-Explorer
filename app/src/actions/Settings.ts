@@ -1,6 +1,6 @@
 import * as q from '../../../backend/src/Model'
 import { AppState } from '../reducers'
-import { autoExpandLimitSet } from '../components/Settings'
+import { autoExpandLimitSet } from '../components/SettingsDrawer/Settings'
 import { batchActions } from 'redux-batched-actions'
 import { default as persistentStorage, StorageIdentifier } from '../PersistentStorage'
 import { Dispatch } from 'redux'

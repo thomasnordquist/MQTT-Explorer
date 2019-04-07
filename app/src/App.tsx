@@ -14,7 +14,7 @@ import { default as SplitPane } from 'react-split-pane'
 import { globalActions, settingsActions } from './actions'
 import { Theme, withStyles } from '@material-ui/core/styles'
 
-const Settings = React.lazy(() => import('./components/Settings'))
+const Settings = React.lazy(() => import('./components/SettingsDrawer/Settings'))
 const ContentView = React.lazy(() => import('./components/ContentView'))
 
 interface Props {

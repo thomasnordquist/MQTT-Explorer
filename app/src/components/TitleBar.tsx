@@ -1,7 +1,7 @@
 import * as React from 'react'
 import ClearAdornment from './helper/ClearAdornment'
 import CloudOff from '@material-ui/icons/CloudOff'
-import ConnectionHealthIndicator from './ConnectionHealthIndicator'
+import ConnectionHealthIndicator from './helper/ConnectionHealthIndicator'
 import Menu from '@material-ui/icons/Menu'
 import Search from '@material-ui/icons/Search'
 import { AppState } from '../reducers'

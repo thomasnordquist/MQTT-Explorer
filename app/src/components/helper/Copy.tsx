@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Check from '@material-ui/icons/Check'
-import CustomIconButton from './CustomIconButton'
+import CustomIconButton from '../CustomIconButton'
 import FileCopy from '@material-ui/icons/FileCopy'
 import green from '@material-ui/core/colors/green'
 import { Snackbar, SnackbarContent, Tooltip } from '@material-ui/core'
