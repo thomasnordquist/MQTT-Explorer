@@ -19,11 +19,11 @@ const settingsIdentifier: StorageIdentifier<Partial<SettingsState>> = {
   id: 'Settings',
 }
 
-export const loadSettings = () => async (dispatch: Dispatch<any>) => {
+export const loadSettings = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
   try {
-    const settings = await persistentStorage.load(settingsIdentifier)
+    const settings = await persistentStorage.load(settingsIdentifier) || {}
     dispatch({
-      settings,
+      settings: getState().settings.merge(settings),
       type: ActionTypes.SETTINGS_DID_LOAD_SETTINGS,
     })
   } catch (error) {
@@ -34,7 +34,7 @@ export const loadSettings = () => async (dispatch: Dispatch<any>) => {
 
 export const storeSettings = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
   const settings = {
-    ...getState().settings,
+    ...getState().settings.toJS(),
     topicFilter: undefined,
     visible: undefined,
   }
