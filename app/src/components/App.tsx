@@ -19,6 +19,7 @@ interface Props {
   classes: any
   settingsVisible: boolean
   error?: string
+  notification?: string
   actions: typeof globalActions
   settingsActions: typeof settingsActions
   launching: boolean
@@ -30,16 +31,22 @@ class App extends React.PureComponent<Props, {}> {
     this.state = { }
   }
 
-  private renderError() {
-    if (this.props.error) {
-      const error = typeof this.props.error === 'string' ? this.props.error : JSON.stringify(this.props.error)
+  private renderNotification() {
+    const message = this.props.error || this.props.notification
+    const isError = message === this.props.error
+    if (message) {
+      // Guard in case someone ever calls showError with an error instead of a string
+      const str = typeof message === 'string' ? message : JSON.stringify(message)
       return (
         <Notification
-          message={error}
-          onClose={() => { this.props.actions.showError(undefined) }}
+          message={str}
+          type={isError ? 'error' : 'notification'}
+          onClose={() => { isError ? this.props.actions.showError(undefined) : this.props.actions.showNotification(undefined) }}
         />
       )
     }
+
+    return null
   }
 
   public componentDidMount() {
@@ -58,13 +65,13 @@ class App extends React.PureComponent<Props, {}> {
       <div className={centerContent}>
         <CssBaseline />
         <ErrorBoundary>
-          {this.renderError()}
+        {this.renderNotification()}
           <React.Suspense fallback={<div>Loading...</div>}>
             <Settings />
           </React.Suspense>
           <div className={centerContent}>
             <div className={`${settingsVisible ? contentShift : content}`}>
-                <TitleBar />
+              <TitleBar />
             </div>
             <div className={settingsVisible ? contentShift : content}>
               <React.Suspense fallback={<div>Loading...</div>}>
@@ -134,6 +141,7 @@ const mapStateToProps = (state: AppState) => {
     settingsVisible: state.settings.get('visible'),
     connectionId: state.connection.connectionId,
     error: state.globalState.error,
+    notification: state.globalState.notification,
     highlightTopicUpdates: state.settings.get('highlightTopicUpdates'),
     launching: state.globalState.launching,
   }

@@ -5,6 +5,7 @@ import { AppState } from '../reducers'
 import { batchActions } from 'redux-batched-actions'
 import { setTopic } from './Publish'
 import { TopicViewModel } from '../model/TopicViewModel'
+import { globalActions } from '.';
 const debounce = require('lodash.debounce')
 
 export const selectTopic = (topic: q.TreeNode<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState) => {
@@ -58,10 +59,20 @@ export const showTree = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatch<a
   })
 }
 
-export const togglePause = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState): AnyAction => {
+export const togglePause = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState) => {
   const paused = getState().tree.paused
+  const tree = getState().tree.tree
+  const changes = tree ? tree.unmergedChanges().length : 0
 
-  return dispatch({
+  if (paused && changes > 0) {
+    dispatch(globalActions.showNotification('Applying recorded changes.'))
+  }
+
+  dispatch({
     type: paused ? ActionTypes.TREE_RESUME_UPDATES : ActionTypes.TREE_PAUSE_UPDATES,
   })
+
+  if (paused && changes > 0) {
+    dispatch(globalActions.showNotification(`Sucessfully applied ${changes} changes.`))
+  }
 }

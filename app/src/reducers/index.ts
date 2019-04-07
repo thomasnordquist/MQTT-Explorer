@@ -11,6 +11,7 @@ export enum ActionTypes {
   showUpdateNotification = 'SHOW_UPDATE_NOTIFICATION',
   showUpdateDetails = 'SHOW_UPDATE_DETAILS',
   showError = 'SHOW_ERROR',
+  showNotification = 'SHOW_NOTIFICATION',
   didLaunch = 'DID_LAUNCH',
 }
 
@@ -19,6 +20,7 @@ export interface CustomAction extends Action {
   showUpdateNotification?: boolean
   showUpdateDetails?: boolean
   error?: string
+  notification?: string
 }
 
 export interface AppState {
@@ -34,6 +36,7 @@ export interface GlobalState {
   showUpdateNotification?: boolean
   showUpdateDetails: boolean
   error?: string
+  notification?: string
   launching: boolean
 }
 
@@ -59,6 +62,13 @@ const globalState: Reducer<GlobalState | undefined, CustomAction> = (state = ini
     return {
       ...state,
       error: action.error,
+    }
+
+  case ActionTypes.showNotification:
+    console.log(action)
+    return {
+      ...state,
+      notification: action.notification,
     }
 
   case ActionTypes.didLaunch:
