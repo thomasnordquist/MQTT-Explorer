@@ -157,7 +157,7 @@ function autoExpandLimitForTree(tree: q.Tree<TopicViewModel>) {
 
 export const toggleTheme = () => (dispatch: Dispatch<any>, getState: () => AppState) => {
   dispatch({
-    type: getState().settings.theme === 'light' ? ActionTypes.SETTINGS_SET_THEME_DARK : ActionTypes.SETTINGS_SET_THEME_LIGHT,
+    type: getState().settings.get('theme') === 'light' ? ActionTypes.SETTINGS_SET_THEME_DARK : ActionTypes.SETTINGS_SET_THEME_LIGHT,
   })
   dispatch(storeSettings())
 }

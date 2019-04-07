@@ -142,7 +142,7 @@ class TitleBar extends React.Component<Props, {}> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    topicFilter: state.settings.topicFilter,
+    topicFilter: state.settings.get('topicFilter'),
   }
 }
 

@@ -4,7 +4,8 @@ import TreeNode from './TreeNode'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { TopicOrder } from '../../reducers/Settings'
+import { Record } from 'immutable'
+import { SettingsState } from '../../reducers/Settings'
 import { TopicViewModel } from '../../model/TopicViewModel'
 import { treeActions } from '../../actions'
 
@@ -21,11 +22,8 @@ interface Props {
   tree?: q.Tree<TopicViewModel>
   filter: string
   host?: string
-  topicOrder: TopicOrder
-  autoExpandLimit: number
-  highlightTopicUpdates: boolean
-  selectTopicWithMouseOver: boolean
   paused: boolean
+  settings: Record<SettingsState>
 }
 
 interface State {
@@ -109,18 +107,14 @@ class Tree extends React.PureComponent<Props, State> {
       <div style={style}>
         <TreeNode
           key={tree.hash()}
-          animateChages={true}
           isRoot={true}
           treeNode={tree}
           name={this.props.host}
           collapsed={false}
           performanceCallback={this.performanceCallback}
-          autoExpandLimit={this.props.autoExpandLimit}
-          topicOrder={this.props.topicOrder}
+          settings={this.props.settings}
           lastUpdate={tree.lastUpdate}
           didSelectTopic={this.props.actions.selectTopic}
-          highlightTopicUpdates={this.props.highlightTopicUpdates}
-          selectTopicWithMouseOver={this.props.selectTopicWithMouseOver}
         />
       </div>
     )
@@ -133,10 +127,7 @@ const mapStateToProps = (state: AppState) => {
     paused: state.tree.paused,
     filter: state.tree.filter,
     host: state.connection.host,
-    autoExpandLimit: state.settings.autoExpandLimit,
-    topicOrder: state.settings.topicOrder,
-    highlightTopicUpdates: state.settings.highlightTopicUpdates,
-    selectTopicWithMouseOver: state.settings.selectTopicWithMouseOver,
+    settings: state.settings,
   }
 }
 

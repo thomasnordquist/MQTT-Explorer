@@ -64,7 +64,7 @@ function ApplicationRenderer(props: {theme: 'light' | 'dark'}) {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    theme: state.settings.theme,
+    theme: state.settings.get('theme'),
   }
 }
 

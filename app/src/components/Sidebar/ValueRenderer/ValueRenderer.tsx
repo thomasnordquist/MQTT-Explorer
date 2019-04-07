@@ -105,7 +105,7 @@ class ValueRenderer extends React.Component<Props, State> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    renderMode: state.settings.valueRendererDisplayMode,
+    renderMode: state.settings.get('valueRendererDisplayMode'),
   }
 }
 

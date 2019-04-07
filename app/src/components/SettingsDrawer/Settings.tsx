@@ -236,12 +236,12 @@ class Settings extends React.Component<Props, {}> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    autoExpandLimit: state.settings.autoExpandLimit,
-    topicOrder: state.settings.topicOrder,
-    visible: state.settings.visible,
-    highlightTopicUpdates: state.settings.highlightTopicUpdates,
-    selectTopicWithMouseOver: state.settings.selectTopicWithMouseOver,
-    theme: state.settings.theme,
+    autoExpandLimit: state.settings.get('autoExpandLimit'),
+    topicOrder: state.settings.get('topicOrder'),
+    visible: state.settings.get('visible'),
+    highlightTopicUpdates: state.settings.get('highlightTopicUpdates'),
+    selectTopicWithMouseOver: state.settings.get('selectTopicWithMouseOver'),
+    theme: state.settings.get('theme'),
   }
 }
 

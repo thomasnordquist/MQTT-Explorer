@@ -163,7 +163,7 @@ const mapDispatchToProps = (dispatch: any) => {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    valueRendererDisplayMode: state.settings.valueRendererDisplayMode,
+    valueRendererDisplayMode: state.settings.get('valueRendererDisplayMode'),
     node: state.tree.selectedTopic,
   }
 }

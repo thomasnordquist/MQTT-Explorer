@@ -1,24 +1,20 @@
-import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
-
+import * as React from 'react'
 import TreeNode from './TreeNode'
-import { TopicOrder } from '../../reducers/Settings'
+import { Record } from 'immutable'
+import { SettingsState, TopicOrder } from '../../reducers/Settings'
 import { Theme, withStyles } from '@material-ui/core'
 import { TopicViewModel } from '../../model/TopicViewModel'
 
 export interface Props {
-  animateChanges: boolean
   treeNode: q.TreeNode<TopicViewModel>
   filter?: string
   collapsed?: boolean | undefined
   classes: any
   lastUpdate: number
-  topicOrder: TopicOrder
   selectedTopic?: q.TreeNode<TopicViewModel>
-  autoExpandLimit: number
   didSelectTopic: any
-  highlightTopicUpdates: boolean
-  selectTopicWithMouseOver: boolean
+  settings: Record<SettingsState>
 }
 
 interface State {
@@ -33,7 +29,8 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
   }
 
   private sortedNodes(): Array<q.TreeNode<TopicViewModel>> {
-    const { topicOrder, treeNode } = this.props
+    const { settings, treeNode } = this.props
+    const topicOrder = settings.get('topicOrder')
 
     let edges = treeNode.edgeArray
     if (topicOrder === TopicOrder.abc) {
@@ -76,15 +73,11 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
       return (
         <TreeNode
           key={`${node.hash()}-${this.props.filter}`}
-          animateChages={this.props.animateChanges}
           treeNode={node}
           className={this.props.classes.listItem}
-          topicOrder={this.props.topicOrder}
-          autoExpandLimit={this.props.autoExpandLimit}
           lastUpdate={node.lastUpdate}
           didSelectTopic={this.props.didSelectTopic}
-          highlightTopicUpdates={this.props.highlightTopicUpdates}
-          selectTopicWithMouseOver={this.props.selectTopicWithMouseOver}
+          settings={this.props.settings}
         />
       )
     })

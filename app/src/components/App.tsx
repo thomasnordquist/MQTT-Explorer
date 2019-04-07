@@ -131,10 +131,10 @@ const mapDispatchToProps = (dispatch: any) => {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    settingsVisible: state.settings.visible,
+    settingsVisible: state.settings.get('visible'),
     connectionId: state.connection.connectionId,
     error: state.globalState.error,
-    highlightTopicUpdates: state.settings.highlightTopicUpdates,
+    highlightTopicUpdates: state.settings.get('highlightTopicUpdates'),
     launching: state.globalState.launching,
   }
 }

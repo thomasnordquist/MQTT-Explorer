@@ -2,6 +2,7 @@ import { Action, combineReducers, Reducer } from 'redux'
 import { connectionManagerReducer, ConnectionManagerState } from './ConnectionManager'
 import { connectionReducer, ConnectionState } from './Connection'
 import { publishReducer, PublishState } from './Publish'
+import { Record } from 'immutable'
 import { settingsReducer, SettingsState } from './Settings'
 import { trackEvent } from '../utils/tracking'
 import { treeReducer, TreeState } from './Tree'
@@ -23,7 +24,7 @@ export interface CustomAction extends Action {
 export interface AppState {
   globalState: GlobalState
   tree: TreeState
-  settings: SettingsState,
+  settings: Record<SettingsState>,
   publish: PublishState
   connection: ConnectionState
   connectionManager: ConnectionManagerState

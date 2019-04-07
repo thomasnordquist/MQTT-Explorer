@@ -2,8 +2,9 @@ import * as q from '../../../../backend/src/Model'
 import * as React from 'react'
 import TreeNodeSubnodes from './TreeNodeSubnodes'
 import TreeNodeTitle from './TreeNodeTitle'
+import { Record } from 'immutable'
+import { SettingsState } from '../../reducers/Settings'
 import { Theme, withStyles } from '@material-ui/core/styles'
-import { TopicOrder } from '../../reducers/Settings'
 import { TopicViewModel } from '../../model/TopicViewModel'
 
 const debounce = require('lodash.debounce')
@@ -41,7 +42,6 @@ const styles = (theme: Theme) => {
 }
 
 interface Props {
-  animateChages: boolean
   isRoot?: boolean
   treeNode: q.TreeNode<TopicViewModel>
   name?: string | undefined
@@ -49,13 +49,10 @@ interface Props {
   performanceCallback?: ((ms: number) => void) | undefined
   classes: any
   className?: string
-  topicOrder: TopicOrder
-  autoExpandLimit: number
   lastUpdate: number
   didSelectTopic: any
-  highlightTopicUpdates: boolean
-  selectTopicWithMouseOver: boolean
   theme: Theme
+  settings: Record<SettingsState>
 }
 
 interface State {
@@ -127,10 +124,6 @@ class TreeNode extends React.Component<Props, State> {
       || this.state.selected !== newState.selected
   }
 
-  private propsHasChanged(newProps: Props) {
-    return this.props.autoExpandLimit !== newProps.autoExpandLimit
-  }
-
   private toggle() {
     this.setState({ collapsedOverride: !this.collapsed() })
   }
@@ -140,7 +133,7 @@ class TreeNode extends React.Component<Props, State> {
       return this.state.collapsedOverride
     }
 
-    return this.props.treeNode.edgeCount() > this.props.autoExpandLimit
+    return this.props.treeNode.edgeCount() > this.props.settings.get('autoExpandLimit')
   }
 
   private didSelectTopic = () => {
@@ -156,7 +149,7 @@ class TreeNode extends React.Component<Props, State> {
   private mouseOver = (event: React.MouseEvent) => {
     event.stopPropagation()
     this.setHover(true)
-    if (this.props.selectTopicWithMouseOver && this.props.treeNode && this.props.treeNode.message && this.props.treeNode.message.value) {
+    if (this.props.settings.get('selectTopicWithMouseOver') && this.props.treeNode && this.props.treeNode.message && this.props.treeNode.message.value) {
       this.props.didSelectTopic(this.props.treeNode)
     }
   }
@@ -178,15 +171,11 @@ class TreeNode extends React.Component<Props, State> {
 
     return (
       <TreeNodeSubnodes
-        animateChanges={this.props.animateChages}
         collapsed={this.collapsed()}
         treeNode={this.props.treeNode}
-        autoExpandLimit={this.props.autoExpandLimit}
-        topicOrder={this.props.topicOrder}
         lastUpdate={this.props.treeNode.lastUpdate}
         didSelectTopic={this.props.didSelectTopic}
-        highlightTopicUpdates={this.props.highlightTopicUpdates}
-        selectTopicWithMouseOver={this.props.selectTopicWithMouseOver}
+        settings={this.props.settings}
       />
     )
   }
@@ -212,7 +201,7 @@ class TreeNode extends React.Component<Props, State> {
   public shouldComponentUpdate(nextProps: Props, nextState: State) {
     const shouldRenderToRemoveCssAnimation = this.cssAnimationWasSetAt !== undefined
     return this.stateHasChanged(nextState)
-      || this.propsHasChanged(nextProps)
+      || this.props.settings !== nextProps.settings
       || (this.dirtyEdges || this.dirtyMessage || this.dirtySubnodes)
       || this.animationDirty
       || shouldRenderToRemoveCssAnimation
@@ -236,7 +225,7 @@ class TreeNode extends React.Component<Props, State> {
     const isDirty = this.dirtyEdges || this.dirtyMessage || this.dirtySubnodes
     this.dirtyEdges = this.dirtyMessage = this.dirtySubnodes = false
 
-    const shouldStartAnimation = (isDirty && !this.animationDirty) && !this.props.isRoot && this.props.highlightTopicUpdates
+    const shouldStartAnimation = (isDirty && !this.animationDirty) && !this.props.isRoot && this.props.settings.get('highlightTopicUpdates')
     const animationName = this.props.theme.palette.type === 'light' ? 'updateLight' : 'updateDark'
     const animation = shouldStartAnimation ? { willChange: 'auto', translateZ: 0, animation: `${animationName} 0.5s` } : {}
     this.animationDirty = shouldStartAnimation
