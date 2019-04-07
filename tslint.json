@@ -9,6 +9,7 @@
     "jsx-no-lambda": false,
     "indent": [true, "spaces", 2],
     "import-name": false,
+    "no-submodule-imports": false,
     "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"],
     "trailing-comma": [
       true,

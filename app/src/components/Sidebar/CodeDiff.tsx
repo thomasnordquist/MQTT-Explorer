@@ -60,7 +60,7 @@ class CodeDiff extends React.Component<Props, {}> {
 
   public render() {
     const changes = diff.diffLines(this.props.previous, this.props.current)
-    const styledLines = Prism.highlight(this.props.current, Prism.languages.json).split('\n')
+    const styledLines = Prism.highlight(this.props.current, Prism.languages.json, 'json').split('\n')
 
     let lineNumber = 0
     const code = changes.map((change, key) => {
@@ -68,8 +68,8 @@ class CodeDiff extends React.Component<Props, {}> {
       const changedLines = change.count || 0
       if (hasStyledCode && this.props.language === 'json') {
         const currentLines = styledLines.slice(lineNumber, lineNumber + changedLines)
-        const lines = currentLines.map((l, idx) => {
-          return <div key={`${key}-${idx}`} className={this.props.classes.line}><span className={this.cssClassForChange(change)} dangerouslySetInnerHTML={{ __html: l }} /></div>
+        const lines = currentLines.map((html: string, idx: number) => {
+          return <div key={`${key}-${idx}`} className={this.props.classes.line}><span className={this.cssClassForChange(change)} dangerouslySetInnerHTML={{ __html: html }} /></div>
         })
         lineNumber += changedLines
 
