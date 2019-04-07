@@ -1,3 +1,5 @@
+#!/bin/bash
+
 BASE_IMAGE=icon.png
 
 function scale44() {
@@ -26,7 +28,7 @@ function wide310x150() {
     PIXELS_Y=$3
     PIXELS_Y_SCALED=$[ $PIXELS_Y / 2 ]
 
-    convert $BASE_IMAGE -gravity center -resize "$PIXELS_Y_SCALED"x"$PIXELS_Y_SCALED" -extent "$PIXELS_X"x"$PIXELS_Y" appx/Wide310x150Logo-scale-$SCALE.png
+    convert $BASE_IMAGE -gravity center -resize "$PIXELS_X_SCALED"x"$PIXELS_Y_SCALED" -extent "$PIXELS_X"x"$PIXELS_Y" appx/Wide310x150Logo-scale-$SCALE.png
 }
 
 # Create Square44x44Logo
