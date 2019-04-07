@@ -1,4 +1,4 @@
-const Base64 = require('js-base64')
+const { Base64 } = require('js-base64')
 
 export class Base64Message {
   private base64Message: string
