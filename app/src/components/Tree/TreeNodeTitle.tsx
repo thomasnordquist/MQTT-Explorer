@@ -10,9 +10,9 @@ export interface TreeNodeProps extends React.HTMLAttributes<HTMLElement> {
   treeNode: q.TreeNode<TopicViewModel>
   name?: string | undefined
   collapsed?: boolean | undefined
-  classes: any
   didSelectNode: any
   toggleCollapsed: any
+  classes: any
 }
 
 class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
@@ -34,7 +34,7 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
       return null
     }
 
-    return this.props.collapsed ? '▶' : '▼'
+    return <span className={this.props.classes.expander} onClick={this.props.toggleCollapsed}>{this.props.collapsed ? '▶' : '▼'}</span>
   }
 
   private renderCollapsedSubnodes() {
@@ -46,16 +46,13 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
     return <span className={this.props.classes.collapsedSubnodes}>({this.props.treeNode.childTopicCount()} topics, {messages} messages)</span>
   }
   public render() {
-    const { classes, style, className } = this.props
-    return (
-      <span
-        className={`${classes.title} ${className}`}
-        style={style}
-      >
-        <span className={classes.expander} onClick={this.props.toggleCollapsed}>{this.renderExpander()}</span>
-        {this.renderSourceEdge()} {this.renderCollapsedSubnodes()} {this.renderValue()}
-      </span>
-    )
+    const { style, className } = this.props
+    return ([
+      this.renderExpander(),
+      this.renderSourceEdge(),
+      this.renderCollapsedSubnodes(),
+      this.renderValue(),
+    ])
   }
 }
 
@@ -74,15 +71,6 @@ const styles = (theme: Theme) => ({
     color: theme.palette.type === 'light' ? '#222' : '#eee',
     cursor: 'pointer' as 'pointer',
     paddingRight: theme.spacing(0.25),
-  },
-  title: {
-    borderRadius: '4px',
-    lineHeight: '1em',
-    display: 'inline-block' as 'inline-block',
-    whiteSpace: 'nowrap' as 'nowrap',
-    padding: '1px 4px 0px 4px',
-    height: '14px',
-    margin: '1px 0px 2px 0px',
   },
   collapsedSubnodes: {
     color: theme.palette.text.secondary,

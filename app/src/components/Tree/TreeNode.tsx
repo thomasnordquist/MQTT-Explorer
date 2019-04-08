@@ -38,6 +38,15 @@ const styles = (theme: Theme) => {
     hover: {
       backgroundColor: theme.palette.type === 'dark' ? 'rgba(100, 100, 100, 0.55)' : 'rgba(200, 200, 200, 0.55)',
     },
+    title: {
+      borderRadius: '4px',
+      lineHeight: '1em',
+      display: 'inline-block' as 'inline-block',
+      whiteSpace: 'nowrap' as 'nowrap',
+      padding: '1px 4px 0px 4px',
+      height: '14px',
+      margin: '1px 0px 2px 0px',
+    },
   }
 }
 
@@ -236,7 +245,7 @@ class TreeNode extends React.Component<Props, State> {
       <div>
         <div
           key={this.props.treeNode.hash()}
-          className={`${classes.node} ${this.props.className}`}
+          className={`${classes.node} ${this.props.className} ${highlightClass} ${classes.title} `}
           onMouseOver={this.mouseOver}
           onMouseOut={this.mouseOut}
           onClick={this.didClickTitle}
@@ -249,12 +258,9 @@ class TreeNode extends React.Component<Props, State> {
             collapsed={this.collapsed()}
             treeNode={this.props.treeNode}
             name={this.props.name}
-            className={highlightClass}
           />
         </div>
-        <div className={classes.subnodes}>
-          {this.renderNodes()}
-        </div>
+        {this.renderNodes()}
       </div>
     )
   }

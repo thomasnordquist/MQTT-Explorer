@@ -94,9 +94,7 @@ const styles = (theme: Theme) => ({
   list: {
     display: 'block' as 'block',
     clear: 'both' as 'both',
-  },
-  listItem: {
-    padding: `0px 0px 0px ${theme.spacing(1)}`,
+    marginLeft: theme.spacing(1.5),
   },
 })
 
