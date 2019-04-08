@@ -71,9 +71,6 @@ interface State {
 }
 
 class TreeNode extends React.Component<Props, State> {
-  private dirtySubnodes: boolean = true
-  private dirtyEdges: boolean = true
-  private dirtyMessage: boolean = true
   private animationDirty: boolean = false
 
   private cssAnimationWasSetAt?: number
@@ -95,24 +92,9 @@ class TreeNode extends React.Component<Props, State> {
     }
   }
 
-  private subnodesDidchange = () => {
-    this.dirtySubnodes = true
-  }
-
-  private messageDidChange = () => {
-    this.dirtyMessage = true
-  }
-
-  private edgesDidChange = () => {
-    this.dirtyMessage = true
-  }
-
   private addSubscriber(treeNode: q.TreeNode<TopicViewModel>) {
     treeNode.viewModel = new TopicViewModel()
     treeNode.viewModel.change.subscribe(this.viewStateHasChanged)
-    treeNode.onMerge.subscribe(this.subnodesDidchange)
-    treeNode.onEdgesChange.subscribe(this.edgesDidChange)
-    treeNode.onMessage.subscribe(this.messageDidChange)
   }
 
   private viewStateHasChanged = (msg: void, viewModel: TopicViewModel) => {
@@ -122,9 +104,6 @@ class TreeNode extends React.Component<Props, State> {
   private removeSubscriber(treeNode: q.TreeNode<TopicViewModel>) {
     treeNode.viewModel && treeNode.viewModel.change.unsubscribe(this.viewStateHasChanged)
     treeNode.viewModel = undefined
-    treeNode.onMerge.unsubscribe(this.subnodesDidchange)
-    treeNode.onEdgesChange.unsubscribe(this.edgesDidChange)
-    treeNode.onMessage.unsubscribe(this.messageDidChange)
   }
 
   private stateHasChanged(newState: State) {
@@ -211,7 +190,7 @@ class TreeNode extends React.Component<Props, State> {
     const shouldRenderToRemoveCssAnimation = this.cssAnimationWasSetAt !== undefined
     return this.stateHasChanged(nextState)
       || this.props.settings !== nextProps.settings
-      || (this.dirtyEdges || this.dirtyMessage || this.dirtySubnodes)
+      || (this.props.lastUpdate !== nextProps.lastUpdate)
       || this.animationDirty
       || shouldRenderToRemoveCssAnimation
   }
@@ -231,10 +210,8 @@ class TreeNode extends React.Component<Props, State> {
 
   public render() {
     const { classes } = this.props
-    const isDirty = this.dirtyEdges || this.dirtyMessage || this.dirtySubnodes
-    this.dirtyEdges = this.dirtyMessage = this.dirtySubnodes = false
 
-    const shouldStartAnimation = (isDirty && !this.animationDirty) && !this.props.isRoot && this.props.settings.get('highlightTopicUpdates')
+    const shouldStartAnimation = (!this.animationDirty) && !this.props.isRoot && this.props.settings.get('highlightTopicUpdates')
     const animationName = this.props.theme.palette.type === 'light' ? 'updateLight' : 'updateDark'
     const animation = shouldStartAnimation ? { willChange: 'auto', translateZ: 0, animation: `${animationName} 0.5s` } : {}
     this.animationDirty = shouldStartAnimation
