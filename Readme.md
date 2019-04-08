@@ -20,10 +20,11 @@ MQTT Explorer is a comprehensive MQTT client that provides a structured overview
 - Delete retained topics
 - Search/filter topics
 - Delete topics recursively
+- Diff view of current and previous received messages
 - Publish topics
 - Plot numeric topics
 - Retain a history of each topic
-- ...
+- ... [See Changelog to see all features](./Changelog)
 
 The hierarchical view makes this tool so easy to use and differentiates the **MQTT Explorer** from other great MQTT clients like [MQTTLens](https://chrome.google.com/webstore/detail/mqttlens/hemojaaeigabkbcookmlgmdigohjobjm), [MQTTBox](http://workswithweb.com/mqttbox.html) and [MQTT.fx](https://mqttfx.jensd.de/).  
 This MQTT Client strives to be a MQTT swiss-army-knife, the perfect tool to integrate new services and IoT devices on your network.
@@ -62,25 +63,6 @@ List of useful IoT applications using MQTT to integrate devices / services
 - [Node-RED](https://nodered.org/) - Flow-based programming for the Internet of Things
 - [zigbee2mqtt](https://github.com/Koenkk/zigbee2mqtt) - A ZigBee to MQTT bridge
 - [Tasmota](https://github.com/arendst/Sonoff-Tasmota) - ESP8266 firmware with MQTT support
-
-## Develop
-
-PRs and issues are welcome.  
-Install with `npm run install`, build with `npm run build`
-
-Start with `npm run start`
-
-The `app` directory contains all the rendering logic, the `backend` directory currently contains the models, tests, connection management, `src` contains all the electron bindings. [mqttjs](https://github.com/mqttjs/MQTT.js) is used to facilitate communication to MQTT brokers.
-
-## Automated Tests
-
-To achieve a reliable product automated tests run regularly on travis.
-
-- Data model
-- MQTT integration
-- UI-Tests (The demo is a recorded ui test)
-
-A [mosquitto](https://mosquitto.org/) MQTT broker is required to run the ui-tests.
 
 ## Telemetry
 

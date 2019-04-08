@@ -1,0 +1,26 @@
+{
+  "name": "mqtt-explorer-gh-pages",
+  "version": "1.0.0",
+  "main": "index.js",
+  "description": "Github pages for MQTT Explorer",
+  "scripts": {
+    "readme": "ts-node updateReadme.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thomasnordquist/MQTT-Explorer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thomasnordquist/MQTT-Explorer/issues"
+  },
+  "homepage": "https://github.com/thomasnordquist/MQTT-Explorer#readme",
+  "devDependencies": {
+    "@types/mustache": "^0.8.32",
+    "axios": "^0.18.0",
+    "mustache": "^3.0.1",
+    "ts-node": "^8.0.3",
+    "typescript": "^3.4.2"
+  }
+}
