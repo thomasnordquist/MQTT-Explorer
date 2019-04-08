@@ -4,7 +4,7 @@ import * as React from 'react'
 import { Theme, withStyles } from '@material-ui/core'
 import 'prismjs/components/prism-json'
 import 'prismjs/themes/prism-tomorrow.css'
-import { CodeBlockColors } from './CodeBlockColors'
+import { CodeBlockColors, CodeBlockColorsBraceMonokai } from './CodeBlockColors'
 
 interface Props {
   previous: string
@@ -84,7 +84,7 @@ class CodeDiff extends React.Component<Props, {}> {
     })
 
     return (
-      <div style={{ backgroundColor: '#ebebeb' }}>
+      <div className={this.props.classes.gutters}>
         <pre className={`language-json ${this.props.classes.codeBlock}`}>
           {code}
         </pre>
@@ -95,13 +95,15 @@ class CodeDiff extends React.Component<Props, {}> {
 }
 
 const style = (theme: Theme) => {
+  const codeBlockColors = theme.palette.type === 'light' ? CodeBlockColors : CodeBlockColorsBraceMonokai
   const baseStyle = {
     width: '100%',
   }
   const before = {
     margin: '0 2px 0 -9px',
-    color: CodeBlockColors.text,
+    color: codeBlockColors.text,
   }
+
   return {
     additions: {
       color: 'rgb(10, 255, 10)',
@@ -112,34 +114,37 @@ const style = (theme: Theme) => {
     line: {
       lineHeight: 'normal',
     },
+    gutters: {
+      backgroundColor: codeBlockColors.gutters,
+    },
     codeBlock: {
       fontSize: '12px',
       maxHeight: '200px',
       marginLeft: '33px !important',
-      backgroundColor: `${CodeBlockColors.background} !important`,
+      backgroundColor: `${codeBlockColors.background} !important`,
       '& span': {
-        color: CodeBlockColors.text,
+        color: codeBlockColors.text,
       },
       '& .token.number': {
-        color: CodeBlockColors.numeric,
+        color: codeBlockColors.numeric,
       },
       '& .token.boolean': {
-        color: CodeBlockColors.numeric,
+        color: codeBlockColors.numeric,
       },
       '& .token.property': {
-        color: CodeBlockColors.variable,
+        color: codeBlockColors.variable,
       },
       '& .token.string': {
-        color: CodeBlockColors.string,
+        color: codeBlockColors.string,
       },
       '& .token': {
-        color: CodeBlockColors.text,
+        color: codeBlockColors.text,
       },
       '& .token.operator': {
-        color: CodeBlockColors.text,
+        color: codeBlockColors.text,
       },
       '& .token.punctuation': {
-        color: CodeBlockColors.text,
+        color: codeBlockColors.text,
       },
     },
     noChange: {
