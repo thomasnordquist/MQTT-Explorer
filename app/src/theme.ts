@@ -3,6 +3,9 @@ import { amber } from "@material-ui/core/colors";
 
 const baseTheme = {
   typography: {
+    allVariants: {
+      userSelect: 'none',
+    },
     body1: {
       fontSize: '0.9rem',
     },
@@ -10,14 +13,14 @@ const baseTheme = {
 }
 
 const lightTheme = createMuiTheme({
-  ...baseTheme,
+  ...(baseTheme as any),
   palette: {
     type: 'dark',
   },
 })
 
 const darkTheme = createMuiTheme({
-  ...baseTheme,
+  ...(baseTheme as any),
   palette: {
     type: 'light',
     background: {
