@@ -68,11 +68,17 @@ export const togglePause = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatc
     dispatch(globalActions.showNotification('Applying recorded changes.'))
   }
 
+  // Allow for notification to be displayed
+  setTimeout(() => {
+    tree && tree.applyUnmergedChanges()
+    if (paused && changes > 0) {
+      dispatch(globalActions.showNotification(`Sucessfully applied ${changes} changes.`))
+    }
+  }, 50)
+
   dispatch({
     type: paused ? ActionTypes.TREE_RESUME_UPDATES : ActionTypes.TREE_PAUSE_UPDATES,
   })
 
-  if (paused && changes > 0) {
-    dispatch(globalActions.showNotification(`Sucessfully applied ${changes} changes.`))
-  }
+
 }
