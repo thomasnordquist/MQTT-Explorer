@@ -8,7 +8,7 @@
 
 |   |   |   |
 |:---:|:---:|:---:|
-| [![screen1_small](https://user-images.githubusercontent.com/7721625/53954800-84b34c00-40d7-11e9-842d-bf655c569600.jpg)](https://user-images.githubusercontent.com/7721625/53954364-52551f00-40d6-11e9-93cf-d5a9601897ea.png) | [![screen2_small](https://user-images.githubusercontent.com/7721625/53954801-84b34c00-40d7-11e9-913a-42572e675620.jpg)](https://user-images.githubusercontent.com/7721625/53954365-52551f00-40d6-11e9-823f-afd66f19ed01.png) | [![screen3_small](https://user-images.githubusercontent.com/7721625/53954802-854be280-40d7-11e9-973c-08f23c8dbf89.jpg)](https://user-images.githubusercontent.com/7721625/53954366-52551f00-40d6-11e9-9738-74db830d03ac.png) |
+|[![screen1_small](https://user-images.githubusercontent.com/7721625/53954800-84b34c00-40d7-11e9-842d-bf655c569600.jpg)](https://user-images.githubusercontent.com/7721625/53954364-52551f00-40d6-11e9-93cf-d5a9601897ea.png)|[![screen2_small](https://user-images.githubusercontent.com/7721625/53954801-84b34c00-40d7-11e9-913a-42572e675620.jpg)](https://user-images.githubusercontent.com/7721625/53954365-52551f00-40d6-11e9-823f-afd66f19ed01.png)|[![screen3_small](https://user-images.githubusercontent.com/7721625/53954802-854be280-40d7-11e9-973c-08f23c8dbf89.jpg)](https://user-images.githubusercontent.com/7721625/53954366-52551f00-40d6-11e9-9738-74db830d03ac.png)|
 
 # The App has moved to [mqtt-explorer.com](https://mqtt-explorer.com)
 MQTT Explorer is a comprehensive and easy-to-use MQTT Client.  
@@ -39,10 +39,9 @@ The `app` directory contains all the rendering logic, the `backend` directory cu
 
 To achieve a reliable product automated tests run regularly on travis.
 
-- Data model
-- MQTT integration
-- UI-Tests (The demo is a recorded ui test)
-
+  - Data model
+  - MQTT integration
+  - UI-Tests (The demo is a recorded ui test)
 
 ## Run UI-tests
 A [mosquitto](https://mosquitto.org/) MQTT broker is required to run the ui-tests.
