@@ -28,22 +28,6 @@ class PauseButton extends React.Component<Props, {changes: number}> {
     this.state = { changes: 0 }
   }
 
-  private renderResume() {
-    return (
-      <Tooltip title="Resumes updating the tree, after applying all recorded changes">
-        <Resume />
-      </Tooltip>
-    )
-  }
-
-  private renderPause() {
-    return (
-      <Tooltip title="Stops all updates, records changes until the buffer is full.">
-        <Pause />
-      </Tooltip>
-    )
-  }
-
   private renderBufferStats() {
     if (!this.props.tree) {
       return

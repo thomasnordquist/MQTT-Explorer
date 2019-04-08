@@ -22,7 +22,7 @@ class Notification extends React.Component<Props, {}> {
       color: theme.typography.button.color,
     },
     error: {
-      backgroundColor: red[600],
+      backgroundColor: theme.palette.error.main,
       color: theme.typography.button.color,
     },
   })
@@ -37,7 +37,7 @@ class Notification extends React.Component<Props, {}> {
       <Snackbar
         anchorOrigin={snackbarAnchor}
         open={Boolean(this.props.message)}
-        autoHideDuration={10000}
+        autoHideDuration={this.props.type === 'error' ? 10000 : 3000}
         onClose={this.props.onClose}
       >
         <SnackbarContent
