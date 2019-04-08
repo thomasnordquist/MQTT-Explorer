@@ -46,7 +46,7 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
     return <span className={this.props.classes.collapsedSubnodes}>({this.props.treeNode.childTopicCount()} topics, {messages} messages)</span>
   }
   public render() {
-    const { classes, treeNode, style, className } = this.props
+    const { classes, style, className } = this.props
     return (
       <span
         className={`${classes.title} ${className}`}

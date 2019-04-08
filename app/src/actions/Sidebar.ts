@@ -1,5 +1,5 @@
 import * as q from '../../../backend/src/Model'
-import { Action, Dispatch } from 'redux'
+import { Dispatch } from 'redux'
 import { AppState } from '../reducers'
 import { makePublishEvent, rendererEvents } from '../../../events'
 
