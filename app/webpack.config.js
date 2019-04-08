@@ -65,7 +65,7 @@ module.exports = {
   plugins: [
     new LiveReloadPlugin({}),
     new HtmlWebpackPlugin({ template: './index.html', file: './build/index.html', inject: false }),
-    new BundleAnalyzerPlugin(),
+    // new BundleAnalyzerPlugin(),
     new webpack.HotModuleReplacementPlugin(),
   ],
 
