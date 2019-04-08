@@ -59,13 +59,16 @@ class PauseButton extends React.Component<Props, {changes: number}> {
   }
 
   public render() {
-    const { actions, classes } = this.props
-
+    const message = this.props.paused ? 'Resumes updating the tree, after applying all recorded changes' : 'Stops all updates, records changes until the buffer is full.'
     return (
       <div style={{ display: 'inline-flex' }}>
         <span>
           <CustomIconButton onClick={this.props.actions.tree.togglePause} >
-            {this.props.paused ? this.renderResume() : this.renderPause()}
+            <Tooltip title={message}>
+              <div /* Required so tooltip does not loose the anchor when the icon changes */>
+                {this.props.paused ? <Resume /> : <Pause />}
+              </div>
+            </Tooltip>
           </CustomIconButton>
         </span>
         {this.props.paused ? this.renderBufferStats() : null}
