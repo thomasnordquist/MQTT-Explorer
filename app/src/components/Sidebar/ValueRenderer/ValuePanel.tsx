@@ -107,6 +107,9 @@ class ValuePanel extends React.Component<Props, State> {
 
   private renderActionButtons() {
     const handleValue = (mouseEvent: React.MouseEvent, value: any) => {
+      if (value === null) {
+        return
+      }
       this.props.settingsActions.setValueDisplayMode(value)
     }
 
