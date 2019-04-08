@@ -49,6 +49,11 @@ function createTheme(type: 'light' | 'dark') {
           disabledBackground: '#fafafa',
         },
       },
+      typography: {
+        body1: {
+          fontSize: '0.9rem',
+        },
+      },
     })
   }
 }
