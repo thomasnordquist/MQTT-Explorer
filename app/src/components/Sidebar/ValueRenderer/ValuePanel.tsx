@@ -27,7 +27,7 @@ import {
   StyleRulesCallback,
   withStyles,
   Theme,
-  } from '@material-ui/core'
+} from '@material-ui/core'
 
 interface Props {
   node?: q.TreeNode<any>
