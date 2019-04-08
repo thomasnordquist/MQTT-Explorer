@@ -7,14 +7,17 @@
     "start": "electron .",
     "test": "yarn run test-backend",
     "install": "cd app && yarn && cd ..",
-    "dev": "electron . --development",
+    "dev": "npm-run-all --parallel dev:*",
+    "dev:app": "cd app && npm run dev",
+    "dev:electron": "tsc && electron . --development",
     "build": "tsc && cd app && yarn run build && cd ..",
     "test-backend": "cd backend && yarn run test && cd ..",
     "prepare-release": "ts-node scripts/prepare-release.ts",
     "package": "ts-node package.ts",
     "ui-test": "./scripts/uiTests.sh",
     "upload-video-artifacts": "./scripts/uploadVideoAsset.ts ui-test.mp4 ui-test.gif",
-    "package-with-docker": "./scripts/package-with-docker.sh"
+    "package-with-docker": "./scripts/package-with-docker.sh",
+    "lint-md": "remark ."
   },
   "repository": {
     "type": "git",
@@ -76,6 +79,9 @@
     "mustache": "^3.0.1",
     "nyc": "^13.1.0",
     "redux-thunk": "^2.3.0",
+    "remark-cli": "^6.0.1",
+    "remark-lint": "^6.0.4",
+    "remark-preset-lint-recommended": "^3.0.2",
     "source-map-support": "^0.5.9",
     "spectron": "^5.0.0",
     "ts-node": "^7.0.1",
@@ -95,6 +101,12 @@
     "js-base64": "^2.5.1",
     "lowdb": "^1.0.0",
     "mqtt": "^2.18.8",
-    "sha1": "^1.1.1"
+    "sha1": "^1.1.1",
+    "yarn-run-all": "^3.1.1"
+  },
+  "remarkConfig": {
+    "plugins": [
+      "remark-preset-lint-recommended"
+    ]
   }
 }

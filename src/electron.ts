@@ -9,6 +9,7 @@ import { ConnectionManager, updateNotifier } from '../backend/src/index'
 import { electronTelemetryFactory } from 'electron-telemetry'
 import { menuTemplate } from './MenuTemplate'
 import { UpdateInfo } from '../events'
+import axios from 'axios'
 
 const isDev = Boolean(process.argv.find(arg => arg === '--development'))
 
@@ -41,7 +42,20 @@ configStorage.init()
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow: BrowserWindow | undefined
 
-function createWindow() {
+async function createWindow() {
+  if (isDev) {
+    let response
+
+    while (!response) {
+      try {
+        response = await axios.get('http://localhost:8080')
+      } catch {
+        console.log('Waiting for dev server')
+        await new Promise(resolve => setTimeout(resolve, 1000))
+      }
+    }
+  }
+
   const iconPath = path.join(__dirname, 'icon.png')
   // Create the browser window.
   mainWindow = new BrowserWindow({

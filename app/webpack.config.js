@@ -1,6 +1,7 @@
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -51,7 +52,16 @@ module.exports = {
   module: {
     rules: [
       // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-      { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
+      {
+        test: /\.tsx?$/,
+        loader: 'awesome-typescript-loader',
+        options: {
+          reportFiles: [
+            "src/**/*.{ts,tsx}",
+            "../backend/src/**/*.{ts,tsx}"
+          ]
+        }
+      },
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
       { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
       {
@@ -64,7 +74,8 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({ template: './index.html', file: './build/index.html', inject: false }),
     // new BundleAnalyzerPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
+    new HardSourceWebpackPlugin(),
+    new webpack.HotModuleReplacementPlugin()
   ],
 
   // When importing a module whose path matches one of the following, just

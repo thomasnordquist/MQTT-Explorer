@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "dev": "node_modules/.bin/webpack-dev-server --mode development --progress"
   },
   "author": "",
   "license": "ISC",
@@ -57,6 +58,7 @@
     "@types/vis": "^4.21.9",
     "awesome-typescript-loader": "^5.2.1",
     "css-loader": "^2.1.0",
+    "hard-source-webpack-plugin": "^0.13.1",
     "html-webpack-plugin": "^4.0.0-beta.5",
     "source-map-loader": "^0.2.4",
     "style-loader": "^0.23.1",
