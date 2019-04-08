@@ -222,14 +222,14 @@ class TreeNode extends React.Component<Props, State> {
       <div>
         <div
           key={this.props.treeNode.hash()}
-          className={`${classes.node} ${this.props.className} ${highlightClass} ${classes.title} `}
+          className={`${classes.node} ${this.props.className} ${highlightClass} ${classes.title}`}
+          style={animation}
           onMouseOver={this.mouseOver}
           onMouseOut={this.mouseOut}
           onClick={this.didClickTitle}
           ref={this.nodeRef}
         >
           <TreeNodeTitle
-            style={animation}
             toggleCollapsed={this.toggleCollapsed}
             didSelectNode={this.didSelectTopic}
             collapsed={this.collapsed()}
