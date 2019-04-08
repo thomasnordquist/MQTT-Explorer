@@ -56,7 +56,7 @@ class ValueRenderer extends React.Component<Props, State> {
 
   public render() {
     return (
-      <div style={{ padding: '8px 0px 8px 8px' }}>
+      <div style={{ padding: '0px 0px 8px 8px' }}>
         <ReactResizeDetector handleWidth={true} onResize={this.updateWidth} />
         {this.renderValue()}
       </div>

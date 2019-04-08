@@ -62,7 +62,7 @@ class ValuePanel extends React.Component<Props, State> {
     )
   }
 
-  private messageMetaInfo() {
+  private renderViewOptions() {
     if (!this.props.node || !this.props.node.message || !this.props.node.mqttMessage) {
       return null
     }
@@ -83,29 +83,41 @@ class ValuePanel extends React.Component<Props, State> {
 
     return (
       <div style={{ width: '100%', display: 'flex', paddingLeft: '8px' }}>
-        <div style={{ flex: 6 }}><Typography>QoS: {this.props.node.mqttMessage.qos}</Typography></div>
-        <span style={{ marginTop: '-8px' }}>{this.renderActionButtons()}</span>
-        <div style={{ flex: 8, textAlign: 'center' }}>
+        <span style={{ marginTop: '-8px', flexGrow: 1 }}>{this.renderActionButtons()}</span>
+        <div style={{ flex: 6, textAlign: 'right' }}>
           {this.props.node.mqttMessage.retain ? retainedButton : null}
         </div>
-        <div style={{ flex: 8, textAlign: 'right' }}><Typography><i><DateFormatter date={this.props.node.message.received} /></i></Typography></div>
+        {this.messageMetaInfo()}
       </div>
     )
   }
 
+  private messageMetaInfo() {
+    if (!this.props.node || !this.props.node.message || !this.props.node.mqttMessage) {
+      return null
+    }
+
+    return (
+      <span style={{ width: '100%', paddingLeft: '8px', flex: 6, marginTop: '-14px' }}>
+        <Typography style={{ textAlign: 'right' }}>QoS: {this.props.node.mqttMessage.qos}</Typography>
+        <Typography style={{ textAlign: 'right' }}><i><DateFormatter date={this.props.node.message.received} /></i></Typography>
+      </span>
+    )
+  }
+
   private renderActionButtons() {
-    const handleValue = (_e: React.MouseEvent, value: any) => {
+    const handleValue = (mouseEvent: React.MouseEvent, value: any) => {
       this.props.settingsActions.setValueDisplayMode(value)
     }
 
     return (
       <ToggleButtonGroup id="valueRendererDisplayMode" value={this.props.valueRendererDisplayMode} exclusive={true} onChange={handleValue}>
-        <ToggleButton value="diff" id="valueRendererDisplayMode-diff">
+        <ToggleButton className={this.props.classes.toggleButton} value="diff" id="valueRendererDisplayMode-diff">
           <Tooltip title="Show difference between the current and the last message">
             <Code />
           </Tooltip>
         </ToggleButton>
-        <ToggleButton value="raw" id="valueRendererDisplayMode-raw">
+        <ToggleButton className={this.props.classes.toggleButton} value="raw" id="valueRendererDisplayMode-raw">
           <Tooltip title="Raw value">
             <Reorder />
           </Tooltip>
@@ -137,19 +149,19 @@ class ValuePanel extends React.Component<Props, State> {
 
     return (
       <ExpansionPanel key="value" defaultExpanded={true}>
-          <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summaryStyle}>
-            <Typography className={classes.heading}>Value {copyValue}</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails style={detailsStyle}>
-            {this.messageMetaInfo()}
-            <div>
-              <React.Suspense fallback={<div>Loading...</div>}>
-                {this.renderValue()}
-              </React.Suspense>
-            </div>
-            <div><MessageHistory onSelect={this.handleMessageHistorySelect} selected={this.state.compareMessage} node={this.props.node} /></div>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
+        <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summaryStyle}>
+          <Typography className={classes.heading}>Value {copyValue}</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails style={detailsStyle}>
+          {this.renderViewOptions()}
+          <div>
+            <React.Suspense fallback={<div>Loading...</div>}>
+              {this.renderValue()}
+            </React.Suspense>
+          </div>
+          <div><MessageHistory onSelect={this.handleMessageHistorySelect} selected={this.state.compareMessage} node={this.props.node} /></div>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
     )
   }
 }
@@ -174,7 +186,10 @@ const styles: StyleRulesCallback<string> = (theme: Theme) => {
       fontSize: theme.typography.pxToRem(15),
       fontWeight: theme.typography.fontWeightRegular,
     },
+    toggleButton: {
+      height: '36px',
+    }
   }
 }
 
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(ValuePanel))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ValuePanel))
