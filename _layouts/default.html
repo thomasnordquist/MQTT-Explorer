@@ -18,9 +18,48 @@
     </style>
 
     {% seo %}
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TRN5K6H');</script>
+    <!-- End Google Tag Manager -->
+    <script>
+      function trackConversion(url) {
+        const conversions = {
+          'snap://mqtt-explorer': 'snap',
+          'https://snapcraft.io/mqtt-explorer': 'snap',
+          'https://geo.itunes.apple.com/us/app/mqtt-explorer/id1455214828?mt=12&app=apps': 'Mac App Store',
+          'https://www.microsoft.com/store/apps/9PP8SFM082WD?ocid=badge': 'Microsoft Store',
+          'https://github.com/thomasnordquist/MQTT-Explorer/releases/download/': 'binary download'
+        }
+        const conversion = Object.keys(conversions).find(function(conversionUrlPrefix) { return url.startsWith(conversionUrlPrefix) })
+        if (conversion) {
+          ga('send', 'event', 'outbound', 'download', conversions[conversion], {
+            'transport': 'beacon',
+            'hitCallback': function(){ document.location = url; }
+          });
+        } else {
+          ga('send', 'event', 'outbound', 'click', url, {
+            'transport': 'beacon',
+            'hitCallback': function(){ document.location = url; }
+          });
+        }
+      }
+
+    function didLoad() {
+      if (!Array.prototype.filter || !Array.prototype.find || !String.prototype.startsWith) {
+        return
+      }
+
+      Object.values(document.getElementsByTagName('a'))
+        .filter(function(a) { return !a.href.startsWith(a.baseURI)})
+        .forEach(function(a) { a.onclick = function() { trackConversion(a.href) }})
+    }
+    </script>
   </head>
 
-  <body>
+  <body onload="didLoad()">
     <header>
       <div class="inner">
         <a href="{{ '/' | absolute_url }}">

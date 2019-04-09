@@ -7,8 +7,10 @@
   - Add light / dark themes
   - Allow pinning self-signed-certificates
   - Add localized date formatting
-  - Fix issues with the plot
   - Improve layout
+  - Fix issues with the plot
+  - Fix update settings immediatly
+  - Improved performance and memory footprint by ~30%
 
 # 0.2.3
 
