@@ -3,7 +3,7 @@ import { BuildInfo } from 'electron-telemetry/build/Model'
 import { UpdateInfo } from '../events'
 import { updateNotifier } from '../backend/src/index'
 
-export function shouldUpdate(build: BuildInfo) {
+export function shouldAutoUpdate(build: BuildInfo) {
   return build.package !== 'portable'
 }
 
