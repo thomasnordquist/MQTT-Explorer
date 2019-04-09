@@ -1,33 +1,18 @@
-import * as fs from 'fs'
 import * as log from 'electron-log'
 import * as path from 'path'
 import ConfigStorage from '../backend/src/ConfigStorage'
 import { app, BrowserWindow, Menu } from 'electron'
 import { autoUpdater } from 'electron-updater'
-import { BuildInfo } from 'electron-telemetry/build/Model'
-import { ConnectionManager, updateNotifier } from '../backend/src/index'
+import { ConnectionManager } from '../backend/src/index'
 import { electronTelemetryFactory } from 'electron-telemetry'
 import { menuTemplate } from './MenuTemplate'
-import { UpdateInfo } from '../events'
-import axios from 'axios'
+import buildOptions from './buildOptions'
+import { waitForDevServer, isDev, runningUiTestOnCi } from './development'
+import { shouldAutoUpdate as shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
 
-const isDev = Boolean(process.argv.find(arg => arg === '--development'))
-
-if (!isDev) {
-  let buildOptions: BuildInfo = ({ platform: process.platform, package: 'unpacked' } as any)
-  try {
-    const options = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'buildOptions.json')).toString())
-    if (typeof options.platform === 'string' && typeof options.package === 'string') {
-      buildOptions = options
-    }
-  } catch (loadingBuildOptionsMayFail) {}
-
-  console.log(buildOptions)
+if (!isDev()) {
   const electronTelemetry = electronTelemetryFactory('9b0c8ca04a361eb8160d98c5', buildOptions)
 }
-
-// const isDebugEnabled = Boolean(process.argv.find(arg => arg === 'debug'))
-const runningUiTestOnCi = Boolean(process.argv.find(arg => arg === '--runningUiTestOnCi'))
 
 autoUpdater.logger = log
 log.info('App starting...')
@@ -44,16 +29,7 @@ let mainWindow: BrowserWindow | undefined
 
 async function createWindow() {
   if (isDev) {
-    let response
-
-    while (!response) {
-      try {
-        response = await axios.get('http://localhost:8080')
-      } catch {
-        console.log('Waiting for dev server')
-        await new Promise(resolve => setTimeout(resolve, 1000))
-      }
-    }
+    await waitForDevServer()
   }
 
   const iconPath = path.join(__dirname, 'icon.png')
@@ -107,27 +83,9 @@ app.on('ready', () => {
   Menu.setApplicationMenu(menuTemplate)
   createWindow()
 
-  let updateInfo: UpdateInfo
-  autoUpdater.on('update-available', (info: UpdateInfo) => {
-    console.log('there is an update')
-    updateInfo = info
-  })
-
-  autoUpdater.on('error', () => {
-    console.log('could not update due to error')
-
-    if (updateInfo) {
-      updateNotifier.notify(updateInfo)
-    }
-  })
-
-  updateNotifier.onCheckUpdateRequest.subscribe(() => {
-    try {
-      autoUpdater.checkForUpdatesAndNotify()
-    } catch (error) {
-      console.error(error)
-    }
-  })
+  if (shouldAutoUpdate(buildOptions)) {
+    handleAutoUpdate()
+  }
 })
 
 // Quit when all windows are closed.
