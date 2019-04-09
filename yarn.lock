@@ -1287,10 +1287,10 @@ electron-updater@^4.0.6:
     semver "^5.6.0"
     source-map-support "^0.5.9"
 
-electron@^4.0.6:
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-4.0.6.tgz#f936772ddb5eaa026591ea14ef806e1385fbbda9"
-  integrity sha512-r2ow/EmDibjoCNJp35mB1CcPs2xBF9fp2eoWuUOJmpVQyzdba6EnqsSD1BxwXzF9vQ5WkQ2UbfXBIvpomrdioQ==
+electron@5.0.0-beta.8:
+  version "5.0.0-beta.8"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-5.0.0-beta.8.tgz#f8f7e8a128ab91d69b4cc7c77b83b5c19fc0a2f7"
+  integrity sha512-fjnxYGSOttNDwL6en5mBRTOHi+dXQBfkQrxpl6964hrvGG6/TicpsYzhD9dYSO2f7ZYapby/buFzYgpYcoCFHg==
   dependencies:
     "@types/node" "^10.12.18"
     electron-download "^4.1.0"
