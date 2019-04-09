@@ -28,7 +28,7 @@ configStorage.init()
 let mainWindow: BrowserWindow | undefined
 
 async function createWindow() {
-  if (isDev) {
+  if (isDev()) {
     await waitForDevServer()
   }
 
