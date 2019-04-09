@@ -10,7 +10,7 @@ import buildOptions from './buildOptions'
 import { waitForDevServer, isDev, runningUiTestOnCi } from './development'
 import { shouldAutoUpdate as shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
 
-if (!isDev()) {
+if (!isDev() && !runningUiTestOnCi()) {
   const electronTelemetry = electronTelemetryFactory('9b0c8ca04a361eb8160d98c5', buildOptions)
 }
 
@@ -55,7 +55,7 @@ async function createWindow() {
   console.log('icon path', iconPath)
 
   // Load the index.html of the app.
-  if (isDev) {
+  if (isDev()) {
     mainWindow.loadURL('http://localhost:8080')
   } else {
     mainWindow.loadFile('app/build/index.html')
