@@ -1,5 +1,3 @@
-# MQTT Explorer
-
 [![Downloads](https://img.shields.io/github/release/thomasnordquist/mqtt-explorer.svg)](https://github.com/thomasnordquist/MQTT-Explorer/releases)
 [![Downloads](https://img.shields.io/github/downloads/thomasnordquist/mqtt-explorer/total.svg)](https://github.com/thomasnordquist/MQTT-Explorer/releases)
 [![Build_Status](https://travis-ci.org/thomasnordquist/MQTT-Explorer.svg?branch=master)](https://travis-ci.org/thomasnordquist/MQTT-Explorer)
