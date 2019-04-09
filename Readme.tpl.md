@@ -43,7 +43,10 @@ If you feel like a feature is missing or you found a bug, please leave me a [com
 
 ## Video
 
-![screencast](https://user-images.githubusercontent.com/7721625/53954172-b7f4db80-40d5-11e9-852c-f8d85e511a00.gif)
+<video width="1024" height="700" controls>
+  <source src="./video.mp4" type="video/mp4">
+  ![screencast](https://user-images.githubusercontent.com/7721625/53954172-b7f4db80-40d5-11e9-852c-f8d85e511a00.gif)
+</video>
 
 ## Performance
 
