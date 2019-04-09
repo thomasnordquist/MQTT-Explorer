@@ -43,10 +43,23 @@ If you feel like a feature is missing or you found a bug, please leave me a [com
 
 ## Video
 
+<div class="osx-frame">
+<div class="titlebar">
+<div class="buttons">
+<div class="close"></div>
+<div class="minimize"></div>
+<div class="zoom"></div>
+</div>
+MQTT Explorer
+</div>
+<div class="content">
 <video style="width: 100%" autoplay muted loop>
-  <source type="video/mp4" src="./video.mp4">
-  ![screencast](https://user-images.githubusercontent.com/7721625/53954172-b7f4db80-40d5-11e9-852c-f8d85e511a00.gif)
-</video>
+<source type="video/mp4" src="./video.mp4">
+![screencast](https://user-images.githubusercontent.com/7721625/53954172-b7f4db80-40d5-11e9-852c-f8d85e511a00.gif)
+</video></div>
+</div>
+
+
 
 ## Performance
 
