@@ -38,6 +38,7 @@ interface GithubRelease {
   body: string
   body_text: string
   tag_name: string
+  prerelease: boolean
 }
 
 interface GithubAsset {
@@ -57,11 +58,10 @@ class UpdateNotifier extends React.Component<Props, State> {
     super(props)
     this.state = { newerVersions: [] }
 
-    // window.compare = compareVersions
     const ownVersion = electron.remote.app.getVersion()
     this.fetchReleases().then((releases) => {
       const newerVersions = releases
-        .filter(release => !/alpha|beta/.test(release.tag_name))
+        .filter(release => this.allowPrereleaseIfOwnVersionIsBeta(release, ownVersion))
         .filter(release => compareVersions(release.tag_name, ownVersion) > 0)
         .sort((a, b) => compareVersions(b.tag_name, a.tag_name))
 
@@ -72,14 +72,20 @@ class UpdateNotifier extends React.Component<Props, State> {
     })
   }
 
-  private fetchReleases(): Promise<GithubRelease[]> {
-    return axios.get('https://api.github.com/repos/thomasnordquist/mqtt-explorer/releases', {
+  private allowPrereleaseIfOwnVersionIsBeta(release: GithubRelease, ownVersion: string) {
+    const ownVersionIsBeta = !/alpha|beta/.test(ownVersion)
+
+    return ownVersionIsBeta || !release.prerelease
+  }
+
+  private async fetchReleases(): Promise<GithubRelease[]> {
+    const res = await axios.get('https://api.github.com/repos/thomasnordquist/mqtt-explorer/releases', {
       headers: {
         accept: 'application/vnd.github.v3.full+json',
       },
-    }).then((res) => {
-      return res.data
     })
+
+    return res.data as GithubRelease[]
   }
 
   private onCloseNotification = (event: React.SyntheticEvent<any>, reason: string) => {
