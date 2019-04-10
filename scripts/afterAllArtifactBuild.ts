@@ -11,10 +11,10 @@ export default async function(info: any) {
       chdir(dirname)
 
       await exec('sudo', ['unsquashfs', snapFile])
-      await fs.remove(snapFile)
+      await exec('sudo', ['rm', snapFile])
       await exec('sudo', ['chmod', '-R', 'g-s', 'squashfs-root'])
       await exec('sudo', ['snap', 'run', 'snapcraft', 'pack', 'squashfs-root', '--output', snapFile])
-      await fs.remove('squashfs-root')
+      await exec('sudo', ['rm', '-rf', 'squashfs-root'])
 
       chdir(originalDir)
     }
