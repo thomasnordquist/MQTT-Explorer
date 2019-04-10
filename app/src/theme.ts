@@ -27,9 +27,23 @@ const darkTheme = createMuiTheme({
       default: '#fafafa',
     },
     primary: {
-      main: '#931e2e',
+      // main: '#931e2e',
+      // main: '#172A3A',
+      // main: '#004346',
+      // main: '#7D4F50',
+      // main: '#C14953',
+      // main: '#4C4C47',
+      // main: '#2D2D2A',
+      // main: '#37000A',
+      // main: '#56000F',
+      // main: '#89023E',
+      // main: '#30343F',
+      main: '#335C67', // ⭐️
     },
     secondary: amber,
+    // secondary: {
+    //   main: '#E09F3E',
+    // },
     action: {
       disabledBackground: '#fafafa',
     },
