@@ -10,7 +10,12 @@ import { treeActions } from '../../actions'
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 import { Tooltip } from '@material-ui/core'
 
-const styles: StyleRulesCallback = theme => ({ })
+const styles: StyleRulesCallback = theme => ({
+  icon: {
+    color: theme.palette.primary.contrastText,
+    verticalAlign: 'middle' as 'middle',
+  },
+})
 
 interface Props {
   classes: any
@@ -66,7 +71,7 @@ class PauseButton extends React.Component<Props, {changes: number}> {
           <CustomIconButton onClick={this.props.actions.tree.togglePause} >
             <Tooltip title={message}>
               <div /* Required so tooltip does not loose the anchor when the icon changes */>
-                {this.props.paused ? <Resume /> : <Pause />}
+                {this.props.paused ? <Resume className={this.props.classes.icon} /> : <Pause className={this.props.classes.icon} />}
               </div>
             </Tooltip>
           </CustomIconButton>
