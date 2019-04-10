@@ -35,6 +35,7 @@ export const loadSettings = () => async (dispatch: Dispatch<any>, getState: () =
 export const storeSettings = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
   const settings = {
     ...getState().settings.toJS(),
+    autoExpandLimit: undefined,
     topicFilter: undefined,
     visible: undefined,
   }
