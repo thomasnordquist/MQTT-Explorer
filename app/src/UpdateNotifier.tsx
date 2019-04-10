@@ -266,8 +266,8 @@ const styles = (theme: Theme) => ({
 
 const mapStateToProps = (state: AppState) => {
   return {
-    showUpdateNotification: state.globalState.showUpdateNotification,
-    showUpdateDetails: state.globalState.showUpdateDetails,
+    showUpdateNotification: state.globalState.get('showUpdateNotification'),
+    showUpdateDetails: state.globalState.get('showUpdateDetails'),
   }
 }
 
