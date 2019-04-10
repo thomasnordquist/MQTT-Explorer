@@ -9,7 +9,7 @@ interface State {
   stepSizeY: number,
 }
 
-class Demo extends React.Component<{}, State> {
+class Demo extends React.Component<{classes: any}, State> {
   private timer: any
   private frameInterval = 20
 
@@ -57,22 +57,26 @@ class Demo extends React.Component<{}, State> {
     if (!this.state.enabled) {
       return null
     }
+
     const style = {
-      width: '32px',
-      height: '32px',
-      position: 'fixed' as 'fixed',
-      zIndex: 1000000,
-      filter: 'invert(100%)',
       left: this.state.position.x + 2,
       top: this.state.position.y + 2,
     }
 
     return (
-      <img src="../cursor.png" style={style} />
+      <img src="../cursor.png" style={style} className={this.props.classes.cursor} />
     )
   }
 }
 
-const style = (theme: Theme) => {}
+const style = (theme: Theme) => ({
+  cursor: {
+    width: '32px',
+    height: '32px',
+    position: 'fixed' as 'fixed',
+    zIndex: 1000000,
+    filter: theme.palette.type === 'light' ? undefined : 'invert(100%)',
+  }
+})
 
 export default withStyles(style)(Demo)
