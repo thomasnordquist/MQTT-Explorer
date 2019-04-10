@@ -52,6 +52,7 @@ const initialState = Record<SettingsState>({
   valueRendererDisplayMode: 'diff',
   selectTopicWithMouseOver: false,
   theme: 'light',
+  topicFilter: undefined,
 })
 
 const setTheme = (theme: 'light' | 'dark') => (state: Record<SettingsState>) => {
