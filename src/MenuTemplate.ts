@@ -89,7 +89,7 @@ const viewMenu: MenuItemConstructorOptions = {
     },
     {
       label: 'Increase size',
-      accelerator: process.platform === 'darwin' ? 'CmdOrCtrl+Plus' : 'Control+Plus',
+      accelerator: 'CmdOrCtrl+Plus',
       click: () => {
         const window = BrowserWindow.getFocusedWindow()
         if (window) {
