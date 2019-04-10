@@ -58,33 +58,33 @@ const mac: builder.CliOptions = {
 
 async function executeBuild() {
   switch (process.argv[2]) {
-    case 'win':
-      await buildWithOptions(winPortable, { platform: 'win', package: 'portable' })
-      await buildWithOptions(winNsis, { platform: 'win', package: 'nsis' })
-      break
-    case 'appx':
-      await buildWithOptions(winAppx, { platform: 'win', package: 'appx' })
-      break
-    case 'linux':
-      await buildWithOptions(linuxAppImage, { platform: 'linux', package: 'AppImage' })
-      await buildWithOptions(linuxSnap, { platform: 'linux', package: 'snap' })
-      break
-    case 'mac':
-      await buildWithOptions(mac, { platform: 'mac', package: 'mas' })
-      await buildWithOptions(mac, { platform: 'mac', package: 'dmg' })
-      await buildWithOptions(mac, { platform: 'mac', package: 'zip' })
-      break
-    default:
-      await buildWithOptions({ ...mac, projectDir: '' }, { platform: 'mac', package: 'mas-dev' })
+  case 'win':
+    await buildWithOptions(winPortable, { platform: 'win', package: 'portable' })
+    await buildWithOptions(winNsis, { platform: 'win', package: 'nsis' })
+    break
+  case 'appx':
+    await buildWithOptions(winAppx, { platform: 'win', package: 'appx' })
+    break
+  case 'linux':
+    await buildWithOptions(linuxAppImage, { platform: 'linux', package: 'AppImage' })
+    await buildWithOptions(linuxSnap, { platform: 'linux', package: 'snap' })
+    break
+  case 'mac':
+    await buildWithOptions(mac, { platform: 'mac', package: 'mas' })
+    await buildWithOptions(mac, { platform: 'mac', package: 'dmg' })
+    await buildWithOptions(mac, { platform: 'mac', package: 'zip' })
+    break
+  default:
+    await buildWithOptions({ ...mac, projectDir: '' }, { platform: 'mac', package: 'mas-dev' })
   }
 }
 
 export interface BuildInfo {
-  platform: 'win' | 'linux' | 'mac'
+  platform: 'win' | 'linux' | 'mac'
   package: Packages
 }
 
-type Packages = 'portable' | 'nsis' | 'appx' | 'AppImage' | 'snap' | 'dmg' | 'zip' | 'mas' | 'mas-dev'
+type Packages = 'portable' | 'nsis' | 'appx' | 'AppImage' | 'snap' | 'dmg' | 'zip' | 'mas' | 'mas-dev'
 
 async function buildWithOptions(options: builder.CliOptions, buildInfo: BuildInfo) {
   fs.writeFileSync(path.join(options.projectDir!, 'buildOptions.json'), JSON.stringify(buildInfo))
