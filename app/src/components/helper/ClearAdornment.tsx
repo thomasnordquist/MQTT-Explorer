@@ -1,28 +1,30 @@
 import * as React from 'react'
 import Clear from '@material-ui/icons/Clear'
-import { IconButton } from '@material-ui/core'
+import { IconButton, Theme } from '@material-ui/core'
+import { withTheme } from '@material-ui/core/styles'
 
 interface Props {
   value?: string
   action: any
   style?: React.CSSProperties
+  variant?: 'primary'
+  theme: Theme
 }
 
 /**
  * Clear button for text input fields
  */
-class ClearAdornment extends React.Component<Props, {}> {
-  public render() {
-    if (this.props.value) {
-      return (
-        <IconButton style={{ ...this.props.style, padding: '1px' }} onClick={this.props.action}>
-          <Clear style={{ fontSize: '16px' }} />
-        </IconButton>
-      )
-    }
-
+function ClearAdornment(props: Props) {
+  if (!props.value) {
     return null
   }
+
+  const color = props.variant === 'primary' ? props.theme.palette.primary.contrastText : undefined
+  return (
+    <IconButton style={{ ...props.style, padding: '1px' }} onClick={props.action}>
+      <Clear style={{ color, fontSize: '16px' }} />
+    </IconButton>
+  )
 }
 
-export default ClearAdornment
+export default withTheme(ClearAdornment)

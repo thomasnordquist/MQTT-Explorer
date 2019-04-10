@@ -103,7 +103,7 @@ class TitleBar extends React.Component<Props, {}> {
           value={topicFilter}
           onChange={this.onFilterChange}
           placeholder="Search…"
-          endAdornment={<div style={{ width: '24px', paddingRight: '8px' }}><ClearAdornment action={this.clearFilter} value={topicFilter} /></div>}
+          endAdornment={<div style={{ width: '24px', paddingRight: '8px' }}><ClearAdornment variant="primary" action={this.clearFilter} value={topicFilter} /></div>}
           classes={{ root: classes.inputRoot, input: classes.inputInput }}
         />
       </div>
