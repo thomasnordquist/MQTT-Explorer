@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Theme, withStyles } from '@material-ui/core'
+const cursor = require('./cursor.png')
 
 interface State {
   enabled: boolean
@@ -64,7 +65,7 @@ class Demo extends React.Component<{classes: any}, State> {
     }
 
     return (
-      <img src="../cursor.png" style={cursorStyle} className={this.props.classes.cursor} />
+      <img src={cursor} style={cursorStyle} className={this.props.classes.cursor} />
     )
   }
 }

@@ -19,6 +19,7 @@
     "copy-text-to-clipboard": "^1.0.4",
     "diff": "^4.0.1",
     "electron-telemetry": "git+https://github.com/thomasnordquist/electron-telemetry.git#dist",
+    "file-loader": "^3.0.1",
     "get-value": "^3.0.1",
     "immutable": "^4.0.0-rc.12",
     "js-base64": "^2.5.1",
