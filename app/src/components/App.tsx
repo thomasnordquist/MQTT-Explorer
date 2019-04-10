@@ -66,7 +66,7 @@ class App extends React.PureComponent<Props, {}> {
         <CssBaseline />
         <ErrorBoundary>
         {this.renderNotification()}
-          <React.Suspense fallback={<div>Loading...</div>}>
+          <React.Suspense fallback={<div></div>}>
             <Settings />
           </React.Suspense>
           <div className={centerContent}>
@@ -74,7 +74,7 @@ class App extends React.PureComponent<Props, {}> {
               <TitleBar />
             </div>
             <div className={settingsVisible ? contentShift : content}>
-              <React.Suspense fallback={<div>Loading...</div>}>
+              <React.Suspense fallback={<div></div>}>
                 <ContentView heightProperty={heightProperty} connectionId={this.props.connectionId} paneDefaults={paneDefaults} />
               </React.Suspense>
             </div>
