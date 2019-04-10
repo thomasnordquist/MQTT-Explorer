@@ -1,4 +1,5 @@
-import { ActionTypes } from '../reducers'
+import { ActionTypes } from '../reducers/Global'
+import { Dispatch } from 'redux'
 
 export const showError = (error?: string) => ({
   error,
@@ -13,3 +14,9 @@ export const showNotification = (notification?: string) => ({
 export const didLaunch = () => ({
   type: ActionTypes.didLaunch,
 })
+
+export const toggleSettingsVisibility = () => (dispatch: Dispatch<any>) => {
+  dispatch({
+    type: ActionTypes.toggleSettingsVisibility,
+  })
+}

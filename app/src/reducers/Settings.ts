@@ -12,7 +12,6 @@ export type ValueRendererDisplayMode = 'diff' | 'raw'
 
 export interface SettingsState {
   autoExpandLimit: number
-  visible: boolean
   topicOrder: TopicOrder
   topicFilter?: string
   highlightTopicUpdates: boolean
@@ -23,7 +22,6 @@ export interface SettingsState {
 
 export type Actions = SetAutoExpandLimitAction
   & DidLoadSettingsAction
-  & ToggleVisibilityAction
   & SetTopicOrderAction
   & FilterTopicsAction
   & ToggleHighlightTopicUpdatesAction
@@ -33,7 +31,6 @@ export type Actions = SetAutoExpandLimitAction
 
 export enum ActionTypes {
   SETTINGS_SET_AUTO_EXPAND_LIMIT = 'SETTINGS_SET_AUTO_EXPAND_LIMIT',
-  SETTINGS_TOGGLE_VISIBILITY = 'SETTINGS_TOGGLE_VISIBILITY',
   SETTINGS_SET_TOPIC_ORDER = 'SETTINGS_SET_TOPIC_ORDER',
   SETTINGS_FILTER_TOPICS = 'SETTINGS_FILTER_TOPICS',
   SETTINGS_TOGGLE_HIGHLIGHT_ACTIVITY = 'SETTINGS_TOGGLE_HIGHLIGHT_ACTIVITY',
@@ -47,7 +44,6 @@ export enum ActionTypes {
 const initialState = Record<SettingsState>({
   autoExpandLimit: 0,
   topicOrder: TopicOrder.none,
-  visible: false,
   highlightTopicUpdates: true,
   valueRendererDisplayMode: 'diff',
   selectTopicWithMouseOver: false,
@@ -61,7 +57,6 @@ const setTheme = (theme: 'light' | 'dark') => (state: Record<SettingsState>) => 
 
 const reducerActions: {[s: string]: (state: Record<SettingsState>, action: Actions) => Record<SettingsState>} = {
   SETTINGS_SET_AUTO_EXPAND_LIMIT: setAutoExpandLimit,
-  SETTINGS_TOGGLE_VISIBILITY: toggleVisibility,
   SETTINGS_SET_TOPIC_ORDER: setTopicOrder,
   SETTINGS_FILTER_TOPICS: filterTopics,
   SETTINGS_TOGGLE_HIGHLIGHT_ACTIVITY: toggleHighlightTopicUpdates,
@@ -121,15 +116,6 @@ export interface ToggleHighlightTopicUpdatesAction {
 
 function toggleHighlightTopicUpdates(state: Record<SettingsState>, action: ToggleHighlightTopicUpdatesAction) {
   return state.set('highlightTopicUpdates', !state.get('highlightTopicUpdates'))
-}
-
-export interface ToggleVisibilityAction {
-  type: ActionTypes.SETTINGS_TOGGLE_VISIBILITY
-}
-
-// Todo: Should not be part of the settings store, it would require all tree nodes to re-render when toggeling settings
-function toggleVisibility(state: Record<SettingsState>, action: ToggleVisibilityAction) {
-  return state.set('visible', !state.get('visible'))
 }
 
 export interface SetTopicOrderAction {

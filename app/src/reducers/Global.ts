@@ -17,32 +17,38 @@ export interface GlobalAction extends Action {
   showUpdateDetails?: boolean
   error?: string
   notification?: string
-  settingsVisible: boolean
 }
 
-export interface GlobalState {
+interface GlobalStateInterface {
   showUpdateNotification?: boolean
   showUpdateDetails: boolean
   error?: string
   notification?: string
   launching: boolean
+  settingsVisible: boolean
 }
 
-const initialGlobalState = Record<GlobalState>({
+export type GlobalState = Record<GlobalStateInterface>
+
+const initialStateFactory = Record<GlobalStateInterface>({
   showUpdateNotification: false,
   showUpdateDetails: false,
   error: undefined,
   notification: undefined,
   launching: true,
+  settingsVisible: false,
 })
 
-export const globalState: Reducer<Record<GlobalState>, GlobalAction> = (state = initialGlobalState(), action): Record<GlobalState> => {
+export const globalState: Reducer<Record<GlobalStateInterface>, GlobalAction> = (state = initialStateFactory(), action): GlobalState => {
   trackEvent(action.type)
   console.log(action.type)
 
   switch (action.type) {
   case ActionTypes.showUpdateNotification:
     return state.set('showUpdateNotification', action.showUpdateNotification)
+
+  case ActionTypes.toggleSettingsVisibility:
+    return state.set('settingsVisible', !state.get('settingsVisible'))
 
   case ActionTypes.showError:
     return state.set('error', action.error)

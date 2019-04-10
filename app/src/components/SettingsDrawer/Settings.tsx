@@ -204,7 +204,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     autoExpandLimit: state.settings.get('autoExpandLimit'),
     topicOrder: state.settings.get('topicOrder'),
-    visible: state.settings.get('visible'),
+    visible: state.globalState.get('settingsVisible'),
     highlightTopicUpdates: state.settings.get('highlightTopicUpdates'),
     selectTopicWithMouseOver: state.settings.get('selectTopicWithMouseOver'),
     theme: state.settings.get('theme'),

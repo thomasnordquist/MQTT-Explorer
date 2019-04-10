@@ -1,5 +1,10 @@
 import * as React from 'react'
-import { InputLabel, Switch, Tooltip, Theme } from '@material-ui/core'
+import {
+  InputLabel,
+  Switch,
+  Theme,
+  Tooltip
+  } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles'
 const sha1 = require('sha1')
 

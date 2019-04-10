@@ -7,7 +7,7 @@ import Search from '@material-ui/icons/Search'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { connectionActions, settingsActions, treeActions } from '../../actions'
+import { connectionActions, settingsActions, globalActions } from '../../actions'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 import {
@@ -81,6 +81,7 @@ interface Props {
   actions: {
     settings: typeof settingsActions,
     connection: typeof connectionActions,
+    global: typeof globalActions,
   }
   topicFilter?: string
 }
@@ -124,7 +125,7 @@ class TitleBar extends React.Component<Props, {}> {
     return (
       <AppBar position="static">
         <Toolbar>
-          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={actions.settings.toggleSettingsVisibility}>
+          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={actions.global.toggleSettingsVisibility}>
             <Menu />
           </IconButton>
           <Typography className={classes.title} variant="h6" color="inherit">MQTT Explorer</Typography>
@@ -150,6 +151,7 @@ const mapDispatchToProps = (dispatch: any) => {
   return {
     actions: {
       settings: bindActionCreators(settingsActions, dispatch),
+      global: bindActionCreators(globalActions, dispatch),
       connection: bindActionCreators(connectionActions, dispatch),
     },
   }

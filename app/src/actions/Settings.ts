@@ -52,7 +52,6 @@ export const setAutoExpandLimit = (autoExpandLimit: number = 0) => (dispatch: Di
     autoExpandLimit,
     type: ActionTypes.SETTINGS_SET_AUTO_EXPAND_LIMIT,
   })
-  dispatch(storeSettings())
 }
 
 export const selectTopicWithMouseOver = (doSelect: boolean) => (dispatch: Dispatch<any>) => {
@@ -67,13 +66,6 @@ export const setValueDisplayMode = (valueRendererDisplayMode: 'diff' | 'raw') =>
   dispatch({
     valueRendererDisplayMode,
     type: ActionTypes.SETTINGS_SET_VALUE_RENDERER_DISPLAY_MODE,
-  })
-  dispatch(storeSettings())
-}
-
-export const toggleSettingsVisibility = () => (dispatch: Dispatch<any>) => {
-  dispatch({
-    type: ActionTypes.SETTINGS_TOGGLE_VISIBILITY,
   })
   dispatch(storeSettings())
 }
