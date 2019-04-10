@@ -1,10 +1,11 @@
 import * as React from 'react'
+import BooleanSwitch from './BooleanSwitch'
 import BrokerStatistics from './BrokerStatistics'
 import ChevronRight from '@material-ui/icons/ChevronRight'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { settingsActions } from '../../actions'
+import { globalActions, settingsActions } from '../../actions'
 import { shell } from 'electron'
 import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
 import { TopicOrder } from '../../reducers/Settings'
@@ -18,10 +19,8 @@ import {
   MenuItem,
   Select,
   Typography,
-  Switch,
   Tooltip,
 } from '@material-ui/core'
-const sha1 = require('sha1')
 
 export const autoExpandLimitSet = [{
   limit: 0,
@@ -33,7 +32,7 @@ export const autoExpandLimitSet = [{
   limit: 3,
   name: 'Some',
 }, {
-  limit: 10,
+  limit: 15,
   name: 'Most',
 }, {
   limit: 1E6,
@@ -63,13 +62,13 @@ const styles: StyleRulesCallback = theme => ({
     color: theme.palette.text.hint,
     cursor: 'pointer' as 'pointer',
   },
-  switchBase: {
-    height: theme.spacing(4),
-  },
 })
 
 interface Props {
-  actions: typeof settingsActions
+  actions: {
+    settings: typeof settingsActions,
+    global: typeof globalActions,
+  }
   autoExpandLimit: number
   classes: any
   highlightTopicUpdates: boolean
@@ -93,53 +92,20 @@ class Settings extends React.Component<Props, {}> {
   private renderHighlightTopicUpdates() {
     const { highlightTopicUpdates, actions } = this.props
 
-    return this.renderSwitch('Show Activity', highlightTopicUpdates, actions.toggleHighlightTopicUpdates, 'Topics blink when a new message arrives')
-  }
-
-  private renderSwitch(title: string, checked: boolean, action: any, tooltip: string) {
-    const { classes } = this.props
-
-    const clickHandler = (e: React.MouseEvent) => {
-      e.stopPropagation()
-      e.preventDefault()
-      action()
-    }
-
-    return (
-      <div style={{ padding: '8px', display: 'flex' }}>
-        <Tooltip title={tooltip}>
-          <InputLabel
-            htmlFor={`toggle-${sha1(title)}`}
-            onClick={clickHandler}
-            style={{ flex: '1', paddingTop: '8px' }}
-          >
-            {title}
-          </InputLabel>
-        </Tooltip>
-        <Tooltip title={tooltip}>
-          <Switch
-            name={`toggle-${sha1(title)}`}
-            checked={checked}
-            onChange={action}
-            color="primary"
-            classes={{ switchBase: classes.switchBase }}
-          />
-        </Tooltip>
-      </div>
-    )
+    return <BooleanSwitch title="Show Activity" tooltip="Topics blink when a new message arrives" value={highlightTopicUpdates} action={actions.settings.toggleHighlightTopicUpdates}/>
   }
 
   private selectTopicsOnMouseOver() {
     const { actions, selectTopicWithMouseOver } = this.props
-    const toggle = () => actions.selectTopicWithMouseOver(!selectTopicWithMouseOver)
+    const toggle = () => actions.settings.selectTopicWithMouseOver(!selectTopicWithMouseOver)
 
-    return this.renderSwitch('Quick Preview', selectTopicWithMouseOver, toggle, 'Select topics on mouse over')
+    return <BooleanSwitch title="Quick Preview" tooltip="Select topics on mouse over" value={selectTopicWithMouseOver} action={toggle} />
   }
 
   private toggleTheme() {
     const { actions, theme } = this.props
 
-    return this.renderSwitch('Theme', theme === 'light', actions.toggleTheme, 'Select a theme')
+    return <BooleanSwitch title="Dark theme" tooltip="Enable dark theme" value={theme === 'light'} action={actions.settings.toggleTheme} />
   }
 
   private renderAutoExpand() {
@@ -164,7 +130,7 @@ class Settings extends React.Component<Props, {}> {
   }
 
   private onChangeAutoExpand = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    this.props.actions.setAutoExpandLimit(parseInt(e.target.value, 10))
+    this.props.actions.settings.setAutoExpandLimit(parseInt(e.target.value, 10))
   }
 
   private renderNodeOrder() {
@@ -191,7 +157,7 @@ class Settings extends React.Component<Props, {}> {
   }
 
   private onChangeSorting = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    this.props.actions.setTopicOrder(e.target.value as TopicOrder)
+    this.props.actions.settings.setTopicOrder(e.target.value as TopicOrder)
   }
 
   public render() {
@@ -208,15 +174,15 @@ class Settings extends React.Component<Props, {}> {
           tabIndex={0}
           role="button"
         >
-
           <Typography className={classes.title} variant="h6" color="inherit">
-            <IconButton onClick={actions.toggleSettingsVisibility}>
+            <IconButton onClick={actions.global.toggleSettingsVisibility}>
               <ChevronRight />
             </IconButton>
             Settings
           </Typography>
-          <Divider />
-
+          <Divider style={{ userSelect: 'none' }} />
+        </div>
+        <div>
           {this.renderAutoExpand()}
           {this.renderNodeOrder()}
           {this.renderHighlightTopicUpdates()}
@@ -247,7 +213,10 @@ const mapStateToProps = (state: AppState) => {
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    actions: bindActionCreators(settingsActions, dispatch),
+    actions: {
+      settings: bindActionCreators(settingsActions, dispatch),
+      global: bindActionCreators(globalActions, dispatch),
+    }
   }
 }
 
