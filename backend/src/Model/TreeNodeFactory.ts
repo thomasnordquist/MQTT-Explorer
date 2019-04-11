@@ -6,7 +6,7 @@ interface HasLength {
 }
 
 export abstract class TreeNodeFactory {
-  public static insertNodeAtPosition<ViewModel>(edgeNames: string[], node: TreeNode<ViewModel>) {
+  public static insertNodeAtPosition<ViewModel>(edgeNames: Array<string>, node: TreeNode<ViewModel>) {
     let currentNode: TreeNode<ViewModel> = new Tree()
     let edge
     for (const edgeName of edgeNames) {
@@ -19,7 +19,7 @@ export abstract class TreeNodeFactory {
     node.sourceEdge!.target = node
   }
 
-  public static fromEdgesAndValue<ViewModel>(edgeNames: string[], value?: Base64Message | null): TreeNode<ViewModel> {
+  public static fromEdgesAndValue<ViewModel>(edgeNames: Array<string>, value?: Base64Message | null): TreeNode<ViewModel> {
     const node = new TreeNode<ViewModel>()
     node.setMessage({
       value: value || undefined,

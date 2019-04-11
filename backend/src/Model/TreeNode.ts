@@ -67,7 +67,7 @@ export class TreeNode<ViewModel> {
     previous.removeEdge(this.sourceEdge)
   }
 
-  private findChild(edges: string[]): TreeNode<ViewModel> | undefined {
+  private findChild(edges: Array<string>): TreeNode<ViewModel> | undefined {
     if (edges.length === 0) {
       return this
     }

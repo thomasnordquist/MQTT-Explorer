@@ -47,7 +47,7 @@ class IpcMainEventBus implements EventBusInterface {
 
 class IpcRendererEventBus implements EventBusInterface {
   private ipc: IpcRenderer
-  private callbacks: CallbackStore[] = []
+  private callbacks: Array<CallbackStore> = []
 
   constructor(ipc: IpcRenderer) {
     this.ipc = ipc

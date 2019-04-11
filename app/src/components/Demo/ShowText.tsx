@@ -4,7 +4,7 @@ import Key from './Key'
 
 interface State {
   message?: string
-  keys: string[]
+  keys: Array<string>
   location: string
 }
 
@@ -20,7 +20,7 @@ class Demo extends React.Component<{classes: any}, State> {
   }
 
   public componentDidMount() {
-    (window as any).demo.showMessage = (message: string, location: string, duration: number, keys: string[] = []) => {
+    (window as any).demo.showMessage = (message: string, location: string, duration: number, keys: Array<string> = []) => {
       this.clearTimer()
       this.setState({ message, location, keys })
       this.timer = setTimeout(() => this.setState({ message: undefined }), duration)
@@ -59,7 +59,7 @@ class Demo extends React.Component<{classes: any}, State> {
       return null
     }
 
-    let keys: any[] = []
+    let keys: Array<any> = []
     if (this.state.keys.length > 0) {
       keys = this.state.keys.map(key => [<Key key={key} keyboardKey={key} />])
         .reduce((prev, current) => {

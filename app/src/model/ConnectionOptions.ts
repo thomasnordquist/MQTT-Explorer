@@ -21,7 +21,7 @@ export interface ConnectionOptions {
   certValidation: boolean
   selfSignedCertificate?: CertificateParameters
   clientId?: string
-  subscriptions: string[]
+  subscriptions: Array<string>
 }
 
 export function toMqttConnection(options: ConnectionOptions): MqttOptions | undefined {

@@ -6,7 +6,7 @@ export class RingBuffer<T extends Lengthwise> {
   private capacity: number
   private maxItems: number
   private usage: number = 0
-  private items: T[] = []
+  private items: Array<T> = []
   private start: number = 0
   private end: number = 0
 

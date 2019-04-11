@@ -1,7 +1,7 @@
 import { MqttMessage } from '../../../events'
 
 export class ChangeBuffer {
-  private buffer: MqttMessage[] = []
+  private buffer: Array<MqttMessage> = []
   private size = 0
   private maxSize = 100_000_000 // ~100MB
   public length = 0
@@ -27,7 +27,7 @@ export class ChangeBuffer {
     return this.size / this.maxSize
   }
 
-  public popAll(): MqttMessage[] {
+  public popAll(): Array<MqttMessage> {
     const tmpBuffer = this.buffer
     this.buffer = []
     this.size = 0

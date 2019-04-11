@@ -10,7 +10,7 @@ interface HistoryItem {
 }
 
 interface Props {
-  items: HistoryItem[]
+  items: Array<HistoryItem>
   onClick?: (index: number, element: EventTarget) => void
   classes: any
   contentTypeIndicator?: JSX.Element

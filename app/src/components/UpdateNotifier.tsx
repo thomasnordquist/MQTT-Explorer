@@ -1,4 +1,16 @@
+import * as compareVersions from 'compare-versions'
+import * as electron from 'electron'
+import * as os from 'os'
 import * as React from 'react'
+import axios from 'axios'
+import Close from '@material-ui/icons/Close'
+import CloudDownload from '@material-ui/icons/CloudDownload'
+import { AppState } from '../reducers'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { green } from '@material-ui/core/colors'
+import { Theme, withStyles } from '@material-ui/core/styles'
+import { updateNotifierActions } from '../actions'
 
 import {
    Button,
@@ -9,19 +21,6 @@ import {
    SnackbarContent,
    Typography,
 } from '@material-ui/core'
-import { Theme, withStyles } from '@material-ui/core/styles'
-import { green } from '@material-ui/core/colors'
-
-import { AppState } from '../reducers'
-import Close from '@material-ui/icons/Close'
-import CloudDownload from '@material-ui/icons/CloudDownload'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { updateNotifierActions } from '../actions'
-import axios from 'axios'
-import * as compareVersions from 'compare-versions'
-import * as electron from 'electron'
-import * as os from 'os'
 
 interface Props {
   showUpdateNotification: boolean
@@ -32,7 +31,7 @@ interface Props {
 
 interface GithubRelease {
   url: string,
-  assets?: GithubAsset[]
+  assets?: Array<GithubAsset>
   published_at: string // "2019-01-25T20:14:39Z"
   body_html: string
   body: string
@@ -50,7 +49,7 @@ interface GithubAsset {
 }
 
 interface State {
-  newerVersions: GithubRelease[]
+  newerVersions: Array<GithubRelease>
 }
 
 class UpdateNotifier extends React.Component<Props, State> {
@@ -78,14 +77,14 @@ class UpdateNotifier extends React.Component<Props, State> {
     return ownVersionIsBeta || !release.prerelease
   }
 
-  private async fetchReleases(): Promise<GithubRelease[]> {
+  private async fetchReleases(): Promise<Array<GithubRelease>> {
     const res = await axios.get('https://api.github.com/repos/thomasnordquist/mqtt-explorer/releases', {
       headers: {
         accept: 'application/vnd.github.v3.full+json',
       },
     })
 
-    return res.data as GithubRelease[]
+    return res.data as Array<GithubRelease>
   }
 
   private onCloseNotification = (event: React.SyntheticEvent<any>, reason: string) => {

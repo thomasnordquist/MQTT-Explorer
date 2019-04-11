@@ -191,7 +191,7 @@ const styles: StyleRulesCallback<string> = (theme: Theme) => {
     },
     toggleButton: {
       height: '36px',
-    }
+    },
   }
 }
 

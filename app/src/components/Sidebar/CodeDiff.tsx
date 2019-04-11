@@ -19,7 +19,7 @@ class CodeDiff extends React.Component<Props, {}> {
     super(props)
   }
 
-  private renderChangeAmount(changes: Diff.Change[]) {
+  private renderChangeAmount(changes: Array<Diff.Change>) {
     const additions = changes.map(change => (change.added === true) ? (change.count || 0) : 0).reduce((a, b) => a + b)
     const deletions = changes.map(change => (change.removed === true) ? (change.count || 0) : 0).reduce((a, b) => a + b)
     if (additions === 0 && deletions === 0) {

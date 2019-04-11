@@ -12,7 +12,7 @@ export interface MqttOptions {
   tls: boolean
   certValidation: boolean
   clientId?: string
-  subscriptions: string[]
+  subscriptions: Array<string>
   certificateAuthority?: string
 }
 

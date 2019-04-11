@@ -216,7 +216,7 @@ const mapDispatchToProps = (dispatch: any) => {
     actions: {
       settings: bindActionCreators(settingsActions, dispatch),
       global: bindActionCreators(globalActions, dispatch),
-    }
+    },
   }
 }
 

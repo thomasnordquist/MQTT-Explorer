@@ -25,7 +25,6 @@ import {
   withTheme,
 } from '@material-ui/core'
 
-// tslint:disable-next-line
 import { default as AceEditor } from 'react-ace'
 import { AppState } from '../../../reducers'
 import History from '../History'
@@ -52,7 +51,7 @@ interface Props {
 }
 
 interface State {
-  history: Message[]
+  history: Array<Message>
 }
 
 class Publish extends React.Component<Props, State> {
@@ -97,7 +96,7 @@ class Publish extends React.Component<Props, State> {
     // Remove duplicates
     let filteredHistory = this.state.history.filter(e => e.payload !== payload || e.topic !== topic)
     filteredHistory = filteredHistory.slice(-7)
-    const history: Message[] = [...filteredHistory, { topic, payload, sent: new Date() }]
+    const history: Array<Message> = [...filteredHistory, { topic, payload, sent: new Date() }]
     this.setState({ history })
   }
 
