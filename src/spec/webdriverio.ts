@@ -1,6 +1,6 @@
 import * as os from 'os'
 import * as webdriverio from 'webdriverio'
-import mockMqtt, { stop } from './mock-mqtt'
+import mockMqtt, { stop as stopMqtt } from './mock-mqtt'
 import { clearOldTopics } from './scenarios/clearOldTopics'
 import { clearSearch, searchTree } from './scenarios/searchTree'
 import { connectTo } from './scenarios/connect'
@@ -15,6 +15,9 @@ import { showNumericPlot } from './scenarios/showNumericPlot'
 import { showOffDiffCapability } from './scenarios/showOffDiffCapability'
 import { showZoomLevel } from './scenarios/showZoomLevel'
 import { showAdvancedConnectionSettings } from './scenarios/showAdvancedConnectionSettings'
+import { SceneBuilder } from './SceneBuilder'
+import * as fs from 'fs'
+
 import {
   clickOnHistory,
   createFakeMousePointer,
@@ -45,80 +48,111 @@ const options = {
 }
 
 async function doStuff() {
-  console.log('mock mqtt')
+  console.log('Waiting for MQTT Broker on port 1880 (no auth)')
   await mockMqtt()
   console.log('start webdriver')
 
   const browser = await webdriverio.remote(options)
   await createFakeMousePointer(browser)
 
-  await connectTo('127.0.0.1', browser)
+  // Wait for Username input to be visible
+  await browser.$(`//label[contains(text(), "Username")]/..//input`)
+  const scenes = new SceneBuilder()
 
-  await sleep(1000)
+  await scenes.record('connect', async () => {
+    await connectTo('127.0.0.1', browser)
+    await sleep(2000)
+  })
 
-  await sleep(1000)
-  await showText('Topic overview', 2000, browser, 'top')
-  await sleep(2000)
-  await showText('Indicate topic updates', 2000, browser, 'bottom')
-  await sleep(3000)
+  await scenes.record('topic_updates', async () => {
+    await showText('Topic overview', 2000, browser, 'top')
+    await sleep(2000)
+    await showText('Indicate topic updates', 2000, browser, 'bottom')
+    await sleep(3000)
+  })
 
-  await showText('Plot topic history', 2000, browser)
-  await showNumericPlot(browser)
-  await sleep(2000)
+  await scenes.record('numeric_plots', async () => {
+    await showText('Plot topic history', 2000, browser)
+    await showNumericPlot(browser)
+    await sleep(2000)
+  })
 
-  await showJsonPreview(browser)
-  await showText('Formatted messages', 1500, browser, 'top')
-  await sleep(1500)
+  await scenes.record('json-formatting', async () => {
+    await showJsonPreview(browser)
+    await showText('Formatted messages', 1500, browser, 'top')
+    await sleep(1500)
+  })
 
-  await showOffDiffCapability(browser)
-  await hideText(browser)
+  await scenes.record('diffs', async () => {
+    await showOffDiffCapability(browser)
+    await hideText(browser)
+  })
 
-  await showText('Publish topics', 2000, browser, 'top')
-  await clickOnHistory(browser)
-  await publishTopic(browser)
-  await sleep(1000)
+  await scenes.record('publish_topic', async () => {
+    await showText('Publish topics', 2000, browser, 'top')
+    await clickOnHistory(browser)
+    await publishTopic(browser)
+    await sleep(1000)
+  })
 
-  await showText('Write JSON with ease', 2000, browser, 'top')
-  await showJsonFormatting(browser)
-  await sleep(1000)
+  await scenes.record('json_formatting_publish', async () => {
+    await showText('Write JSON with ease', 2000, browser, 'top')
+    await showJsonFormatting(browser)
+    await sleep(1000)
+  })
 
-  await showText('Copy to Clipboard', 2000, browser)
-  await copyTopicToClipboard(browser)
-  await hideText(browser)
-  await copyValueToClipboard(browser)
-  await sleep(1000)
+  await scenes.record('clipboard', async () => {
+    await showText('Copy to Clipboard', 2000, browser)
+    await copyTopicToClipboard(browser)
+    await hideText(browser)
+    await copyValueToClipboard(browser)
+    await sleep(1000)
+  })
 
-  await showText('Search topic hierarchy', 0, browser, 'middle')
-  await searchTree('temp', browser)
-  await hideText(browser)
-  await showText('Topics containing "temp"', 1500, browser)
-  await sleep(1500)
-  await clearSearch(browser)
-  await sleep(1000)
+  await scenes.record('topic_filter', async () => {
+    await showText('Search topic hierarchy', 0, browser, 'middle')
+    await searchTree('temp', browser)
+    await hideText(browser)
+    await showText('Topics containing "temp"', 1500, browser)
+    await sleep(1500)
+    await clearSearch(browser)
+    await sleep(1000)
+  })
 
-  await hideText(browser)
-  await showText('Delete retained topics', 0, browser)
-  await clearOldTopics(browser)
-  await hideText(browser)
+  await scenes.record('delete_retained_topics', async () => {
+    await hideText(browser)
+    await showText('Delete retained topics', 0, browser)
+    await clearOldTopics(browser)
+    await hideText(browser)
+  })
 
-  await showText('Display Options', 2000, browser)
-  await showMenu(browser)
+  await scenes.record('settings', async () => {
+    await showText('Display Options', 2000, browser)
+    await showMenu(browser)
+  })
 
-  await sleep(2000)
-  await disconnect(browser)
+  await scenes.record('customize_subscriptions', async () => {
+    await sleep(2000)
+    await disconnect(browser)
+    await showText('Customize Subscriptions', 3000, browser, 'top')
+    await showAdvancedConnectionSettings(browser)
+  })
 
-  await showText('Customize Subscriptions', 3000, browser, 'top')
-  await showAdvancedConnectionSettings(browser)
+  await scenes.record('keyboard_shortcuts', async () => {
+    await showText('Keyboard shortcuts', 1750, browser, 'middle')
+    await sleep(1750)
+    await showZoomLevel(browser)
+  })
 
-  await showText('Keyboard shortcuts', 1750, browser, 'middle')
-  await sleep(1750)
-  await showZoomLevel(browser)
-
-  await showText('The End', 3000, browser, 'middle')
-  await sleep(3000)
+  await scenes.record('end', async () => {
+    await showText('The End', 3000, browser, 'middle')
+    await sleep(3000)
+  })
 
   browser.closeWindow()
-  stop()
+  stopMqtt()
+
+  fs.writeFileSync('scenes.json', JSON.stringify(scenes.scenes, undefined, '  '))
 }
 
 doStuff()
