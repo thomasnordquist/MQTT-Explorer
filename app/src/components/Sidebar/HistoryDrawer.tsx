@@ -21,7 +21,7 @@ interface State {
   collapsed: boolean
 }
 
-class MessageHistory extends React.Component<Props, State> {
+class HistoryDrawer extends React.Component<Props, State> {
   constructor(props: any) {
     super(props)
     this.state = {
@@ -101,4 +101,4 @@ const styles = (theme: Theme) => ({
   badge: { right: '-25px' },
 })
 
-export default withStyles(styles, { withTheme: true })(MessageHistory)
+export default withStyles(styles, { withTheme: true })(HistoryDrawer)
