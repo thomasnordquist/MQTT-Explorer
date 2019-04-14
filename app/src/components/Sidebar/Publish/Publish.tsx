@@ -1,12 +1,22 @@
-import 'react-ace'
-import 'brace/mode/json'
-import 'brace/mode/text'
-import 'brace/mode/xml'
-import 'brace/theme/monokai'
-import 'brace/theme/dawn'
-
-import * as React from 'react'
 import * as q from '../../../../../backend/src/Model'
+import * as React from 'react'
+import ClearAdornment from '../../helper/ClearAdornment'
+import FormatAlignLeft from '@material-ui/icons/FormatAlignLeft'
+import History from '../HistoryDrawer'
+import Message from './Model/Message'
+import Navigation from '@material-ui/icons/Navigation'
+import { AppState } from '../../../reducers'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { default as AceEditor } from 'react-ace'
+import { globalActions, publishActions } from '../../../actions'
+import { TopicViewModel } from '../../../model/TopicViewModel'
+import 'brace/mode/json'
+import 'brace/theme/dawn'
+import 'brace/theme/monokai'
+import 'brace/mode/xml'
+import 'brace/mode/text'
+import 'react-ace'
 
 import {
   Button,
@@ -25,17 +35,7 @@ import {
   withTheme,
 } from '@material-ui/core'
 
-import { default as AceEditor } from 'react-ace'
-import { AppState } from '../../../reducers'
-import History from '../History'
-import Message from './Model/Message'
-import Navigation from '@material-ui/icons/Navigation'
-import FormatAlignLeft from '@material-ui/icons/FormatAlignLeft'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { publishActions, globalActions } from '../../../actions'
-import ClearAdornment from '../../helper/ClearAdornment'
-import { TopicViewModel } from '../../../model/TopicViewModel'
+const sha1 = require('sha1')
 
 interface Props {
   node?: q.TreeNode<TopicViewModel>
@@ -276,10 +276,10 @@ class Publish extends React.Component<Props, State> {
 
   private history() {
     const items = this.state.history.reverse().map(message => ({
+      key: sha1(message.topic + message.payload),
       title: message.topic,
       value: message.payload || '',
     }))
-
     return <History items={items} onClick={this.didSelectHistoryEntry} />
   }
 

@@ -1,11 +1,8 @@
 import { Base64Message } from './Base64Message'
 import { Edge, Tree, TreeNode } from './'
 
-interface HasLength {
-  length: number
-}
-
 export abstract class TreeNodeFactory {
+  private static messageCounter = 0
   public static insertNodeAtPosition<ViewModel>(edgeNames: Array<string>, node: TreeNode<ViewModel>) {
     let currentNode: TreeNode<ViewModel> = new Tree()
     let edge
@@ -25,7 +22,9 @@ export abstract class TreeNodeFactory {
       value: value || undefined,
       length: value ? value.length : 0,
       received: new Date(),
+      messageNumber: this.messageCounter,
     })
+    this.messageCounter += 1
 
     this.insertNodeAtPosition<ViewModel>(edgeNames, node)
 

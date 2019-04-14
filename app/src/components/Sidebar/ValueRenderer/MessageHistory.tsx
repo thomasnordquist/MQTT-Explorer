@@ -2,9 +2,11 @@ import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
 import BarChart from '@material-ui/icons/BarChart'
 import DateFormatter from '../../helper/DateFormatter'
-import History from '../History'
+import History from '../HistoryDrawer'
 import { TopicViewModel } from '../../../model/TopicViewModel'
 import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
+import Copy from '../../helper/Copy';
+import { selectTextWithCtrlA } from '../../../utils/handleTextSelectWithCtrlA';
 
 const PlotHistory = React.lazy(() => import('./PlotHistory'))
 
@@ -59,10 +61,16 @@ class MessageHistory extends React.Component<Props, State> {
 
     const history = node.messageHistory.toArray()
     let previousMessage: q.Message | undefined = node.message
-    const historyElements = history.reverse().map((message) => {
+    const historyElements = history.reverse().map((message, idx) => {
+      const value = message.value ? Base64Message.toUnicodeString(message.value) : ''
       const element = {
-        title: <span><DateFormatter date={message.received} /> {previousMessage ? <i>(-<DateFormatter date={message.received} intervalSince={previousMessage.received} />)</i> : null}</span>,
-        value: message.value ? Base64Message.toUnicodeString(message.value) : '',
+        value,
+        key: `${message.messageNumber}-${message.received}`,
+        title: (<span>
+          <DateFormatter date={message.received} />
+          {previousMessage ? <i>(-<DateFormatter date={message.received} intervalSince={previousMessage.received} />)</i> : null}
+          <div style={{ float: 'right' }}><Copy value={value} /></div>
+        </span>),
         selected: message && message === this.props.selected,
       }
       previousMessage = message

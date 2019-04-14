@@ -1,10 +1,11 @@
 import * as diff from 'diff'
 import * as Prism from 'prismjs'
 import * as React from 'react'
+import { CodeBlockColors, CodeBlockColorsBraceMonokai } from './CodeBlockColors'
+import { selectTextWithCtrlA } from '../../utils/handleTextSelectWithCtrlA'
 import { Theme, withStyles } from '@material-ui/core'
 import 'prismjs/components/prism-json'
 import 'prismjs/themes/prism-tomorrow.css'
-import { CodeBlockColors, CodeBlockColorsBraceMonokai } from './CodeBlockColors'
 
 interface Props {
   previous: string
@@ -15,6 +16,8 @@ interface Props {
 }
 
 class CodeDiff extends React.Component<Props, {}> {
+  private handleCtrlA = selectTextWithCtrlA({ targetSelector: 'pre' })
+
   constructor(props: Props) {
     super(props)
   }
@@ -58,23 +61,6 @@ class CodeDiff extends React.Component<Props, {}> {
     return this.props.classes.noChange
   }
 
-  private selectText = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    const isCtrlA = (e.metaKey || e.ctrlKey) && e.key === 'a'
-
-    if (isCtrlA && window.getSelection) {
-      e.persist()
-      e.preventDefault()
-      e.stopPropagation()
-      const selection = window.getSelection()
-      const range = document.createRange()
-      range.selectNodeContents((e.target as HTMLElement).getElementsByTagName('pre')[0])
-      if (selection) {
-        selection.removeAllRanges()
-        selection.addRange(range)
-      }
-    }
-  }
-
   public render() {
     const changes = diff.diffLines(this.props.previous, this.props.current)
     const styledLines = Prism.highlight(this.props.current, Prism.languages.json, 'json').split('\n')
@@ -102,8 +88,8 @@ class CodeDiff extends React.Component<Props, {}> {
 
     return (
       <div>
-        <div className={this.props.classes.gutters} tabIndex={0} onKeyDown={this.selectText}>
-          <pre className={`language-json ${this.props.classes.codeBlock}`} >
+        <div className={this.props.classes.gutters} tabIndex={0} onKeyDown={this.handleCtrlA}>
+          <pre className={`language-json ${this.props.classes.codeBlock}`}>
             {code}
           </pre>
         </div>

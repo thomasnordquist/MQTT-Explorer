@@ -1,9 +1,10 @@
 import * as React from 'react'
-
 import { Badge, Typography } from '@material-ui/core'
+import { selectTextWithCtrlA } from '../../utils/handleTextSelectWithCtrlA'
 import { Theme, withStyles } from '@material-ui/core/styles'
 
 interface HistoryItem {
+  key: string
   title: JSX.Element | string
   value: string
   selected?: boolean
@@ -33,6 +34,8 @@ class HistoryDrawer extends React.Component<Props, State> {
     this.setState({ collapsed: !this.state.collapsed })
   }
 
+  private handleCtrlA = selectTextWithCtrlA({targetSelector: 'pre'})
+
   public renderHistory() {
     const style = (element: HistoryItem) => ({
       backgroundColor: element.selected ? this.props.theme.palette.action.selected : this.props.theme.palette.action.hover,
@@ -44,9 +47,10 @@ class HistoryDrawer extends React.Component<Props, State> {
     const messageStyle: React.CSSProperties = { textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }
     const elements = this.props.items.map((element, index) => (
       <div
-        key={index}
+        key={element.key}
         style={style(element)}
         onClick={(event: React.MouseEvent) => this.props.onClick && this.props.onClick(index, event.target)}
+        tabIndex={0} onKeyDown={this.handleCtrlA}
       >
         <div><i>{element.title}</i></div>
         <div style={messageStyle}>

@@ -4,4 +4,5 @@ export interface Message {
   value?: Base64Message
   length: number
   received: Date
+  messageNumber: number
 }
