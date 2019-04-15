@@ -5,7 +5,7 @@ export class TreeNode<ViewModel> {
   public sourceEdge?: Edge<ViewModel>
   public message?: Message
   public mqttMessage?: MqttMessage
-  public messageHistory: RingBuffer<Message> = new RingBuffer<Message>(3000, 100)
+  public messageHistory: RingBuffer<Message> = new RingBuffer<Message>(20000, 100)
   public viewModel?: ViewModel
   public edges: {[s: string]: Edge<ViewModel>} = {}
   public edgeArray: Array<Edge<ViewModel>> = []
