@@ -51,7 +51,7 @@ export class TreeNode<ViewModel> {
   }
 
   private isTopicEmptyLeaf() {
-    const hasNoMessage = (!this.message || !this.message.value)
+    const hasNoMessage = (!this.message || !this.message.value || this.message.value.length === 0)
     return hasNoMessage && this.isLeaf()
   }
 
