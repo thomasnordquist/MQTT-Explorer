@@ -15,6 +15,9 @@ const styles: StyleRulesCallback = theme => ({
     color: theme.palette.primary.contrastText,
     verticalAlign: 'middle' as 'middle',
   },
+  bufferStats: {
+    minWidth: '8em',
+  },
 })
 
 interface Props {
@@ -39,7 +42,7 @@ class PauseButton extends React.Component<Props, {changes: number}> {
     }
 
     return (
-      <span>
+      <span className={this.props.classes.bufferStats}>
         {this.state.changes} changes<br />
         buffer at {Math.round(this.props.tree.unmergedChanges().fillState() * 10000) / 100}%
       </span>

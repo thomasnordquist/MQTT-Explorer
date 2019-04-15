@@ -23,9 +23,10 @@ import PauseButton from './PauseButton'
 const styles: StyleRulesCallback = theme => ({
   title: {
     display: 'none',
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up(750)]: {
       display: 'block',
     },
+    whiteSpace: 'nowrap' as 'nowrap',
   },
   search: {
     position: 'relative',
@@ -36,14 +37,29 @@ const styles: StyleRulesCallback = theme => ({
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
+    flexGrow: 1,
+    maxWidth: '60%',
+
+    [theme.breakpoints.up('md')]: {
+      maxWidth: '30%',
+
+      marginLeft: theme.spacing(4),
+      width: 'auto',
+    },
+    [theme.breakpoints.up(750)]: {
+      marginLeft: theme.spacing(4),
       width: 'auto',
     },
   },
+  disconnectIcon: {
+    [theme.breakpoints.down('xs')]: {
+      display: 'none' as 'none',
+    },
+    marginRight: '8px',
+    paddingLeft: '8px',
+  },
   searchIcon: {
-    width: theme.spacing(8),
+    width: theme.spacing(6),
     height: '100%',
     position: 'absolute',
     pointerEvents: 'none',
@@ -59,7 +75,7 @@ const styles: StyleRulesCallback = theme => ({
     paddingTop: theme.spacing(1),
     paddingRight: theme.spacing(1),
     paddingBottom: theme.spacing(1),
-    paddingLeft: theme.spacing(10),
+    paddingLeft: theme.spacing(6),
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
@@ -132,7 +148,7 @@ class TitleBar extends React.Component<Props, {}> {
           {this.renderSearch()}
           <PauseButton />
           <Button className={classes.disconnect} onClick={actions.connection.disconnect}>
-            Disconnect <CloudOff style={{ marginRight: '8px', paddingLeft: '8px' }}/>
+            Disconnect <CloudOff className={classes.disconnectIcon} />
           </Button>
           <ConnectionHealthIndicator withBackground={true} />
         </Toolbar>
