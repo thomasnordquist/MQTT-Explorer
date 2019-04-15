@@ -36,11 +36,10 @@ interface Props {
   settingsActions: typeof settingsActions
   classes: any
   lastUpdate: number
-}
-
-interface State {
   compareMessage?: q.Message
 }
+
+interface State {}
 
 class ValuePanel extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -58,7 +57,7 @@ class ValuePanel extends React.Component<Props, State> {
       <ValueRenderer
         message={node.message}
         messageHistory={node.messageHistory}
-        compareWith={this.state.compareMessage}
+        compareWith={this.props.compareMessage}
       />
     )
   }
@@ -138,10 +137,10 @@ class ValuePanel extends React.Component<Props, State> {
   }
 
   private handleMessageHistorySelect = (message: q.Message) => {
-    if (message !== this.state.compareMessage) {
-      this.setState({ compareMessage: message })
+    if (message !== this.props.compareMessage) {
+      this.props.sidebarActions.setCompareMessage(message)
     } else {
-      this.setState({ compareMessage: undefined })
+      this.props.sidebarActions.setCompareMessage(undefined)
     }
   }
 
@@ -163,7 +162,7 @@ class ValuePanel extends React.Component<Props, State> {
               {this.renderValue()}
             </React.Suspense>
           </div>
-          <div><MessageHistory onSelect={this.handleMessageHistorySelect} selected={this.state.compareMessage} node={this.props.node} /></div>
+          <div><MessageHistory onSelect={this.handleMessageHistorySelect} selected={this.props.compareMessage} node={this.props.node} /></div>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     )
@@ -181,6 +180,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     valueRendererDisplayMode: state.settings.get('valueRendererDisplayMode'),
     node: state.tree.get('selectedTopic'),
+    compareMessage: state.sidebar.get('compareMessage'),
   }
 }
 

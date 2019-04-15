@@ -1,6 +1,7 @@
 import * as q from '../../../backend/src/Model'
-import { Dispatch } from 'redux'
+import { ActionTypes } from '../reducers/Sidebar'
 import { AppState } from '../reducers'
+import { Dispatch } from 'redux'
 import { makePublishEvent, rendererEvents } from '../../../events'
 
 export const clearRetainedTopic = () => (dispatch: Dispatch<any>, getState: () => AppState) => {
@@ -10,6 +11,13 @@ export const clearRetainedTopic = () => (dispatch: Dispatch<any>, getState: () =
   }
 
   dispatch(clearTopic(selectedTopic, false))
+}
+
+export const setCompareMessage = (message?: q.Message) => (dispatch: Dispatch<any>) => {
+  dispatch({
+    message,
+    type: ActionTypes.SIDEBAR_SET_COMPARE_MESSAGE,
+  })
 }
 
 export const clearTopic = (topic: q.TreeNode<any>, recursive: boolean, subtopicClearLimit = 50) => (dispatch: Dispatch<any>, getState: () => AppState)  => {
@@ -25,7 +33,6 @@ export const clearTopic = (topic: q.TreeNode<any>, recursive: boolean, subtopicC
     retain: true,
     qos: 0 as 0,
   }
-  console.log('deleting', topic.path())
   rendererEvents.emit(publishEvent, mqttMessage)
 
   if (recursive) {

@@ -1,5 +1,6 @@
 import * as q from '../../../backend/src/Model'
 import { ActionTypes } from '../reducers/Tree'
+import { ActionTypes as SidebarActionTypes } from '../reducers/Sidebar'
 import { AnyAction, Dispatch } from 'redux'
 import { AppState } from '../reducers'
 import { batchActions } from 'redux-batched-actions'
@@ -39,6 +40,11 @@ const debouncedSelectTopic = debounce((topic: q.TreeNode<TopicViewModel>, dispat
     selectedTopic: topic,
     type: ActionTypes.TREE_SELECT_TOPIC,
   }
+
+  dispatch({
+    type: SidebarActionTypes.SIDEBAR_SET_COMPARE_MESSAGE,
+    message: undefined,
+  })
 
   if (setTopicDispatch) {
     dispatch(batchActions([selectTreeTopicDispatch, setTopicDispatch]))
