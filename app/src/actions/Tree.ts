@@ -13,19 +13,22 @@ export const selectTopic = (topic: q.TreeNode<TopicViewModel>) => (dispatch: Dis
 }
 
 const debouncedSelectTopic = debounce((topic: q.TreeNode<TopicViewModel>, dispatch: Dispatch<any>, getState: () => AppState) => {
-  const selectedTopic = getState().tree.get('selectedTopic')
-  if (selectedTopic === topic) {
+  const previouslySelectedTopic = getState().tree.get('selectedTopic')
+
+  if (previouslySelectedTopic === topic) {
     return
   }
 
   // Update publish topic
   let setTopicDispatch: any | undefined
-  if (selectedTopic && (selectedTopic.path() === getState().publish.topic || !getState().publish.topic)) {
+  if (!getState().publish.topic) {
+    setTopicDispatch = setTopic(topic.path())
+  } else if (previouslySelectedTopic && (previouslySelectedTopic.path() === getState().publish.topic)) {
     setTopicDispatch = setTopic(topic.path())
   }
 
-  if (selectedTopic && selectedTopic.viewModel) {
-    selectedTopic.viewModel.setSelected(false)
+  if (previouslySelectedTopic && previouslySelectedTopic.viewModel) {
+    previouslySelectedTopic.viewModel.setSelected(false)
   }
 
   if (topic.viewModel) {
