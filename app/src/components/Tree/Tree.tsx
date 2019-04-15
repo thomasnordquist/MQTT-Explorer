@@ -123,9 +123,9 @@ class Tree extends React.PureComponent<Props, State> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    tree: state.tree.tree,
-    paused: state.tree.paused,
-    filter: state.tree.filter,
+    tree: state.tree.get('tree'),
+    paused: state.tree.get('paused'),
+    filter: state.tree.get('filter'),
     host: state.connection.host,
     settings: state.settings,
   }

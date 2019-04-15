@@ -4,7 +4,7 @@ import { AppState } from '../reducers'
 import { makePublishEvent, rendererEvents } from '../../../events'
 
 export const clearRetainedTopic = () => (dispatch: Dispatch<any>, getState: () => AppState) => {
-  const { selectedTopic } = getState().tree
+  const selectedTopic = getState().tree.get('selectedTopic')
   if (!selectedTopic) {
     return
   }

@@ -84,8 +84,8 @@ class PauseButton extends React.Component<Props, {changes: number}> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    paused: state.tree.paused,
-    tree: state.tree.tree,
+    paused: state.tree.get('paused'),
+    tree: state.tree.get('tree'),
   }
 }
 

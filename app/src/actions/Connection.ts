@@ -1,12 +1,13 @@
 import * as q from '../../../backend/src/Model'
 import * as url from 'url'
 import { Action, ActionTypes } from '../reducers/Connection'
+import { Action as SettingsAction, ActionTypes as SettingsActionTypes } from '../reducers/Settings'
 import { AppState } from '../reducers'
 import { DataSourceState, MqttOptions } from '../../../backend/src/DataSource'
 import { Dispatch } from 'redux'
 import { globalActions } from '.'
 import { showError } from './Global'
-import { showTree } from './Tree'
+import { showTree, resetStore as resetTreeStore } from './Tree'
 import { TopicViewModel } from '../model/TopicViewModel'
 import {
   addMqttConnectionEvent,
@@ -52,8 +53,6 @@ const updateHealth = (dataSourceState: DataSourceState) => (dispatch: Dispatch<a
     state = undefined
   }
 
-  console.log(state)
-
   dispatch({
     type: ActionTypes.CONNECTION_SET_HEALTH,
     health: state,
@@ -79,8 +78,13 @@ export const disconnect = () => (dispatch: Dispatch<any>, getState: () => AppSta
   }
 
   tree && tree.stopUpdating()
+  // Clear topic filter
+  dispatch({
+    topicFilter: '',
+    type: SettingsActionTypes.SETTINGS_FILTER_TOPICS,
+  })
 
-  dispatch(showTree(undefined))
+  dispatch(resetTreeStore())
   dispatch({
     type: ActionTypes.CONNECTION_SET_DISCONNECTED,
   })

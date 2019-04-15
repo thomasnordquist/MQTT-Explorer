@@ -185,7 +185,7 @@ class Sidebar extends React.Component<Props, State> {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    node: state.tree.selectedTopic,
+    node: state.tree.get('selectedTopic'),
   }
 }
 

@@ -13,7 +13,7 @@ export const selectTopic = (topic: q.TreeNode<TopicViewModel>) => (dispatch: Dis
 }
 
 const debouncedSelectTopic = debounce((topic: q.TreeNode<TopicViewModel>, dispatch: Dispatch<any>, getState: () => AppState) => {
-  const { selectedTopic } = getState().tree
+  const selectedTopic = getState().tree.get('selectedTopic')
   if (selectedTopic === topic) {
     return
   }
@@ -44,8 +44,14 @@ const debouncedSelectTopic = debounce((topic: q.TreeNode<TopicViewModel>, dispat
   }
 }, 70)
 
-export const showTree = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState): AnyAction => {
-  const visibleTree = getState().tree.tree
+export const resetStore = () => (dispatch: Dispatch<any>): AnyAction => {
+  return dispatch({
+    type: ActionTypes.TREE_RESET_STORE,
+  })
+}
+
+export const showTree = (tree: q.Tree<TopicViewModel> | undefined) => (dispatch: Dispatch<any>, getState: () => AppState): AnyAction => {
+  const visibleTree = getState().tree.get('tree')
   const connectionTree = getState().connection.tree
 
   // Stop updates of old tree
@@ -60,8 +66,8 @@ export const showTree = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatch<a
 }
 
 export const togglePause = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState) => {
-  const paused = getState().tree.paused
-  const tree = getState().tree.tree
+  const paused = getState().tree.get('paused')
+  const tree = getState().tree.get('tree')
   const changes = tree ? tree.unmergedChanges().length : 0
 
   if (paused && changes > 0) {
@@ -79,5 +85,4 @@ export const togglePause = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatc
   dispatch({
     type: paused ? ActionTypes.TREE_RESUME_UPDATES : ActionTypes.TREE_PAUSE_UPDATES,
   })
-
 }
