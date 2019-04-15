@@ -12,6 +12,8 @@ const styles = (theme: Theme) => ({
   button: {
     padding: '6px',
     fontSize: '1.2em',
+    width: '32px',
+    height: '32px',
   },
 })
 

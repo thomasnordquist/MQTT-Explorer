@@ -117,6 +117,7 @@ const style = (theme: Theme) => {
     font: "12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
     display: 'inline-grid' as 'inline-grid',
     margin: '0',
+    padding: '1px 0 2px 0',
   }
 
   return {

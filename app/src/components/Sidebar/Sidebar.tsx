@@ -19,7 +19,6 @@ import {
   ExpansionPanelDetails,
   ExpansionPanelSummary,
   Typography,
-  Tooltip,
   Badge,
 } from '@material-ui/core'
 
@@ -71,7 +70,7 @@ class Sidebar extends React.Component<Props, State> {
 
     return (
       <CustomIconButton onClick={() => this.deleteTopic(this.props.node)} tooltip="Clear this topic">
-        <Delete />
+        <Delete style={{ marginTop: '-3px' }} />
       </CustomIconButton>
     )
   }
@@ -90,7 +89,7 @@ class Sidebar extends React.Component<Props, State> {
         color="secondary"
       >
         <CustomIconButton onClick={() => this.deleteTopic(this.props.node, true, deleteLimit)} tooltip={`Deletes up to ${deleteLimit} sub-topics with a single click`}>
-          <Delete color="action" />
+          <Delete style={{ marginTop: '-3px' }} color="action" />
         </CustomIconButton>
       </Badge>
     )
@@ -195,6 +194,10 @@ const styles: StyleRulesCallback<string> = (theme: Theme) => {
     drawer: {
       display: 'block',
       height: '100%',
+    },
+    badge: {
+      top: '3px',
+      right: '3px',
     },
     valuePaper: {
       margin: theme.spacing(1),
