@@ -7,7 +7,7 @@ import { ConnectionManager } from '../backend/src/index'
 import { electronTelemetryFactory } from 'electron-telemetry'
 import { menuTemplate } from './MenuTemplate'
 import buildOptions from './buildOptions'
-import { waitForDevServer, isDev, runningUiTestOnCi } from './development'
+import { waitForDevServer, isDev, runningUiTestOnCi, loadDevTools } from './development'
 import { shouldAutoUpdate as shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
 
 if (!isDev() && !runningUiTestOnCi()) {
@@ -30,6 +30,7 @@ let mainWindow: BrowserWindow | undefined
 async function createWindow() {
   if (isDev()) {
     await waitForDevServer()
+    loadDevTools()
   }
 
   const iconPath = path.join(__dirname, 'icon.png')

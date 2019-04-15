@@ -1,4 +1,7 @@
+import * as os from 'os'
+import * as path from 'path'
 import axios from 'axios'
+import { BrowserWindow } from 'electron'
 
 export async function waitForDevServer() {
   let response
@@ -11,6 +14,13 @@ export async function waitForDevServer() {
       await new Promise(resolve => setTimeout(resolve, 1000))
     }
   }
+}
+
+export function loadDevTools() {
+  // Redux
+  BrowserWindow.addDevToolsExtension(
+    path.join(os.homedir(), '/Library/Application Support/Google/Chrome/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.17.0_0/')
+  )
 }
 
 export function isDev() {

@@ -11,7 +11,7 @@ import { ThemeProvider } from '@material-ui/styles'
 import './utils/tracking'
 import { themes } from './theme'
 
-const composeEnhancers = /*(window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || */ compose
+const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const store = createStore(
   reducers,
   composeEnhancers(
