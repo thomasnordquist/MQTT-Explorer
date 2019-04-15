@@ -97,7 +97,7 @@ class CodeDiff extends React.Component<Props, {}> {
 
     return (
       <div>
-        <div tabIndex={0} onKeyDown={this.handleCtrlA}>
+        <div tabIndex={0} onKeyDown={this.handleCtrlA} className={this.props.classes.codeWrapper}>
           <pre className={this.props.classes.gutters}>{gutters}</pre>
           <pre className={this.props.classes.codeBlock}>{code}</pre>
         </div>
@@ -109,8 +109,14 @@ class CodeDiff extends React.Component<Props, {}> {
 
 const style = (theme: Theme) => {
   const codeBlockColors = theme.palette.type === 'light' ? CodeBlockColors : CodeBlockColorsBraceMonokai
-  const baseStyle = {
+  const gutterBaseStyle = {
     width: '100%',
+  }
+
+  const codeBaseStyle = {
+    display: 'inline-block' as 'inline-block',
+    font: "12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
+    minHeight: '3em',
   }
 
   return {
@@ -128,17 +134,19 @@ const style = (theme: Theme) => {
       textAlign: 'right' as 'right',
       paddingRight: theme.spacing(0.5),
     },
+    codeWrapper: {
+      maxHeight: '15em',
+      overflow: 'auto',
+    },
     gutters: {
-      backgroundColor: codeBlockColors.gutters,
+      ...codeBaseStyle,
       width: '33px',
-      display: 'inline-block' as 'inline-block',
-      font: "12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
+      backgroundColor: codeBlockColors.gutters,
       userSelect: 'none' as 'none',
     },
     codeBlock: {
-      display: 'inline-block' as 'inline-block',
+      ...codeBaseStyle,
       width: 'calc(100% - 33px)',
-      font: "12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
       backgroundColor: `${codeBlockColors.background} !important`,
       '& span': {
         color: codeBlockColors.text,
@@ -166,17 +174,17 @@ const style = (theme: Theme) => {
       },
     },
     noChange: {
-      ...baseStyle,
+      ...gutterBaseStyle,
     },
     deletion: {
-      ...baseStyle,
+      ...gutterBaseStyle,
       backgroundColor: 'rgba(255, 10, 10, 0.3)',
       '&:hover': {
         backgroundColor: 'rgba(255, 10, 10, 0.6)',
       },
     },
     addition: {
-      ...baseStyle,
+      ...gutterBaseStyle,
       backgroundColor: 'rgba(10, 255, 10, 0.3)',
       '&:hover': {
         backgroundColor: 'rgba(10, 255, 10, 0.5)',
