@@ -26,7 +26,7 @@ const styles: StyleRulesCallback<string> = (theme: Theme) => ({
 
 class Topic extends React.Component<Props, {}> {
   public render() {
-    const { node } = this.props
+    const { node, theme } = this.props
     if (!node) {
       return null
     }
@@ -40,7 +40,8 @@ class Topic extends React.Component<Props, {}> {
           <Button
             onClick={() => this.props.actions.selectTopic(edge!.target)}
             size="small"
-            color="secondary"
+            variant={theme.palette.type === 'light' ? 'contained' : undefined}
+            color={theme.palette.type === 'light' ? 'primary' : 'secondary'}
             className={this.props.classes.button}
             key={edge!.hash()}
           >
@@ -54,7 +55,7 @@ class Topic extends React.Component<Props, {}> {
     }
 
     const joinedBreadCrumps = breadCrumps.reduce((prev, current) =>
-      prev.concat([<span key={key += 1}>/</span>]).concat(current)
+      prev.concat([<span key={key += 1}> / </span>]).concat(current)
     )
 
     return <span style={{ lineHeight: '2.2em' }}>{joinedBreadCrumps}</span>
