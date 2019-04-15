@@ -105,13 +105,13 @@ class Settings extends React.Component<Props, {}> {
   private toggleTheme() {
     const { actions, theme } = this.props
 
-    return <BooleanSwitch title="Dark theme" tooltip="Enable dark theme" value={theme === 'light'} action={actions.settings.toggleTheme} />
+    return <BooleanSwitch title="Dark Theme" tooltip="Enable dark theme" value={theme === 'light'} action={actions.settings.toggleTheme} />
   }
 
   private renderAutoExpand() {
     const { classes, autoExpandLimit } = this.props
 
-    const limits = autoExpandLimitSet.map(limit => <MenuItem key={limit.limit} value={limit.limit}>{limit.name}</MenuItem>)
+    const limits = autoExpandLimitSet.map(limit => <MenuItem key={limit.limit} value={limit.limit}>{limit.limit < 10000 && limit.limit > 0 ? `≤ ${limit.limit} topics` : limit.name}</MenuItem>)
     return (
       <div style={{ padding: '8px', display: 'flex' }}>
         <InputLabel htmlFor="auto-expand" style={{ flex: '1', marginTop: '8px' }}>Auto Expand</InputLabel>
