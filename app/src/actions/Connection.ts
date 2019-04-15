@@ -1,13 +1,13 @@
 import * as q from '../../../backend/src/Model'
 import * as url from 'url'
 import { Action, ActionTypes } from '../reducers/Connection'
-import { Action as SettingsAction, ActionTypes as SettingsActionTypes } from '../reducers/Settings'
+import { ActionTypes as SettingsActionTypes } from '../reducers/Settings'
 import { AppState } from '../reducers'
 import { DataSourceState, MqttOptions } from '../../../backend/src/DataSource'
 import { Dispatch } from 'redux'
 import { globalActions } from '.'
+import { resetStore as resetTreeStore, showTree } from './Tree'
 import { showError } from './Global'
-import { showTree, resetStore as resetTreeStore } from './Tree'
 import { TopicViewModel } from '../model/TopicViewModel'
 import {
   addMqttConnectionEvent,

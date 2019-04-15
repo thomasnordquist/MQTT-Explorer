@@ -71,12 +71,8 @@ class PauseButton extends React.Component<Props, {changes: number}> {
     return (
       <div style={{ display: 'inline-flex' }}>
         <span>
-          <CustomIconButton onClick={this.props.actions.tree.togglePause} >
-            <Tooltip title={message}>
-              <div /* Required so tooltip does not loose the anchor when the icon changes */>
-                {this.props.paused ? <Resume className={this.props.classes.icon} /> : <Pause className={this.props.classes.icon} />}
-              </div>
-            </Tooltip>
+          <CustomIconButton onClick={this.props.actions.tree.togglePause} tooltip={message}>
+            {this.props.paused ? <Resume className={this.props.classes.icon} /> : <Pause className={this.props.classes.icon} />}
           </CustomIconButton>
         </span>
         {this.props.paused ? this.renderBufferStats() : null}

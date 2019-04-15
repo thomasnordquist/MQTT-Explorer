@@ -70,12 +70,8 @@ class Sidebar extends React.Component<Props, State> {
     }
 
     return (
-      <CustomIconButton onClick={() => this.deleteTopic(this.props.node)}>
-        <Tooltip title="Clear this topic">
-          <span>
-            <Delete />
-          </span>
-        </Tooltip>
+      <CustomIconButton onClick={() => this.deleteTopic(this.props.node)} tooltip="Clear this topic">
+        <Delete />
       </CustomIconButton>
     )
   }
@@ -88,17 +84,15 @@ class Sidebar extends React.Component<Props, State> {
     }
 
     return (
-      <CustomIconButton onClick={() => this.deleteTopic(this.props.node, true, deleteLimit)}>
-        <Tooltip title={`Deletes up to ${deleteLimit} sub-topics with a single click`}>
-          <Badge
-            classes={{ badge: this.props.classes.badge }}
-            badgeContent={<span style={{ whiteSpace: 'nowrap' }}>{topicCount >= deleteLimit ? '50+' : topicCount}</span>}
-            color="secondary"
-          >
-            <Delete color="action" />
-          </Badge>
-        </Tooltip>
-      </CustomIconButton>
+      <Badge
+        classes={{ badge: this.props.classes.badge }}
+        badgeContent={<span style={{ whiteSpace: 'nowrap' }}>{topicCount >= deleteLimit ? '50+' : topicCount}</span>}
+        color="secondary"
+      >
+        <CustomIconButton onClick={() => this.deleteTopic(this.props.node, true, deleteLimit)} tooltip={`Deletes up to ${deleteLimit} sub-topics with a single click`}>
+          <Delete color="action" />
+        </CustomIconButton>
+      </Badge>
     )
   }
 

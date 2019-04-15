@@ -48,13 +48,11 @@ class Copy extends React.Component<Props, State> {
 
     return (
       <span>
-        <Tooltip placement="top" title="Copy to clipboard">
-          <span style={{ fontSize: '16px' }}>
-            <CustomIconButton onClick={this.handleClick} >
-              {icon}
-            </CustomIconButton>
-          </span>
-        </Tooltip>
+        <span style={{ fontSize: '16px' }}>
+          <CustomIconButton onClick={this.handleClick} tooltip="Copy to clipboard">
+            {icon}
+          </CustomIconButton>
+        </span>
         <Snackbar
           anchorOrigin={{
             vertical: 'bottom',
