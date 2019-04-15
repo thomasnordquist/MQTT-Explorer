@@ -29,10 +29,13 @@ export const autoExpandLimitSet = [{
   limit: 2,
   name: 'Few',
 }, {
-  limit: 3,
+  limit: 5,
   name: 'Some',
 }, {
   limit: 15,
+  name: 'Most',
+}, {
+  limit: 30,
   name: 'Most',
 }, {
   limit: 1E6,
