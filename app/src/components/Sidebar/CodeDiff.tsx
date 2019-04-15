@@ -5,7 +5,6 @@ import { CodeBlockColors, CodeBlockColorsBraceMonokai } from './CodeBlockColors'
 import { selectTextWithCtrlA } from '../../utils/handleTextSelectWithCtrlA'
 import { Theme, withStyles } from '@material-ui/core'
 import 'prismjs/components/prism-json'
-import 'prismjs/themes/prism-tomorrow.css'
 
 interface Props {
   previous: string
