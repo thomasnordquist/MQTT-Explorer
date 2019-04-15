@@ -15,7 +15,7 @@ interface Props {
 }
 
 class CodeDiff extends React.Component<Props, {}> {
-  private handleCtrlA = selectTextWithCtrlA({ targetSelector: 'pre' })
+  private handleCtrlA = selectTextWithCtrlA({ targetSelector: 'pre ~ pre' })
 
   constructor(props: Props) {
     super(props)
@@ -71,7 +71,7 @@ class CodeDiff extends React.Component<Props, {}> {
       if (hasStyledCode && this.props.language === 'json') {
         const currentLines = styledLines.slice(lineNumber, lineNumber + changedLines)
         const lines = currentLines.map((html: string, idx: number) => {
-          return <div key={`${key}-${idx}`} className={this.props.classes.line}><span className={this.cssClassForChange(change)} dangerouslySetInnerHTML={{ __html: html }} /></div>
+          return <div key={`${key}-${idx}`} className={`${this.props.classes.line} ${this.cssClassForChange(change)}`}><span dangerouslySetInnerHTML={{ __html: html }} /></div>
         })
         lineNumber += changedLines
 
@@ -81,16 +81,25 @@ class CodeDiff extends React.Component<Props, {}> {
       return this.trimNewlineRight(change.value)
         .split('\n')
         .map((line, idx) => {
-          return <div key={`${key}-${idx}`} className={this.props.classes.line}><span className={this.cssClassForChange(change)}>{line}</span></div>
+          return <div key={`${key}-${idx}`} className={`${this.props.classes.line} ${this.cssClassForChange(change)}`}><span>{line}</span></div>
         })
+    })
+
+    const gutters = changes.map((change, key) => {
+      return this.trimNewlineRight(change.value)
+        .split('\n')
+        .map((_, idx) => (
+          <div key={`${key}-${idx}`} className={`${this.cssClassForChange(change)} ${this.props.classes.gutterLine}`}>
+            {change.added ? '+' : null}{change.removed ? '-' : null}{!change.added && !change.removed ? ' ' : null}
+          </div>
+        ))
     })
 
     return (
       <div>
-        <div className={this.props.classes.gutters} tabIndex={0} onKeyDown={this.handleCtrlA}>
-          <pre className={`language-json ${this.props.classes.codeBlock}`}>
-            {code}
-          </pre>
+        <div tabIndex={0} onKeyDown={this.handleCtrlA}>
+          <pre className={this.props.classes.gutters}>{gutters}</pre>
+          <pre className={this.props.classes.codeBlock}>{code}</pre>
         </div>
         {this.renderChangeAmount(changes)}
       </div>
@@ -103,10 +112,6 @@ const style = (theme: Theme) => {
   const baseStyle = {
     width: '100%',
   }
-  const before = {
-    margin: '0 2px 0 -9px',
-    color: codeBlockColors.text,
-  }
 
   return {
     additions: {
@@ -116,15 +121,24 @@ const style = (theme: Theme) => {
       color: 'rgb(255, 10, 10)',
     },
     line: {
-      lineHeight: 'normal',
+      lineHeight: 'normal' as 'normal',
+      paddingLeft: '4px',
+    },
+    gutterLine: {
+      textAlign: 'right' as 'right',
+      paddingRight: theme.spacing(0.5),
     },
     gutters: {
       backgroundColor: codeBlockColors.gutters,
+      width: '33px',
+      display: 'inline-block' as 'inline-block',
+      font: "12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
+      userSelect: 'none' as 'none',
     },
     codeBlock: {
-      fontSize: '12px',
-      maxHeight: '200px',
-      marginLeft: '33px !important',
+      display: 'inline-block' as 'inline-block',
+      width: 'calc(100% - 33px)',
+      font: "12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
       backgroundColor: `${codeBlockColors.background} !important`,
       '& span': {
         color: codeBlockColors.text,
@@ -153,17 +167,10 @@ const style = (theme: Theme) => {
     },
     noChange: {
       ...baseStyle,
-      '&:before': {
-        ...before,
-      },
     },
     deletion: {
       ...baseStyle,
       backgroundColor: 'rgba(255, 10, 10, 0.3)',
-      '&:before': {
-        ...before,
-        content: "'-'",
-      },
       '&:hover': {
         backgroundColor: 'rgba(255, 10, 10, 0.6)',
       },
@@ -173,10 +180,6 @@ const style = (theme: Theme) => {
       backgroundColor: 'rgba(10, 255, 10, 0.3)',
       '&:hover': {
         backgroundColor: 'rgba(10, 255, 10, 0.5)',
-      },
-      '&:before': {
-        ...before,
-        content: "'+'",
       },
     },
   }
