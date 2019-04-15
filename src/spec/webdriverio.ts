@@ -58,7 +58,6 @@ async function doStuff() {
   // Wait for Username input to be visible
   await browser.$(`//label[contains(text(), "Username")]/..//input`)
   const scenes = new SceneBuilder()
-
   await scenes.record('connect', async () => {
     await connectTo('127.0.0.1', browser)
     await sleep(2000)
