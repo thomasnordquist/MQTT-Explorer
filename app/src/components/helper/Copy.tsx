@@ -50,27 +50,25 @@ class Copy extends React.Component<Props, State> {
       <span>
         <Tooltip placement="top" title="Copy to clipboard">
           <span style={{ fontSize: '16px' }}>
-          <CustomIconButton onClick={this.handleClick} >
-            {icon}
-          </CustomIconButton>
+            <CustomIconButton onClick={this.handleClick} >
+              {icon}
+            </CustomIconButton>
           </span>
         </Tooltip>
-        <span>
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-            open={this.state.snackBarOpen}
-            autoHideDuration={2000}
-            onClose={() => { this.setState({ snackBarOpen: false }) }}
-          >
-            <SnackbarContent
-              className={this.props.classes.snackbar}
-              message="Copied to clipboard"
-            />
-          </Snackbar>
-        </span>
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          open={this.state.snackBarOpen}
+          autoHideDuration={2000}
+          onClose={() => { this.setState({ snackBarOpen: false }) }}
+        >
+          <SnackbarContent
+            className={this.props.classes.snackbar}
+            message="Copied to clipboard"
+          />
+        </Snackbar>
       </span>
     )
   }

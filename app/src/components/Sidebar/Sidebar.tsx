@@ -72,7 +72,9 @@ class Sidebar extends React.Component<Props, State> {
     return (
       <CustomIconButton onClick={() => this.deleteTopic(this.props.node)}>
         <Tooltip title="Clear this topic">
-          <Delete />
+          <span>
+            <Delete />
+          </span>
         </Tooltip>
       </CustomIconButton>
     )

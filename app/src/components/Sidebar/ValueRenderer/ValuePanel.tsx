@@ -118,12 +118,12 @@ class ValuePanel extends React.Component<Props, State> {
       <ToggleButtonGroup id="valueRendererDisplayMode" value={this.props.valueRendererDisplayMode} exclusive={true} onChange={handleValue}>
         <ToggleButton className={this.props.classes.toggleButton} value="diff" id="valueRendererDisplayMode-diff">
           <Tooltip title="Show difference between the current and the last message">
-            <Code />
+            <span><Code className={this.props.classes.toggleButtonIcon} /></span>
           </Tooltip>
         </ToggleButton>
         <ToggleButton className={this.props.classes.toggleButton} value="raw" id="valueRendererDisplayMode-raw">
           <Tooltip title="Raw value">
-            <Reorder />
+            <span><Reorder className={this.props.classes.toggleButtonIcon} /></span>
           </Tooltip>
         </ToggleButton>
       </ToggleButtonGroup>
@@ -192,6 +192,9 @@ const styles: StyleRulesCallback<string> = (theme: Theme) => {
     },
     toggleButton: {
       height: '36px',
+    },
+    toggleButtonIcon: {
+      verticalAlign: 'middle',
     },
   }
 }
