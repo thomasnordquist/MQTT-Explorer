@@ -1,12 +1,11 @@
 import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
 import BarChart from '@material-ui/icons/BarChart'
+import Copy from '../../helper/Copy'
 import DateFormatter from '../../helper/DateFormatter'
 import History from '../HistoryDrawer'
-import { TopicViewModel } from '../../../model/TopicViewModel'
 import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
-import Copy from '../../helper/Copy';
-import { selectTextWithCtrlA } from '../../../utils/handleTextSelectWithCtrlA';
+import { TopicViewModel } from '../../../model/TopicViewModel'
 
 const PlotHistory = React.lazy(() => import('./PlotHistory'))
 
@@ -24,13 +23,13 @@ interface State {
 }
 
 class MessageHistory extends React.Component<Props, State> {
-
   private updateNode = throttle(() => {
     this.setState(this.state)
   }, 300)
+
   constructor(props: any) {
     super(props)
-    this.state = { }
+    this.state = {}
   }
 
   private displayMessage = (index: number, eventTarget: EventTarget) => {

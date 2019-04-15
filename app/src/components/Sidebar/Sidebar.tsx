@@ -125,7 +125,7 @@ class Sidebar extends React.Component<Props, State> {
             <Topic node={this.props.node} didSelectNode={this.updateNode} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
-        {<ValuePanel />}
+        <ValuePanel lastUpdate={this.props.node ? this.props.node.lastUpdate : 0} />
         <ExpansionPanel defaultExpanded={true}>
           <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summaryStyle}>
             <Typography className={classes.heading}>Publish</Typography>

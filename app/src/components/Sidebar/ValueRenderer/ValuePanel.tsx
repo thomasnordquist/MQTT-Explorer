@@ -35,6 +35,7 @@ interface Props {
   sidebarActions: typeof sidebarActions
   settingsActions: typeof settingsActions
   classes: any
+  lastUpdate: number
 }
 
 interface State {
