@@ -69,9 +69,11 @@ const styles = (theme: Theme) => ({
     color: theme.palette.type === 'light' ? '#222' : '#eee',
     cursor: 'pointer' as 'pointer',
     paddingRight: theme.spacing(0.25),
+    userSelect: 'none' as 'none',
   },
   collapsedSubnodes: {
     color: theme.palette.text.secondary,
+    userSelect: 'none' as 'none',
   },
 })
 
