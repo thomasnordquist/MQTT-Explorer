@@ -128,7 +128,7 @@ class Sidebar extends React.Component<Props, State> {
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={this.detailsStyle}>
             <React.Suspense fallback={<div>Loading...</div>}>
-              <Publish node={this.props.node} connectionId={this.props.connectionId} />
+              <Publish connectionId={this.props.connectionId} />
             </React.Suspense>
           </ExpansionPanelDetails>
         </ExpansionPanel>

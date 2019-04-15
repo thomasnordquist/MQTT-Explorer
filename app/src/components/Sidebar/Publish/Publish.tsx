@@ -38,7 +38,6 @@ import {
 const sha1 = require('sha1')
 
 interface Props {
-  node?: q.TreeNode<TopicViewModel>
   connectionId?: string
   topic?: string
   payload?: string
