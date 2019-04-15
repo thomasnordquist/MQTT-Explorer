@@ -115,9 +115,8 @@ const style = (theme: Theme) => {
 
   const codeBaseStyle = {
     font: "12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
-    minHeight: '3em',
     display: 'inline-grid' as 'inline-grid',
-    margin: 0,
+    margin: '0',
   }
 
   return {
@@ -139,6 +138,7 @@ const style = (theme: Theme) => {
       maxHeight: '15em',
       overflow: 'auto',
       backgroundColor: `${codeBlockColors.background}`,
+      margin: '8px 0 0 0',
     },
     gutters: {
       ...codeBaseStyle,
