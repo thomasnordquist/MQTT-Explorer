@@ -114,9 +114,10 @@ const style = (theme: Theme) => {
   }
 
   const codeBaseStyle = {
-    display: 'inline-block' as 'inline-block',
     font: "12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
     minHeight: '3em',
+    display: 'inline-grid' as 'inline-grid',
+    margin: 0,
   }
 
   return {
@@ -137,6 +138,7 @@ const style = (theme: Theme) => {
     codeWrapper: {
       maxHeight: '15em',
       overflow: 'auto',
+      backgroundColor: `${codeBlockColors.background}`,
     },
     gutters: {
       ...codeBaseStyle,
@@ -147,7 +149,7 @@ const style = (theme: Theme) => {
     codeBlock: {
       ...codeBaseStyle,
       width: 'calc(100% - 33px)',
-      backgroundColor: `${codeBlockColors.background} !important`,
+      backgroundColor: 'inherit !important',
       '& span': {
         color: codeBlockColors.text,
       },
