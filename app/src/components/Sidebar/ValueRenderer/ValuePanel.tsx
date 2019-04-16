@@ -73,7 +73,7 @@ class ValuePanel extends React.Component<Props, State> {
           size="small"
           color="secondary"
           variant="contained"
-          style={{ marginTop: '-3px', padding: '0px 4px', minHeight: '24px' }}
+          style={{ marginTop: '11px', padding: '0px 4px', minHeight: '24px' }}
           onClick={this.props.sidebarActions.clearRetainedTopic}
         >
           retained <Clear style={{ fontSize: '16px', marginLeft: '2px' }} />
@@ -83,7 +83,7 @@ class ValuePanel extends React.Component<Props, State> {
 
     return (
       <div style={{ width: '100%', display: 'flex', paddingLeft: '8px' }}>
-        <span style={{ marginTop: '-8px', flexGrow: 1 }}>{this.renderActionButtons()}</span>
+        <span style={{ marginTop: '2px', flexGrow: 1 }}>{this.renderActionButtons()}</span>
         <div style={{ flex: 6, textAlign: 'right' }}>
           {this.props.node.mqttMessage.retain ? retainedButton : null}
         </div>
@@ -98,7 +98,7 @@ class ValuePanel extends React.Component<Props, State> {
     }
 
     return (
-      <span style={{ width: '100%', paddingLeft: '8px', flex: 6, marginTop: '-14px' }}>
+      <span style={{ width: '100%', paddingLeft: '8px', flex: 6 }}>
         <Typography style={{ textAlign: 'right' }}>QoS: {this.props.node.mqttMessage.qos}</Typography>
         <Typography style={{ textAlign: 'right' }}><i><DateFormatter date={this.props.node.message.received} /></i></Typography>
       </span>
