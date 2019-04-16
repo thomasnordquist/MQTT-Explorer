@@ -1,8 +1,12 @@
-import * as React from 'react'
 import * as moment from 'moment'
+import * as React from 'react'
+import { AppState } from '../../reducers'
+import { connect } from 'react-redux'
 
 interface Props {
   date: Date
+  overrideLocale?: string
+  locale?: string
   intervalSince?: Date
 }
 
@@ -13,7 +17,6 @@ const unitMapping = {
 }
 
 class DateFormatter extends React.Component<Props, {}> {
-
   private intervalSince(intervalSince: Date) {
     const interval = intervalSince.getTime() - this.props.date.getTime()
     const unit = this.unitForInterval(interval)
@@ -28,22 +31,23 @@ class DateFormatter extends React.Component<Props, {}> {
     return moment(this.props.date).locale(locale).format('L LTS')
   }
 
-  private unitForInterval(millis: number) {
+  private unitForInterval(milliseconds: number) {
     const oneMinute = 1000 * 60
     const oneHour = oneMinute * 60
 
-    if (millis > oneHour * 2) {
+    if (milliseconds > oneHour * 2) {
       return 'h'
     }
 
-    if (millis > oneMinute * 2) {
+    if (milliseconds > oneMinute * 2) {
       return 'm'
     }
 
     return 's'
   }
+
   public render() {
-    const locale = window.navigator.language
+    const locale = this.props.overrideLocale || this.props.locale
     if (this.props.intervalSince) {
       return <span>{this.intervalSince(this.props.intervalSince)}</span>
     }
@@ -51,4 +55,10 @@ class DateFormatter extends React.Component<Props, {}> {
   }
 }
 
-export default DateFormatter
+const mapStateToProps = (state: AppState) => {
+  return {
+    locale: state.settings.get('timeLocale'),
+  }
+}
+
+export default connect(mapStateToProps)(DateFormatter)

@@ -54,6 +54,14 @@ export const setAutoExpandLimit = (autoExpandLimit: number = 0) => (dispatch: Di
   })
 }
 
+export const setTimeLocale = (timeLocale: string) => (dispatch: Dispatch<any>) => {
+  dispatch({
+    timeLocale,
+    type: ActionTypes.SETTINGS_SET_TIME_LOCALE,
+  })
+  dispatch(storeSettings())
+}
+
 export const selectTopicWithMouseOver = (doSelect: boolean) => (dispatch: Dispatch<any>) => {
   dispatch({
     selectTopicWithMouseOver: doSelect,

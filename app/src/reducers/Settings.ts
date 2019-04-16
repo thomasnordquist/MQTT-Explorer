@@ -1,3 +1,4 @@
+import * as moment from 'moment'
 import { createReducer } from './lib'
 import { Record } from 'immutable'
 
@@ -12,6 +13,7 @@ export type ValueRendererDisplayMode = 'diff' | 'raw'
 
 export interface SettingsState {
   autoExpandLimit: number
+  timeLocale: string
   topicOrder: TopicOrder
   topicFilter?: string
   highlightTopicUpdates: boolean
@@ -28,6 +30,7 @@ export type Actions = SetAutoExpandLimitAction
   & SetValueRendererDisplayModeAction
   & SetTheme
   & SetSelectTopicWithMouseOverAction
+  & SetTimeLocale
 
 export enum ActionTypes {
   SETTINGS_SET_AUTO_EXPAND_LIMIT = 'SETTINGS_SET_AUTO_EXPAND_LIMIT',
@@ -39,9 +42,11 @@ export enum ActionTypes {
   SETTINGS_SET_SELECT_TOPIC_WITH_MOUSE_OVER = 'SETTINGS_SET_SELECT_TOPIC_WITH_MOUSE_OVER',
   SETTINGS_SET_THEME_LIGHT = 'SETTINGS_SET_THEME_LIGHT',
   SETTINGS_SET_THEME_DARK = 'SETTINGS_SET_THEME_DARK',
+  SETTINGS_SET_TIME_LOCALE = 'SETTINGS_SET_TIME_LOCALE',
 }
 
 const initialState = Record<SettingsState>({
+  timeLocale: window.navigator.language,
   autoExpandLimit: 0,
   topicOrder: TopicOrder.none,
   highlightTopicUpdates: true,
@@ -65,6 +70,7 @@ const reducerActions: {[s: string]: (state: Record<SettingsState>, action: Actio
   SETTINGS_SET_SELECT_TOPIC_WITH_MOUSE_OVER: setSelectTopicWithMouseOver,
   SETTINGS_SET_THEME_LIGHT: setTheme('light'),
   SETTINGS_SET_THEME_DARK: setTheme('dark'),
+  SETTINGS_SET_TIME_LOCALE: setTimeLocale,
 }
 
 export const settingsReducer = createReducer(initialState(), reducerActions)
@@ -90,6 +96,15 @@ export interface SetSelectTopicWithMouseOverAction {
 
 export function setSelectTopicWithMouseOver(state: Record<SettingsState>, action: SetSelectTopicWithMouseOverAction) {
   return state.set('selectTopicWithMouseOver', !state.get('selectTopicWithMouseOver'))
+}
+
+export interface SetTimeLocale {
+  type: ActionTypes.SETTINGS_SET_TIME_LOCALE
+  timeLocale: string
+}
+
+export function setTimeLocale(state: Record<SettingsState>, action: SetTimeLocale): Record<SettingsState> {
+  return state.set('timeLocale', action.timeLocale)
 }
 
 export interface SetValueRendererDisplayModeAction {

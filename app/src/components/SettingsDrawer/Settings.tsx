@@ -21,6 +21,7 @@ import {
   Typography,
   Tooltip,
 } from '@material-ui/core'
+import TimeLocale from './TimeLocale';
 
 export const autoExpandLimitSet = [{
   limit: 0,
@@ -188,6 +189,7 @@ class Settings extends React.Component<Props, {}> {
         <div>
           {this.renderAutoExpand()}
           {this.renderNodeOrder()}
+          <TimeLocale />
           {this.renderHighlightTopicUpdates()}
           {this.selectTopicsOnMouseOver()}
           {this.toggleTheme()}
