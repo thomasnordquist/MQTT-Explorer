@@ -5,6 +5,7 @@
 [![Build_Status](https://travis-ci.org/thomasnordquist/MQTT-Explorer.svg?branch=master)](https://travis-ci.org/thomasnordquist/MQTT-Explorer)
 [![Build status](https://ci.appveyor.com/api/projects/status/c35tkm29rm4m5364/branch/master?svg=true)](https://ci.appveyor.com/project/thomasnordquist/mqtt-explorer/branch/master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/47b26e03fce543ceac7914214482334a)](https://app.codacy.com/app/thomasnordquist/MQTT-Explorer?utm_source=github.com&utm_medium=referral&utm_content=thomasnordquist/MQTT-Explorer&utm_campaign=Badge_Grade_Dashboard)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fthomasnordquist%2FMQTT-Explorer.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fthomasnordquist%2FMQTT-Explorer?ref=badge_shield)
 
 |   |   |   |
 |:---:|:---:|:---:|
@@ -57,3 +58,6 @@ Compile and execute tests
 npm run build
 node dist/src/spec/webdriverio.js
 ```
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fthomasnordquist%2FMQTT-Explorer.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fthomasnordquist%2FMQTT-Explorer?ref=badge_large)
