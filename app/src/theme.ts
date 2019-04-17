@@ -12,14 +12,14 @@ const baseTheme = {
   },
 }
 
-const lightTheme = createMuiTheme({
+const darkTheme = createMuiTheme({
   ...(baseTheme as any),
   palette: {
     type: 'dark',
   },
 })
 
-const darkTheme = createMuiTheme({
+const lightTheme = createMuiTheme({
   ...(baseTheme as any),
   palette: {
     type: 'light',
