@@ -57,3 +57,10 @@ Compile and execute tests
 npm run build
 node dist/src/spec/webdriverio.js
 ```
+
+## License
+
+![CC-BY-ND 4.0](https://img.shields.io/badge/License-CC%20BY--ND%204.0-blue.svg)  
+[CC-BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0/)
+
+The license is a little restrictive to distributing derived work, this may change in the future if the interest arises or more people work on this project.
