@@ -11,6 +11,13 @@
   - Fix issues with the plot
   - Fix update settings immediatly
   - Improved performance and memory footprint by ~30%
+  - Fix memory leak on search and disconnect
+
+## Papercut fixes
+
+  - Scroll behavior message history
+  - Text selection behavior (Ctrl+A) for value preview and history
+  - Allow to copy values from message history
 
 # 0.2.3
 
