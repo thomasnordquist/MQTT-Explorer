@@ -173,13 +173,6 @@ class TreeNodeComponent extends React.Component<Props, State> {
     this.addSubscriber(treeNode)
   }
 
-  public componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.treeNode !== this.props.treeNode) {
-      this.removeSubscriber(this.props.treeNode)
-      this.addSubscriber(nextProps.treeNode)
-    }
-  }
-
   public componentWillUnmount() {
     const { treeNode } = this.props
     this.removeSubscriber(treeNode)
