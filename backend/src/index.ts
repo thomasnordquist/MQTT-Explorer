@@ -78,7 +78,7 @@ export class ConnectionManager {
 }
 
 class UpdateNotifier {
-  public onCheckUpdateRequest = new EventDispatcher<void, UpdateNotifier>(this)
+  public onCheckUpdateRequest = new EventDispatcher<void, UpdateNotifier>()
   constructor() {
     backendEvents.subscribe(checkForUpdates, () => {
       this.onCheckUpdateRequest.dispatch()

@@ -7,7 +7,7 @@ export interface DataSourceState {
 }
 
 export class DataSourceStateMachine {
-  public onUpdate = new EventDispatcher<DataSourceState, DataSourceStateMachine>(this)
+  public onUpdate = new EventDispatcher<DataSourceState, DataSourceStateMachine>()
   private state: DataSourceState = {
     error: undefined,
     connected: false,

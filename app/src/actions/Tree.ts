@@ -53,20 +53,28 @@ const debouncedSelectTopic = debounce((topic: q.TreeNode<TopicViewModel>, dispat
   }
 }, 70)
 
-export const resetStore = () => (dispatch: Dispatch<any>): AnyAction => {
+function destroyUnreferencedTree(state: AppState) {
+  const visibleTree = state.tree.get('tree')
+  const connectionTree = state.connection.tree
+
+  // Stop updates of old tree
+  if (visibleTree && visibleTree !== connectionTree) {
+    console.warn('destroy')
+    visibleTree.stopUpdating()
+    visibleTree.destroy()
+  }
+}
+
+export const resetStore = () => (dispatch: Dispatch<any>, getState: () => AppState): AnyAction => {
+  destroyUnreferencedTree(getState())
+
   return dispatch({
     type: ActionTypes.TREE_RESET_STORE,
   })
 }
 
 export const showTree = (tree: q.Tree<TopicViewModel> | undefined) => (dispatch: Dispatch<any>, getState: () => AppState): AnyAction => {
-  const visibleTree = getState().tree.get('tree')
-  const connectionTree = getState().connection.tree
-
-  // Stop updates of old tree
-  if (visibleTree !== connectionTree && visibleTree) {
-    visibleTree.stopUpdating()
-  }
+  destroyUnreferencedTree(getState())
 
   return dispatch({
     tree,

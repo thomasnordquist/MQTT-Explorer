@@ -70,7 +70,7 @@ interface State {
   selected: boolean
 }
 
-class TreeNode extends React.Component<Props, State> {
+class TreeNodeComponent extends React.Component<Props, State> {
   private animationDirty: boolean = false
 
   private cssAnimationWasSetAt?: number
@@ -97,8 +97,8 @@ class TreeNode extends React.Component<Props, State> {
     treeNode.viewModel.change.subscribe(this.viewStateHasChanged)
   }
 
-  private viewStateHasChanged = (msg: void, viewModel: TopicViewModel) => {
-    this.setState({ selected: viewModel.isSelected() })
+  private viewStateHasChanged = (msg: void) => {
+    this.setState({ selected: this.props.treeNode.viewModel!.isSelected() })
   }
 
   private removeSubscriber(treeNode: q.TreeNode<TopicViewModel>) {
@@ -243,4 +243,4 @@ class TreeNode extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(TreeNode)
+export default withStyles(styles, { withTheme: true })(TreeNodeComponent)

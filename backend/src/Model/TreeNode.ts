@@ -12,9 +12,9 @@ export class TreeNode<ViewModel> {
   public collapsed = false
   public messages: number = 0
   public lastUpdate: number = Date.now()
-  public onMerge = new EventDispatcher<void, TreeNode<ViewModel>>(this)
-  public onEdgesChange = new EventDispatcher<void, TreeNode<ViewModel>>(this)
-  public onMessage = new EventDispatcher<Message, TreeNode<ViewModel>>(this)
+  public onMerge = new EventDispatcher<void, TreeNode<ViewModel>>()
+  public onEdgesChange = new EventDispatcher<void, TreeNode<ViewModel>>()
+  public onMessage = new EventDispatcher<Message, TreeNode<ViewModel>>()
   public isTree = false
 
   private cachedPath?: string
@@ -97,6 +97,21 @@ export class TreeNode<ViewModel> {
     if (edgesDidUpdate) {
       this.onEdgesChange.dispatch()
     }
+  }
+
+  public destroy() {
+    for (const edge of this.edgeArray) {
+      edge.target.destroy()
+    }
+    this.edgeArray = []
+    this.edges = {}
+    this.cachedChildTopics = []
+    this.sourceEdge = undefined
+    this.onMerge.removeAllListeners()
+    this.onEdgesChange.removeAllListeners()
+    this.onMessage.removeAllListeners()
+    this.messageHistory = new RingBuffer<Message>(1, 1)
+    this.message = undefined
   }
 
   public unconnectedClone() {

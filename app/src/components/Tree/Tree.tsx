@@ -30,7 +30,7 @@ interface State {
   lastUpdate: number
 }
 
-class Tree extends React.PureComponent<Props, State> {
+class TreeComponent extends React.PureComponent<Props, State> {
   private updateTimer?: any
   private perf: number = 0
   private renderTime = 0
@@ -137,4 +137,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Tree)
+export default connect(mapStateToProps, mapDispatchToProps)(TreeComponent)

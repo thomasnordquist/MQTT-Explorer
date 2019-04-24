@@ -7,20 +7,15 @@ interface CallbackStore {
 
 export class EventDispatcher<Message, Dispatcher> {
   private emitter = new EventEmitter()
-  private dispatcher: Dispatcher
   private callbacks: Array<CallbackStore> = []
-
-  constructor(dispatcher: Dispatcher) {
-    this.dispatcher = dispatcher
-  }
 
   public dispatch(msg: Message) {
     this.emitter.emit('event', msg)
   }
 
-  public subscribe(callback: (msg: Message, dispatcher: Dispatcher) => void) {
+  public subscribe(callback: (msg: Message) => void) {
     const wrappedCallback = (msg: Message) => {
-      callback(msg, this.dispatcher)
+      callback(msg)
     }
     this.emitter.on('event', wrappedCallback)
 
@@ -30,7 +25,7 @@ export class EventDispatcher<Message, Dispatcher> {
     })
   }
 
-  public unsubscribe(callback: (msg: Message, dispatcher: Dispatcher) => void) {
+  public unsubscribe(callback: (msg: Message) => void) {
     const item = this.callbacks.find(store => store.callback === callback)
     if (!item) {
       return

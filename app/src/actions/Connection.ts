@@ -78,6 +78,8 @@ export const disconnect = () => (dispatch: Dispatch<any>, getState: () => AppSta
   }
 
   tree && tree.stopUpdating()
+  tree && tree.destroy()
+
   // Clear topic filter
   dispatch({
     topicFilter: '',
@@ -88,4 +90,5 @@ export const disconnect = () => (dispatch: Dispatch<any>, getState: () => AppSta
   dispatch({
     type: ActionTypes.CONNECTION_SET_DISCONNECTED,
   })
+  dispatch(showTree(undefined))
 }

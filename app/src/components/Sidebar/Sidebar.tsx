@@ -35,7 +35,6 @@ interface Props {
 }
 
 interface State {
-  node: q.TreeNode<TopicViewModel>
   compareMessage?: q.Message
   valueRenderWidth: number
 }
@@ -49,8 +48,7 @@ class Sidebar extends React.Component<Props, State> {
 
   constructor(props: any) {
     super(props)
-    console.error('Find and fix me #state')
-    this.state = { node: new q.Tree(), valueRenderWidth: 300 }
+    this.state = { valueRenderWidth: 300 }
   }
 
   private registerUpdateListener(node: q.TreeNode<TopicViewModel>) {
@@ -156,7 +154,6 @@ class Sidebar extends React.Component<Props, State> {
   public componentWillReceiveProps(nextProps: Props) {
     this.props.node && this.removeUpdateListener(this.props.node)
     nextProps.node && this.registerUpdateListener(nextProps.node)
-    this.props.node && this.setState({ node: this.props.node })
 
     if (this.props.node !== nextProps.node) {
       this.setState({ compareMessage: undefined })

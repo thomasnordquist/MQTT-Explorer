@@ -16,7 +16,7 @@ export class Tree<ViewModel> extends TreeNode<ViewModel> {
   public isTree = true
   private cachedHash = `${Math.random()}`
   private unmergedMessages: ChangeBuffer = new ChangeBuffer()
-  public didReceive = new EventDispatcher<void, Tree<ViewModel>>(this)
+  public didReceive = new EventDispatcher<void, Tree<ViewModel>>()
 
   constructor() {
     super(undefined, undefined)
@@ -25,6 +25,13 @@ export class Tree<ViewModel> extends TreeNode<ViewModel> {
   private handleNewData = (msg: MqttMessage) => {
     this.unmergedMessages.push(msg)
     this.didReceive.dispatch()
+  }
+
+  public destroy() {
+    super.destroy()
+    this.updateSource && this.updateSource.unsubscribe(this.subscriptionEvent, this.handleNewData)
+    this.updateSource = undefined
+    this.didReceive.removeAllListeners()
   }
 
   public updateWithConnection(emitter: EventBusInterface, connectionId: string, nodeFilter?: (node: TreeNode<ViewModel>) => boolean) {

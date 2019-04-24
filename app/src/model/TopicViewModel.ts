@@ -2,7 +2,7 @@ import { EventDispatcher } from '../../../events'
 
 export class TopicViewModel {
   private selected: boolean
-  public change = new EventDispatcher<void, TopicViewModel>(this)
+  public change = new EventDispatcher<void, TopicViewModel>()
 
   public constructor() {
     this.selected = false
