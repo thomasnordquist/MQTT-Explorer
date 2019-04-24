@@ -120,12 +120,12 @@ class Settings extends React.Component<Props, {}> {
       <div style={{ padding: '8px', display: 'flex' }}>
         <InputLabel htmlFor="auto-expand" style={{ flex: '1', marginTop: '8px' }}>Auto Expand</InputLabel>
         <Select
-            value={autoExpandLimit}
-            onChange={this.onChangeAutoExpand}
-            input={<Input name="auto-expand" id="auto-expand-label-placeholder" />}
-            name="auto-expand"
-            className={classes.input}
-            style={{ flex: '1' }}
+          value={autoExpandLimit}
+          onChange={this.onChangeAutoExpand}
+          input={<Input name="auto-expand" id="auto-expand-label-placeholder" />}
+          name="auto-expand"
+          className={classes.input}
+          style={{ flex: '1' }}
         >
           {limits}
         </Select>
