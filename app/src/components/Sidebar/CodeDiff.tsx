@@ -182,16 +182,16 @@ const style = (theme: Theme) => {
     deletion: {
       ...gutterBaseStyle,
       backgroundColor: 'rgba(255, 10, 10, 0.3)',
-      '&:hover': {
-        backgroundColor: 'rgba(255, 10, 10, 0.6)',
-      },
+      // '&:hover': {
+      //   backgroundColor: 'rgba(255, 10, 10, 0.3)',
+      // },
     },
     addition: {
       ...gutterBaseStyle,
       backgroundColor: 'rgba(10, 255, 10, 0.3)',
-      '&:hover': {
-        backgroundColor: 'rgba(10, 255, 10, 0.5)',
-      },
+      // '&:hover': {
+      //   backgroundColor: 'rgba(10, 255, 10, 0.5)',
+      // },
     },
   }
 }
