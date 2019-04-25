@@ -14,6 +14,7 @@ module.exports = {
     path: `${__dirname}/build`,
   },
   optimization: {
+    minimize: false,
     splitChunks: {
       chunks: 'all',
       minSize: 30000,
@@ -47,7 +48,7 @@ module.exports = {
   devtool: 'source-map',
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
-    extensions: ['.ts', '.tsx', '.js', '.json'],
+    extensions: ['.ts', '.tsx', '.js', '.json', '.node'],
   },
   module: {
     rules: [
@@ -77,6 +78,15 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.node$/,
+        use: {
+          loader: 'node-loader',
+          options: {
+            modules: true,
+          }
+        }
+      },
     ],
   },
 
@@ -84,7 +94,11 @@ module.exports = {
     new HtmlWebpackPlugin({ template: './index.html', file: './build/index.html', inject: false }),
     // new BundleAnalyzerPlugin(),
     new HardSourceWebpackPlugin(),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /\.\/build\/Debug\/addon/,
+      contextRegExp: /heapdump$/
+    }),
   ],
 
   // When importing a module whose path matches one of the following, just

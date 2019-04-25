@@ -1,8 +1,20 @@
 import * as React from 'react'
 import ShowText from './ShowText'
 import Mouse from './Mouse'
+let heapdump: any
 
-(window as any).demo = {}
+function writeHeapdump(path?: string) {
+  if (!heapdump) {
+    heapdump = require('heapdump')
+  }
+
+  heapdump.writeSnapshot(path || `${Date.now()}.heapsnapshot`)
+  return path
+}
+
+(window as any).demo = {
+  writeHeapdump,
+}
 
 export default function render(props: any) {
   return (

@@ -23,7 +23,10 @@ import {
   createFakeMousePointer,
   hideText,
   showText,
-  sleep
+  sleep,
+  getHeapDump,
+  countInstancesOf,
+  ClassNameMapping
 } from './util'
 
 process.on('unhandledRejection', (error: Error) => {

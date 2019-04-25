@@ -1,7 +1,9 @@
 import { clickOn } from '../util'
 import { Browser } from 'webdriverio'
 
-export async function disconnect(browser: Browser<void>) {
+export async function reconnect(browser: Browser<void>) {
   const disconnectButton = await browser.$('//button/span[contains(text(),"Disconnect")]')
   await clickOn(disconnectButton, browser)
+  const connectButton = await browser.$('//button/span[contains(text(),"Connect")]')
+  await clickOn(connectButton, browser)
 }

@@ -30,16 +30,21 @@ function temperature(base = 18, sineCoefficient = 2, offset = 0) {
   return String(Math.round(temp * 100) / 100)
 }
 
-export function stop() {
+export function stopUpdates() {
   for (const interval of intervals) {
     clearInterval(interval)
   }
+  intervals = []
+}
+
+export function stop() {
+  stopUpdates()
   try {
     client && client.end()
   } catch {}
 }
 
-const intervals: any = []
+let intervals: any = []
 
 function generateData(client: mqtt.MqttClient) {
   client.publish('livingroom/lamp/state', 'on', { retain: true, qos: 0 })

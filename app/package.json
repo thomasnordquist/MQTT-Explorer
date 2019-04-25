@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --mode production",
-    "dev": "node_modules/.bin/webpack-dev-server --mode development --progress"
+    "build": "yarn rebuild && webpack --mode production",
+    "dev": "node_modules/.bin/webpack-dev-server --mode development --progress",
+    "rebuild": "cd node_modules/heapdump && node-gyp rebuild --target=4.1.4 --arch=x64 --dist-url=https://atom.io/download/electron; cd -"
   },
   "author": "",
   "license": "ISC",
@@ -60,7 +61,9 @@
     "awesome-typescript-loader": "^5.2.1",
     "css-loader": "^2.1.0",
     "hard-source-webpack-plugin": "^0.13.1",
+    "heapdump": "^0.3.12",
     "html-webpack-plugin": "^4.0.0-beta.5",
+    "node-loader": "^0.6.0",
     "source-map-loader": "^0.2.4",
     "style-loader": "^0.23.1",
     "typescript": "^3.2.2",

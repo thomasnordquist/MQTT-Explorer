@@ -1,17 +1,27 @@
+import * as fs from 'fs'
 import { Browser, Element } from 'webdriverio'
 export { expandTopic } from './expandTopic'
+
+let fast = false
+export function setFast() {
+  fast = true
+}
 
 export function sleep(ms: number, required = false) {
   return new Promise((resolve) => {
     if (required) {
       setTimeout(resolve, ms)
     } else {
-      setTimeout(resolve, ms)
+      setTimeout(resolve, fast ? 0 : ms)
     }
   })
 }
 
 export async function writeText(text: string, browser: Browser<void>, delay = 0) {
+  if (fast) {
+    return browser.keys(text.split(''))
+  }
+
   for (const c of text.split('')) {
     await browser.keys([c])
     await sleep(delay)
@@ -42,11 +52,12 @@ export async function moveToCenterOfElement(element: Element<void>, browser: Bro
   const targetX = x + width / 2
   const targetY = y + height / 2
 
-  const duration = 500
+  const duration = fast ? 1 : 500
 
   const js = `window.demo.moveMouse(${targetX}, ${targetY}, ${duration});`
   await browser.execute(js)
-  await sleep(duration + 500, true)
+  await sleep(duration)
+  await sleep(20, true)
 
   await element.moveTo()
 }
@@ -73,17 +84,41 @@ export async function createFakeMousePointer(browser: Browser<void>) {
 export async function showText(text: string, duration: number = 0, browser: Browser<void>, location: 'top' | 'bottom' | 'middle' = 'bottom', keys = []) {
   const js = `window.demo.showMessage('${text}', '${location}', ${duration});`
 
-  browser.execute(js)
+  await browser.execute(js)
+}
+
+type HeapDump = any
+
+export async function getHeapDump(browser: Browser<void>): Promise<HeapDump> {
+  const filename = 'heapdump.json'
+  const js = `window.demo.writeHeapdump('${filename}');`
+  await browser.execute(js)
+  const buffer = fs.readFileSync(filename)
+  fs.unlinkSync(filename)
+
+  return JSON.parse(buffer.toString())
+}
+
+export enum ClassNameMapping {
+  TreeNode = 'TreeNode_TreeNode',
+  TreeNodeComponent = 'TreeNode_TreeNodeComponent',
+  Tree = 'Tree_Tree',
+}
+
+export async function countInstancesOf(heapDump: HeapDump, className: ClassNameMapping): Promise<number> {
+  return heapDump.nodes
+    .map((idx: number) => heapDump.strings[idx])
+    .filter((s: string) => s === className).length
 }
 
 export async function showKeys(text: string, duration: number = 0, browser: Browser<void>, location: 'top' | 'bottom' | 'middle' = 'bottom', keys: string[] = []) {
   const js = `window.demo.showMessage('${text}', '${location}', ${duration}, ${JSON.stringify(keys)});`
 
-  browser.execute(js)
+  await browser.execute(js)
 }
 
 export async function hideText(browser: Browser<void>) {
   const js = 'window.demo.hideMessage();'
-  browser.execute(js)
+  await browser.execute(js)
   await sleep(600)
 }

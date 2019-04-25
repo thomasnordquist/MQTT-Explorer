@@ -36,7 +36,7 @@ rm ./app.mp4 || echo no need to delete ./app.mp4
 tmux new-session -d -s record ffmpeg -f x11grab -draw_mouse 0 -video_size $DIMENSIONS -i :$SCR -r 20 -vcodec rawvideo -pix_fmt yuv420p qrawvideorgb24.yuv
 
 # Start tests
-node dist/src/spec/webdriverio.js
+node dist/src/spec/demoVideo.js
 TEST_EXIT_CODE=$?
 echo "Webriver exitet with $TEST_EXIT_CODE"
 
