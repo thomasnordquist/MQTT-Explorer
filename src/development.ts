@@ -18,9 +18,9 @@ export async function waitForDevServer() {
 
 export function loadDevTools() {
   // Redux
-  BrowserWindow.addDevToolsExtension(
-    path.join(os.homedir(), '/Library/Application Support/Google/Chrome/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.17.0_0/')
-  )
+  // BrowserWindow.addDevToolsExtension(
+  //   path.join(os.homedir(), '/Library/Application Support/Google/Chrome/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.17.0_0/')
+  // )
 }
 
 export function isDev() {
