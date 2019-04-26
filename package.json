@@ -70,7 +70,7 @@
     "app-builder-lib": "https://github.com/thomasnordquist/app-builder-lib.git",
     "axios": "^0.18.0",
     "chai": "^4.2.0",
-    "electron": "4",
+    "electron": "5",
     "electron-builder": "^20.38.5",
     "fs-extra": "^7.0.1",
     "mime": "^2.4.0",

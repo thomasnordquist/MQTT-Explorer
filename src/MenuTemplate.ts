@@ -93,9 +93,8 @@ const viewMenu: MenuItemConstructorOptions = {
       click: () => {
         const window = BrowserWindow.getFocusedWindow()
         if (window) {
-          window.webContents.getZoomFactor((zoom) => {
-            window.webContents.setZoomFactor(Math.min(zoom + 0.1, 2.0))
-          })
+          const zoom = window.webContents.getZoomFactor()
+          window.webContents.setZoomFactor(Math.min(zoom + 0.1, 2.0))
         }
       },
     },
@@ -105,9 +104,8 @@ const viewMenu: MenuItemConstructorOptions = {
       click: () => {
         const window = BrowserWindow.getFocusedWindow()
         if (window) {
-          window.webContents.getZoomFactor((zoom) => {
-            window.webContents.setZoomFactor(Math.max(zoom - 0.1, 0.5))
-          })
+          const zoom = window.webContents.getZoomFactor()
+          window.webContents.setZoomFactor(Math.max(zoom - 0.1, 0.5))
         }
       },
     },

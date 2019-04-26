@@ -6,7 +6,7 @@
   "scripts": {
     "build": "yarn rebuild && webpack --mode production",
     "dev": "node_modules/.bin/webpack-dev-server --mode development --progress",
-    "rebuild": "cd node_modules/heapdump && node-gyp rebuild --target=4.1.4 --arch=x64 --dist-url=https://atom.io/download/electron; cd -"
+    "rebuild": "cd node_modules/heapdump && node-gyp rebuild --target=5.0.0 --arch=x64 --dist-url=https://atom.io/download/electron; cd -"
   },
   "author": "",
   "license": "ISC",
