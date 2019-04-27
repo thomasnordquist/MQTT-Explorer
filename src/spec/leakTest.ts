@@ -84,12 +84,14 @@ async function waitForGarbageCollectorToDetermineLeak(browser: any, initialTreeO
   let leak = false
   while (delta < 0) {
     if (lastTreeOccurances !== -1) {
-      await sleep(120000, true)
+      await sleep(10000, true)
     }
     const heapDump = await getHeapDump(browser)
     const currentTreeOccurrances = await countInstancesOf(heapDump, ClassNameMapping.Tree)
     const currentNodeOccurrances = await countInstancesOf(heapDump, ClassNameMapping.TreeNode)
-    if (initialTreeOccurrances !== currentTreeOccurrances || Math.abs(currentNodeOccurrances - initialNodeOccurrances) > 8) {
+
+    // Temporary "leaks" are expected due to React Fibers memoization
+    if (Math.abs(initialTreeOccurrances - currentTreeOccurrances) > 1 || Math.abs(currentNodeOccurrances - initialNodeOccurrances) > 8) {
       console.error('Possible leak detected', initialTreeOccurrances, currentTreeOccurrances, initialNodeOccurrances, currentNodeOccurrances)
       leak = true
     } else {
