@@ -77,6 +77,7 @@ const style = (theme: Theme) => ({
     position: 'fixed' as 'fixed',
     zIndex: 1000000,
     filter: theme.palette.type === 'light' ? undefined : 'invert(100%)',
+    pointerEvents: 'none' as 'none',
   },
 })
 
