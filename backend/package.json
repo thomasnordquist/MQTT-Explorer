@@ -12,7 +12,7 @@
     "postinstall": "yarn build"
   },
   "author": "",
-  "license": "ISC",
+  "license": "CC-BY-ND-4.0",
   "nyc": {
     "include": [
       "src/**/*.ts",
