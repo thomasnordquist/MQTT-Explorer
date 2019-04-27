@@ -78,9 +78,6 @@ const styles: StyleRulesCallback = theme => ({
     paddingLeft: theme.spacing(6),
     transition: theme.transitions.create('width'),
     width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: 200,
-    },
   },
   menuButton: {
     marginLeft: -12,

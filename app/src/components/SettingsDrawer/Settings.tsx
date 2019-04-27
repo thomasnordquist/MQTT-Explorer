@@ -109,7 +109,7 @@ class Settings extends React.Component<Props, {}> {
   private toggleTheme() {
     const { actions, theme } = this.props
 
-    return <BooleanSwitch title="Dark Theme" tooltip="Enable dark theme" value={theme === 'light'} action={actions.settings.toggleTheme} />
+    return <BooleanSwitch title="Dark Mode" tooltip="Enable dark theme" value={theme === 'dark'} action={actions.settings.toggleTheme} />
   }
 
   private renderAutoExpand() {
