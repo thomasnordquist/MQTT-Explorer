@@ -57,7 +57,7 @@ export async function moveToCenterOfElement(element: Element<void>, browser: Bro
   const js = `window.demo.moveMouse(${targetX}, ${targetY}, ${duration});`
   await browser.execute(js)
   await sleep(duration)
-  await sleep(20, true)
+  await sleep(250, true)
 
   await element.moveTo()
 }

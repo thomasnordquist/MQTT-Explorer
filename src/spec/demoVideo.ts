@@ -24,9 +24,6 @@ import {
   hideText,
   showText,
   sleep,
-  getHeapDump,
-  countInstancesOf,
-  ClassNameMapping
 } from './util'
 
 process.on('unhandledRejection', (error: Error) => {
@@ -58,8 +55,14 @@ async function doStuff() {
   const browser = await webdriverio.remote(options)
   await createFakeMousePointer(browser)
 
+
   // Wait for Username input to be visible
-  await browser.$(`//label[contains(text(), "Username")]/..//input`)
+  let inputField = undefined
+  let start = Date.now()
+  let maxWaitDuration = 30000
+  while ((!inputField || !inputField.isExisting) && ((Date.now() - start) < maxWaitDuration)) {
+    inputField = await browser.$(`//label[contains(text(), "Username")]/..//input`)
+  }
   const scenes = new SceneBuilder()
   await scenes.record('connect', async () => {
     await connectTo('127.0.0.1', browser)
