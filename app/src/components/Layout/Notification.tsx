@@ -37,7 +37,7 @@ class Notification extends React.Component<Props, {}> {
       <Snackbar
         anchorOrigin={snackbarAnchor}
         open={Boolean(this.props.message)}
-        autoHideDuration={this.props.type === 'error' ? 10000 : 3000}
+        autoHideDuration={this.props.type === 'error' ? 10000 : 2000}
         onClose={this.props.onClose}
       >
         <SnackbarContent
