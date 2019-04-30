@@ -35,7 +35,7 @@ async function createWindow() {
     loadDevTools()
   }
 
-  const iconPath = path.join(__dirname, 'icon.png')
+  const iconPath = path.join(__dirname, '..', '..', 'icon.png')
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1024,
