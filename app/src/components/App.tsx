@@ -89,6 +89,12 @@ class App extends React.PureComponent<Props, {}> {
 
 const styles = (theme: Theme) => {
   const drawerWidth = 300
+  const contentBaseStyle = {
+    width: '100vw',
+    overflow: 'hidden' as 'hidden',
+    backgroundColor: theme.palette.background.default,
+  }
+
   return {
     heightProperty: {
       height: 'calc(100vh - 64px) !important',
@@ -106,9 +112,7 @@ const styles = (theme: Theme) => {
       overflow: 'hidden' as 'hidden',
     },
     content: {
-      width: '100vw',
-      overflowX: 'hidden' as 'hidden',
-      backgroundColor: theme.palette.background.default,
+      ...contentBaseStyle,
       transition: theme.transitions.create('transform', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -116,9 +120,7 @@ const styles = (theme: Theme) => {
       transform: 'translateX(0px)',
     },
     contentShift: {
-      overflowX: 'hidden' as 'hidden',
-      width: '100vw',
-      padding: 0,
+      ...contentBaseStyle,
       backgroundColor: theme.palette.background.default,
       transition: theme.transitions.create('transform', {
         easing: theme.transitions.easing.easeOut,
