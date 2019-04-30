@@ -2,40 +2,35 @@ import * as React from 'react'
 import Check from '@material-ui/icons/Check'
 import CustomIconButton from './CustomIconButton'
 import FileCopy from '@material-ui/icons/FileCopy'
-import green from '@material-ui/core/colors/green'
-import { Snackbar, SnackbarContent, Tooltip } from '@material-ui/core'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { globalActions } from '../../actions'
 
 const copy = require('copy-text-to-clipboard')
 
 interface Props {
   value: string
-  classes: any
+  actions: {
+    global: typeof globalActions
+  }
 }
 
 interface State {
   didCopy: boolean
-  snackBarOpen: boolean
 }
-
-const styles = (theme: Theme) => ({
-  snackbar: {
-    backgroundColor: green[600],
-    color: theme.typography.button.color,
-  },
-})
 
 class Copy extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
-    this.state = { didCopy: false, snackBarOpen: false }
+    this.state = { didCopy: false }
   }
 
   private handleClick = (event: React.MouseEvent) => {
     event.stopPropagation()
 
     copy(this.props.value)
-    this.setState({ didCopy: true, snackBarOpen: true })
+    this.props.actions.global.showNotification('Copied to clipboard')
+    this.setState({ didCopy: true })
     setTimeout(() => {
       this.setState({ didCopy: false })
     }, 1500)
@@ -53,23 +48,17 @@ class Copy extends React.Component<Props, State> {
             {icon}
           </CustomIconButton>
         </span>
-        <Snackbar
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          open={this.state.snackBarOpen}
-          autoHideDuration={2000}
-          onClose={() => { this.setState({ snackBarOpen: false }) }}
-        >
-          <SnackbarContent
-            className={this.props.classes.snackbar}
-            message="Copied to clipboard"
-          />
-        </Snackbar>
       </span>
     )
   }
 }
 
-export default withStyles(styles)(Copy)
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: {
+      global: bindActionCreators(globalActions, dispatch),
+    },
+  }
+}
+
+export default connect(undefined, mapDispatchToProps)(Copy)
