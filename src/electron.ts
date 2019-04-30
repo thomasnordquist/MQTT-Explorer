@@ -42,6 +42,7 @@ async function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       devTools: true,
+      sandbox: false,
     },
     icon: iconPath,
   })
