@@ -14,6 +14,8 @@ if (!isDev() && !runningUiTestOnCi()) {
   const electronTelemetry = electronTelemetryFactory('9b0c8ca04a361eb8160d98c5', buildOptions)
 }
 
+app.commandLine.appendSwitch('--no-sandbox')
+
 autoUpdater.logger = log
 log.info('App starting...')
 
