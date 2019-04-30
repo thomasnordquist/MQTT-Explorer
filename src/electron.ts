@@ -51,7 +51,7 @@ async function createWindow() {
 
   mainWindow.once('ready-to-show', () => {
     if (mainWindow) {
-      runningUiTestOnCi && mainWindow.setFullScreen(true)
+      runningUiTestOnCi() && mainWindow.setFullScreen(true)
       mainWindow.show()
     }
   })
