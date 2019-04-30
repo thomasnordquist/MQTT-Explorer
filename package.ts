@@ -1,6 +1,7 @@
 import * as builder from 'electron-builder'
 import * as fs from 'fs'
 import * as path from 'path'
+import * as dotProp from 'dot-prop'
 
 const linuxAppImage: builder.CliOptions = {
   x64: true,
@@ -53,7 +54,7 @@ const mac: builder.CliOptions = {
   armv7l: false,
   arm64: false,
   projectDir: './build/clean',
-  publish: 'always',
+  publish: 'never',
 }
 
 async function executeBuild() {
@@ -88,20 +89,36 @@ type Packages = 'portable' | 'nsis' | 'appx' | 'AppImage' | 'snap' | 'dmg' | 'zi
 
 async function buildWithOptions(options: builder.CliOptions, buildInfo: BuildInfo) {
   fs.writeFileSync(path.join(options.projectDir!, 'buildOptions.json'), JSON.stringify(buildInfo))
-  ensureAppNameForPackage(options, buildInfo.package)
 
-  await builder.build({
-    ...options,
-    [buildInfo.platform]: [buildInfo.package],
-  })
-}
-
-// AppX must hav a different name since the store name is already taken (but not used)
-function ensureAppNameForPackage(options: builder.CliOptions, packageOption: Packages) {
   const jsonLocation = path.join((options.projectDir as string), 'package.json')
+  const packageJsonStr = fs.readFileSync(jsonLocation).toString()
+
   const packageJson = JSON.parse(fs.readFileSync(jsonLocation).toString())
-  packageJson.build.productName = packageOption === 'appx' ? 'MQTT-Explorer' : 'MQTT Explorer'
-  fs.writeFileSync(jsonLocation, JSON.stringify(packageJson, undefined, '  '))
+
+  // AppX must have a different name since the store name is already taken (but not used)
+  if (buildInfo.package === 'appx') {
+    dotProp.set(packageJson, 'build.productName', 'MQTT-Explorer')
+  }
+
+  if (buildInfo.platform === 'mac') {
+    console.log(buildInfo.package)
+    const provisioningProfile = (buildInfo.package === 'mas') ? 'res/MQTT_Explorer_Store_Distribution_Profile.provisionprofile' : 'res/MQTTExplorerdmg.provisionprofile'
+    dotProp.set(packageJson, 'build.mac.provisioningProfile', provisioningProfile)
+  }
+
+  try {
+    // Write modified package.json
+    fs.writeFileSync(jsonLocation, JSON.stringify(packageJson))
+    await builder.build({
+      ...options,
+      [buildInfo.platform]: [buildInfo.package],
+    })
+  } catch (error) {
+    throw error
+  } finally {
+    // Roll back changes to package.json
+    fs.writeFileSync(jsonLocation, packageJsonStr)
+  }
 }
 
 function build() {

@@ -32,7 +32,6 @@
       "publish": [
         "github"
       ],
-      "provisioningProfile": "res/MQTT_Explorer_Store_Distribution_Profile.provisionprofile",
       "entitlements": "res/entitlements.mas.plist"
     },
     "linux": {
@@ -91,6 +90,7 @@
   },
   "dependencies": {
     "about-window": "^1.12.1",
+    "dot-prop": "^5.0.0",
     "electron-log": "^2.2.17",
     "electron-telemetry": "git+https://github.com/thomasnordquist/electron-telemetry.git#dist",
     "electron-updater": "^4.0.6",
