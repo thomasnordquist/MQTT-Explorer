@@ -54,7 +54,7 @@ const mac: builder.CliOptions = {
   armv7l: false,
   arm64: false,
   projectDir: './build/clean',
-  publish: 'never',
+  publish: 'always',
 }
 
 async function executeBuild() {
