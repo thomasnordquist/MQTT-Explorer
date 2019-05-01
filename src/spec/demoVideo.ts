@@ -152,6 +152,7 @@ async function doStuff() {
   stopMqtt()
 
   fs.writeFileSync('scenes.json', JSON.stringify(scenes.scenes, undefined, '  '))
+  process.exit(0)
 }
 
 doStuff()
