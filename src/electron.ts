@@ -38,8 +38,8 @@ async function createWindow() {
   const iconPath = path.join(__dirname, '..', '..', 'icon.png')
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 1024,
-    height: 720,
+    width: 1920 / 2,
+    height: 1080 / 2 + 22,
     show: false,
     webPreferences: {
       nodeIntegration: true,

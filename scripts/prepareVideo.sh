@@ -1,5 +1,5 @@
 #!/bin/bash
-DIMENSIONS="1024x720"
+DIMENSIONS=$1
 GIF_SCALE="1024"
 
 ffmpeg -s:v $DIMENSIONS -r 20 -f rawvideo -pix_fmt yuv420p -i qrawvideorgb24.yuv app2.mp4
@@ -18,10 +18,10 @@ ffmpeg -s:v $DIMENSIONS -r 20 -f rawvideo -pix_fmt yuv420p -i qrawvideorgb24.yuv
 ffmpeg -y -s:v $DIMENSIONS -r 20 -f rawvideo -pix_fmt yuv420p -i qrawvideorgb24.yuv -vf "fps=10,scale=$GIF_SCALE:-1:flags=lanczos,palettegen" palette1024.png
 
 # Create gif
-ffmpeg -s:v $DIMENSIONS -r 20 -f rawvideo -pix_fmt yuv420p -i qrawvideorgb24.yuv -i palette1024.png -ss $END_OF_BLACK -filter_complex "fps=10,scale=$GIF_SCALE:-1:flags=lanczos[x];[x][1:v]paletteuse" app720.gif
+ffmpeg -s:v $DIMENSIONS -r 20 -f rawvideo -pix_fmt yuv420p -i qrawvideorgb24.yuv -i palette1024.png -ss $END_OF_BLACK -filter_complex "fps=10,scale=$GIF_SCALE:-1:flags=lanczos[x];[x][1:v]paletteuse" app.gif
 
 # Clean up
 rm ffmpeg_info palette*.png qrawvideorgb24.yuv
 
-mv app.mp4 ui-test.mp4
-mv app720.gif ui-test.gif
+mv app.mp4 ui-test_$DIMENSIONS.mp4
+mv appgif ui-test_$DIMENSIONS.gif

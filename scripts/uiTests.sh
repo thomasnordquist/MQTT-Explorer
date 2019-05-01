@@ -9,7 +9,7 @@ function finish {
 
 trap finish EXIT
 
-DIMENSIONS="1024x720"
+DIMENSIONS=$1
 SCR=99
 # Start new window manager
 Xvfb :$SCR -screen 0 "$DIMENSIONS"x24 -ac &
@@ -47,6 +47,6 @@ tmux send-keys -t record q
 sleep 5
 
 # Process the video
-./scripts/prepareVideo.sh
+./scripts/prepareVideo.sh $DIMENSIONS
 
 exit $TEST_EXIT_CODE

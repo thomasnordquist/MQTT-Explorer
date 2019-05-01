@@ -41,7 +41,7 @@ const options = {
     browserName: 'electron',
     chromeOptions: {
       binary: `${__dirname}/../../../node_modules/.bin/electron`,
-      args: [`--app=${__dirname}/../../..`, '--force-device-scale-factor=1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-extensions'].concat(runningUiTestOnCi),
+      args: [`--app=${__dirname}/../../..`, '--force-device-scale-factor=2', '--no-sandbox', '--disable-dev-shm-usage', '--disable-extensions'].concat(runningUiTestOnCi),
     },
     windowTypes: ['app', 'webview'],
   },
