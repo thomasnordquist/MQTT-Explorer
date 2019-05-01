@@ -1,13 +1,15 @@
 import * as FileAsync from 'lowdb/adapters/FileAsync'
+import * as fs from 'fs-extra'
 import * as lowdb from 'lowdb'
+import * as path from 'path'
 import { backendEvents } from '../../events'
 import {
+  makeStorageAcknowledgementEvent,
   makeStorageResponseEvent,
   storageClearEvent,
   storageLoadEvent,
-  storageStoreEvent,
-  makeStorageAcknowledgementEvent
-} from '../../events/StorageEvents'
+  storageStoreEvent
+  } from '../../events/StorageEvents'
 
 export default class ConfigStorage {
   private file: string
@@ -17,6 +19,10 @@ export default class ConfigStorage {
   }
 
   private async getDb() {
+    const pathInfo = path.parse(this.file)
+
+    // Ensure that Settings dir exists
+    await fs.mkdirp(pathInfo.dir)
     const adapter = new FileAsync(this.file)
     if (!this.database) {
       this.database = await lowdb(adapter)
