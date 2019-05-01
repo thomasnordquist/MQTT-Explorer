@@ -56,12 +56,7 @@ async function doStuff() {
   await createFakeMousePointer(browser)
 
   // Wait for Username input to be visible
-  let inputField = undefined
-  let start = Date.now()
-  let maxWaitDuration = 30000
-  while ((!inputField || !inputField.isExisting) && ((Date.now() - start) < maxWaitDuration)) {
-    inputField = await browser.$(`//label[contains(text(), "Username")]/..//input`)
-  }
+  await browser.$('//label[contains(text(), "Username")]/..//input')
   const scenes = new SceneBuilder()
   await scenes.record('connect', async () => {
     await connectTo('127.0.0.1', browser)
@@ -69,10 +64,10 @@ async function doStuff() {
   })
 
   await scenes.record('topic_updates', async () => {
-    await showText('Topic overview', 2000, browser, 'top')
-    await sleep(2000)
-    await showText('Indicate topic updates', 2000, browser, 'bottom')
-    await sleep(3000)
+    await showText('Topic overview', 1000, browser, 'top')
+    await sleep(1000)
+    await showText('Indicate topic updates', 1000, browser, 'middle')
+    await sleep(1000)
   })
 
   await scenes.record('numeric_plots', async () => {
@@ -138,7 +133,7 @@ async function doStuff() {
   await scenes.record('customize_subscriptions', async () => {
     await sleep(2000)
     await disconnect(browser)
-    await showText('Customize Subscriptions', 3000, browser, 'top')
+    await showText('Customize Subscriptions', 1000, browser, 'top')
     await showAdvancedConnectionSettings(browser)
   })
 

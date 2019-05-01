@@ -10,9 +10,11 @@ export async function showJsonFormatting(browser: Browser<void>) {
   const payloadInput = await browser.$('//*[contains(@class, "ace_text-input")]')
   await clickOn(editor, browser)
   await browser.keys(['\uE009', 'A']) // Ctrl + A
+  await sleep(200)
   await browser.keys(['\uE000']) // End keyboard modifier
+  await sleep(200)
   await browser.keys(['\uE003']) // Backspace
-  await sleep(500)
+  await sleep(200)
   await writeTextPayload(payloadInput, '{"action": "setState", "state": "on" }')
   await sleep(300)
   await clickOn(formatJsonButton, browser)
