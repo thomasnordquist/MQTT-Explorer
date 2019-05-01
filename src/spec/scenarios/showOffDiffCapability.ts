@@ -14,8 +14,8 @@ export async function showOffDiffCapability(browser: Browser<void>) {
   const diffMessages = await browser.$('#valueRendererDisplayMode-diff')
   await clickOn(diffMessages, browser)
 
-  // const firstEntry = await browser.$('//span[contains(text(), "History")]/../../div/div[1]/div')
-  const secondEntry = await browser.$('//span[contains(text(), "History")]/../../div/div[2]/div')
-  await clickOn(secondEntry, browser)
-  await sleep(2000)
+  // // const firstEntry = await browser.$('//span[contains(text(), "History")]/../../div/div[1]/div')
+  // const secondEntry = await browser.$('//span[contains(text(), "History")]/../../div/div[2]/div')
+  // await clickOn(secondEntry, browser)
+  // await sleep(2000)
 }
