@@ -4,9 +4,38 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/c35tkm29rm4m5364/branch/master?svg=true)](https://ci.appveyor.com/project/thomasnordquist/mqtt-explorer/branch/master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/47b26e03fce543ceac7914214482334a)](https://app.codacy.com/app/thomasnordquist/MQTT-Explorer?utm_source=github.com&utm_medium=referral&utm_content=thomasnordquist/MQTT-Explorer&utm_campaign=Badge_Grade_Dashboard)
 
-|   |   |   |
-|:---:|:---:|:---:|
-| [![screen1_small](https://user-images.githubusercontent.com/7721625/53954800-84b34c00-40d7-11e9-842d-bf655c569600.jpg)](https://user-images.githubusercontent.com/7721625/53954364-52551f00-40d6-11e9-93cf-d5a9601897ea.png) | [![screen2_small](https://user-images.githubusercontent.com/7721625/53954801-84b34c00-40d7-11e9-913a-42572e675620.jpg)](https://user-images.githubusercontent.com/7721625/53954365-52551f00-40d6-11e9-823f-afd66f19ed01.png) | [![screen3_small](https://user-images.githubusercontent.com/7721625/53954802-854be280-40d7-11e9-973c-08f23c8dbf89.jpg)](https://user-images.githubusercontent.com/7721625/53954366-52551f00-40d6-11e9-9738-74db830d03ac.png) |
+<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="2500">
+<ol class="carousel-indicators">
+<li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+<li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+<li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+</ol>
+<div class="carousel-inner">
+<div class="carousel-item active">
+<a href="./img/screen2.png"><img src="./img/screen2_small.png" /></a>
+</div>
+<div class="carousel-item">
+<a href="./img/screen3.png"><img src="./img/screen3_small.png" /></a>
+</div>
+<div class="carousel-item">
+<a href="./img/screen-composite.png"><img src="./img/screen-composite_small.png" /></a>
+</div>
+</div>
+<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+<span class="sr-only">Previous</span>
+</a>
+<a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+<span class="carousel-control-next-icon" aria-hidden="true"></span>
+<span class="sr-only">Next</span>
+</a>
+</div>
+
+<span class="slider">
+  <a href="./img/screen2.png"><img src="./img/screen2_small.png" /></a>
+  <a href="./img/screen3.png"><img src="./img/screen3_small.png" /></a>
+  <a href="./img/screen-composite.png"><img src="./img/screen-composite_small.png" /></a>
+</span>
 
 ## Version {{ version }}
 
@@ -22,6 +51,7 @@ MQTT Explorer is a comprehensive MQTT client that provides a structured overview
 - Publish topics
 - Plot numeric topics
 - Retain a history of each topic
+- Dark/Light Themes
 - ... [See Changelog to see all features](./Changelog)
 
 The hierarchical view makes this tool so easy to use and differentiates the **MQTT Explorer** from other great MQTT clients like [MQTTLens](https://chrome.google.com/webstore/detail/mqttlens/hemojaaeigabkbcookmlgmdigohjobjm), [MQTTBox](http://workswithweb.com/mqttbox.html) and [MQTT.fx](https://mqttfx.jensd.de/).  

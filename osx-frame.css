@@ -43,14 +43,14 @@
 }
 
 .buttons {
-  padding-left: 8px;
+  padding-left: 10px;
   padding-top: 3px;
   float: left;
   line-height: 0px;
 }
 
-.buttons:hover a {
-  visibility: visible;
+.buttons div {
+  float: left;
 }
 
 .close {
@@ -61,6 +61,7 @@
   border: 1px solid #e33e41;
   border-radius: 50%;
   display: inline-block;
+  opacity: 1;
 }
 
 .close:active {
@@ -82,7 +83,7 @@
   background: #ffbd4c;
   font-size: 9pt;
   line-height: 11px;
-  margin-left: 4px;
+  margin-left: 6px;
   width: 11px;
   height: 11px;
   border: 1px solid #e09e3e;

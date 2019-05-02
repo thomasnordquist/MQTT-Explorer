@@ -3,21 +3,19 @@
 # Upcoming Release
 
   - Add a pause function
-  - Buffer changes while in pause mode
   - Add light / dark themes
-  - Allow pinning self-signed-certificates
   - Add localized date formatting
+  - Allow pinning self-signed-certificates
+  - Allow copying values from the message history
+  - Buffer changes while in pause mode
   - Improve layout
-  - Fix issues with the plot
-  - Fix update settings immediatly
-  - Improved performance and memory footprint by ~30%
-  - Fix memory leak on search and disconnect
-
-## Papercut fixes
-
-  - Scroll behavior message history
-  - Text selection behavior (Ctrl+A) for value preview and history
-  - Allow to copy values from message history
+  - Improve numeric plot layout and smooth curves
+  - Improve scroll behavior message history
+  - Improve performance and memory footprint by ~30%
+  - Improve text selection behavior (Ctrl+A) for value preview and history
+  - Immediately apply changed settings
+  - Fix memory leak on search and disconnect - Deactivate auto-update for Windows portable releases.
+  - Fix OSX code-signing and auto-update
 
 # 0.2.3
 
