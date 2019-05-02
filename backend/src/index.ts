@@ -1,18 +1,14 @@
 import { Base64Message } from './Model/Base64Message'
 import { DataSource, MqttSource } from './DataSource'
-import { UpdateInfo } from 'builder-util-runtime'
 import {
   AddMqttConnection,
-  EventDispatcher,
   MqttMessage,
   addMqttConnectionEvent,
   backendEvents,
-  checkForUpdates,
   makeConnectionMessageEvent,
   makeConnectionStateEvent,
   makePublishEvent,
   removeConnection,
-  updateAvailable
 } from '../../events'
 
 export class ConnectionManager {
@@ -76,17 +72,3 @@ export class ConnectionManager {
       .forEach(conenctionId => this.removeConnection(conenctionId))
   }
 }
-
-class UpdateNotifier {
-  public onCheckUpdateRequest = new EventDispatcher<void, UpdateNotifier>()
-  constructor() {
-    backendEvents.subscribe(checkForUpdates, () => {
-      this.onCheckUpdateRequest.dispatch()
-    })
-  }
-  public notify(updateInfo: UpdateInfo) {
-    backendEvents.emit(updateAvailable, updateInfo)
-  }
-}
-
-export const updateNotifier = new UpdateNotifier()

@@ -1,7 +1,6 @@
 import { autoUpdater } from 'electron-updater'
 import { BuildInfo } from 'electron-telemetry/build/Model'
 import { UpdateInfo } from '../events'
-import { updateNotifier } from '../backend/src/index'
 
 export function shouldAutoUpdate(build: BuildInfo) {
   return build.package !== 'portable'
@@ -16,11 +15,9 @@ export function handleAutoUpdate() {
     console.log('could not update due to error')
   })
 
-  updateNotifier.onCheckUpdateRequest.subscribe(() => {
-    try {
-      autoUpdater.checkForUpdatesAndNotify()
-    } catch (error) {
-      console.error(error)
-    }
-  })
+  try {
+    autoUpdater.checkForUpdatesAndNotify()
+  } catch (error) {
+    console.error(error)
+  }
 }
