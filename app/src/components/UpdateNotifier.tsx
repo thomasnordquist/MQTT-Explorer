@@ -44,6 +44,7 @@ interface GithubAsset {
   id: number
   node_id: string
   url: string
+  browser_download_url: string
   name: string
   label: string
 }
@@ -213,7 +214,7 @@ class UpdateNotifier extends React.Component<Props, State> {
         <div>
           <Button
             className={this.props.classes.download}
-            onClick={() => this.openUrl(asset.url)}
+            onClick={() => this.openUrl(asset.browser_download_url)}
           >
             <CloudDownload />&nbsp;{asset.name}
           </Button>
