@@ -47,7 +47,7 @@ class ConnectionHealthIndicator extends React.Component<Props, {}> {
 
     return (
       <Tooltip title={`Connection health "${health}"`}>
-        <div>
+        <div style={{ display: 'inherit' }}>
           <DeviceHubOutlined className={`${[classes[health]]} ${this.props.withBackground ? classes.icon : ''}`} />
         </div>
       </Tooltip>
