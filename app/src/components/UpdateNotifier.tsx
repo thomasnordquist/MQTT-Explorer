@@ -171,7 +171,7 @@ class UpdateNotifier extends React.Component<Props, State> {
           {this.renderDownloads()}
           <Button
             className={this.props.classes.download}
-            onClick={this.openGithub}
+            onClick={this.openHomePage}
           >
             Github Page
           </Button>
@@ -181,8 +181,8 @@ class UpdateNotifier extends React.Component<Props, State> {
     )
   }
 
-  private openGithub = () => {
-    this.openUrl('https://github.com/thomasnordquist/MQTT-Explorer')
+  private openHomePage = () => {
+    this.openUrl('https://mqtt-explorer.com')
   }
 
   private openUrl = (url: string) => {
