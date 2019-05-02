@@ -7,17 +7,17 @@ export function shouldAutoUpdate(build: BuildInfo) {
 }
 
 export function handleAutoUpdate() {
-  autoUpdater.on('update-available', (info: UpdateInfo) => {
-    console.log('There is an update available')
-  })
+  // autoUpdater.on('update-available', (info: UpdateInfo) => {
+  //   console.log('There is an update available')
+  // })
 
-  autoUpdater.on('error', () => {
-    console.log('could not update due to error')
-  })
+  // autoUpdater.on('error', (error) => {
+  //   console.error('could not update due to error', error)
+  // })
 
-  try {
-    autoUpdater.checkForUpdatesAndNotify()
-  } catch (error) {
-    console.error(error)
-  }
+  // try {
+  //   autoUpdater.checkForUpdatesAndNotify()
+  // } catch (error) {
+  //   console.error(error)
+  // }
 }
