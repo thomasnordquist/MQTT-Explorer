@@ -3,21 +3,21 @@ import { BuildInfo } from 'electron-telemetry/build/Model'
 import { UpdateInfo } from '../events'
 
 export function shouldAutoUpdate(build: BuildInfo) {
-  return build.package !== 'portable'
+  return build.package !== 'portable' && build.platform !== 'mac'
 }
 
 export function handleAutoUpdate() {
-  // autoUpdater.on('update-available', (info: UpdateInfo) => {
-  //   console.log('There is an update available')
-  // })
+  autoUpdater.on('update-available', (info: UpdateInfo) => {
+    console.log('There is an update available')
+  })
 
-  // autoUpdater.on('error', (error) => {
-  //   console.error('could not update due to error', error)
-  // })
+  autoUpdater.on('error', (error) => {
+    console.error('could not update due to error', error)
+  })
 
-  // try {
-  //   autoUpdater.checkForUpdatesAndNotify()
-  // } catch (error) {
-  //   console.error(error)
-  // }
+  try {
+    autoUpdater.checkForUpdatesAndNotify()
+  } catch (error) {
+    console.error(error)
+  }
 }
