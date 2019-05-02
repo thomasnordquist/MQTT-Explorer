@@ -79,7 +79,7 @@ class UpdateNotifier extends React.Component<Props, State> {
   }
 
   private async fetchReleases(): Promise<Array<GithubRelease>> {
-    const res = await axios.get('https://api.github.com/repos/thomasnordquist/mqtt-explorer-deploy-test/releases', {
+    const res = await axios.get('https://api.github.com/repos/thomasnordquist/mqtt-explorer/releases', {
       headers: {
         accept: 'application/vnd.github.v3.full+json',
       },
