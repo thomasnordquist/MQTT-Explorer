@@ -28,10 +28,6 @@ export function makeConnectionStateEvent(connectionId: string): Event<DataSource
   }
 }
 
-export const checkForUpdates: Event<void> = {
-  topic: 'app/update/check',
-}
-
 export const updateAvailable: Event<UpdateInfo> = {
   topic: 'app/update/available',
 }
