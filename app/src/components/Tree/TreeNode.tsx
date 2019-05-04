@@ -98,7 +98,7 @@ class TreeNodeComponent extends React.Component<Props, State> {
   }
 
   private viewStateHasChanged = (msg: void) => {
-    this.setState({ selected: this.props.treeNode.viewModel!.isSelected() })
+    this.props.treeNode.viewModel && this.setState({ selected: this.props.treeNode.viewModel.isSelected() })
   }
 
   private removeSubscriber(treeNode: q.TreeNode<TopicViewModel>) {
