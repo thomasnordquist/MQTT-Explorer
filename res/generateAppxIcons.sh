@@ -21,6 +21,14 @@ function square150() {
     convert $BASE_IMAGE -gravity center -resize "$PIXELS_SCALED"x"$PIXELS_SCALED" -extent "$PIXELS"x"$PIXELS" appx/Square150x150Logo-scale-$SCALE.png
 }
 
+function squareToSetInStoreByHand() {
+    SCALE=$1
+    PIXELS=$2
+    PIXELS_SCALED=$[ $PIXELS * 3 / 4 ]
+
+    convert $BASE_IMAGE -gravity center -resize "$PIXELS_SCALED"x"$PIXELS_SCALED" -extent "$PIXELS"x"$PIXELS" appx/Set_by_hand.png
+}
+
 function wide310x150() {
     SCALE=$1
     PIXELS_X=$2
@@ -44,6 +52,8 @@ square150 150 225
 square150 200 300
 square150 400 600
 convert $BASE_IMAGE -gravity center -resize 75x75 -extent 150x150 appx/Square150x150Logo.png
+
+squareToSetInStoreByHand 100 300
 
 wide310x150 100 310 150
 wide310x150 150 465 225
