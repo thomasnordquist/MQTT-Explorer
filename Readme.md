@@ -88,6 +88,7 @@ MQTT Explorer
 ![screencast](https://user-images.githubusercontent.com/7721625/53954172-b7f4db80-40d5-11e9-852c-f8d85e511a00.gif)
 </video></div>
 </div>
+<br>
 
 ## Performance
 
