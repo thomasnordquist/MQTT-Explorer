@@ -3,7 +3,7 @@ import { BuildInfo } from 'electron-telemetry/build/Model'
 import { UpdateInfo } from '../events'
 
 export function shouldAutoUpdate(build: BuildInfo) {
-  return build.package !== 'portable' && build.platform !== 'mac'
+  return build.package !== 'portable' && build.package !== 'appx' && build.package !== 'snap' && build.package !== 'mas' && build.platform !== 'mac'
 }
 
 export function handleAutoUpdate() {
