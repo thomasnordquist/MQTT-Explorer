@@ -1,7 +1,8 @@
+import { Destroyable } from './Destroyable'
 import { Edge, Message, RingBuffer } from './'
 import { EventDispatcher, MqttMessage } from '../../../events'
 
-export class TreeNode<ViewModel> {
+export class TreeNode<ViewModel extends Destroyable> {
   public sourceEdge?: Edge<ViewModel>
   public message?: Message
   public mqttMessage?: MqttMessage
@@ -103,6 +104,8 @@ export class TreeNode<ViewModel> {
     for (const edge of this.edgeArray) {
       edge.target.destroy()
     }
+    this.viewModel && this.viewModel.destroy()
+    this.viewModel = undefined
     this.edgeArray = []
     this.edges = {}
     this.cachedChildTopics = []

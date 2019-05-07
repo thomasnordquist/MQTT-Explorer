@@ -1,4 +1,5 @@
 import { ChangeBuffer } from './ChangeBuffer'
+import { Destroyable } from './Destroyable'
 import {
   EventBusInterface,
   EventDispatcher,
@@ -8,7 +9,7 @@ import {
 import { TreeNode } from './'
 import { TreeNodeFactory } from './TreeNodeFactory'
 
-export class Tree<ViewModel> extends TreeNode<ViewModel> {
+export class Tree<ViewModel extends Destroyable> extends TreeNode<ViewModel> {
   public connectionId?: string
   public updateSource?: EventBusInterface
   public nodeFilter?: (node: TreeNode<ViewModel>) => boolean
