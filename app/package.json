@@ -6,7 +6,7 @@
   "scripts": {
     "build": "yarn rebuild && webpack --mode production",
     "dev": "node_modules/.bin/webpack-dev-server --mode development --progress",
-    "rebuild": "cd node_modules/heapdump && node-gyp rebuild --target=5.0.0 --arch=x64 --dist-url=https://atom.io/download/electron || echo Could not build heapdump; cd -"
+    "rebuild": "cd node_modules/heapdump && node-gyp rebuild --target=5.0.2 --arch=x64 --dist-url=https://atom.io/download/electron || echo Could not build heapdump; cd -"
   },
   "author": "",
   "license": "CC-BY-ND-4.0",
