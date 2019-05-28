@@ -2,7 +2,7 @@ import { clickOn, sleep, showText } from '../util'
 import { Browser } from 'webdriverio'
 
 // Expects a topic with at least two messages to be selected
-export async function showOffDiffCapability(browser: Browser<void>) {
+export async function showOffDiffCapability(browser: Browser) {
   await showText('Compare messages', 2000, browser, 'top')
 
   await showText('Show raw message', 2000, browser, 'bottom')

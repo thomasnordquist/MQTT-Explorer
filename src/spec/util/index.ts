@@ -17,7 +17,7 @@ export function sleep(ms: number, required = false) {
   })
 }
 
-export async function writeText(text: string, browser: Browser<void>, delay = 0) {
+export async function writeText(text: string, browser: Browser, delay = 0) {
   if (fast) {
     return browser.keys(text.split(''))
   }
@@ -28,7 +28,7 @@ export async function writeText(text: string, browser: Browser<void>, delay = 0)
   }
 }
 
-export async function delteTextWithBackspaces(element: Element<void>, browser: Browser<void>, delay = 0, count = 0) {
+export async function delteTextWithBackspaces(element: Element, browser: Browser, delay = 0, count = 0) {
   const length = count > 0 ? count : (await element.getValue()).length
   for (let i = 0; i < length; i += 1) {
     await browser.keys(['Backspace'])
@@ -36,7 +36,7 @@ export async function delteTextWithBackspaces(element: Element<void>, browser: B
   }
 }
 
-export async function writeTextToInput(name: string, text: string, browser: Browser<void>, wait: boolean = true) {
+export async function writeTextToInput(name: string, text: string, browser: Browser, wait: boolean = true) {
   const input = await browser.$(`//label[contains(text(), "${name}")]/..//input`)
   await clickOn(input, browser, 1)
   wait && await sleep(500)
@@ -45,7 +45,7 @@ export async function writeTextToInput(name: string, text: string, browser: Brow
   await writeText(text, browser)
 }
 
-export async function moveToCenterOfElement(element: Element<void>, browser: Browser<void>) {
+export async function moveToCenterOfElement(element: Element, browser: Browser) {
   const { x, y } = await element.getLocation()
   const { width, height } = await element.getSize()
 
@@ -62,12 +62,12 @@ export async function moveToCenterOfElement(element: Element<void>, browser: Bro
   await element.moveTo()
 }
 
-export async function clickOnHistory(browser: Browser<void>) {
+export async function clickOnHistory(browser: Browser) {
   const messageHistory = await browser.$('//span/*[contains(text(), "History")]')
   await clickOn(messageHistory, browser)
 }
 
-export async function clickOn(element: Element<void>, browser: Browser<void>, clicks = 1) {
+export async function clickOn(element: Element, browser: Browser, clicks = 1) {
   await moveToCenterOfElement(element, browser)
   for (let i = 0; i < clicks; i += 1) {
     await element.click()
@@ -75,13 +75,13 @@ export async function clickOn(element: Element<void>, browser: Browser<void>, cl
   }
 }
 
-export async function createFakeMousePointer(browser: Browser<void>) {
+export async function createFakeMousePointer(browser: Browser) {
   const js = 'window.demo.enableMouse();'
 
   await browser.execute(js)
 }
 
-export async function showText(text: string, duration: number = 0, browser: Browser<void>, location: 'top' | 'bottom' | 'middle' = 'bottom', keys = []) {
+export async function showText(text: string, duration: number = 0, browser: Browser, location: 'top' | 'bottom' | 'middle' = 'bottom', keys = []) {
   const js = `window.demo.showMessage('${text}', '${location}', ${duration});`
 
   await browser.execute(js)
@@ -89,7 +89,7 @@ export async function showText(text: string, duration: number = 0, browser: Brow
 
 type HeapDump = any
 
-export async function getHeapDump(browser: Browser<void>): Promise<HeapDump> {
+export async function getHeapDump(browser: Browser): Promise<HeapDump> {
   const filename = 'heapdump.json'
   const js = `window.demo.writeHeapdump('${filename}');`
   await browser.execute(js)
@@ -111,13 +111,13 @@ export async function countInstancesOf(heapDump: HeapDump, className: ClassNameM
     .filter((s: string) => s === className).length
 }
 
-export async function showKeys(text: string, duration: number = 0, browser: Browser<void>, location: 'top' | 'bottom' | 'middle' = 'bottom', keys: string[] = []) {
+export async function showKeys(text: string, duration: number = 0, browser: Browser, location: 'top' | 'bottom' | 'middle' = 'bottom', keys: string[] = []) {
   const js = `window.demo.showMessage('${text}', '${location}', ${duration}, ${JSON.stringify(keys)});`
 
   await browser.execute(js)
 }
 
-export async function hideText(browser: Browser<void>) {
+export async function hideText(browser: Browser) {
   const js = 'window.demo.hideMessage();'
   await browser.execute(js)
   await sleep(600)

@@ -4,7 +4,7 @@ import {
   sleep
 } from '../util'
 
-export async function showJsonFormatting(browser: Browser<void>) {
+export async function showJsonFormatting(browser: Browser) {
   const editor = await browser.$('//*[contains(@class, "ace_editor")]')
   const formatJsonButton = await browser.$('#sidebar-publish-format-json')
   const payloadInput = await browser.$('//*[contains(@class, "ace_text-input")]')

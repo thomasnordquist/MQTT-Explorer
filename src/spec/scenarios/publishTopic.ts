@@ -1,7 +1,7 @@
 import { clickOn, sleep, writeText, delteTextWithBackspaces, expandTopic, moveToCenterOfElement, showText } from '../util'
 import { Browser } from 'webdriverio'
 
-export async function publishTopic(browser: Browser<void>) {
+export async function publishTopic(browser: Browser) {
   await expandTopic('kitchen/lamp/state', browser)
   const topicInput = await browser.$('//textarea[contains(text(),"kitchen/lamp/state")][2]')
   await clickOn(topicInput, browser)

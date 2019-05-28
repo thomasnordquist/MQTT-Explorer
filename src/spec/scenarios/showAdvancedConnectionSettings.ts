@@ -1,7 +1,7 @@
 import { clickOn, writeTextToInput, sleep } from '../util'
 import { Browser } from 'webdriverio'
 
-export async function showAdvancedConnectionSettings(browser: Browser<void>) {
+export async function showAdvancedConnectionSettings(browser: Browser) {
   const advancedSettingsButton = await browser.$('//button/span[contains(text(),"Advanced")]')
   const addButton = await browser.$('//button/span[contains(text(),"Add")]')
 
@@ -23,7 +23,7 @@ export async function showAdvancedConnectionSettings(browser: Browser<void>) {
   await clickOn(connectButton, browser)
 }
 
-async function deleteFirstSubscribedTopic(browser: Browser<void>) {
+async function deleteFirstSubscribedTopic(browser: Browser) {
   const deleteButton = await browser.$('.advanced-connection-settings-topic-list button')
   await clickOn(deleteButton, browser)
 }

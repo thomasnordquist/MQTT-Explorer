@@ -1,7 +1,7 @@
 import { clickOn, sleep, writeText, expandTopic, moveToCenterOfElement, showText } from '../util'
 import { Browser } from 'webdriverio'
 
-export async function showMenu(browser: Browser<void>) {
+export async function showMenu(browser: Browser) {
   const menuButton = await browser.$('//button[contains(@aria-label, "Menu")]')
   await clickOn(menuButton, browser)
 
