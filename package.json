@@ -67,7 +67,6 @@
     "@types/node": "^10.12.18",
     "@types/semver": "^5.5.0",
     "@types/sha1": "^1.1.1",
-    "app-builder-lib": "https://github.com/thomasnordquist/app-builder-lib.git",
     "axios": "^0.18.0",
     "chai": "^4.2.0",
     "electron": "5",
