@@ -95,6 +95,7 @@
     "electron-telemetry": "git+https://github.com/thomasnordquist/electron-telemetry.git#dist",
     "electron-updater": "^4.0.6",
     "js-base64": "^2.5.1",
+    "json-to-ast": "^2.1.0",
     "lowdb": "^1.0.0",
     "mqtt": "^2.18.8",
     "sha1": "^1.1.1",
