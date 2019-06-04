@@ -3,7 +3,7 @@ import * as Prism from 'prismjs'
 import * as React from 'react'
 import DiffCount from './DiffCount'
 import { CodeBlockColors, CodeBlockColorsBraceMonokai } from '../CodeBlockColors'
-import { literalsMappedByLines, parseJson } from '../../../../../backend/src/JsonAstParser'
+import { literalsMappedByLines } from '../../../../../backend/src/JsonAstParser'
 import { selectTextWithCtrlA } from '../../../utils/handleTextSelectWithCtrlA'
 import { Theme, withStyles } from '@material-ui/core'
 import 'prismjs/components/prism-json'
@@ -28,7 +28,7 @@ class CodeDiff extends React.Component<Props, {}> {
   public render() {
     const changes = diff.diffLines(this.props.previous, this.props.current)
     const styledLines = Prism.highlight(this.props.current, Prism.languages.json, 'json').split('\n')
-    const literalPositions = literalsMappedByLines(this.props.current)
+    const literalPositions = literalsMappedByLines(this.props.current) || []
 
     let lineNumber = 0
     const code = changes.map((change, key) => {
@@ -78,6 +78,7 @@ const style = (theme: Theme) => {
       lineHeight: 'normal' as 'normal',
       paddingLeft: '4px',
       width: '100%',
+      height: '16px',
     },
     codeWrapper: {
       maxHeight: '15em',

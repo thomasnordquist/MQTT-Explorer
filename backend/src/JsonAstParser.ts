@@ -74,16 +74,24 @@ function jsonToPropertyPaths(ast: JsonAst, previousPath: Array<string> = []): Ar
   return children.reduce((a, b) => a.concat(b), [])
 }
 
+// Used for testing only
 export function parseJson(formattedJson: string): Array<JsonPropertyLocation> {
-  return jsonToPropertyPaths((parse(formattedJson) as JsonAst), [])
+  const parsedJson = parse(formattedJson) as JsonAst
+
+  return jsonToPropertyPaths(parsedJson, [])
 }
 
-export function literalsMappedByLines(formattedJson: string): Array<JsonPropertyLocation> {
-  const literals = jsonToPropertyPaths((parse(formattedJson) as JsonAst), [])
-  const lines = []
-  for (const literal of literals) {
-    lines[literal.line - 1] = literal
-  }
+export function literalsMappedByLines(formattedJson: string): Array<JsonPropertyLocation> | undefined {
+  try {
+    const parsedJson = parse(formattedJson) as JsonAst
+    const literals = jsonToPropertyPaths(parsedJson, [])
+    const lines = []
+    for (const literal of literals) {
+      lines[literal.line - 1] = literal
+    }
 
-  return lines
+    return lines
+  } catch (error) {
+    return undefined
+  }
 }
