@@ -133,8 +133,8 @@ class Settings extends React.Component<Props, {}> {
     )
   }
 
-  private onChangeAutoExpand = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    this.props.actions.settings.setAutoExpandLimit(parseInt(e.target.value, 10))
+  private onChangeAutoExpand = (e: React.ChangeEvent<{value: unknown}>) => {
+    this.props.actions.settings.setAutoExpandLimit(parseInt(String(e.target.value), 10))
   }
 
   private renderNodeOrder() {
@@ -160,7 +160,7 @@ class Settings extends React.Component<Props, {}> {
     </div>)
   }
 
-  private onChangeSorting = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  private onChangeSorting = (e: React.ChangeEvent<{value: unknown}>) => {
     this.props.actions.settings.setTopicOrder(e.target.value as TopicOrder)
   }
 

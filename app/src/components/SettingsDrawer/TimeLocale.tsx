@@ -32,16 +32,21 @@ function TimeLocaleSettings(props: Props) {
     </MenuItem>
   ))
 
+  function updateLocale(e: React.ChangeEvent<{value: unknown}>) {
+    const locale = e.target.value ? String(e.target.value) : ''
+    actions.settings.setTimeLocale(locale)
+  }
+
   return (
     <div style={{ padding: '8px', display: 'flex' }}>
       <InputLabel htmlFor="time-locale" style={{ flex: '1', marginTop: '8px' }}>Time Locale</InputLabel>
       <Select
           value={timeLocale}
-          onChange={e => actions.settings.setTimeLocale(e.target.value)}
+          onChange={updateLocale}
           input={<Input name="time-locale" id="time-locale-label-placeholder" />}
           name="time-locale"
           className={classes.input}
-          renderValue={(v) => <span>{v}</span>}
+          renderValue={v => <span>{String(v)}</span>}
           style={{ flex: '1' }}
       >
         {localeMenuItems}
