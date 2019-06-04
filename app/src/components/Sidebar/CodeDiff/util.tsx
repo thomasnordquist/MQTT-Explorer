@@ -6,9 +6,7 @@ export function trimNewlineRight(str: string) {
   return str
 }
 
-const gutterBaseStyle = {
-  width: '100%',
-}
+const gutterBaseStyle = {}
 
 const additionStyle = {
   ...gutterBaseStyle,
@@ -30,4 +28,29 @@ export function lineChangeStyle(change: Diff.Change) {
   }
 
   return gutterBaseStyle
+}
+
+export function toPlottableValue(value: any): number | undefined {
+  if (typeof value === 'number') {
+    return value
+  }
+
+  if (typeof value === 'boolean') {
+    return value ? 1 : 0
+  }
+
+  const isNumber = !isNaN(value)
+  const floatVal = parseFloat(value)
+  if (isNumber && !isNaN(floatVal)) {
+    return floatVal
+  }
+
+  const intVal = parseInt(value)
+  if (isNumber && !isNaN(intVal)) {
+    return intVal
+  }
+}
+
+export function isPlottable(value: any) {
+  return !isNaN(toPlottableValue(value) as any)
 }

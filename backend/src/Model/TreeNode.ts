@@ -1,12 +1,12 @@
 import { Destroyable } from './Destroyable'
-import { Edge, Message, RingBuffer } from './'
+import { Edge, Message, RingBuffer, MessageHistory } from './'
 import { EventDispatcher, MqttMessage } from '../../../events'
 
 export class TreeNode<ViewModel extends Destroyable> {
   public sourceEdge?: Edge<ViewModel>
   public message?: Message
   public mqttMessage?: MqttMessage
-  public messageHistory: RingBuffer<Message> = new RingBuffer<Message>(20000, 100)
+  public messageHistory: MessageHistory = new RingBuffer<Message>(20000, 100)
   public viewModel?: ViewModel
   public edges: {[s: string]: Edge<ViewModel>} = {}
   public edgeArray: Array<Edge<ViewModel>> = []

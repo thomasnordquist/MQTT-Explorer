@@ -1,16 +1,20 @@
 import * as diff from 'diff'
 import * as Prism from 'prismjs'
+import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
 import DiffCount from './DiffCount'
-import { CodeBlockColors, CodeBlockColorsBraceMonokai } from '../CodeBlockColors'
-import { literalsMappedByLines } from '../../../../../backend/src/JsonAstParser'
-import { selectTextWithCtrlA } from '../../../utils/handleTextSelectWithCtrlA'
-import { Theme, withStyles } from '@material-ui/core'
-import 'prismjs/components/prism-json'
-import { trimNewlineRight, lineChangeStyle } from './util';
 import Gutters from './Gutters'
+import TopicPlot from '../TopicPlot'
+import { CodeBlockColors, CodeBlockColorsBraceMonokai } from '../CodeBlockColors'
+import { isPlottable, lineChangeStyle, trimNewlineRight } from './util'
+import { JsonPropertyLocation, literalsMappedByLines } from '../../../../../backend/src/JsonAstParser'
+import { Theme, withStyles, Popper, Paper, Fade, Zoom } from '@material-ui/core'
+import { selectTextWithCtrlA } from '../../../utils/handleTextSelectWithCtrlA'
+import 'prismjs/components/prism-json'
+const throttle = require('lodash.throttle')
 
 interface Props {
+  messageHistory: q.MessageHistory
   previous: string
   current: string
   nameOfCompareMessage: string
@@ -18,17 +22,45 @@ interface Props {
   classes: any
 }
 
-class CodeDiff extends React.Component<Props, {}> {
+interface State {
+  diagram?: DiagramOptions
+}
+
+interface DiagramOptions {
+  dotPath?: string
+  anchorEl?: EventTarget
+}
+
+class CodeDiff extends React.Component<Props, State> {
   private handleCtrlA = selectTextWithCtrlA({ targetSelector: 'pre ~ pre' })
+
+  private updateDiagram = throttle((diagram?: DiagramOptions) => {
+    this.setState({ diagram })
+  }, 200)
 
   constructor(props: Props) {
     super(props)
+    this.state = {}
+  }
+
+  private showDiagram(dotPath: string, target: EventTarget) {
+    this.updateDiagram({
+      dotPath,
+      anchorEl: target,
+    })
+  }
+
+  private hideDiagram() {
+    this.updateDiagram(undefined)
   }
 
   public render() {
     const changes = diff.diffLines(this.props.previous, this.props.current)
     const styledLines = Prism.highlight(this.props.current, Prism.languages.json, 'json').split('\n')
-    const literalPositions = literalsMappedByLines(this.props.current) || []
+    const literalPositions = (
+      (literalsMappedByLines(this.props.current) || [])
+          .map((l: JsonPropertyLocation) => isPlottable(l.value) ? l : undefined)
+    ) as Array<JsonPropertyLocation>
 
     let lineNumber = 0
     const code = changes.map((change, key) => {
@@ -41,7 +73,7 @@ class CodeDiff extends React.Component<Props, {}> {
         })
         lineNumber += changedLines
 
-        return <div key={key}>{lines}</div>
+        return [<div key={key}>{lines}</div>]
       }
 
       return trimNewlineRight(change.value)
@@ -49,14 +81,32 @@ class CodeDiff extends React.Component<Props, {}> {
         .map((line, idx) => {
           return <div key={`${key}-${idx}`} style={lineChangeStyle(change)} className={this.props.classes.line}><span>{line}</span></div>
         })
-    })
+    }).reduce((a, b) => a.concat(b), [])
+
+    const { diagram } = this.state
 
     return (
       <div>
         <div tabIndex={0} onKeyDown={this.handleCtrlA} className={this.props.classes.codeWrapper}>
-          <pre className={this.props.classes.gutters}><Gutters changes={changes} literalPositions={literalPositions} /></pre>
+          <Gutters
+            showDiagram={(dotPath, target) => this.showDiagram(dotPath, target)}
+            hideDiagram={() => this.hideDiagram()}
+            className={this.props.classes.gutters}
+            changes={changes}
+            literalPositions={literalPositions} />
           <pre className={this.props.classes.codeBlock}>{code}</pre>
         </div>
+        <Popper
+          open={Boolean(this.state.diagram)}
+          anchorEl={diagram && diagram.anchorEl as any}
+          dir="left"
+        >
+        <Fade in={Boolean(this.state.diagram)} timeout={300}>
+          <Paper style={{ width: '300px' }}>
+            {diagram ? <TopicPlot history={this.props.messageHistory} dotPath={diagram.dotPath} /> : <span/>}
+          </Paper>
+        </Fade>
+        </Popper>
         <DiffCount changes={changes} nameOfCompareMessage={this.props.nameOfCompareMessage} />
       </div>
     )
@@ -70,7 +120,7 @@ const style = (theme: Theme) => {
     font: "12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
     display: 'inline-grid' as 'inline-grid',
     margin: '0',
-    padding: '1px 0 2px 0',
+    padding: '1px 0 0 0',
   }
 
   return {
@@ -81,6 +131,7 @@ const style = (theme: Theme) => {
       height: '16px',
     },
     codeWrapper: {
+      display: 'flex',
       maxHeight: '15em',
       overflow: 'auto',
       backgroundColor: `${codeBlockColors.background}`,

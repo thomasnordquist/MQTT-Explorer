@@ -1,15 +1,15 @@
-import * as q from '../../../../../backend/src/Model'
+import * as q from '../../../../backend/src/Model'
 import * as React from 'react'
-import DateFormatter from '../../helper/DateFormatter'
+import DateFormatter from '../helper/DateFormatter'
 import { default as ReactResizeDetector } from 'react-resize-detector'
 import 'react-vis/dist/style.css'
-import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
-const { XYPlot, LineMarkSeries, Hint, YAxis, HorizontalGridLines } = require('react-vis')
+const { XYPlot, LineMarkSeries, Hint, XAxis, YAxis, HorizontalGridLines } = require('react-vis')
 const abbreviate = require('number-abbreviate')
 
 interface Props {
   data: Array<{x: number, y: number}>
 }
+// const configuredCurve = d3Shape.curveBundle.beta(1)
 
 interface Stats {
   width: number
@@ -47,9 +47,10 @@ class PlotHistory extends React.Component<Props, Stats> {
     const data = this.props.data
 
     return (
-      <div>
-        <XYPlot width={this.state.width} height={150}>
+      <div style={{ height: '150px', overflow: 'hidden' }}>
+        <XYPlot width={this.state.width} height={180}>
           <HorizontalGridLines />
+          <XAxis />
           <YAxis
             width={45}
             tickFormat={(num: number) => abbreviate(num)}
@@ -59,7 +60,7 @@ class PlotHistory extends React.Component<Props, Stats> {
             onValueMouseOut={this._forgetValue}
             size={3}
             data={data}
-            curve={data.length < 50 ? 'curveCardinal' : undefined}
+            curve="curveMonotoneX"
           />
           {this.state.value ? <Hint format={this.hintFormatter} value={this.state.value} /> : null}
         </XYPlot>

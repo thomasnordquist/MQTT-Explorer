@@ -9,7 +9,7 @@ import { ValueRendererDisplayMode } from '../../../reducers/Settings'
 
 interface Props {
   message: q.Message
-  messageHistory: q.RingBuffer<q.Message>
+  messageHistory: q.MessageHistory
   compareWith?: q.Message
   renderMode: ValueRendererDisplayMode
 }
@@ -27,6 +27,7 @@ class ValueRenderer extends React.Component<Props, State> {
   private renderDiff(current: string = '', previous: string = '', language?: 'json') {
     return (
       <CodeDiff
+        messageHistory={this.props.messageHistory}
         previous={previous}
         current={current}
         language={language}

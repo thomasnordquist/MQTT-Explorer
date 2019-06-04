@@ -4,10 +4,10 @@ import BarChart from '@material-ui/icons/BarChart'
 import Copy from '../../helper/Copy'
 import DateFormatter from '../../helper/DateFormatter'
 import History from '../HistoryDrawer'
+import TopicPlot from '../TopicPlot'
 import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
+import { isPlottable } from '../CodeDiff/util'
 import { TopicViewModel } from '../../../model/TopicViewModel'
-
-const PlotHistory = React.lazy(() => import('./PlotHistory'))
 
 const throttle = require('lodash.throttle')
 
@@ -76,31 +76,17 @@ class MessageHistory extends React.Component<Props, State> {
       return element
     })
 
-    const numericMessages = history
-      .map((message: q.Message) => {
-        const value = message.value ? parseFloat(Base64Message.toUnicodeString(message.value)) : NaN
-        return { x: message.received.getTime(), y: value  }
-      }).filter(data => !isNaN(data.y))
-    const showPlot = numericMessages.length >= 2
-
+    const isMessagePlottable = node.message && node.message.value && isPlottable(Base64Message.toUnicodeString(node.message.value))
     return (
       <div>
         <History
           items={historyElements}
-          contentTypeIndicator={showPlot ? <BarChart /> : undefined}
+          contentTypeIndicator={isMessagePlottable ? <BarChart /> : undefined}
           onClick={this.displayMessage}
         >
-          {showPlot ? this.renderPlot(numericMessages) : null}
+          {isMessagePlottable ? <TopicPlot history={node.messageHistory} /> : null}
         </History>
       </div>
-    )
-  }
-
-  public renderPlot(data: Array<{x: number, y: number}>) {
-    return (
-      <React.Suspense fallback={<div>Loading...</div>}>
-        <PlotHistory data={data} />
-      </React.Suspense>
     )
   }
 }
