@@ -1,10 +1,14 @@
 import * as diff from 'diff'
 import * as Prism from 'prismjs'
 import * as React from 'react'
-import { CodeBlockColors, CodeBlockColorsBraceMonokai } from './CodeBlockColors'
-import { selectTextWithCtrlA } from '../../utils/handleTextSelectWithCtrlA'
+import DiffCount from './DiffCount'
+import { CodeBlockColors, CodeBlockColorsBraceMonokai } from '../CodeBlockColors'
+import { literalsMappedByLines, parseJson } from '../../../../../backend/src/JsonAstParser'
+import { selectTextWithCtrlA } from '../../../utils/handleTextSelectWithCtrlA'
 import { Theme, withStyles } from '@material-ui/core'
 import 'prismjs/components/prism-json'
+import { trimNewlineRight, lineChangeStyle } from './util';
+import Gutters from './Gutters'
 
 interface Props {
   previous: string
@@ -21,48 +25,10 @@ class CodeDiff extends React.Component<Props, {}> {
     super(props)
   }
 
-  private renderChangeAmount(changes: Array<Diff.Change>) {
-    const additions = changes.map(change => (change.added === true) ? (change.count || 0) : 0).reduce((a, b) => a + b)
-    const deletions = changes.map(change => (change.removed === true) ? (change.count || 0) : 0).reduce((a, b) => a + b)
-    if (additions === 0 && deletions === 0) {
-      return null
-    }
-
-    return (
-      <span style={{ display: 'block', marginBottom: '8px', float: 'right' }}>
-        <span>
-          Comparing with <b>{this.props.nameOfCompareMessage}</b> message:&nbsp;
-
-          <span className={this.props.classes.additions}>+ {additions} line{additions === 1 ? '' : 's'}</span>
-          , <span className={this.props.classes.deletions}>- {deletions} line{deletions === 1 ? '' : 's'}</span>
-        </span>
-      </span>
-    )
-  }
-
-  private trimNewlineRight(str: string) {
-    if (str.slice(-1) === '\n') {
-      return str.slice(0, -1)
-    }
-
-    return str
-  }
-
-  private cssClassForChange(change: diff.Change) {
-    if (change.added === true) {
-      return this.props.classes.addition
-    }
-
-    if (change.removed === true) {
-      return this.props.classes.deletion
-    }
-
-    return this.props.classes.noChange
-  }
-
   public render() {
     const changes = diff.diffLines(this.props.previous, this.props.current)
     const styledLines = Prism.highlight(this.props.current, Prism.languages.json, 'json').split('\n')
+    const literalPositions = literalsMappedByLines(this.props.current)
 
     let lineNumber = 0
     const code = changes.map((change, key) => {
@@ -71,37 +37,27 @@ class CodeDiff extends React.Component<Props, {}> {
       if (hasStyledCode && this.props.language === 'json') {
         const currentLines = styledLines.slice(lineNumber, lineNumber + changedLines)
         const lines = currentLines.map((html: string, idx: number) => {
-          return <div key={`${key}-${idx}`} className={`${this.props.classes.line} ${this.cssClassForChange(change)}`}><span dangerouslySetInnerHTML={{ __html: html }} /></div>
+          return <div key={`${key}-${idx}`} style={lineChangeStyle(change)} className={`${this.props.classes.line}`}><span dangerouslySetInnerHTML={{ __html: html }} /></div>
         })
         lineNumber += changedLines
 
         return <div key={key}>{lines}</div>
       }
 
-      return this.trimNewlineRight(change.value)
+      return trimNewlineRight(change.value)
         .split('\n')
         .map((line, idx) => {
-          return <div key={`${key}-${idx}`} className={`${this.props.classes.line} ${this.cssClassForChange(change)}`}><span>{line}</span></div>
+          return <div key={`${key}-${idx}`} style={lineChangeStyle(change)} className={this.props.classes.line}><span>{line}</span></div>
         })
-    })
-
-    const gutters = changes.map((change, key) => {
-      return this.trimNewlineRight(change.value)
-        .split('\n')
-        .map((_, idx) => (
-          <div key={`${key}-${idx}`} className={`${this.cssClassForChange(change)} ${this.props.classes.gutterLine}`}>
-            {change.added ? '+' : null}{change.removed ? '-' : null}{!change.added && !change.removed ? ' ' : null}
-          </div>
-        ))
     })
 
     return (
       <div>
         <div tabIndex={0} onKeyDown={this.handleCtrlA} className={this.props.classes.codeWrapper}>
-          <pre className={this.props.classes.gutters}>{gutters}</pre>
+          <pre className={this.props.classes.gutters}><Gutters changes={changes} literalPositions={literalPositions} /></pre>
           <pre className={this.props.classes.codeBlock}>{code}</pre>
         </div>
-        {this.renderChangeAmount(changes)}
+        <DiffCount changes={changes} nameOfCompareMessage={this.props.nameOfCompareMessage} />
       </div>
     )
   }
@@ -109,9 +65,6 @@ class CodeDiff extends React.Component<Props, {}> {
 
 const style = (theme: Theme) => {
   const codeBlockColors = theme.palette.type === 'light' ? CodeBlockColors : CodeBlockColorsBraceMonokai
-  const gutterBaseStyle = {
-    width: '100%',
-  }
 
   const codeBaseStyle = {
     font: "12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
@@ -121,19 +74,10 @@ const style = (theme: Theme) => {
   }
 
   return {
-    additions: {
-      color: 'rgb(10, 255, 10)',
-    },
-    deletions: {
-      color: 'rgb(255, 10, 10)',
-    },
     line: {
       lineHeight: 'normal' as 'normal',
       paddingLeft: '4px',
-    },
-    gutterLine: {
-      textAlign: 'right' as 'right',
-      paddingRight: theme.spacing(0.5),
+      width: '100%',
     },
     codeWrapper: {
       maxHeight: '15em',
@@ -175,23 +119,6 @@ const style = (theme: Theme) => {
       '& .token.punctuation': {
         color: codeBlockColors.text,
       },
-    },
-    noChange: {
-      ...gutterBaseStyle,
-    },
-    deletion: {
-      ...gutterBaseStyle,
-      backgroundColor: 'rgba(255, 10, 10, 0.3)',
-      // '&:hover': {
-      //   backgroundColor: 'rgba(255, 10, 10, 0.3)',
-      // },
-    },
-    addition: {
-      ...gutterBaseStyle,
-      backgroundColor: 'rgba(10, 255, 10, 0.3)',
-      // '&:hover': {
-      //   backgroundColor: 'rgba(10, 255, 10, 0.5)',
-      // },
     },
   }
 }

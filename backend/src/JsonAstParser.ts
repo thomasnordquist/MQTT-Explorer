@@ -1,8 +1,9 @@
 const parse = require('json-to-ast')
 
-interface JsonPropertyLocation {
+export interface JsonPropertyLocation {
   path: string
   line: number
+  value: any
   column: number
 }
 
@@ -59,6 +60,7 @@ function jsonToPropertyPaths(ast: JsonAst, previousPath: Array<string> = []): Ar
   let children: Array<Array<JsonPropertyLocation>> = []
   if (ast.type === 'Literal') {
     return [{
+      value: ast.value,
       path: previousPath.join('.'),
       line: ast.loc.start.line,
       column: ast.loc.start.column,
@@ -74,4 +76,14 @@ function jsonToPropertyPaths(ast: JsonAst, previousPath: Array<string> = []): Ar
 
 export function parseJson(formattedJson: string): Array<JsonPropertyLocation> {
   return jsonToPropertyPaths((parse(formattedJson) as JsonAst), [])
+}
+
+export function literalsMappedByLines(formattedJson: string): Array<JsonPropertyLocation> {
+  const literals = jsonToPropertyPaths((parse(formattedJson) as JsonAst), [])
+  const lines = []
+  for (const literal of literals) {
+    lines[literal.line - 1] = literal
+  }
+
+  return lines
 }
