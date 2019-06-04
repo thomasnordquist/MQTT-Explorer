@@ -45,7 +45,7 @@ export function toPlottableValue(value: any): number | undefined {
     return floatVal
   }
 
-  const intVal = parseInt(value)
+  const intVal = parseInt(value, undefined)
   if (isNumber && !isNaN(intVal)) {
     return intVal
   }

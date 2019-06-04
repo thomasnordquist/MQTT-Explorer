@@ -35,9 +35,6 @@ const style = (theme: Theme) => {
         backgroundColor: theme.palette.primary.main,
       },
     },
-    hover: {
-      
-    },
   }
 }
 
@@ -68,7 +65,7 @@ function tokensForLine(change: diff.Change, line: number, props: Props) {
   const { classes, literalPositions } = props
 
   const literal = literalPositions[line]
-  const diagram = literal ? <ChartIcon classes={{ icon: props.classes.icon, hover: props.classes.hover }} literal={literal} showDiagram={props.showDiagram} hideDiagram={props.hideDiagram}/> : null
+  const diagram = literal ? <ChartIcon classes={{ icon: props.classes.icon }} literal={literal} showDiagram={props.showDiagram} hideDiagram={props.hideDiagram}/> : null
 
   if (change.added) {
     return [diagram, <Add key="add" className={classes.icon} />]

@@ -99,7 +99,7 @@ class CodeDiff extends React.Component<Props, State> {
         <Popper
           open={Boolean(this.state.diagram)}
           anchorEl={diagram && diagram.anchorEl as any}
-          dir="left"
+          placement="left-end"
         >
         <Fade in={Boolean(this.state.diagram)} timeout={300}>
           <Paper style={{ width: '300px' }}>
