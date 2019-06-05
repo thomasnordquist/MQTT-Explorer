@@ -8,7 +8,7 @@
 
 |   |   |   |
 |:---:|:---:|:---:|
-|[![screen_composite](https://mqtt-explorer.com/img/screen-composite_small.png)](https://mqtt-explorer.com/img/screen-composite.png)|[![screen2_small](https://mqtt-explorer.com/img/screen2_small.png)](https://mqtt-explorer.com/img/screen2.png)|[![screen3_small](https://mqtt-explorer.com/img/screen3_small.png)](https://mqtt-explorer.com/img/screen3.png) [![Greenkeeper badge](https://badges.greenkeeper.io/thomasnordquist/MQTT-Explorer.svg)](https://greenkeeper.io/)|
+|[![screen_composite](https://mqtt-explorer.com/img/screen-composite_small.png)](https://mqtt-explorer.com/img/screen-composite.png)|[![screen2_small](https://mqtt-explorer.com/img/screen2_small.png)](https://mqtt-explorer.com/img/screen2.png)|[![screen3_small](https://mqtt-explorer.com/img/screen3_small.png)](https://mqtt-explorer.com/img/screen3.png)|
 
 # The App has moved to [mqtt-explorer.com](https://mqtt-explorer.com)
 MQTT Explorer is a comprehensive and easy-to-use MQTT Client.  
