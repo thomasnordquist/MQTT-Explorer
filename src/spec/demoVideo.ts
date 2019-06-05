@@ -26,7 +26,7 @@ import {
   sleep,
 } from './util'
 
-process.on('unhandledRejection', (error: Error) => {
+process.on('unhandledRejection', (error: Error | any) => {
   console.error('unhandledRejection', error.message, error.stack)
   process.exit(1)
 })

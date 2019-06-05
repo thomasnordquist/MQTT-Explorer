@@ -13,12 +13,12 @@ function redirectOutputFor(child: ChildProcess) {
   const printStderr = (data: Buffer) => {
     process.stderr.write(data.toString())
   }
-  child.stdout.on('data', printStdout)
-  child.stderr.on('data', printStderr)
+  child.stdout && child.stdout.on('data', printStdout)
+  child.stderr && child.stderr.on('data', printStderr)
 
   child.once('close', () => {
-    child.stdout.off('data', printStdout)
-    child.stderr.off('data', printStderr)
+    child.stdout && child.stdout.off('data', printStdout)
+    child.stderr && child.stderr.off('data', printStderr)
   })
 }
 
