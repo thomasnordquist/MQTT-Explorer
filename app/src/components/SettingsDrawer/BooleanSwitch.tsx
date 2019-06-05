@@ -34,7 +34,6 @@ function BooleanSwitch(props: {title: string, value: boolean, tooltip: string, a
           checked={value}
           onChange={action}
           color="primary"
-          classes={{ switchBase: classes.switchBase }}
         />
       </Tooltip>
     </div>
@@ -42,12 +41,9 @@ function BooleanSwitch(props: {title: string, value: boolean, tooltip: string, a
 }
 
 const styles = (theme: Theme) => ({
-  switchBase: {
-    height: theme.spacing(4),
-  },
   label: {
     flex: '1',
-    paddingTop: '8px',
+    paddingTop: theme.spacing(1.5),
   },
 })
 
