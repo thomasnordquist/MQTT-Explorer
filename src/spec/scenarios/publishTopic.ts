@@ -3,7 +3,7 @@ import { Browser } from 'webdriverio'
 
 export async function publishTopic(browser: Browser) {
   await expandTopic('kitchen/lamp/state', browser)
-  const topicInput = await browser.$('//textarea[contains(text(),"kitchen/lamp/state")][2]')
+  const topicInput = await browser.$('//textarea[contains(text(),"kitchen/lamp/state")][1]')
   await clickOn(topicInput, browser)
   await delteTextWithBackspaces(topicInput, browser, 120, 5)
   await writeText('set', browser, 300)
