@@ -40,20 +40,11 @@ const style = (theme: Theme) => {
 
 function ChartIcon(props: { classes: any, literal: JsonPropertyLocation, showDiagram: (dotPath: string, target: EventTarget) => void, hideDiagram: () => void }) {
   const mouseOver = (event: React.MouseEvent<Element>) => {
-    event.stopPropagation()
-    event.preventDefault()
-    if ((event.target as Element).tagName !== 'path') {
-      props.showDiagram(props.literal.path, event.target)
-    }
+    props.showDiagram(props.literal.path, event.target)
   }
 
   const mouseOut = (event: React.MouseEvent) => {
-    event.stopPropagation()
-    event.preventDefault()
-
-    if ((event.target as Element).tagName !== 'path') {
-      props.hideDiagram()
-    }
+    props.hideDiagram()
   }
 
   return (
