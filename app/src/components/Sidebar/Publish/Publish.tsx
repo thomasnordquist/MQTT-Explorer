@@ -301,6 +301,7 @@ class Publish extends React.Component<Props, State> {
   private renderEditor() {
     return (
       <AceEditor
+        style=""
         mode={this.props.editorMode}
         theme={this.props.theme.palette.type === 'dark' ? 'monokai' : 'dawn'}
         name="UNIQUE_ID_OF_DIV"
