@@ -34,7 +34,7 @@ class HistoryDrawer extends React.Component<Props, State> {
     this.setState({ collapsed: !this.state.collapsed })
   }
 
-  private handleCtrlA = selectTextWithCtrlA({targetSelector: 'pre'})
+  private handleCtrlA = selectTextWithCtrlA({ targetSelector: 'pre' })
 
   public renderHistory() {
     const style = (element: HistoryItem) => ({

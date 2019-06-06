@@ -62,6 +62,10 @@ export class RingBuffer<T extends Lengthwise> {
     return this.items.slice(this.start, this.end)
   }
 
+  public count() {
+    return this.end - this.start
+  }
+
   public add(item: T) {
     const size = item.length
     this.enforceCapacityConstraints(size)

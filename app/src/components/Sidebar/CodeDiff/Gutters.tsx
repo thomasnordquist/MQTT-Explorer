@@ -5,7 +5,7 @@ import Remove from '@material-ui/icons/Remove'
 import ShowChart from '@material-ui/icons/ShowChart'
 import { JsonPropertyLocation } from '../../../../../backend/src/JsonAstParser'
 import { lineChangeStyle, trimNewlineRight } from './util'
-import { Theme } from '@material-ui/core'
+import { Theme, Tooltip } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles'
 
 interface Props {
@@ -13,42 +13,55 @@ interface Props {
   literalPositions: Array<JsonPropertyLocation>
   classes: any
   className: string
-  showDiagram: (dotPath: string, target: EventTarget) => void
+  showDiagram: (dotPath: string, target: React.Ref<HTMLElement>) => void
   hideDiagram: () => void
+  hasEnoughDataToDisplayDiagrams: boolean
 }
 
 const style = (theme: Theme) => {
+  const icon = {
+    verticalAlign: 'top',
+    width: '12px',
+    height: '12px',
+    marginTop: '2px',
+    borderRadius: '50%',
+  }
+
   return {
+    icon,
+    iconButton: {
+      ...icon,
+      width: '16px',
+      height: '16px',
+      marginTop: '1px',
+      padding: '2px',
+      '&:hover': {
+        color: theme.palette.primary.contrastText,
+        backgroundColor: theme.palette.primary.main,
+      },
+    },
     gutterLine: {
       textAlign: 'right' as 'right',
       paddingRight: theme.spacing(0.5),
       height: '16px',
       width: '100%',
     },
-    icon: {
-      width: '12px',
-      height: '12px',
-      marginTop: '2px',
-      borderRadius: '50%',
-      '&:hover': {
-        color: theme.palette.primary.contrastText,
-        backgroundColor: theme.palette.primary.main,
-      },
-    },
   }
 }
 
-function ChartIcon(props: { classes: any, literal: JsonPropertyLocation, showDiagram: (dotPath: string, target: EventTarget) => void, hideDiagram: () => void }) {
-  const mouseOver = (event: React.MouseEvent<Element>) => {
-    props.showDiagram(props.literal.path, event.target)
-  }
+function ChartIcon(props: { classes: any, literal: JsonPropertyLocation, showDiagram: (dotPath: string, target: React.Ref<HTMLElement>) => void, hideDiagram: () => void }) {
+  const chartIconRef = React.useRef(null)
 
-  const mouseOut = (event: React.MouseEvent) => {
+  const mouseOver = React.useCallback((event: React.MouseEvent<Element>) => {
+    props.showDiagram(props.literal.path, chartIconRef)
+  }, [props.literal.path])
+
+  const mouseOut = React.useCallback(() => {
     props.hideDiagram()
-  }
+  }, [])
 
   return (
-    <ShowChart className={props.classes.icon} onMouseEnter={mouseOver} onMouseLeave={mouseOut} />
+    <ShowChart ref={chartIconRef} className={props.classes.icon} onMouseEnter={mouseOver} onMouseLeave={mouseOut} />
   )
 }
 
@@ -56,7 +69,7 @@ function tokensForLine(change: diff.Change, line: number, props: Props) {
   const { classes, literalPositions } = props
 
   const literal = literalPositions[line]
-  const diagram = literal ? <ChartIcon classes={{ icon: props.classes.icon }} literal={literal} showDiagram={props.showDiagram} hideDiagram={props.hideDiagram}/> : null
+  const diagram = literal ? <Tooltip title="Not enough data"><ChartIcon classes={{ icon: props.classes.iconButton }} literal={literal} showDiagram={props.showDiagram} hideDiagram={props.hideDiagram}/></Tooltip> : null
 
   if (change.added) {
     return [diagram, <Add key="add" className={classes.icon} />]
