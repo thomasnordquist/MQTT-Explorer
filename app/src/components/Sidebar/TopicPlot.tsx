@@ -23,7 +23,11 @@ function nodeDotPathToHistory(history: q.MessageHistory, dotPath: string) {
   return history
     .toArray()
     .map((message: q.Message) => {
-      const json = message.value ? JSON.parse(Base64Message.toUnicodeString(message.value)) : {}
+      let json = {}
+      try {
+        json = message.value ? JSON.parse(Base64Message.toUnicodeString(message.value)) : {}
+      } catch (ignore) {}
+
       let value = dotProp.get(json, dotPath)
 
       return { x: message.received.getTime(), y: toPlottableValue(value) }
