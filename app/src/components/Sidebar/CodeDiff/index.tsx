@@ -66,7 +66,7 @@ class CodeDiff extends React.Component<Props, State> {
       .map((l: JsonPropertyLocation) => isPlottable(l.value) ? l : undefined) as Array<JsonPropertyLocation>
   }
 
-  private renderLines(changes: Array<Diff.Change>) {
+  private renderStyledCodeLines(changes: Array<Diff.Change>) {
     const styledLines = Prism.highlight(this.props.current, Prism.languages.json, 'json').split('\n')
     let lineNumber = 0
 
@@ -95,7 +95,7 @@ class CodeDiff extends React.Component<Props, State> {
     const changes = diff.diffLines(this.props.previous, this.props.current)
     const literalPositions = this.plottableLiteralsIndexedWithLineNumbers()
 
-    const code = this.renderLines(changes)
+    const code = this.renderStyledCodeLines(changes)
 
     const { diagram } = this.state
     const hasEnoughDataToDisplayDiagrams = this.props.messageHistory.count() > 1
