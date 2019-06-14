@@ -1,11 +1,19 @@
 import * as diff from 'diff'
+import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
 import Add from '@material-ui/icons/Add'
 import Remove from '@material-ui/icons/Remove'
 import ShowChart from '@material-ui/icons/ShowChart'
+import TopicPlot from '../TopicPlot'
+import {
+  Fade,
+  Paper,
+  Popper,
+  Theme,
+  Tooltip
+  } from '@material-ui/core'
 import { JsonPropertyLocation } from '../../../../../backend/src/JsonAstParser'
 import { lineChangeStyle, trimNewlineRight } from './util'
-import { Theme, Tooltip } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles'
 
 interface Props {
@@ -13,9 +21,7 @@ interface Props {
   literalPositions: Array<JsonPropertyLocation>
   classes: any
   className: string
-  showDiagram: (dotPath: string, target: React.Ref<HTMLElement>) => void
-  hideDiagram: () => void
-  hasEnoughDataToDisplayDiagrams: boolean
+  messageHistory: q.MessageHistory
 }
 
 const style = (theme: Theme) => {
@@ -29,11 +35,14 @@ const style = (theme: Theme) => {
 
   return {
     icon,
+    iconDisabled: {
+      ...icon,
+      color: theme.palette.text.disabled,
+    },
     iconButton: {
       ...icon,
       width: '16px',
       height: '16px',
-      marginTop: '1px',
       padding: '2px',
       '&:hover': {
         color: theme.palette.primary.contrastText,
@@ -49,34 +58,55 @@ const style = (theme: Theme) => {
   }
 }
 
-function ChartIcon(props: { classes: any, literal: JsonPropertyLocation, showDiagram: (dotPath: string, target: React.Ref<HTMLElement>) => void, hideDiagram: () => void }) {
+function ChartIcon(props: { messageHistory: q.MessageHistory, classes: any, literal: JsonPropertyLocation }) {
   const chartIconRef = React.useRef(null)
+  const [open, setOpen] = React.useState(false)
 
   const mouseOver = React.useCallback((event: React.MouseEvent<Element>) => {
-    props.showDiagram(props.literal.path, chartIconRef)
+    setOpen(true)
   }, [props.literal.path])
 
   const mouseOut = React.useCallback(() => {
-    props.hideDiagram()
+    setOpen(false)
   }, [])
 
-  return (
+  return (<span>
     <ShowChart ref={chartIconRef} className={props.classes.icon} onMouseEnter={mouseOver} onMouseLeave={mouseOut} />
+    <Popper
+      open={open}
+      anchorEl={chartIconRef.current}
+      placement="left-end"
+    >
+      <Fade in={open} timeout={300}>
+        <Paper style={{ width: '300px' }}>
+          {open ? <TopicPlot history={props.messageHistory} dotPath={props.literal.path} /> : <span/>}
+        </Paper>
+      </Fade>
+    </Popper>
+  </span>
   )
 }
 
 function tokensForLine(change: diff.Change, line: number, props: Props) {
   const { classes, literalPositions } = props
-
+  const hasEnoughDataToDisplayDiagrams = props.messageHistory.count() > 1
   const literal = literalPositions[line]
-  const diagram = literal ? <Tooltip title="Not enough data"><ChartIcon classes={{ icon: props.classes.iconButton }} literal={literal} showDiagram={props.showDiagram} hideDiagram={props.hideDiagram}/></Tooltip> : null
+
+  let chartIcon = null
+  if (literal) {
+    if (hasEnoughDataToDisplayDiagrams) {
+      chartIcon = <ChartIcon messageHistory={props.messageHistory} classes={{ icon: props.classes.iconButton }} literal={literal} />
+    } else {
+      chartIcon = <Tooltip title="Not enough data"><ShowChart className={props.classes.iconDisabled} style={{ color: '#aaa' }} /></Tooltip>
+    }
+  }
 
   if (change.added) {
-    return [diagram, <Add key="add" className={classes.icon} />]
+    return [chartIcon, <Add key="add" className={classes.icon} />]
   } else if (change.removed) {
     return [<Remove key="remove" className={classes.icon} />]
   } else {
-    return [diagram, <div key="placeholder" style={{ width: '12px', display: 'inline-block' }} dangerouslySetInnerHTML={{ __html: '&nbsp;'}} />]
+    return [chartIcon, <div key="placeholder" style={{ width: '12px', display: 'inline-block' }} dangerouslySetInnerHTML={{ __html: '&nbsp;' }} />]
   }
 }
 

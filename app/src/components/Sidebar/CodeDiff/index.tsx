@@ -4,19 +4,12 @@ import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
 import DiffCount from './DiffCount'
 import Gutters from './Gutters'
-import TopicPlot from '../TopicPlot'
-import {
-  Fade,
-  Paper,
-  Popper,
-  withStyles
-  } from '@material-ui/core'
 import { isPlottable, lineChangeStyle, trimNewlineRight } from './util'
 import { JsonPropertyLocation, literalsMappedByLines } from '../../../../../backend/src/JsonAstParser'
 import { selectTextWithCtrlA } from '../../../utils/handleTextSelectWithCtrlA'
 import { style } from './style'
+import { withStyles } from '@material-ui/core'
 import 'prismjs/components/prism-json'
-const throttle = require('lodash.throttle')
 
 interface Props {
   messageHistory: q.MessageHistory
@@ -27,36 +20,23 @@ interface Props {
   classes: any
 }
 
-interface State {
-  diagram?: DiagramOptions
-}
-
-interface DiagramOptions {
-  dotPath: string
-  anchorEl: React.Ref<HTMLElement>
-}
+interface State {}
 
 class CodeDiff extends React.Component<Props, State> {
   private handleCtrlA = selectTextWithCtrlA({ targetSelector: 'pre ~ pre' })
-
-  private updateDiagram = throttle((diagram?: DiagramOptions) => {
-    this.setState({ diagram })
-  }, 200)
 
   constructor(props: Props) {
     super(props)
     this.state = {}
   }
 
-  private showDiagram = (dotPath: string, target: React.Ref<Element>) => {
-    this.updateDiagram({
-      dotPath,
-      anchorEl: target,
-    })
-  }
-
-  private hideDiagram = () => {
-    this.updateDiagram(undefined)
+  private isValidJson(str: string) {
+    try {
+      JSON.parse(str)
+      return true
+    } catch (error) {
+      return false
+    }
   }
 
   private plottableLiteralsIndexedWithLineNumbers() {
@@ -94,46 +74,21 @@ class CodeDiff extends React.Component<Props, State> {
   public render() {
     const changes = diff.diffLines(this.props.previous, this.props.current)
     const literalPositions = this.plottableLiteralsIndexedWithLineNumbers()
-
     const code = this.renderStyledCodeLines(changes)
 
-    const { diagram } = this.state
-    const hasEnoughDataToDisplayDiagrams = this.props.messageHistory.count() > 1
     return (
       <div>
         <div tabIndex={0} onKeyDown={this.handleCtrlA} className={this.props.classes.codeWrapper}>
           <Gutters
-            showDiagram={this.showDiagram}
-            hideDiagram={this.hideDiagram}
             className={this.props.classes.gutters}
-            hasEnoughDataToDisplayDiagrams={hasEnoughDataToDisplayDiagrams}
             changes={changes}
+            messageHistory={this.props.messageHistory}
             literalPositions={literalPositions} />
           <pre className={this.props.classes.codeBlock}>{code}</pre>
         </div>
-        <Popper
-          open={Boolean(this.state.diagram) && hasEnoughDataToDisplayDiagrams}
-          anchorEl={diagram && (diagram.anchorEl as any).current}
-          placement="left-end"
-        >
-        <Fade in={Boolean(this.state.diagram)} timeout={300}>
-          <Paper style={{ width: '300px' }}>
-            {diagram ? <TopicPlot history={this.props.messageHistory} dotPath={diagram.dotPath} /> : <span/>}
-          </Paper>
-        </Fade>
-        </Popper>
         <DiffCount changes={changes} nameOfCompareMessage={this.props.nameOfCompareMessage} />
       </div>
     )
-  }
-
-  private isValidJson(str: string) {
-    try {
-      JSON.parse(str)
-      return true
-    } catch (error) {
-      return false
-    }
   }
 }
 

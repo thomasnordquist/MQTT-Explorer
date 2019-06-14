@@ -12,6 +12,7 @@
     "no-submodule-imports": false,
     "array-type": [true, "generic"],
     "prefer-array-literal": false,
+    "function-name": false,
     "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"],
     "trailing-comma": [
       true,
