@@ -10,7 +10,6 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { default as AceEditor } from 'react-ace'
 import { globalActions, publishActions } from '../../../actions'
-import { TopicViewModel } from '../../../model/TopicViewModel'
 import 'brace/mode/json'
 import 'brace/theme/dawn'
 import 'brace/theme/monokai'
@@ -301,7 +300,7 @@ class Publish extends React.Component<Props, State> {
   private renderEditor() {
     return (
       <AceEditor
-        style=""
+        style={{}}
         mode={this.props.editorMode}
         theme={this.props.theme.palette.type === 'dark' ? 'monokai' : 'dawn'}
         name="UNIQUE_ID_OF_DIV"

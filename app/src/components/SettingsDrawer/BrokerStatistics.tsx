@@ -2,7 +2,7 @@ import * as q from '../../../../backend/src/Model'
 import * as React from 'react'
 import { AppState } from '../../reducers'
 import { connect } from 'react-redux'
-import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
+import { StyleRulesCallback, withStyles, Theme } from '@material-ui/core/styles'
 import { TopicViewModel } from '../../model/TopicViewModel'
 import { Typography } from '@material-ui/core'
 import { Base64Message } from '../../../../backend/src/Model/Base64Message'
@@ -15,7 +15,7 @@ interface Stats {
   title: string
 }
 
-const styles: StyleRulesCallback = theme => ({
+const styles = (theme: Theme) => ({
   flex: {
     display: 'flex',
     width: '100%',

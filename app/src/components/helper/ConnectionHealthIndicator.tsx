@@ -4,10 +4,10 @@ import { AppState } from '../../reducers'
 import { connect } from 'react-redux'
 import { ConnectionHealth } from '../../reducers/Connection'
 import { green, orange, red } from '@material-ui/core/colors'
-import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
+import { withStyles, Theme } from '@material-ui/core/styles'
 import { Tooltip } from '@material-ui/core'
 
-const styles: StyleRulesCallback = theme => ({
+const styles = (theme: Theme) => ({
   offline: {
     color: red[700],
   },

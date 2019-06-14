@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 import Button from '@material-ui/core/Button'
-import { withStyles, Theme, StyleRulesCallback } from '@material-ui/core/styles'
+import { withStyles, Theme } from '@material-ui/core/styles'
 import { treeActions } from '../../actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -16,9 +16,9 @@ interface Props {
   didSelectNode: (node: q.TreeNode<TopicViewModel>) => void
 }
 
-const styles: StyleRulesCallback<string> = (theme: Theme) => ({
+const styles = (theme: Theme) => ({
   button: {
-    textTransform: 'none',
+    textTransform: 'none' as 'none',
     padding: '3px 5px 3px 5px',
     minWidth: '30px',
   },

@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
 import { ConnectionOptions } from '../../model/ConnectionOptions'
-import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
+import { Theme, withStyles } from '@material-ui/core/styles'
 
 import {
   Button,
@@ -172,33 +172,31 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-const styles: StyleRulesCallback<string> = (theme: Theme) => {
-  return {
-    fullWidth: {
-      width: '100%',
-    },
-    gridPadding: {
-      padding: '0 12px !important',
-    },
-    topicList: {
-      height: '180px',
-      overflowY: 'scroll' as 'scroll',
-      margin: '8px 16px',
-      backgroundColor: theme.palette.background.default,
-    },
-    button: {
-      marginTop: theme.spacing(3),
-      float: 'right',
-    },
-    certificateName: {
-      width: '100%',
-      height: 'calc(1em + 4px)',
-      overflow: 'hidden' as 'hidden',
-      whiteSpace: 'nowrap' as 'nowrap',
-      textOverflow: 'ellipsis' as 'ellipsis',
-      color: theme.palette.text.hint,
-    },
-  }
-}
+const styles = (theme: Theme) => ({
+  fullWidth: {
+    width: '100%',
+  },
+  gridPadding: {
+    padding: '0 12px !important',
+  },
+  topicList: {
+    height: '180px',
+    overflowY: 'scroll' as 'scroll',
+    margin: '8px 16px',
+    backgroundColor: theme.palette.background.default,
+  },
+  button: {
+    marginTop: theme.spacing(3),
+    float: 'right' as 'right',
+  },
+  certificateName: {
+    width: '100%',
+    height: 'calc(1em + 4px)',
+    overflow: 'hidden' as 'hidden',
+    whiteSpace: 'nowrap' as 'nowrap',
+    textOverflow: 'ellipsis' as 'ellipsis',
+    color: theme.palette.text.hint,
+  },
+})
 
 export default connect(undefined, mapDispatchToProps)(withStyles(styles)(ConnectionSettings))

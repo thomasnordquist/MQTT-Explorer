@@ -11,7 +11,7 @@ import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { settingsActions, sidebarActions } from '../../actions'
-import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
+import { Theme, withStyles } from '@material-ui/core/styles'
 import { TopicViewModel } from '../../model/TopicViewModel'
 
 import {
@@ -186,24 +186,22 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-const styles: StyleRulesCallback<string> = (theme: Theme) => {
-  return {
-    drawer: {
-      display: 'block',
-      height: '100%',
-    },
-    badge: {
-      top: '3px',
-      right: '3px',
-    },
-    valuePaper: {
-      margin: theme.spacing(1),
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      fontWeight: theme.typography.fontWeightRegular,
-    },
-  }
-}
+const styles = (theme: Theme) => ({
+  drawer: {
+    display: 'block' as 'block',
+    height: '100%',
+  },
+  badge: {
+    top: '3px',
+    right: '3px',
+  },
+  valuePaper: {
+    margin: theme.spacing(1),
+  },
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+    fontWeight: theme.typography.fontWeightRegular,
+  },
+})
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Sidebar))

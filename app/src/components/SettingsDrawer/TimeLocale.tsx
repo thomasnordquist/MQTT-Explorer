@@ -8,7 +8,8 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  StyleRulesCallback
+  StyleRulesCallback,
+  Theme
   } from '@material-ui/core'
 import { settingsActions } from '../../actions'
 import { withStyles } from '@material-ui/styles'
@@ -69,16 +70,16 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-const styles: StyleRulesCallback = theme => ({
+const styles = (theme: Theme) => ({
   input: {
     minWidth: '150px',
     margin: `auto ${theme.spacing(1)} auto ${theme.spacing(2)}px`,
   },
   selected: {
     '& div': {
-      display: 'none'
-    }
-  }
+      display: 'none',
+    },
+  },
 })
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(TimeLocaleSettings))

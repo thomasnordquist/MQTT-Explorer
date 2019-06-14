@@ -3,13 +3,14 @@ import ClearAdornment from '../helper/ClearAdornment'
 import CloudOff from '@material-ui/icons/CloudOff'
 import ConnectionHealthIndicator from '../helper/ConnectionHealthIndicator'
 import Menu from '@material-ui/icons/Menu'
+import PauseButton from './PauseButton'
 import Search from '@material-ui/icons/Search'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { connectionActions, settingsActions, globalActions } from '../../actions'
+import { connectionActions, globalActions, settingsActions } from '../../actions'
 import { fade } from '@material-ui/core/styles/colorManipulator'
-import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
+import { Theme, withStyles } from '@material-ui/core/styles'
 import {
   AppBar,
   Button,
@@ -18,18 +19,17 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core'
-import PauseButton from './PauseButton'
 
-const styles: StyleRulesCallback = theme => ({
+const styles = (theme: Theme) => ({
   title: {
-    display: 'none',
+    display: 'none' as 'none',
     [theme.breakpoints.up(750)]: {
-      display: 'block',
+      display: 'block' as 'block',
     },
     whiteSpace: 'nowrap' as 'nowrap',
   },
   search: {
-    position: 'relative',
+    position: 'relative' as 'relative',
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
     '&:hover': {
@@ -44,11 +44,11 @@ const styles: StyleRulesCallback = theme => ({
       maxWidth: '30%',
 
       marginLeft: theme.spacing(4),
-      width: 'auto',
+      width: 'auto' as 'auto',
     },
     [theme.breakpoints.up(750)]: {
       marginLeft: theme.spacing(4),
-      width: 'auto',
+      width: 'auto' as 'auto',
     },
   },
   disconnectIcon: {
@@ -61,14 +61,14 @@ const styles: StyleRulesCallback = theme => ({
   searchIcon: {
     width: theme.spacing(6),
     height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    position: 'absolute' as 'absolute',
+    pointerEvents: 'none' as 'none',
+    display: 'flex' as 'flex',
+    alignItems: 'center' as 'center',
+    justifyContent: 'center' as 'center',
   },
   inputRoot: {
-    color: 'inherit',
+    color: 'inherit' as 'inherit',
     width: '100%',
   },
   inputInput: {

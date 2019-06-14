@@ -2,12 +2,13 @@ import * as React from 'react'
 import BooleanSwitch from './BooleanSwitch'
 import BrokerStatistics from './BrokerStatistics'
 import ChevronRight from '@material-ui/icons/ChevronRight'
+import TimeLocale from './TimeLocale'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { globalActions, settingsActions } from '../../actions'
 import { shell } from 'electron'
-import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
+import { Theme, withStyles } from '@material-ui/core/styles'
 import { TopicOrder } from '../../reducers/Settings'
 
 import {
@@ -21,7 +22,6 @@ import {
   Typography,
   Tooltip,
 } from '@material-ui/core'
-import TimeLocale from './TimeLocale';
 
 export const autoExpandLimitSet = [{
   limit: 0,
@@ -43,7 +43,7 @@ export const autoExpandLimitSet = [{
   name: 'All',
 }]
 
-const styles: StyleRulesCallback = theme => ({
+const styles = (theme: Theme) => ({
   drawer: {
     backgroundColor: theme.palette.background.default,
     flexShrink: 0,

@@ -184,19 +184,17 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-const styles: StyleRulesCallback<string> = (theme: Theme) => {
-  return {
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      fontWeight: theme.typography.fontWeightRegular,
-    },
-    toggleButton: {
-      height: '36px',
-    },
-    toggleButtonIcon: {
-      verticalAlign: 'middle',
-    },
-  }
-}
+const styles = (theme: Theme) => ({
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+    fontWeight: theme.typography.fontWeightRegular,
+  },
+  toggleButton: {
+    height: '36px',
+  },
+  toggleButtonIcon: {
+    verticalAlign: 'middle',
+  },
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ValuePanel))

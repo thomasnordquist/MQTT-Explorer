@@ -7,10 +7,9 @@ import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { treeActions } from '../../actions'
-import { StyleRulesCallback, withStyles } from '@material-ui/core/styles'
-import { Tooltip } from '@material-ui/core'
+import { withStyles, Theme } from '@material-ui/core/styles'
 
-const styles: StyleRulesCallback = theme => ({
+const styles = (theme: Theme) => ({
   icon: {
     color: theme.palette.primary.contrastText,
     verticalAlign: 'middle' as 'middle',

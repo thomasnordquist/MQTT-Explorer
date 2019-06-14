@@ -10,7 +10,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { connectionActions, connectionManagerActions } from '../../actions'
 import { ConnectionOptions, toMqttConnection } from '../../model/ConnectionOptions'
-import { StyleRulesCallback, Theme, withStyles } from '@material-ui/core/styles'
+import { Theme, withStyles } from '@material-ui/core/styles'
 
 import {
   Button,
@@ -321,21 +321,19 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-const styles: StyleRulesCallback<string> = (theme: Theme) => {
-  return {
-    textField: {
-      width: '100%',
-    },
-    switch: {
-      marginTop: 0,
-    },
-    button: {
-      margin: theme.spacing(1),
-    },
-    inputFormControl: {
-      marginTop: '16px',
-    },
-  }
-}
+const styles = (theme: Theme) => ({
+  textField: {
+    width: '100%',
+  },
+  switch: {
+    marginTop: 0,
+  },
+  button: {
+    margin: theme.spacing(1),
+  },
+  inputFormControl: {
+    marginTop: '16px',
+  },
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ConnectionSettings))
