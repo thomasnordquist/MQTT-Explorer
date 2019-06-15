@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import { Browser, Element } from 'webdriverio'
+
 export { expandTopic } from './expandTopic'
 
 let fast = false
@@ -8,7 +9,7 @@ export function setFast() {
 }
 
 export function sleep(ms: number, required = false) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     if (required) {
       setTimeout(resolve, ms)
     } else {
@@ -39,9 +40,9 @@ export async function delteTextWithBackspaces(element: Element, browser: Browser
 export async function writeTextToInput(name: string, text: string, browser: Browser, wait: boolean = true) {
   const input = await browser.$(`//label[contains(text(), "${name}")]/..//input`)
   await clickOn(input, browser, 1)
-  wait && await sleep(500)
+  wait && (await sleep(500))
   input.clearValue()
-  wait && await sleep(300)
+  wait && (await sleep(300))
   await writeText(text, browser)
 }
 
@@ -81,7 +82,13 @@ export async function createFakeMousePointer(browser: Browser) {
   await browser.execute(js)
 }
 
-export async function showText(text: string, duration: number = 0, browser: Browser, location: 'top' | 'bottom' | 'middle' = 'bottom', keys = []) {
+export async function showText(
+  text: string,
+  duration: number = 0,
+  browser: Browser,
+  location: 'top' | 'bottom' | 'middle' = 'bottom',
+  keys = []
+) {
   const js = `window.demo.showMessage('${text}', '${location}', ${duration});`
 
   await browser.execute(js)
@@ -106,12 +113,16 @@ export enum ClassNameMapping {
 }
 
 export async function countInstancesOf(heapDump: HeapDump, className: ClassNameMapping): Promise<number> {
-  return heapDump.nodes
-    .map((idx: number) => heapDump.strings[idx])
-    .filter((s: string) => s === className).length
+  return heapDump.nodes.map((idx: number) => heapDump.strings[idx]).filter((s: string) => s === className).length
 }
 
-export async function showKeys(text: string, duration: number = 0, browser: Browser, location: 'top' | 'bottom' | 'middle' = 'bottom', keys: string[] = []) {
+export async function showKeys(
+  text: string,
+  duration: number = 0,
+  browser: Browser,
+  location: 'top' | 'bottom' | 'middle' = 'bottom',
+  keys: Array<string> = []
+) {
   const js = `window.demo.showMessage('${text}', '${location}', ${duration}, ${JSON.stringify(keys)});`
 
   await browser.execute(js)

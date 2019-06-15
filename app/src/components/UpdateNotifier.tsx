@@ -12,15 +12,7 @@ import { green } from '@material-ui/core/colors'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { updateNotifierActions } from '../actions'
 
-import {
-   Button,
-   IconButton,
-   Modal,
-   Paper,
-   Snackbar,
-   SnackbarContent,
-   Typography,
-} from '@material-ui/core'
+import { Button, IconButton, Modal, Paper, Snackbar, SnackbarContent, Typography } from '@material-ui/core'
 
 interface Props {
   showUpdateNotification: boolean
@@ -30,7 +22,7 @@ interface Props {
 }
 
 interface GithubRelease {
-  url: string,
+  url: string
   assets?: Array<GithubAsset>
   published_at: string // "2019-01-25T20:14:39Z"
   body_html: string
@@ -59,7 +51,7 @@ class UpdateNotifier extends React.Component<Props, State> {
     this.state = { newerVersions: [] }
 
     const ownVersion = electron.remote.app.getVersion()
-    this.fetchReleases().then((releases) => {
+    this.fetchReleases().then(releases => {
       const newerVersions = releases
         .filter(release => this.allowPrereleaseIfOwnVersionIsBeta(release, ownVersion))
         .filter(release => compareVersions(release.tag_name, ownVersion) > 0)
@@ -131,21 +123,19 @@ class UpdateNotifier extends React.Component<Props, State> {
   }
 
   private notificationActions() {
-    return [(
-        <Button key="undo" size="small" onClick={this.showDetails}>
-          Details
-        </Button>
-      ), (
-        <IconButton
-          key="close"
-          aria-label="Close"
-          color="inherit"
-          className={this.props.classes.close}
-          onClick={this.closeNotification}
-        >
-          <Close />
-        </IconButton>
-      ),
+    return [
+      <Button key="undo" size="small" onClick={this.showDetails}>
+        Details
+      </Button>,
+      <IconButton
+        key="close"
+        aria-label="Close"
+        color="inherit"
+        className={this.props.classes.close}
+        onClick={this.closeNotification}
+      >
+        <Close />
+      </IconButton>,
     ]
   }
 
@@ -159,23 +149,20 @@ class UpdateNotifier extends React.Component<Props, State> {
       .join('<hr />')
 
     return (
-      <Modal
-        open={this.props.showUpdateDetails}
-        disableAutoFocus={true}
-        onClose={this.hideDetails}
-      >
+      <Modal open={this.props.showUpdateDetails} disableAutoFocus={true} onClose={this.hideDetails}>
         <Paper className={this.props.classes.root}>
-          <Typography variant="h6" className={this.props.classes.title}>Version {latestUpdate.tag_name}</Typography>
+          <Typography variant="h6" className={this.props.classes.title}>
+            Version {latestUpdate.tag_name}
+          </Typography>
           <Typography className={this.props.classes.title}>Changelog</Typography>
           <div className={this.props.classes.releaseNotes} dangerouslySetInnerHTML={{ __html: releaseNotes }} />
           {this.renderDownloads()}
-          <Button
-            className={this.props.classes.download}
-            onClick={this.openHomePage}
-          >
+          <Button className={this.props.classes.download} onClick={this.openHomePage}>
             Github Page
           </Button>
-          <Button className={this.props.classes.closeButton} color="secondary" onClick={this.hideDetails}>Close</Button>
+          <Button className={this.props.classes.closeButton} color="secondary" onClick={this.hideDetails}>
+            Close
+          </Button>
         </Paper>
       </Modal>
     )
@@ -208,18 +195,14 @@ class UpdateNotifier extends React.Component<Props, State> {
       return null
     }
 
-    return latestUpdate.assets
-      .filter(this.assetForCurrentPlatform)
-      .map(asset => (
-        <div>
-          <Button
-            className={this.props.classes.download}
-            onClick={() => this.openUrl(asset.browser_download_url)}
-          >
-            <CloudDownload />&nbsp;{asset.name}
-          </Button>
-        </div>
-      ))
+    return latestUpdate.assets.filter(this.assetForCurrentPlatform).map(asset => (
+      <div>
+        <Button className={this.props.classes.download} onClick={() => this.openUrl(asset.browser_download_url)}>
+          <CloudDownload />
+          &nbsp;{asset.name}
+        </Button>
+      </div>
+    ))
   }
 
   public render() {
@@ -283,4 +266,9 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(UpdateNotifier))
+export default withStyles(styles)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(UpdateNotifier)
+)

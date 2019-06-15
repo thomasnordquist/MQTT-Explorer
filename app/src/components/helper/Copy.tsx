@@ -37,9 +37,11 @@ class Copy extends React.Component<Props, State> {
   }
 
   public render() {
-    const icon = !this.state.didCopy
-      ? <FileCopy fontSize="inherit" />
-      : <Check fontSize="inherit" style={{ cursor: 'default' }} />
+    const icon = !this.state.didCopy ? (
+      <FileCopy fontSize="inherit" />
+    ) : (
+      <Check fontSize="inherit" style={{ cursor: 'default' }} />
+    )
 
     return (
       <span>
@@ -61,4 +63,7 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(undefined, mapDispatchToProps)(Copy)
+export default connect(
+  undefined,
+  mapDispatchToProps
+)(Copy)

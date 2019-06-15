@@ -11,14 +11,7 @@ import { connect } from 'react-redux'
 import { connectionActions, globalActions, settingsActions } from '../../actions'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import { Theme, withStyles } from '@material-ui/core/styles'
-import {
-  AppBar,
-  Button,
-  IconButton,
-  InputBase,
-  Toolbar,
-  Typography,
-} from '@material-ui/core'
+import { AppBar, Button, IconButton, InputBase, Toolbar, Typography } from '@material-ui/core'
 
 const styles = (theme: Theme) => ({
   title: {
@@ -92,9 +85,9 @@ const styles = (theme: Theme) => ({
 interface Props {
   classes: any
   actions: {
-    settings: typeof settingsActions,
-    connection: typeof connectionActions,
-    global: typeof globalActions,
+    settings: typeof settingsActions
+    connection: typeof connectionActions
+    global: typeof globalActions
   }
   topicFilter?: string
 }
@@ -102,7 +95,7 @@ interface Props {
 class TitleBar extends React.Component<Props, {}> {
   constructor(props: any) {
     super(props)
-    this.state = { }
+    this.state = {}
   }
 
   private renderSearch() {
@@ -117,7 +110,11 @@ class TitleBar extends React.Component<Props, {}> {
           value={topicFilter}
           onChange={this.onFilterChange}
           placeholder="Search…"
-          endAdornment={<div style={{ width: '24px', paddingRight: '8px' }}><ClearAdornment variant="primary" action={this.clearFilter} value={topicFilter} /></div>}
+          endAdornment={
+            <div style={{ width: '24px', paddingRight: '8px' }}>
+              <ClearAdornment variant="primary" action={this.clearFilter} value={topicFilter} />
+            </div>
+          }
           classes={{ root: classes.inputRoot, input: classes.inputInput }}
         />
       </div>
@@ -138,10 +135,17 @@ class TitleBar extends React.Component<Props, {}> {
     return (
       <AppBar position="static">
         <Toolbar>
-          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={actions.global.toggleSettingsVisibility}>
+          <IconButton
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="Menu"
+            onClick={actions.global.toggleSettingsVisibility}
+          >
             <Menu />
           </IconButton>
-          <Typography className={classes.title} variant="h6" color="inherit">MQTT Explorer</Typography>
+          <Typography className={classes.title} variant="h6" color="inherit">
+            MQTT Explorer
+          </Typography>
           {this.renderSearch()}
           <PauseButton />
           <Button className={classes.disconnect} onClick={actions.connection.disconnect}>
@@ -170,4 +174,7 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(TitleBar))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(TitleBar))

@@ -17,7 +17,7 @@ export function clearLegacyConnectionOptions() {
   window.localStorage.setItem('connectionSettings', '')
 }
 
-export function loadLegacyConnectionOptions(): {[s: string]: ConnectionOptions} | {} {
+export function loadLegacyConnectionOptions(): { [s: string]: ConnectionOptions } | {} {
   const legacySettingsString = window.localStorage.getItem('connectionSettings')
   if (!legacySettingsString) {
     return {}
@@ -30,7 +30,7 @@ export function loadLegacyConnectionOptions(): {[s: string]: ConnectionOptions} 
     return {}
   }
 
-  const protocolMap: {[s: string]: string} = {
+  const protocolMap: { [s: string]: string } = {
     'tcp://': 'mqtt',
     'ws://': 'ws',
     'mqtt://': 'mqtt',

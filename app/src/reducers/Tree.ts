@@ -49,7 +49,9 @@ const setPaused = (pause: boolean) => (state: TreeState, action: ShowTree): Tree
   return state.set('paused', pause)
 }
 
-const actions: {[s: string]: (state: TreeState, action: Action) => TreeState} = {
+const actions: {
+  [s: string]: (state: TreeState, action: Action) => TreeState
+} = {
   TREE_SHOW_TREE: showTree,
   TREE_SELECT_TOPIC: selectTopic,
   TREE_PAUSE_UPDATES: setPaused(true),

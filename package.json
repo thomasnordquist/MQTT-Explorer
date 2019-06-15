@@ -10,6 +10,9 @@
     "dev": "npm-run-all --parallel dev:*",
     "dev:app": "cd app && npm run dev",
     "dev:electron": "tsc && electron . --development",
+    "lint": "yarn run lint:prettier; yarn run lint:tslint",
+    "lint:prettier": "prettier --check \"**/*.ts{x,}\"",
+    "lint:tslint": "node_modules/.bin/tslint -p ./",
     "build": "tsc && cd app && yarn run build && cd ..",
     "test-backend": "cd backend && yarn run test && cd ..",
     "prepare-release": "ts-node scripts/prepare-release.ts",
@@ -68,7 +71,9 @@
     "@types/semver": "^6.0.0",
     "@types/sha1": "^1.1.1",
     "axios": "^0.19.0",
+    "builder-util-runtime": "^8.2.5",
     "chai": "^4.2.0",
+    "cspell": "^4.0.23",
     "electron": "5",
     "electron-builder": "^20.38.5",
     "fs-extra": "^8.0.1",
@@ -76,6 +81,7 @@
     "mocha": "^6.1.4",
     "mustache": "^3.0.1",
     "nyc": "^14.1.1",
+    "prettier": "1.18.2",
     "redux-thunk": "^2.3.0",
     "source-map-support": "^0.5.9",
     "spectron": "^5.0.0",
@@ -86,7 +92,7 @@
     "tslint-react-recommended": "^1.0.15",
     "tslint-strict-null-checks": "^1.0.1",
     "typescript": "^3.2.2",
-    "webdriverio": "~5.9.6"
+    "webdriverio": "5.5"
   },
   "dependencies": {
     "about-window": "^1.12.1",
@@ -100,5 +106,8 @@
     "mqtt": "^3.0.0",
     "sha1": "^1.1.1",
     "yarn-run-all": "^3.1.1"
+  },
+  "optionalDependencies": {
+    "ffmpeg-concat": "^1.0.13"
   }
 }

@@ -59,16 +59,20 @@ interface JsonAstArray {
 function jsonToPropertyPaths(ast: JsonAst, previousPath: Array<string> = []): Array<JsonPropertyLocation> {
   let children: Array<Array<JsonPropertyLocation>> = []
   if (ast.type === 'Literal') {
-    return [{
-      value: ast.value,
-      path: previousPath.join('.'),
-      line: ast.loc.start.line,
-      column: ast.loc.start.column,
-    }]
+    return [
+      {
+        value: ast.value,
+        path: previousPath.join('.'),
+        line: ast.loc.start.line,
+        column: ast.loc.start.column,
+      },
+    ]
   } else if (ast.type === 'Array') {
     children = ast.children.map((value, idx) => jsonToPropertyPaths(value, previousPath.slice().concat([String(idx)])))
   } else if (ast.type === 'Object') {
-    children = ast.children.map(property => jsonToPropertyPaths(property.value, previousPath.slice().concat([property.key.value])))
+    children = ast.children.map(property =>
+      jsonToPropertyPaths(property.value, previousPath.slice().concat([property.key.value]))
+    )
   }
 
   return children.reduce((a, b) => a.concat(b), [])

@@ -40,35 +40,46 @@ class CodeDiff extends React.Component<Props, State> {
   }
 
   private plottableLiteralsIndexedWithLineNumbers() {
-    const allLiterals = this.isValidJson(this.props.current) ? (literalsMappedByLines(this.props.current) || []) : []
+    const allLiterals = this.isValidJson(this.props.current) ? literalsMappedByLines(this.props.current) || [] : []
 
-    return allLiterals
-      .map((l: JsonPropertyLocation) => isPlottable(l.value) ? l : undefined) as Array<JsonPropertyLocation>
+    return allLiterals.map((l: JsonPropertyLocation) => (isPlottable(l.value) ? l : undefined)) as Array<
+      JsonPropertyLocation
+    >
   }
 
   private renderStyledCodeLines(changes: Array<Diff.Change>) {
     const styledLines = Prism.highlight(this.props.current, Prism.languages.json, 'json').split('\n')
     let lineNumber = 0
 
-    return changes.map((change, key) => {
-      const hasStyledCode = change.removed !== true
-      const changedLines = change.count || 0
-      if (hasStyledCode && this.props.language === 'json') {
-        const currentLines = styledLines.slice(lineNumber, lineNumber + changedLines)
-        const lines = currentLines.map((html: string, idx: number) => {
-          return <div key={`${key}-${idx}`} style={lineChangeStyle(change)} className={this.props.classes.line}><span dangerouslySetInnerHTML={{ __html: html }} /></div>
-        })
-        lineNumber += changedLines
+    return changes
+      .map((change, key) => {
+        const hasStyledCode = change.removed !== true
+        const changedLines = change.count || 0
+        if (hasStyledCode && this.props.language === 'json') {
+          const currentLines = styledLines.slice(lineNumber, lineNumber + changedLines)
+          const lines = currentLines.map((html: string, idx: number) => {
+            return (
+              <div key={`${key}-${idx}`} style={lineChangeStyle(change)} className={this.props.classes.line}>
+                <span dangerouslySetInnerHTML={{ __html: html }} />
+              </div>
+            )
+          })
+          lineNumber += changedLines
 
-        return [<div key={key}>{lines}</div>]
-      }
+          return [<div key={key}>{lines}</div>]
+        }
 
-      return trimNewlineRight(change.value)
-        .split('\n')
-        .map((line, idx) => {
-          return <div key={`${key}-${idx}`} style={lineChangeStyle(change)} className={this.props.classes.line}><span>{line}</span></div>
-        })
-    }).reduce((a, b) => a.concat(b), [])
+        return trimNewlineRight(change.value)
+          .split('\n')
+          .map((line, idx) => {
+            return (
+              <div key={`${key}-${idx}`} style={lineChangeStyle(change)} className={this.props.classes.line}>
+                <span>{line}</span>
+              </div>
+            )
+          })
+      })
+      .reduce((a, b) => a.concat(b), [])
   }
 
   public render() {
@@ -83,7 +94,8 @@ class CodeDiff extends React.Component<Props, State> {
             className={this.props.classes.gutters}
             changes={changes}
             messageHistory={this.props.messageHistory}
-            literalPositions={literalPositions} />
+            literalPositions={literalPositions}
+          />
           <pre className={this.props.classes.codeBlock}>{code}</pre>
         </div>
         <DiffCount changes={changes} nameOfCompareMessage={this.props.nameOfCompareMessage} />

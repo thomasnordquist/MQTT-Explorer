@@ -42,7 +42,7 @@ describe('Edge', () => {
     const topics2 = 'foo/foo/baz'.split('/')
     const bazEdge2 = TreeNodeFactory.fromEdgesAndValue(topics2, undefined).sourceEdge
 
-    if (!bazEdge1 || !bazEdge2) {
+    if (!bazEdge1 || !bazEdge2) {
       throw Error('should not happen')
     }
 

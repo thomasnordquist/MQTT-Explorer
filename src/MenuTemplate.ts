@@ -112,10 +112,6 @@ const viewMenu: MenuItemConstructorOptions = {
   ],
 }
 
-const template: any = [
-  applicationMenu,
-  editMenu,
-  viewMenu,
-]
+const template: any = [applicationMenu, editMenu, viewMenu]
 
 export const menuTemplate = Menu.buildFromTemplate(template)

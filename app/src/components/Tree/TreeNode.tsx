@@ -107,9 +107,11 @@ class TreeNodeComponent extends React.Component<Props, State> {
   }
 
   private stateHasChanged(newState: State) {
-    return this.state.collapsedOverride !== newState.collapsedOverride
-      || this.state.mouseOver !== newState.mouseOver
-      || this.state.selected !== newState.selected
+    return (
+      this.state.collapsedOverride !== newState.collapsedOverride ||
+      this.state.mouseOver !== newState.mouseOver ||
+      this.state.selected !== newState.selected
+    )
   }
 
   private toggle() {
@@ -137,7 +139,12 @@ class TreeNodeComponent extends React.Component<Props, State> {
   private mouseOver = (event: React.MouseEvent) => {
     event.stopPropagation()
     this.setHover(true)
-    if (this.props.settings.get('selectTopicWithMouseOver') && this.props.treeNode && this.props.treeNode.message && this.props.treeNode.message.value) {
+    if (
+      this.props.settings.get('selectTopicWithMouseOver') &&
+      this.props.treeNode &&
+      this.props.treeNode.message &&
+      this.props.treeNode.message.value
+    ) {
       this.props.didSelectTopic(this.props.treeNode)
     }
   }
@@ -181,11 +188,13 @@ class TreeNodeComponent extends React.Component<Props, State> {
 
   public shouldComponentUpdate(nextProps: Props, nextState: State) {
     const shouldRenderToRemoveCssAnimation = this.cssAnimationWasSetAt !== undefined
-    return this.stateHasChanged(nextState)
-      || this.props.settings !== nextProps.settings
-      || (this.props.lastUpdate !== nextProps.lastUpdate)
-      || this.animationDirty
-      || shouldRenderToRemoveCssAnimation
+    return (
+      this.stateHasChanged(nextState) ||
+      this.props.settings !== nextProps.settings ||
+      this.props.lastUpdate !== nextProps.lastUpdate ||
+      this.animationDirty ||
+      shouldRenderToRemoveCssAnimation
+    )
   }
 
   public componentDidUpdate() {
@@ -204,12 +213,19 @@ class TreeNodeComponent extends React.Component<Props, State> {
   public render() {
     const { classes } = this.props
 
-    const shouldStartAnimation = (!this.animationDirty) && !this.props.isRoot && this.props.settings.get('highlightTopicUpdates')
+    const shouldStartAnimation =
+      !this.animationDirty && !this.props.isRoot && this.props.settings.get('highlightTopicUpdates')
     const animationName = this.props.theme.palette.type === 'light' ? 'updateLight' : 'updateDark'
-    const animation = shouldStartAnimation ? { willChange: 'auto', translateZ: 0, animation: `${animationName} 0.5s` } : {}
+    const animation = shouldStartAnimation
+      ? { willChange: 'auto', translateZ: 0, animation: `${animationName} 0.5s` }
+      : {}
     this.animationDirty = shouldStartAnimation
 
-    const highlightClass = this.state.selected ? this.props.classes.selected : (this.state.mouseOver ? this.props.classes.hover : '')
+    const highlightClass = this.state.selected
+      ? this.props.classes.selected
+      : this.state.mouseOver
+      ? this.props.classes.hover
+      : ''
 
     return (
       <div>

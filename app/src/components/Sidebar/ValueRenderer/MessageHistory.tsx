@@ -18,7 +18,7 @@ interface Props {
 }
 
 interface State {
-  displayMessage?: q.Message,
+  displayMessage?: q.Message
   anchorEl?: HTMLElement
 }
 
@@ -65,18 +65,28 @@ class MessageHistory extends React.Component<Props, State> {
       const element = {
         value,
         key: `${message.messageNumber}-${message.received}`,
-        title: (<span>
-          <DateFormatter date={message.received} />
-          {previousMessage ? <i>(-<DateFormatter date={message.received} intervalSince={previousMessage.received} />)</i> : null}
-          <div style={{ float: 'right' }}><Copy value={value} /></div>
-        </span>),
+        title: (
+          <span>
+            <DateFormatter date={message.received} />
+            {previousMessage ? (
+              <i>
+                (-
+                <DateFormatter date={message.received} intervalSince={previousMessage.received} />)
+              </i>
+            ) : null}
+            <div style={{ float: 'right' }}>
+              <Copy value={value} />
+            </div>
+          </span>
+        ),
         selected: message && message === this.props.selected,
       }
       previousMessage = message
       return element
     })
 
-    const isMessagePlottable = node.message && node.message.value && isPlottable(Base64Message.toUnicodeString(node.message.value))
+    const isMessagePlottable =
+      node.message && node.message.value && isPlottable(Base64Message.toUnicodeString(node.message.value))
     return (
       <div>
         <History

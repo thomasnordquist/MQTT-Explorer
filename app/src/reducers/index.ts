@@ -11,9 +11,9 @@ import { treeReducer, TreeState } from './Tree'
 export interface AppState {
   globalState: GlobalState
   tree: TreeState
-  settings: Record<SettingsState>,
+  settings: Record<SettingsState>
   publish: PublishState
-  sidebar: SidebarState,
+  sidebar: SidebarState
   connection: ConnectionState
   connectionManager: ConnectionManagerState
 }

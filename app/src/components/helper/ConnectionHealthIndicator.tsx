@@ -18,7 +18,10 @@ const styles = (theme: Theme) => ({
     color: orange[600],
   },
   icon: {
-    boxShadow: theme.shadows[2].split('),').map(s => `inset ${s}`).join('),'),
+    boxShadow: theme.shadows[2]
+      .split('),')
+      .map(s => `inset ${s}`)
+      .join('),'),
     padding: '6px',
     borderRadius: '50%',
     backgroundColor: '#eee',

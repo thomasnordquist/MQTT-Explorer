@@ -1,8 +1,5 @@
-import { Browser } from 'webdriverio'
-import {
-  clickOn,
-  sleep
-} from '../util'
+import { Browser, Element } from 'webdriverio'
+import { clickOn, sleep } from '../util'
 
 export async function showJsonFormatting(browser: Browser) {
   const editor = await browser.$('//*[contains(@class, "ace_editor")]')

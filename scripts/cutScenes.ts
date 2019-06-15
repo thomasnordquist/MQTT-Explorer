@@ -12,7 +12,10 @@ async function cutScenes(scenes: Array<Scene>) {
       fs.unlinkSync(outputFile)
     }
 
-    await exec('ffmpeg', `-i app2.mp4 -ss ${scene.start / 1000} -t ${scene.duration / 1000} ${scene.name}.mp4`.split(' '))
+    await exec(
+      'ffmpeg',
+      `-i app2.mp4 -ss ${scene.start / 1000} -t ${scene.duration / 1000} ${scene.name}.mp4`.split(' ')
+    )
   }
 }
 
@@ -37,7 +40,7 @@ class TransitionBuilder {
     return {
       output: outputFile,
       videos: this.scenes.map(s => `${s}.mp4`),
-      transistions: this.transitions.map(name => ({
+      transitions: this.transitions.map(name => ({
         name: name !== 'none' ? name : 'fade',
         duration: name !== 'none' ? 1000 : 10,
       })),
@@ -47,7 +50,7 @@ class TransitionBuilder {
 
 // const scenes: Array<Scene> = JSON.parse(fs.readFileSync('./scenes.json').toString())
 // cutScenes(scenes)
-let builder = new TransitionBuilder()
+const builder = new TransitionBuilder()
   .startWith('connect')
   .transitionTo('numeric_plots', 'cube')
   .transitionTo('diffs', 'pixelize')

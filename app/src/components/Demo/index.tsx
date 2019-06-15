@@ -12,7 +12,7 @@ function writeHeapdump(path?: string) {
   return path
 }
 
-(window as any).demo = {
+;(window as any).demo = {
   writeHeapdump,
 }
 

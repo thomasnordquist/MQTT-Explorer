@@ -23,25 +23,32 @@ import {
   Tooltip,
 } from '@material-ui/core'
 
-export const autoExpandLimitSet = [{
-  limit: 0,
-  name: 'Collapsed',
-}, {
-  limit: 2,
-  name: 'Few',
-}, {
-  limit: 5,
-  name: 'Some',
-}, {
-  limit: 15,
-  name: 'Most',
-}, {
-  limit: 30,
-  name: 'Most',
-}, {
-  limit: 1E6,
-  name: 'All',
-}]
+export const autoExpandLimitSet = [
+  {
+    limit: 0,
+    name: 'Collapsed',
+  },
+  {
+    limit: 2,
+    name: 'Few',
+  },
+  {
+    limit: 5,
+    name: 'Some',
+  },
+  {
+    limit: 15,
+    name: 'Most',
+  },
+  {
+    limit: 30,
+    name: 'Most',
+  },
+  {
+    limit: 1e6,
+    name: 'All',
+  },
+]
 
 const styles = (theme: Theme) => ({
   drawer: {
@@ -70,8 +77,8 @@ const styles = (theme: Theme) => ({
 
 interface Props {
   actions: {
-    settings: typeof settingsActions,
-    global: typeof globalActions,
+    settings: typeof settingsActions
+    global: typeof globalActions
   }
   autoExpandLimit: number
   classes: any
@@ -96,29 +103,56 @@ class Settings extends React.Component<Props, {}> {
   private renderHighlightTopicUpdates() {
     const { highlightTopicUpdates, actions } = this.props
 
-    return <BooleanSwitch title="Show Activity" tooltip="Topics blink when a new message arrives" value={highlightTopicUpdates} action={actions.settings.toggleHighlightTopicUpdates}/>
+    return (
+      <BooleanSwitch
+        title="Show Activity"
+        tooltip="Topics blink when a new message arrives"
+        value={highlightTopicUpdates}
+        action={actions.settings.toggleHighlightTopicUpdates}
+      />
+    )
   }
 
   private selectTopicsOnMouseOver() {
     const { actions, selectTopicWithMouseOver } = this.props
     const toggle = () => actions.settings.selectTopicWithMouseOver(!selectTopicWithMouseOver)
 
-    return <BooleanSwitch title="Quick Preview" tooltip="Select topics on mouse over" value={selectTopicWithMouseOver} action={toggle} />
+    return (
+      <BooleanSwitch
+        title="Quick Preview"
+        tooltip="Select topics on mouse over"
+        value={selectTopicWithMouseOver}
+        action={toggle}
+      />
+    )
   }
 
   private toggleTheme() {
     const { actions, theme } = this.props
 
-    return <BooleanSwitch title="Dark Mode" tooltip="Enable dark theme" value={theme === 'dark'} action={actions.settings.toggleTheme} />
+    return (
+      <BooleanSwitch
+        title="Dark Mode"
+        tooltip="Enable dark theme"
+        value={theme === 'dark'}
+        action={actions.settings.toggleTheme}
+      />
+    )
   }
 
   private renderAutoExpand() {
     const { classes, autoExpandLimit } = this.props
 
-    const limits = autoExpandLimitSet.map(limit => <MenuItem key={limit.limit} value={limit.limit}>{limit.limit < 10000 && limit.limit > 0 ? `≤ ${limit.limit} topics` : limit.name}</MenuItem>)
+    const limits = autoExpandLimitSet.map(limit => (
+      <MenuItem key={limit.limit} value={limit.limit}>
+        {limit.limit < 10000 && limit.limit > 0 ? `≤ ${limit.limit} topics` : limit.name}
+      </MenuItem>
+    ))
     return (
       <div style={{ padding: '8px', display: 'flex' }}>
-        <InputLabel htmlFor="auto-expand" style={{ flex: '1', marginTop: '8px' }}>Auto Expand</InputLabel>
+        <InputLabel htmlFor="auto-expand" style={{ flex: '1', marginTop: '8px' }}>
+          Auto Expand
+        </InputLabel>
         <Select
           value={autoExpandLimit}
           onChange={this.onChangeAutoExpand}
@@ -133,7 +167,7 @@ class Settings extends React.Component<Props, {}> {
     )
   }
 
-  private onChangeAutoExpand = (e: React.ChangeEvent<{value: unknown}>) => {
+  private onChangeAutoExpand = (e: React.ChangeEvent<{ value: unknown }>) => {
     this.props.actions.settings.setAutoExpandLimit(parseInt(String(e.target.value), 10))
   }
 
@@ -142,7 +176,9 @@ class Settings extends React.Component<Props, {}> {
 
     return (
       <div style={{ padding: '8px', display: 'flex' }}>
-        <InputLabel htmlFor="auto-expand" style={{ flex: '1', marginTop: '8px' }}>Topic Order</InputLabel>
+        <InputLabel htmlFor="auto-expand" style={{ flex: '1', marginTop: '8px' }}>
+          Topic Order
+        </InputLabel>
         <Select
           value={topicOrder}
           onChange={this.onChangeSorting}
@@ -152,32 +188,26 @@ class Settings extends React.Component<Props, {}> {
           className={classes.input}
           style={{ flex: '1' }}
         >
-          <MenuItem value={TopicOrder.none}><em>default</em></MenuItem>
+          <MenuItem value={TopicOrder.none}>
+            <em>default</em>
+          </MenuItem>
           <MenuItem value={TopicOrder.abc}>a-z</MenuItem>
           <MenuItem value={TopicOrder.messages}>{TopicOrder.messages}</MenuItem>
           <MenuItem value={TopicOrder.topics}>{TopicOrder.topics}</MenuItem>
         </Select>
-    </div>)
+      </div>
+    )
   }
 
-  private onChangeSorting = (e: React.ChangeEvent<{value: unknown}>) => {
+  private onChangeSorting = (e: React.ChangeEvent<{ value: unknown }>) => {
     this.props.actions.settings.setTopicOrder(e.target.value as TopicOrder)
   }
 
   public render() {
     const { classes, actions, visible } = this.props
     return (
-      <Drawer
-        anchor="left"
-        className={classes.drawer}
-        open={visible}
-        variant="persistent"
-      >
-        <div
-          className={classes.paper}
-          tabIndex={0}
-          role="button"
-        >
+      <Drawer anchor="left" className={classes.drawer} open={visible} variant="persistent">
+        <div className={classes.paper} tabIndex={0} role="button">
           <Typography className={classes.title} variant="h6" color="inherit">
             <IconButton onClick={actions.global.toggleSettingsVisibility}>
               <ChevronRight />
@@ -225,4 +255,9 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Settings))
+export default withStyles(styles)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Settings)
+)

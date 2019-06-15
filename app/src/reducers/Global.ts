@@ -12,7 +12,7 @@ export enum ActionTypes {
 }
 
 export interface GlobalAction extends Action {
-  type: ActionTypes,
+  type: ActionTypes
   showUpdateNotification?: boolean
   showUpdateDetails?: boolean
   error?: string
@@ -39,33 +39,36 @@ const initialStateFactory = Record<GlobalStateInterface>({
   settingsVisible: false,
 })
 
-export const globalState: Reducer<Record<GlobalStateInterface>, GlobalAction> = (state = initialStateFactory(), action): GlobalState => {
+export const globalState: Reducer<Record<GlobalStateInterface>, GlobalAction> = (
+  state = initialStateFactory(),
+  action
+): GlobalState => {
   trackEvent(action.type)
   console.log(action.type)
 
   switch (action.type) {
-  case ActionTypes.showUpdateNotification:
-    return state.set('showUpdateNotification', action.showUpdateNotification)
+    case ActionTypes.showUpdateNotification:
+      return state.set('showUpdateNotification', action.showUpdateNotification)
 
-  case ActionTypes.toggleSettingsVisibility:
-    return state.set('settingsVisible', !state.get('settingsVisible'))
+    case ActionTypes.toggleSettingsVisibility:
+      return state.set('settingsVisible', !state.get('settingsVisible'))
 
-  case ActionTypes.showError:
-    return state.set('error', action.error)
+    case ActionTypes.showError:
+      return state.set('error', action.error)
 
-  case ActionTypes.showNotification:
-    return state.set('notification', action.notification)
+    case ActionTypes.showNotification:
+      return state.set('notification', action.notification)
 
-  case ActionTypes.didLaunch:
-    return state.set('launching', false)
+    case ActionTypes.didLaunch:
+      return state.set('launching', false)
 
-  case ActionTypes.showUpdateDetails:
-    if (action.showUpdateDetails === undefined) {
+    case ActionTypes.showUpdateDetails:
+      if (action.showUpdateDetails === undefined) {
+        return state
+      }
+      return state.set('showUpdateDetails', action.showUpdateDetails)
+
+    default:
       return state
-    }
-    return state.set('showUpdateDetails', action.showUpdateDetails)
-
-  default:
-    return state
   }
 }

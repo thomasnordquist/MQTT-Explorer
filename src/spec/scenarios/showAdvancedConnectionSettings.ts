@@ -1,5 +1,5 @@
-import { clickOn, writeTextToInput, sleep } from '../util'
-import { Browser } from 'webdriverio'
+import { Browser, Element } from 'webdriverio'
+import { clickOn, sleep, writeTextToInput } from '../util'
 
 export async function showAdvancedConnectionSettings(browser: Browser) {
   const advancedSettingsButton = await browser.$('//button/span[contains(text(),"Advanced")]')

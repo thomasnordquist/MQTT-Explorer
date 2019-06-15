@@ -9,20 +9,18 @@ import { globalActions } from '.'
 import { resetStore as resetTreeStore, showTree } from './Tree'
 import { showError } from './Global'
 import { TopicViewModel } from '../model/TopicViewModel'
-import {
-  addMqttConnectionEvent,
-  makeConnectionStateEvent,
-  removeConnection,
-  rendererEvents,
-} from '../../../events'
+import { addMqttConnectionEvent, makeConnectionStateEvent, removeConnection, rendererEvents } from '../../../events'
 
-export const connect = (options: MqttOptions, connectionId: string) => (dispatch: Dispatch<any>, getState: () => AppState) => {
+export const connect = (options: MqttOptions, connectionId: string) => (
+  dispatch: Dispatch<any>,
+  getState: () => AppState
+) => {
   dispatch(connecting(connectionId))
   rendererEvents.emit(addMqttConnectionEvent, { options, id: connectionId })
   const event = makeConnectionStateEvent(connectionId)
   const host = url.parse(options.url).hostname
 
-  rendererEvents.subscribe(event, (dataSourceState) => {
+  rendererEvents.subscribe(event, dataSourceState => {
     console.log(dataSourceState)
     if (dataSourceState.connected) {
       const didReconnect = Boolean(getState().connection.tree)
@@ -59,7 +57,10 @@ const updateHealth = (dataSourceState: DataSourceState) => (dispatch: Dispatch<a
   })
 }
 
-export const connected: (tree: q.Tree<TopicViewModel>, host: string) => Action = (tree: q.Tree<TopicViewModel>, host: string) => ({
+export const connected: (tree: q.Tree<TopicViewModel>, host: string) => Action = (
+  tree: q.Tree<TopicViewModel>,
+  host: string
+) => ({
   tree,
   host,
   type: ActionTypes.CONNECTION_SET_CONNECTED,

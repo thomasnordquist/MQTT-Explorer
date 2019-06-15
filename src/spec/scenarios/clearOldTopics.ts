@@ -1,5 +1,5 @@
-import { clickOn, sleep, writeText, expandTopic, moveToCenterOfElement } from '../util'
-import { Browser } from 'webdriverio'
+import { Browser, Element } from 'webdriverio'
+import { clickOn, expandTopic, moveToCenterOfElement, sleep, writeText } from '../util'
 
 export async function clearOldTopics(browser: Browser) {
   const topics = ['hello', 'test 123']

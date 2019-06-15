@@ -5,19 +5,13 @@ import Add from '@material-ui/icons/Add'
 import Remove from '@material-ui/icons/Remove'
 import ShowChart from '@material-ui/icons/ShowChart'
 import TopicPlot from '../TopicPlot'
-import {
-  Fade,
-  Paper,
-  Popper,
-  Theme,
-  Tooltip
-  } from '@material-ui/core'
+import { Fade, Paper, Popper, Theme, Tooltip } from '@material-ui/core'
 import { JsonPropertyLocation } from '../../../../../backend/src/JsonAstParser'
 import { lineChangeStyle, trimNewlineRight } from './util'
 import { withStyles } from '@material-ui/styles'
 
 interface Props {
-  changes: Array<diff.Change>,
+  changes: Array<diff.Change>
   literalPositions: Array<JsonPropertyLocation>
   classes: any
   className: string
@@ -58,32 +52,32 @@ const style = (theme: Theme) => {
   }
 }
 
-function ChartIcon(props: { messageHistory: q.MessageHistory, classes: any, literal: JsonPropertyLocation }) {
+function ChartIcon(props: { messageHistory: q.MessageHistory; classes: any; literal: JsonPropertyLocation }) {
   const chartIconRef = React.useRef(null)
   const [open, setOpen] = React.useState(false)
 
-  const mouseOver = React.useCallback((event: React.MouseEvent<Element>) => {
-    setOpen(true)
-  }, [props.literal.path])
+  const mouseOver = React.useCallback(
+    (event: React.MouseEvent<Element>) => {
+      setOpen(true)
+    },
+    [props.literal.path]
+  )
 
   const mouseOut = React.useCallback(() => {
     setOpen(false)
   }, [])
 
-  return (<span>
-    <ShowChart ref={chartIconRef} className={props.classes.icon} onMouseEnter={mouseOver} onMouseLeave={mouseOut} />
-    <Popper
-      open={open}
-      anchorEl={chartIconRef.current}
-      placement="left-end"
-    >
-      <Fade in={open} timeout={300}>
-        <Paper style={{ width: '300px' }}>
-          {open ? <TopicPlot history={props.messageHistory} dotPath={props.literal.path} /> : <span/>}
-        </Paper>
-      </Fade>
-    </Popper>
-  </span>
+  return (
+    <span>
+      <ShowChart ref={chartIconRef} className={props.classes.icon} onMouseEnter={mouseOver} onMouseLeave={mouseOut} />
+      <Popper open={open} anchorEl={chartIconRef.current} placement="left-end">
+        <Fade in={open} timeout={300}>
+          <Paper style={{ width: '300px' }}>
+            {open ? <TopicPlot history={props.messageHistory} dotPath={props.literal.path} /> : <span />}
+          </Paper>
+        </Fade>
+      </Popper>
+    </span>
   )
 }
 
@@ -95,9 +89,19 @@ function tokensForLine(change: diff.Change, line: number, props: Props) {
   let chartIcon = null
   if (literal) {
     if (hasEnoughDataToDisplayDiagrams) {
-      chartIcon = <ChartIcon messageHistory={props.messageHistory} classes={{ icon: props.classes.iconButton }} literal={literal} />
+      chartIcon = (
+        <ChartIcon
+          messageHistory={props.messageHistory}
+          classes={{ icon: props.classes.iconButton }}
+          literal={literal}
+        />
+      )
     } else {
-      chartIcon = <Tooltip title="Not enough data"><ShowChart className={props.classes.iconDisabled} style={{ color: '#aaa' }} /></Tooltip>
+      chartIcon = (
+        <Tooltip title="Not enough data">
+          <ShowChart className={props.classes.iconDisabled} style={{ color: '#aaa' }} />
+        </Tooltip>
+      )
     }
   }
 
@@ -106,28 +110,39 @@ function tokensForLine(change: diff.Change, line: number, props: Props) {
   } else if (change.removed) {
     return [<Remove key="remove" className={classes.icon} />]
   } else {
-    return [chartIcon, <div key="placeholder" style={{ width: '12px', display: 'inline-block' }} dangerouslySetInnerHTML={{ __html: '&nbsp;' }} />]
+    return [
+      chartIcon,
+      <div
+        key="placeholder"
+        style={{ width: '12px', display: 'inline-block' }}
+        dangerouslySetInnerHTML={{ __html: '&nbsp;' }}
+      />,
+    ]
   }
 }
 
 function Gutters(props: Props) {
   let currentLine = -1
-  const gutters = props.changes.map((change, key) => {
-    return trimNewlineRight(change.value)
-      .split('\n')
-      .map((_, idx) => {
-        currentLine = !change.removed ? currentLine + 1 : currentLine
-        return (
-          <div key={`${key}-${idx}`} style={lineChangeStyle(change)} className={props.classes.gutterLine}>
-            {tokensForLine(change, currentLine, props)}
-          </div>
-        )
+  const gutters = props.changes
+    .map((change, key) => {
+      return trimNewlineRight(change.value)
+        .split('\n')
+        .map((_, idx) => {
+          currentLine = !change.removed ? currentLine + 1 : currentLine
+          return (
+            <div key={`${key}-${idx}`} style={lineChangeStyle(change)} className={props.classes.gutterLine}>
+              {tokensForLine(change, currentLine, props)}
+            </div>
+          )
+        })
     })
-  }).reduce((a, b) => a.concat(b), [])
+    .reduce((a, b) => a.concat(b), [])
 
-  return <span>
-    <pre className={props.className}>{gutters}</pre>
-  </span>
+  return (
+    <span>
+      <pre className={props.className}>{gutters}</pre>
+    </span>
+  )
 }
 
 export default withStyles(style)(Gutters)

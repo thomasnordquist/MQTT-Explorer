@@ -4,13 +4,7 @@ import SentimentDissatisfied from '@material-ui/icons/SentimentDissatisfied'
 import Warning from '@material-ui/icons/Warning'
 import { electronRendererTelementry } from 'electron-telemetry'
 import { Theme, withStyles } from '@material-ui/core/styles'
-import {
-  Button,
-  Modal,
-  Paper,
-  Toolbar,
-  Typography,
-} from '@material-ui/core'
+import { Button, Modal, Paper, Toolbar, Typography } from '@material-ui/core'
 
 interface State {
   error?: Error
@@ -21,7 +15,6 @@ interface Props {
 }
 
 class ErrorBoundary extends React.Component<Props, State> {
-
   public static getDerivedStateFromError(error: Error) {
     return { error }
   }
@@ -54,23 +47,36 @@ class ErrorBoundary extends React.Component<Props, State> {
       <Modal open={true} disableAutoFocus={true}>
         <Paper className={classes.root}>
           <Toolbar style={{ padding: '0' }}>
-            <Typography className={classes.title} variant="h6" color="inherit"><Warning /> Oooooops!</Typography>
+            <Typography className={classes.title} variant="h6" color="inherit">
+              <Warning /> Oooooops!
+            </Typography>
           </Toolbar>
-          <Typography className={classes.centered}>I hoped that you would never see this window, but MQTT-Explorer had an unexpected error.</Typography>
-          <Typography className={classes.centered}><SentimentDissatisfied /></Typography>
+          <Typography className={classes.centered}>
+            I hoped that you would never see this window, but MQTT-Explorer had an unexpected error.
+          </Typography>
+          <Typography className={classes.centered}>
+            <SentimentDissatisfied />
+          </Typography>
           <pre className={classes.textColor} style={{ maxHeight: '35vh', overflow: 'scroll' }}>
-            <code className={classes.textColor}>
-              {this.state.error.stack}
-            </code>
+            <code className={classes.textColor}>{this.state.error.stack}</code>
           </pre>
           <Typography>
             Please report this issue with a short description of what happened to
-            <span> <a className={classes.textColor} href="https://github.com/thomasnordquist/MQTT-Explorer/issues">https://github.com/thomasnordquist/MQTT-Explorer/issues</a></span>
+            <span>
+              {' '}
+              <a className={classes.textColor} href="https://github.com/thomasnordquist/MQTT-Explorer/issues">
+                https://github.com/thomasnordquist/MQTT-Explorer/issues
+              </a>
+            </span>
           </Typography>
           <div>
             <div className={classes.buttonPositioning}>
-              <Button className={classes.button} variant="contained" color="secondary" onClick={this.clearStorage}>Start Fresh</Button>
-              <Button className={classes.button} variant="contained" color="primary" onClick={this.restart}>Restart</Button>
+              <Button className={classes.button} variant="contained" color="secondary" onClick={this.clearStorage}>
+                Start Fresh
+              </Button>
+              <Button className={classes.button} variant="contained" color="primary" onClick={this.restart}>
+                Restart
+              </Button>
             </div>
           </div>
         </Paper>

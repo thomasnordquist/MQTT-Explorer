@@ -6,17 +6,12 @@ import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
 import { ConnectionOptions, toMqttConnection } from '../../model/ConnectionOptions'
 import { Theme, withStyles } from '@material-ui/core/styles'
-import {
-  List,
-  ListItem,
-  ListSubheader,
-  Typography,
-} from '@material-ui/core'
+import { List, ListItem, ListSubheader, Typography } from '@material-ui/core'
 
 interface Props {
   classes: any
   selected?: string
-  connections: {[s: string]: ConnectionOptions}
+  connections: { [s: string]: ConnectionOptions }
   actions: any
 }
 
@@ -26,7 +21,11 @@ class ProfileList extends React.Component<Props, {}> {
   }
 
   private addConnectionButton() {
-    return <span id="addProfileButton" style={{ marginRight: '12px' }}><AddButton action={this.props.actions.createConnection} /></span>
+    return (
+      <span id="addProfileButton" style={{ marginRight: '12px' }}>
+        <AddButton action={this.props.actions.createConnection} />
+      </span>
+    )
   }
 
   public render() {
@@ -37,7 +36,13 @@ class ProfileList extends React.Component<Props, {}> {
         subheader={<ListSubheader component="div">{this.addConnectionButton()}Connections</ListSubheader>}
       >
         <div className={this.props.classes.list}>
-          {Object.values(this.props.connections).map(connection => <ConnectionItem connection={connection} key={connection.id} selected={this.props.selected === connection.id} />)}
+          {Object.values(this.props.connections).map(connection => (
+            <ConnectionItem
+              connection={connection}
+              key={connection.id}
+              selected={this.props.selected === connection.id}
+            />
+          ))}
         </div>
       </List>
     )
@@ -59,9 +64,9 @@ const mapDispatchToProps = (dispatch: any) => {
 }
 
 interface ConnectionItemProps {
-  connection: ConnectionOptions,
-  actions: any,
-  selected: boolean,
+  connection: ConnectionOptions
+  actions: any
+  selected: boolean
   classes: any
 }
 
@@ -91,17 +96,16 @@ const connectionItemRenderer = withStyles(connectionItemStyle)((props: Connectio
       style={{ display: 'block' }}
       onClick={() => props.actions.selectConnection(props.connection.id)}
     >
-      <Typography className={props.classes.name}>
-        {props.connection.name || 'mqtt broker'}
-      </Typography>
-      <Typography className={props.classes.details}>
-        {connection && connection.url}
-      </Typography>
+      <Typography className={props.classes.name}>{props.connection.name || 'mqtt broker'}</Typography>
+      <Typography className={props.classes.details}>{connection && connection.url}</Typography>
     </ListItem>
   )
 })
 
-const ConnectionItem = connect(null, mapDispatchToProps)(connectionItemRenderer)
+const ConnectionItem = connect(
+  null,
+  mapDispatchToProps
+)(connectionItemRenderer)
 
 const mapStateToProps = (state: AppState) => {
   return {
@@ -110,4 +114,7 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProfileList))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(ProfileList))

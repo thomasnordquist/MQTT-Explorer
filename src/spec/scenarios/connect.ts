@@ -1,5 +1,5 @@
+import { Browser, Element } from 'webdriverio'
 import { clickOn, writeTextToInput } from '../util'
-import { Browser } from 'webdriverio'
 
 export async function connectTo(host: string, browser: Browser) {
   await writeTextToInput('Host', host, browser)

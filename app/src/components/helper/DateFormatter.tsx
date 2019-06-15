@@ -28,7 +28,9 @@ class DateFormatter extends React.Component<Props, {}> {
   }
 
   private localizedDate(locale: string) {
-    return moment(this.props.date).locale(locale).format('L LTS')
+    return moment(this.props.date)
+      .locale(locale)
+      .format('L LTS')
   }
 
   private unitForInterval(milliseconds: number) {

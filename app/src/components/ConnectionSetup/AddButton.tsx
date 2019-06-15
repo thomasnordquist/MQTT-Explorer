@@ -14,18 +14,9 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export const AddButton = withStyles(styles)((props: {
-  classes: any,
-  action: any,
-}) => {
+export const AddButton = withStyles(styles)((props: { classes: any; action: any }) => {
   return (
-    <Fab
-      size="small"
-      color="secondary"
-      aria-label="Add"
-      className={props.classes.addButton}
-      onClick={props.action}
-    >
+    <Fab size="small" color="secondary" aria-label="Add" className={props.classes.addButton} onClick={props.action}>
       <Add className={props.classes.addIcon} />
     </Fab>
   )

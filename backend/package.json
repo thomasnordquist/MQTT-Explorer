@@ -34,5 +34,11 @@
     ],
     "sourceMap": true,
     "instrument": true
+  },
+  "peerDependencies": {
+    "fs-extra": "^8.0.1",
+    "js-base64": "^2.5.1",
+    "lowdb": "^1.0.0",
+    "mqtt": "^3.0.0"
   }
 }

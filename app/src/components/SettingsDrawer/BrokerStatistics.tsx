@@ -112,13 +112,17 @@ class BrokerStatistics extends React.Component<Props, {}> {
     }
 
     const str = node.message.value ? Base64Message.toUnicodeString(node.message.value) : ''
-    let value = (node.message && node.message.value) ? parseFloat(str) : NaN
+    let value = node.message && node.message.value ? parseFloat(str) : NaN
     value = !isNaN(value) ? abbreviate(value) : str
 
     return (
       <div key={stat.title}>
-        <Typography><b>{stat.title}</b></Typography>
-        <Typography style={{ paddingLeft: '8px' }}><i>{value}</i></Typography>
+        <Typography>
+          <b>{stat.title}</b>
+        </Typography>
+        <Typography style={{ paddingLeft: '8px' }}>
+          <i>{value}</i>
+        </Typography>
       </div>
     )
   }

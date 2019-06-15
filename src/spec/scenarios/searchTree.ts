@@ -1,5 +1,5 @@
-import { clickOn, sleep, writeText, delteTextWithBackspaces, showText } from '../util'
-import { Browser } from 'webdriverio'
+import { Browser, Element } from 'webdriverio'
+import { clickOn, delteTextWithBackspaces, showText, sleep, writeText } from '../util'
 
 export async function searchTree(text: string, browser: Browser) {
   const searchField = await browser.$('//input[contains(@placeholder, "Search")]')

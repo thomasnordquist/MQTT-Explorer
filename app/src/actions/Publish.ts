@@ -32,7 +32,7 @@ export const setEditorMode = (editorMode: string): Action => {
   }
 }
 
-export const publish = (connectionId: string) => (dispatch: Dispatch<Action>, getState: () => AppState)  => {
+export const publish = (connectionId: string) => (dispatch: Dispatch<Action>, getState: () => AppState) => {
   const state = getState()
   const topic = state.publish.topic
 

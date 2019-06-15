@@ -44,7 +44,7 @@ interface State {}
 class ValuePanel extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
-    this.state = { }
+    this.state = {}
   }
 
   private renderValue() {
@@ -84,9 +84,7 @@ class ValuePanel extends React.Component<Props, State> {
     return (
       <div style={{ width: '100%', display: 'flex', paddingLeft: '8px' }}>
         <span style={{ marginTop: '2px', flexGrow: 1 }}>{this.renderActionButtons()}</span>
-        <div style={{ flex: 6, textAlign: 'right' }}>
-          {this.props.node.mqttMessage.retain ? retainedButton : null}
-        </div>
+        <div style={{ flex: 6, textAlign: 'right' }}>{this.props.node.mqttMessage.retain ? retainedButton : null}</div>
         {this.messageMetaInfo()}
       </div>
     )
@@ -100,7 +98,11 @@ class ValuePanel extends React.Component<Props, State> {
     return (
       <span style={{ width: '100%', paddingLeft: '8px', flex: 6 }}>
         <Typography style={{ textAlign: 'right' }}>QoS: {this.props.node.mqttMessage.qos}</Typography>
-        <Typography style={{ textAlign: 'right' }}><i><DateFormatter date={this.props.node.message.received} /></i></Typography>
+        <Typography style={{ textAlign: 'right' }}>
+          <i>
+            <DateFormatter date={this.props.node.message.received} />
+          </i>
+        </Typography>
       </span>
     )
   }
@@ -114,15 +116,24 @@ class ValuePanel extends React.Component<Props, State> {
     }
 
     return (
-      <ToggleButtonGroup id="valueRendererDisplayMode" value={this.props.valueRendererDisplayMode} exclusive={true} onChange={handleValue}>
+      <ToggleButtonGroup
+        id="valueRendererDisplayMode"
+        value={this.props.valueRendererDisplayMode}
+        exclusive={true}
+        onChange={handleValue}
+      >
         <ToggleButton className={this.props.classes.toggleButton} value="diff" id="valueRendererDisplayMode-diff">
           <Tooltip title="Show difference between the current and the last message">
-            <span><Code className={this.props.classes.toggleButtonIcon} /></span>
+            <span>
+              <Code className={this.props.classes.toggleButtonIcon} />
+            </span>
           </Tooltip>
         </ToggleButton>
         <ToggleButton className={this.props.classes.toggleButton} value="raw" id="valueRendererDisplayMode-raw">
           <Tooltip title="Raw value">
-            <span><Reorder className={this.props.classes.toggleButtonIcon} /></span>
+            <span>
+              <Reorder className={this.props.classes.toggleButtonIcon} />
+            </span>
           </Tooltip>
         </ToggleButton>
       </ToggleButtonGroup>
@@ -148,7 +159,10 @@ class ValuePanel extends React.Component<Props, State> {
     const { node, classes } = this.props
     const { detailsStyle, summaryStyle } = this.panelStyle()
 
-    const copyValue = (node && node.message && node.message.value) ? <Copy value={Base64Message.toUnicodeString(node.message.value)} /> : null
+    const copyValue =
+      node && node.message && node.message.value ? (
+        <Copy value={Base64Message.toUnicodeString(node.message.value)} />
+      ) : null
 
     return (
       <ExpansionPanel key="value" defaultExpanded={true}>
@@ -158,11 +172,15 @@ class ValuePanel extends React.Component<Props, State> {
         <ExpansionPanelDetails style={detailsStyle}>
           {this.renderViewOptions()}
           <div>
-            <React.Suspense fallback={<div>Loading...</div>}>
-              {this.renderValue()}
-            </React.Suspense>
+            <React.Suspense fallback={<div>Loading...</div>}>{this.renderValue()}</React.Suspense>
           </div>
-          <div><MessageHistory onSelect={this.handleMessageHistorySelect} selected={this.props.compareMessage} node={this.props.node} /></div>
+          <div>
+            <MessageHistory
+              onSelect={this.handleMessageHistorySelect}
+              selected={this.props.compareMessage}
+              node={this.props.node}
+            />
+          </div>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     )
@@ -197,4 +215,7 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ValuePanel))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(ValuePanel))

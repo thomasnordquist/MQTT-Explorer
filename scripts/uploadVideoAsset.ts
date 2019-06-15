@@ -7,7 +7,9 @@ import * as mime from 'mime'
 const githubToken = process.env.GH_TOKEN
 
 async function tagUrl(tag: string): Promise<string | undefined> {
-  const response = await axios.get(`https://api.github.com/repos/thomasnordquist/mqtt-explorer/releases?access_token=${githubToken}`)
+  const response = await axios.get(
+    `https://api.github.com/repos/thomasnordquist/mqtt-explorer/releases?access_token=${githubToken}`
+  )
   const tagRelease = response.data.find((release: any) => release.tag_name === tag)
 
   return tagRelease ? cleanUploadUrl(tagRelease.upload_url) : undefined
@@ -29,8 +31,9 @@ async function createDraft(tag: string) {
   return cleanUploadUrl(response.data.upload_url)
 }
 
-function cleanUploadUrl(url: string) {
-  return url.match(/(.*){/)![1]
+function cleanUploadUrl(url: string): string | undefined {
+  const match = url.match(/(.*){/)
+  return match ? match[1] : undefined
 }
 
 async function uploadAsset() {

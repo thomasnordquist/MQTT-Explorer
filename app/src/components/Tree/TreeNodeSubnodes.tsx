@@ -49,13 +49,16 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
   }
 
   private renderMore() {
-    this.renderMoreAnimationFrame = (window as any).requestIdleCallback(() => {
-      this.setState({ ...this.state, alreadyAdded: this.state.alreadyAdded * 1.5 })
-    }, { timeout: 500 })
+    this.renderMoreAnimationFrame = (window as any).requestIdleCallback(
+      () => {
+        this.setState({ ...this.state, alreadyAdded: this.state.alreadyAdded * 1.5 })
+      },
+      { timeout: 500 }
+    )
   }
 
   public componentWillUnmount() {
-    (window as any).cancelIdleCallback(this.renderMoreAnimationFrame)
+    ;(window as any).cancelIdleCallback(this.renderMoreAnimationFrame)
   }
 
   public render() {
@@ -69,7 +72,7 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
     }
 
     const nodes = this.sortedNodes().slice(0, this.state.alreadyAdded)
-    const listItems = nodes.map((node) => {
+    const listItems = nodes.map(node => {
       return (
         <TreeNode
           key={`${node.hash()}-${this.props.filter}`}
@@ -82,11 +85,7 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
       )
     })
 
-    return (
-      <span className={this.props.classes.list}>
-        {listItems}
-      </span>
-    )
+    return <span className={this.props.classes.list}>{listItems}</span>
   }
 }
 

@@ -32,30 +32,29 @@ class Topic extends React.Component<Props, {}> {
     }
 
     let key = 0
-    const breadCrumps = node.branch()
+    const breadCrumps = node
+      .branch()
       .map(node => node.sourceEdge)
       .filter(edge => Boolean(edge))
-      .map(edge =>
-        [(
-          <Button
-            onClick={() => this.props.actions.selectTopic(edge!.target)}
-            size="small"
-            variant={theme.palette.type === 'light' ? 'contained' : undefined}
-            color={theme.palette.type === 'light' ? 'primary' : 'secondary'}
-            className={this.props.classes.button}
-            key={edge!.hash()}
-          >
-            {edge!.name}
-          </Button>
-        )]
-      )
+      .map(edge => [
+        <Button
+          onClick={() => this.props.actions.selectTopic(edge!.target)}
+          size="small"
+          variant={theme.palette.type === 'light' ? 'contained' : undefined}
+          color={theme.palette.type === 'light' ? 'primary' : 'secondary'}
+          className={this.props.classes.button}
+          key={edge!.hash()}
+        >
+          {edge!.name}
+        </Button>,
+      ])
 
     if (breadCrumps.length === 0) {
       return null
     }
 
     const joinedBreadCrumps = breadCrumps.reduce((prev, current) =>
-      prev.concat([<span key={key += 1}> / </span>]).concat(current)
+      prev.concat([<span key={(key += 1)}> / </span>]).concat(current)
     )
 
     return <span style={{ lineHeight: '2.2em' }}>{joinedBreadCrumps}</span>
@@ -68,4 +67,7 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(withStyles(styles, { withTheme: true })(Topic))
+export default connect(
+  null,
+  mapDispatchToProps
+)(withStyles(styles, { withTheme: true })(Topic))

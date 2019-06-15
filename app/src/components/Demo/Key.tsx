@@ -13,7 +13,6 @@ class Key extends React.Component<Props, {}> {
   }
 
   public render() {
-
     return (
       <div className={this.props.classes.keyStyle}>
         <div className={this.props.classes.keyTextStyle}>{this.props.keyboardKey}</div>

@@ -1,6 +1,6 @@
 import { spawn, ChildProcess } from 'child_process'
 
-export async function exec(cmd: string, args: string[] = []) {
+export async function exec(cmd: string, args: Array<string> = []) {
   const child = spawn(cmd, args, { shell: true })
   redirectOutputFor(child)
   await waitFor(child)
@@ -23,7 +23,7 @@ function redirectOutputFor(child: ChildProcess) {
 }
 
 async function waitFor(child: ChildProcess) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     child.once('close', () => resolve())
   })
 }

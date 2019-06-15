@@ -28,7 +28,7 @@ interface Props {
 class App extends React.PureComponent<Props, {}> {
   constructor(props: any) {
     super(props)
-    this.state = { }
+    this.state = {}
   }
 
   private renderNotification() {
@@ -41,7 +41,9 @@ class App extends React.PureComponent<Props, {}> {
         <Notification
           message={str}
           type={isError ? 'error' : 'notification'}
-          onClose={() => { isError ? this.props.actions.showError(undefined) : this.props.actions.showNotification(undefined) }}
+          onClose={() => {
+            isError ? this.props.actions.showError(undefined) : this.props.actions.showNotification(undefined)
+          }}
         />
       )
     }
@@ -65,7 +67,7 @@ class App extends React.PureComponent<Props, {}> {
       <div className={centerContent}>
         <CssBaseline />
         <ErrorBoundary>
-        {this.renderNotification()}
+          {this.renderNotification()}
           <React.Suspense fallback={<div></div>}>
             <Settings />
           </React.Suspense>
@@ -75,7 +77,11 @@ class App extends React.PureComponent<Props, {}> {
             </div>
             <div className={settingsVisible ? contentShift : content}>
               <React.Suspense fallback={<div></div>}>
-                <ContentView heightProperty={heightProperty} connectionId={this.props.connectionId} paneDefaults={paneDefaults} />
+                <ContentView
+                  heightProperty={heightProperty}
+                  connectionId={this.props.connectionId}
+                  paneDefaults={paneDefaults}
+                />
               </React.Suspense>
             </div>
           </div>
@@ -149,4 +155,9 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(App))
+export default withStyles(styles)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(App)
+)

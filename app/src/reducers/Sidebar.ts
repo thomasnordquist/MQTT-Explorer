@@ -19,7 +19,9 @@ export enum ActionTypes {
 
 export type SidebarState = Record<SidebarModel>
 
-const actions: {[s: string]: (state: SidebarState, action: Action) => SidebarState} = {
+const actions: {
+  [s: string]: (state: SidebarState, action: Action) => SidebarState
+} = {
   SIDEBAR_SET_COMPARE_MESSAGE: setCompareMessage,
   SIDEBAR_RESET_STORE: resetStore,
 }

@@ -7,11 +7,7 @@ import { Dispatch } from 'redux'
 import { showError } from './Global'
 import { showTree } from './Tree'
 import { TopicViewModel } from '../model/TopicViewModel'
-import {
-  ActionTypes,
-  SettingsState,
-  TopicOrder,
-} from '../reducers/Settings'
+import { ActionTypes, SettingsState, TopicOrder } from '../reducers/Settings'
 import { Base64Message } from '../../../backend/src/Model/Base64Message'
 import { globalActions } from '.'
 
@@ -21,7 +17,7 @@ const settingsIdentifier: StorageIdentifier<Partial<SettingsState>> = {
 
 export const loadSettings = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
   try {
-    const settings = await persistentStorage.load(settingsIdentifier) || {}
+    const settings = (await persistentStorage.load(settingsIdentifier)) || {}
     dispatch({
       settings: getState().settings.merge(settings),
       type: ActionTypes.SETTINGS_DID_LOAD_SETTINGS,
@@ -102,26 +98,34 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
   })
 
   if (!filterStr || !tree) {
-    dispatch(batchActions([setAutoExpandLimit(0), (showTree(tree) as any)]))
+    dispatch(batchActions([setAutoExpandLimit(0), showTree(tree) as any]))
     return
   }
 
   const topicFilter = filterStr.toLowerCase()
 
   const nodeFilter = (node: q.TreeNode<TopicViewModel>): boolean => {
-    const topicMatches = node.path().toLowerCase().indexOf(topicFilter) !== -1
+    const topicMatches =
+      node
+        .path()
+        .toLowerCase()
+        .indexOf(topicFilter) !== -1
     if (topicMatches) {
       return true
     }
 
-    const messageMatches = node.message
-      && node.message.value
-      && Base64Message.toUnicodeString(node.message.value).toLowerCase().indexOf(filterStr) !== -1
+    const messageMatches =
+      node.message &&
+      node.message.value &&
+      Base64Message.toUnicodeString(node.message.value)
+        .toLowerCase()
+        .indexOf(filterStr) !== -1
 
     return Boolean(messageMatches)
   }
 
-  const resultTree = tree.childTopics()
+  const resultTree = tree
+    .childTopics()
     .filter(nodeFilter)
     .map((node: q.TreeNode<TopicViewModel>) => {
       const clone = node.unconnectedClone()
@@ -138,7 +142,7 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
     nextTree.updateWithConnection(tree.updateSource, tree.connectionId, nodeFilter)
   }
 
-  dispatch(batchActions([setAutoExpandLimit(autoExpandLimitForTree(nextTree)), (showTree(nextTree) as any)]))
+  dispatch(batchActions([setAutoExpandLimit(autoExpandLimitForTree(nextTree)), showTree(nextTree) as any]))
 }
 
 function autoExpandLimitForTree(tree: q.Tree<TopicViewModel>) {
@@ -158,7 +162,10 @@ function autoExpandLimitForTree(tree: q.Tree<TopicViewModel>) {
 
 export const toggleTheme = () => (dispatch: Dispatch<any>, getState: () => AppState) => {
   dispatch({
-    type: getState().settings.get('theme') === 'light' ? ActionTypes.SETTINGS_SET_THEME_DARK : ActionTypes.SETTINGS_SET_THEME_LIGHT,
+    type:
+      getState().settings.get('theme') === 'light'
+        ? ActionTypes.SETTINGS_SET_THEME_DARK
+        : ActionTypes.SETTINGS_SET_THEME_LIGHT,
   })
   dispatch(storeSettings())
 }

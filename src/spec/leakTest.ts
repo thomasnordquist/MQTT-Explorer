@@ -1,15 +1,6 @@
-import * as fs from 'fs'
 import * as os from 'os'
-import * as webdriverio from 'webdriverio'
 import mockMqtt, { stopUpdates as stopMqttUpdates } from './mock-mqtt'
-import {
-  ClassNameMapping,
-  countInstancesOf,
-  createFakeMousePointer,
-  getHeapDump,
-  setFast,
-  sleep
-  } from './util'
+import { ClassNameMapping, countInstancesOf, createFakeMousePointer, getHeapDump, setFast, sleep } from './util'
 import { clearSearch, searchTree } from './scenarios/searchTree'
 import { connectTo } from './scenarios/connect'
 import { reconnect } from './scenarios/reconnect'
@@ -29,7 +20,13 @@ const options = {
     browserName: 'electron',
     chromeOptions: {
       binary: `${__dirname}/../../../node_modules/.bin/electron`,
-      args: [`--app=${__dirname}/../../..`, '--force-device-scale-factor=1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-extensions'].concat(runningUiTestOnCi),
+      args: [
+        `--app=${__dirname}/../../..`,
+        '--force-device-scale-factor=1',
+        '--no-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-extensions',
+      ].concat(runningUiTestOnCi),
     },
     windowTypes: ['app', 'webview'],
   },
@@ -40,7 +37,7 @@ async function doStuff() {
   await mockMqtt()
   console.log('start webdriver')
 
-  const browser = await webdriverio.remote(options)
+  const browser = await WebdriverIO.remote(options)
   setFast()
   await createFakeMousePointer(browser)
 
@@ -50,10 +47,10 @@ async function doStuff() {
   stopMqttUpdates()
   await sleep(1000, true)
 
-  let heapDump = await getHeapDump(browser)
-  const initialTreeOccurrances = await countInstancesOf(heapDump, ClassNameMapping.Tree)
-  const initialNodeOccurrances = await countInstancesOf(heapDump, ClassNameMapping.TreeNode)
-  console.log(initialTreeOccurrances, initialNodeOccurrances)
+  const heapDump = await getHeapDump(browser)
+  const initialTreeOccurrences = await countInstancesOf(heapDump, ClassNameMapping.Tree)
+  const initialNodeOccurrences = await countInstancesOf(heapDump, ClassNameMapping.TreeNode)
+  console.log(initialTreeOccurrences, initialNodeOccurrences)
 
   await doX(3, async () => {
     await reconnect(browser)
@@ -74,36 +71,49 @@ async function doStuff() {
 
   await sleep(1000, true)
 
-  await waitForGarbageCollectorToDetermineLeak(browser, initialTreeOccurrances, initialNodeOccurrances)
+  await waitForGarbageCollectorToDetermineLeak(browser, initialTreeOccurrences, initialNodeOccurrences)
 }
 
-async function waitForGarbageCollectorToDetermineLeak(browser: any, initialTreeOccurrances: number, initialNodeOccurrances: number) {
+async function waitForGarbageCollectorToDetermineLeak(
+  browser: any,
+  initialTreeOccurrences: number,
+  initialNodeOccurrences: number
+) {
   let delta = -1
-  let lastTreeOccurances = -1
-  let lastNodeOccurances = -1
+  let lastTreeOccurrences = -1
+  let lastNodeOccurrences = -1
   let leak = false
   while (delta < 0) {
-    if (lastTreeOccurances !== -1) {
+    if (lastTreeOccurrences !== -1) {
       await sleep(10000, true)
     }
     const heapDump = await getHeapDump(browser)
-    const currentTreeOccurrances = await countInstancesOf(heapDump, ClassNameMapping.Tree)
-    const currentNodeOccurrances = await countInstancesOf(heapDump, ClassNameMapping.TreeNode)
+    const currentTreeOccurrences = await countInstancesOf(heapDump, ClassNameMapping.Tree)
+    const currentNodeOccurrences = await countInstancesOf(heapDump, ClassNameMapping.TreeNode)
 
     // Temporary "leaks" are expected due to React Fibers memoization
-    if (Math.abs(initialTreeOccurrances - currentTreeOccurrances) > 1 || Math.abs(currentNodeOccurrances - initialNodeOccurrances) > 8) {
-      console.error('Possible leak detected', initialTreeOccurrances, currentTreeOccurrances, initialNodeOccurrances, currentNodeOccurrances)
+    if (
+      Math.abs(initialTreeOccurrences - currentTreeOccurrences) > 1 ||
+      Math.abs(currentNodeOccurrences - initialNodeOccurrences) > 8
+    ) {
+      console.error(
+        'Possible leak detected',
+        initialTreeOccurrences,
+        currentTreeOccurrences,
+        initialNodeOccurrences,
+        currentNodeOccurrences
+      )
       leak = true
     } else {
       leak = false
     }
 
-    const treeDelta = lastTreeOccurances >= 0 ? currentTreeOccurrances - lastTreeOccurances : -1
-    const nodeDelta = lastTreeOccurances >= 0 ? currentNodeOccurrances - lastNodeOccurances : -1
+    const treeDelta = lastTreeOccurrences >= 0 ? currentTreeOccurrences - lastTreeOccurrences : -1
+    const nodeDelta = lastTreeOccurrences >= 0 ? currentNodeOccurrences - lastNodeOccurrences : -1
     delta = treeDelta + nodeDelta
 
-    lastTreeOccurances = currentTreeOccurrances
-    lastNodeOccurances = currentNodeOccurrances
+    lastTreeOccurrences = currentTreeOccurrences
+    lastNodeOccurrences = currentNodeOccurrences
   }
 
   if (leak) {

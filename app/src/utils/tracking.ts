@@ -4,9 +4,18 @@ import { electronRendererTelementry } from 'electron-telemetry'
 function trackProcessStatistics() {
   setInterval(() => {
     try {
-      electronRendererTelementry.trackCustomEvent({ name: 'heapStatistics', payload: process.getHeapStatistics() })
-      electronRendererTelementry.trackCustomEvent({ name: 'cpuUsage', payload: process.getCPUUsage() })
-      electronRendererTelementry.trackCustomEvent({ name: 'runningSince', payload: performance.now() })
+      electronRendererTelementry.trackCustomEvent({
+        name: 'heapStatistics',
+        payload: process.getHeapStatistics(),
+      })
+      electronRendererTelementry.trackCustomEvent({
+        name: 'cpuUsage',
+        payload: process.getCPUUsage(),
+      })
+      electronRendererTelementry.trackCustomEvent({
+        name: 'runningSince',
+        payload: performance.now(),
+      })
     } catch (error) {
       console.error(error)
     }

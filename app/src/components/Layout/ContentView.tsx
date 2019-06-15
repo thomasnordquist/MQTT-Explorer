@@ -3,7 +3,7 @@ import ReactSplitPane from 'react-split-pane'
 import { Sidebar } from '../Sidebar'
 import Tree from '../Tree/Tree'
 
-export default function ContentView(props: {heightProperty: any, paneDefaults: any, connectionId: any}) {
+export default function ContentView(props: { heightProperty: any; paneDefaults: any; connectionId: any }) {
   return (
     <ReactSplitPane
       step={20}

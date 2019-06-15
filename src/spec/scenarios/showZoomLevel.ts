@@ -1,5 +1,5 @@
-import { sleep, showKeys, showText } from '../util'
-import { Browser } from 'webdriverio'
+import { Browser, Element } from 'webdriverio'
+import { showKeys, showText, sleep } from '../util'
 
 export async function showZoomLevel(browser: Browser) {
   await showKeys('Zoom in', 2000, browser, 'top', ['Ctrl', '+'])

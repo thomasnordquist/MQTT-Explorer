@@ -56,8 +56,8 @@ class ConnectionSettings extends React.Component<Props, State> {
             <ClearAdornment action={this.clearCertificate} value={this.props.connection.selfSignedCertificate.name} />
             {this.props.connection.selfSignedCertificate.name}
           </Typography>
-      </Tooltip>
-     </span>
+        </Tooltip>
+      </span>
     )
   }
 
@@ -89,27 +89,26 @@ class ConnectionSettings extends React.Component<Props, State> {
                 className={classes.fullWidth}
                 label="Subscription"
                 margin="normal"
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.setState({ subscription: event.target.value })}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                  this.setState({ subscription: event.target.value })
+                }
               />
             </Grid>
             <Grid item={true} xs={2} className={classes.gridPadding}>
               <Button
                 className={classes.button}
                 color="secondary"
-                onClick={() => this.props.managerActions.addSubscription(this.state.subscription, this.props.connection.id)}
+                onClick={() =>
+                  this.props.managerActions.addSubscription(this.state.subscription, this.props.connection.id)
+                }
                 variant="contained"
               >
                 <Add /> Add
               </Button>
             </Grid>
             <Grid item={true} xs={12} style={{ padding: 0 }}>
-              <List
-                className={`${classes.topicList} advanced-connection-settings-topic-list`}
-                component="nav"
-              >
-                <div className={classes.list}>
-                  {this.renderSubscriptions()}
-                </div>
+              <List className={`${classes.topicList} advanced-connection-settings-topic-list`} component="nav">
+                <div className={classes.list}>{this.renderSubscriptions()}</div>
               </List>
             </Grid>
             <Grid item={true} xs={7} className={classes.gridPadding}>
@@ -151,17 +150,15 @@ class ConnectionSettings extends React.Component<Props, State> {
   }
 }
 
-const Subscription = (props: {
-  subscription: string,
-  deleteAction: any,
-}) => {
+const Subscription = (props: { subscription: string; deleteAction: any }) => {
   return (
     <ListItem style={{ padding: '0 0 0 8px' }}>
       <ListItemText>
         <IconButton onClick={props.deleteAction} style={{ padding: '6px' }}>
           <Delete />
         </IconButton>
-        {props.subscription}</ListItemText>
+        {props.subscription}
+      </ListItemText>
     </ListItem>
   )
 }
@@ -199,4 +196,7 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(undefined, mapDispatchToProps)(withStyles(styles)(ConnectionSettings))
+export default connect(
+  undefined,
+  mapDispatchToProps
+)(withStyles(styles)(ConnectionSettings))

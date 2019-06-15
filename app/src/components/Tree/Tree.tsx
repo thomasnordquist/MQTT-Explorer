@@ -77,18 +77,24 @@ class TreeComponent extends React.PureComponent<Props, State> {
     const timeUntilNextUpdate = updateInterval - (performance.now() - this.renderTime)
 
     this.updateTimer = setTimeout(() => {
-      window.requestIdleCallback(() => {
-        this.updateTimer && clearTimeout(this.updateTimer)
-        this.updateTimer = undefined
-        this.renderTime = performance.now()
+      window.requestIdleCallback(
+        () => {
+          this.updateTimer && clearTimeout(this.updateTimer)
+          this.updateTimer = undefined
+          this.renderTime = performance.now()
 
-        if (!this.props.paused) {
-          this.props.tree && this.props.tree.applyUnmergedChanges()
-        }
-        window.requestIdleCallback(() => {
-          this.setState({ lastUpdate: this.renderTime })
-        }, { timeout: 100 })
-      }, { timeout: 500 })
+          if (!this.props.paused) {
+            this.props.tree && this.props.tree.applyUnmergedChanges()
+          }
+          window.requestIdleCallback(
+            () => {
+              this.setState({ lastUpdate: this.renderTime })
+            },
+            { timeout: 100 }
+          )
+        },
+        { timeout: 500 }
+      )
     }, Math.max(0, timeUntilNextUpdate))
   }
 
@@ -137,4 +143,7 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TreeComponent)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TreeComponent)

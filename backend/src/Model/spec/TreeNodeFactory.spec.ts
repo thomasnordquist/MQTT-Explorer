@@ -2,7 +2,7 @@ import 'mocha'
 
 import { TreeNodeFactory } from '../'
 import { expect } from 'chai'
-import { Base64Message } from '../Base64Message';
+import { Base64Message } from '../Base64Message'
 
 describe('TreeNodeFactory', () => {
   it('root node must not have a sourceEdge', () => {
@@ -45,7 +45,7 @@ describe('TreeNodeFactory', () => {
     expect(node.sourceEdge.name).to.eq('baz')
 
     const barNode = node.sourceEdge.source
-    if (!barNode || !barNode.sourceEdge) {
+    if (!barNode || !barNode.sourceEdge) {
       expect.fail('should not fail')
       return
     }

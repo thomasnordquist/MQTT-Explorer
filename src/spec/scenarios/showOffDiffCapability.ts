@@ -1,5 +1,5 @@
-import { clickOn, sleep, showText } from '../util'
-import { Browser } from 'webdriverio'
+import { Browser, Element } from 'webdriverio'
+import { clickOn, showText, sleep } from '../util'
 
 // Expects a topic with at least two messages to be selected
 export async function showOffDiffCapability(browser: Browser) {

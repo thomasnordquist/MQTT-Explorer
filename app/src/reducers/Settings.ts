@@ -22,15 +22,15 @@ export interface SettingsState {
   theme: 'light' | 'dark'
 }
 
-export type Actions = SetAutoExpandLimitAction
-  & DidLoadSettingsAction
-  & SetTopicOrderAction
-  & FilterTopicsAction
-  & ToggleHighlightTopicUpdatesAction
-  & SetValueRendererDisplayModeAction
-  & SetTheme
-  & SetSelectTopicWithMouseOverAction
-  & SetTimeLocale
+export type Actions = SetAutoExpandLimitAction &
+  DidLoadSettingsAction &
+  SetTopicOrderAction &
+  FilterTopicsAction &
+  ToggleHighlightTopicUpdatesAction &
+  SetValueRendererDisplayModeAction &
+  SetTheme &
+  SetSelectTopicWithMouseOverAction &
+  SetTimeLocale
 
 export enum ActionTypes {
   SETTINGS_SET_AUTO_EXPAND_LIMIT = 'SETTINGS_SET_AUTO_EXPAND_LIMIT',
@@ -60,7 +60,9 @@ const setTheme = (theme: 'light' | 'dark') => (state: Record<SettingsState>) => 
   return state.set('theme', theme)
 }
 
-const reducerActions: {[s: string]: (state: Record<SettingsState>, action: Actions) => Record<SettingsState>} = {
+const reducerActions: {
+  [s: string]: (state: Record<SettingsState>, action: Actions) => Record<SettingsState>
+} = {
   SETTINGS_SET_AUTO_EXPAND_LIMIT: setAutoExpandLimit,
   SETTINGS_SET_TOPIC_ORDER: setTopicOrder,
   SETTINGS_FILTER_TOPICS: filterTopics,

@@ -3,7 +3,6 @@ import * as path from 'path'
 import { chdir } from 'process'
 import { exec } from './util'
 
-
 interface Target {
   name: 'appImage' | string
 }

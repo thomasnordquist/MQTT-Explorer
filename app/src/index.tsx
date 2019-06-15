@@ -12,17 +12,9 @@ import './utils/tracking'
 import { themes } from './theme'
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-const store = createStore(
-  reducers,
-  composeEnhancers(
-    applyMiddleware(
-      reduxThunk,
-      batchDispatchMiddleware
-    )
-  )
-)
+const store = createStore(reducers, composeEnhancers(applyMiddleware(reduxThunk, batchDispatchMiddleware)))
 
-function ApplicationRenderer(props: {theme: 'light' | 'dark'}) {
+function ApplicationRenderer(props: { theme: 'light' | 'dark' }) {
   return (
     <ThemeProvider theme={props.theme === 'light' ? themes.lightTheme : themes.darkTheme}>
       <App />

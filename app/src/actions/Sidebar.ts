@@ -20,7 +20,10 @@ export const setCompareMessage = (message?: q.Message) => (dispatch: Dispatch<an
   })
 }
 
-export const clearTopic = (topic: q.TreeNode<any>, recursive: boolean, subtopicClearLimit = 50) => (dispatch: Dispatch<any>, getState: () => AppState)  => {
+export const clearTopic = (topic: q.TreeNode<any>, recursive: boolean, subtopicClearLimit = 50) => (
+  dispatch: Dispatch<any>,
+  getState: () => AppState
+) => {
   const { connectionId } = getState().connection
   if (!connectionId) {
     return
@@ -36,10 +39,11 @@ export const clearTopic = (topic: q.TreeNode<any>, recursive: boolean, subtopicC
   rendererEvents.emit(publishEvent, mqttMessage)
 
   if (recursive) {
-    topic.childTopics()
+    topic
+      .childTopics()
       .filter(topic => Boolean(topic.message && topic.message.value))
       .slice(0, subtopicClearLimit)
-      .forEach((topic) => {
+      .forEach(topic => {
         console.log('deleting', topic.path())
         const mqttMessage = {
           topic: topic.path(),

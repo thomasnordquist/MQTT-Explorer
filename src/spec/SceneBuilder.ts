@@ -1,11 +1,12 @@
 export interface Scene {
-  name: SceneNames,
+  name: SceneNames
   start: number
   stop: number
   duration: number
 }
 
-export type SceneNames = 'connect'
+export type SceneNames =
+  | 'connect'
   | 'topic_updates'
   | 'numeric_plots'
   | 'json-formatting'

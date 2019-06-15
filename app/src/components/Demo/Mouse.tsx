@@ -4,13 +4,13 @@ const cursor = require('./cursor.png')
 
 interface State {
   enabled: boolean
-  target: {x: number, y: number}
-  position: {x: number, y: number}
-  stepSizeX: number,
-  stepSizeY: number,
+  target: { x: number; y: number }
+  position: { x: number; y: number }
+  stepSizeX: number
+  stepSizeY: number
 }
 
-class Demo extends React.Component<{classes: any}, State> {
+class Demo extends React.Component<{ classes: any }, State> {
   private timer: any
   private frameInterval = 20
 
@@ -32,8 +32,8 @@ class Demo extends React.Component<{classes: any}, State> {
 
     this.setState({
       position: {
-        x: this.state.position.x + (dirX * steSizeX),
-        y: this.state.position.y + (dirY * steSizeY),
+        x: this.state.position.x + dirX * steSizeX,
+        y: this.state.position.y + dirY * steSizeY,
       },
     })
 
@@ -43,10 +43,10 @@ class Demo extends React.Component<{classes: any}, State> {
   }
 
   public componentDidMount() {
-    (window as any).demo.enableMouse = () => {
+    ;(window as any).demo.enableMouse = () => {
       this.setState({ enabled: true })
     }
-    (window as any).demo.moveMouse = (x: number, y: number, animationTime: number) => {
+    ;(window as any).demo.moveMouse = (x: number, y: number, animationTime: number) => {
       const stepSizeX = Math.abs(this.state.position.x - x) / (animationTime / this.frameInterval)
       const stepSizeY = Math.abs(this.state.position.y - y) / (animationTime / this.frameInterval)
       this.setState({ stepSizeX, stepSizeY, enabled: true, target: { x, y } })
@@ -64,9 +64,7 @@ class Demo extends React.Component<{classes: any}, State> {
       top: this.state.position.y + 2,
     }
 
-    return (
-      <img src={cursor} style={cursorStyle} className={this.props.classes.cursor} />
-    )
+    return <img src={cursor} style={cursorStyle} className={this.props.classes.cursor} />
   }
 }
 

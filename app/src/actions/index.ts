@@ -7,4 +7,13 @@ import * as sidebarActions from './Sidebar'
 import * as treeActions from './Tree'
 import * as updateNotifierActions from './UpdateNotifier'
 
-export { settingsActions, treeActions, publishActions, updateNotifierActions, connectionActions, sidebarActions, connectionManagerActions, globalActions }
+export {
+  settingsActions,
+  treeActions,
+  publishActions,
+  updateNotifierActions,
+  connectionActions,
+  sidebarActions,
+  connectionManagerActions,
+  globalActions,
+}

@@ -1,5 +1,5 @@
-import { clickOn, sleep, writeText, expandTopic, clickOnHistory } from '../util'
-import { Browser } from 'webdriverio'
+import { Browser, Element } from 'webdriverio'
+import { clickOn, clickOnHistory, expandTopic, sleep, writeText } from '../util'
 
 export async function showNumericPlot(browser: Browser) {
   await expandTopic('livingroom/temperature', browser)

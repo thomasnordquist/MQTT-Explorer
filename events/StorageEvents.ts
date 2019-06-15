@@ -5,13 +5,13 @@ interface StorageEvent {
 }
 
 export interface StoreCommand extends StorageEvent {
-  store?: string,
+  store?: string
   data?: any
   error?: any
 }
 
 export interface LoadCommand extends StorageEvent {
-  store: string,
+  store: string
 }
 
 export const storageStoreEvent: Event<StoreCommand> = {

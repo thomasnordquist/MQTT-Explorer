@@ -1,12 +1,12 @@
 import 'mocha'
 
-import { TreeNodeFactory } from  '../'
+import { TreeNodeFactory } from '../'
 import { expect } from 'chai'
-import { Base64Message } from '../Base64Message';
+import { Base64Message } from '../Base64Message'
 
 describe('TreeNode', () => {
-  const number3 = Base64Message.fromString("3")
-  const number5 = Base64Message.fromString("5")
+  const number3 = Base64Message.fromString('3')
+  const number5 = Base64Message.fromString('5')
   it('firstNode should retrieve first node', () => {
     const topics = 'foo/bar'.split('/')
     const leaf = TreeNodeFactory.fromEdgesAndValue(topics, undefined)

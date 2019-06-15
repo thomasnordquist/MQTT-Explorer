@@ -7,7 +7,7 @@ const { XYPlot, LineMarkSeries, Hint, XAxis, YAxis, HorizontalGridLines } = requ
 const abbreviate = require('number-abbreviate')
 
 interface Props {
-  data: Array<{x: number, y: number}>
+  data: Array<{ x: number; y: number }>
 }
 // const configuredCurve = d3Shape.curveBundle.beta(1)
 
@@ -51,10 +51,7 @@ class PlotHistory extends React.Component<Props, Stats> {
         <XYPlot width={this.state.width} height={180}>
           <HorizontalGridLines />
           <XAxis />
-          <YAxis
-            width={45}
-            tickFormat={(num: number) => abbreviate(num)}
-          />
+          <YAxis width={45} tickFormat={(num: number) => abbreviate(num)} />
           <LineMarkSeries
             onValueMouseOver={this._rememberValue}
             onValueMouseOut={this._forgetValue}

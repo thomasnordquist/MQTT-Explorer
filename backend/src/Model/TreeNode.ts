@@ -8,7 +8,7 @@ export class TreeNode<ViewModel extends Destroyable> {
   public mqttMessage?: MqttMessage
   public messageHistory: MessageHistory = new RingBuffer<Message>(20000, 100)
   public viewModel?: ViewModel
-  public edges: {[s: string]: Edge<ViewModel>} = {}
+  public edges: { [s: string]: Edge<ViewModel> } = {}
   public edgeArray: Array<Edge<ViewModel>> = []
   public collapsed = false
   public messages: number = 0
@@ -52,7 +52,7 @@ export class TreeNode<ViewModel extends Destroyable> {
   }
 
   private isTopicEmptyLeaf() {
-    const hasNoMessage = (!this.message || !this.message.value || this.message.value.length === 0)
+    const hasNoMessage = !this.message || !this.message.value || this.message.value.length === 0
     return hasNoMessage && this.isLeaf()
   }
 
@@ -135,7 +135,7 @@ export class TreeNode<ViewModel extends Destroyable> {
   }
 
   public hash(): string {
-    return `N${(this.sourceEdge ? this.sourceEdge.hash() : '')}`
+    return `N${this.sourceEdge ? this.sourceEdge.hash() : ''}`
   }
 
   public firstNode(): TreeNode<ViewModel> {
@@ -145,7 +145,7 @@ export class TreeNode<ViewModel extends Destroyable> {
   public path(): string {
     if (!this.cachedPath) {
       return this.branch()
-        .map(node => (node.sourceEdge && node.sourceEdge.name))
+        .map(node => node.sourceEdge && node.sourceEdge.name)
         .filter(name => name !== undefined)
         .join('/')
     }
@@ -199,9 +199,8 @@ export class TreeNode<ViewModel extends Destroyable> {
 
   public leafMessageCount(): number {
     if (this.cachedLeafMessageCount === undefined) {
-      this.cachedLeafMessageCount = this.edgeArray
-        .map(edge => edge.target.leafMessageCount())
-        .reduce((a, b) => a + b, 0) + this.messages
+      this.cachedLeafMessageCount =
+        this.edgeArray.map(edge => edge.target.leafMessageCount()).reduce((a, b) => a + b, 0) + this.messages
     }
 
     return this.cachedLeafMessageCount as number

@@ -12,7 +12,7 @@ import {
 } from '../../events'
 
 export class ConnectionManager {
-  private connections: {[s: string]: DataSource<any>} = {}
+  private connections: { [s: string]: DataSource<any> } = {}
 
   private handleConnectionRequest = (event: AddMqttConnection) => {
     const connectionId = event.id
@@ -27,7 +27,7 @@ export class ConnectionManager {
     this.connections[connectionId] = connection
 
     const connectionStateEvent = makeConnectionStateEvent(connectionId)
-    connection.stateMachine.onUpdate.subscribe((state) => {
+    connection.stateMachine.onUpdate.subscribe(state => {
       backendEvents.emit(connectionStateEvent, state)
     })
 
@@ -46,7 +46,12 @@ export class ConnectionManager {
         buffer = buffer.slice(0, 20000)
       }
 
-      backendEvents.emit(messageEvent, { topic, payload: Base64Message.fromBuffer(buffer), qos: packet.qos, retain: packet.retain })
+      backendEvents.emit(messageEvent, {
+        topic,
+        payload: Base64Message.fromBuffer(buffer),
+        qos: packet.qos,
+        retain: packet.retain,
+      })
     })
   }
 
@@ -68,7 +73,6 @@ export class ConnectionManager {
   }
 
   public closeAllConnections() {
-    Object.keys(this.connections)
-      .forEach(conenctionId => this.removeConnection(conenctionId))
+    Object.keys(this.connections).forEach(conenctionId => this.removeConnection(conenctionId))
   }
 }

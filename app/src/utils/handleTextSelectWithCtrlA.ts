@@ -1,4 +1,6 @@
-export const selectTextWithCtrlA = (options?: {targetSelector: string}) => (e: React.KeyboardEvent<HTMLDivElement>) => {
+export const selectTextWithCtrlA = (options?: { targetSelector: string }) => (
+  e: React.KeyboardEvent<HTMLDivElement>
+) => {
   const isCtrlA = (e.metaKey || e.ctrlKey) && e.key === 'a'
 
   if (isCtrlA && window.getSelection) {
@@ -7,8 +9,8 @@ export const selectTextWithCtrlA = (options?: {targetSelector: string}) => (e: R
     e.stopPropagation()
     const selection = window.getSelection()
     const range = document.createRange()
-    const eventTarget = (e.target as HTMLElement)
-    const target: HTMLElement | null = (options) ? eventTarget.querySelector(options.targetSelector) : eventTarget
+    const eventTarget = e.target as HTMLElement
+    const target: HTMLElement | null = options ? eventTarget.querySelector(options.targetSelector) : eventTarget
 
     if (!target) {
       console.error('Could not find matching target for Ctrl+A Event')

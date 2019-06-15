@@ -8,7 +8,7 @@ import { electronTelemetryFactory } from 'electron-telemetry'
 import { menuTemplate } from './MenuTemplate'
 import buildOptions from './buildOptions'
 import { waitForDevServer, isDev, runningUiTestOnCi, loadDevTools } from './development'
-import { shouldAutoUpdate as shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
+import { shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
 
 if (!isDev() && !runningUiTestOnCi()) {
   const electronTelemetry = electronTelemetryFactory('9b0c8ca04a361eb8160d98c5', buildOptions)

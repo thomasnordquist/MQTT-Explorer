@@ -7,13 +7,7 @@ import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
 import { ConnectionOptions, toMqttConnection } from '../../model/ConnectionOptions'
 import { Theme, withStyles } from '@material-ui/core/styles'
-import {
-  Modal,
-  Paper,
-  Toolbar,
-  Typography,
-  Collapse,
-} from '@material-ui/core'
+import { Modal, Paper, Toolbar, Typography, Collapse } from '@material-ui/core'
 import AdvancedConnectionSettings from './AdvancedConnectionSettings'
 
 interface Props {
@@ -37,8 +31,12 @@ class ConnectionSetup extends React.Component<Props, {}> {
 
     return (
       <div>
-        <Collapse in={!showAdvancedSettings}><ConnectionSettings connection={connection} /></Collapse>
-        <Collapse in={showAdvancedSettings}><AdvancedConnectionSettings connection={connection} /></Collapse>
+        <Collapse in={!showAdvancedSettings}>
+          <ConnectionSettings connection={connection} />
+        </Collapse>
+        <Collapse in={showAdvancedSettings}>
+          <AdvancedConnectionSettings connection={connection} />
+        </Collapse>
       </div>
     )
   }
@@ -54,13 +52,15 @@ class ConnectionSetup extends React.Component<Props, {}> {
       <div>
         <Modal open={visible} disableAutoFocus={true}>
           <Paper className={classes.root}>
-            <div className={classes.left}><ProfileList /></div>
+            <div className={classes.left}>
+              <ProfileList />
+            </div>
             <div className={classes.right} key={connection && connection.id}>
               <Toolbar>
-                <Typography className={classes.title} variant="h6" color="inherit">MQTT Connection</Typography>
-                <Typography className={classes.connectionUri}>
-                  {mqttConnection && mqttConnection.url}
+                <Typography className={classes.title} variant="h6" color="inherit">
+                  MQTT Connection
                 </Typography>
+                <Typography className={classes.connectionUri}>{mqttConnection && mqttConnection.url}</Typography>
               </Toolbar>
               {this.renderSettings()}
             </div>
@@ -115,7 +115,9 @@ const mapStateToProps = (state: AppState) => {
   return {
     visible: !state.connection.connected,
     showAdvancedSettings: state.connectionManager.showAdvancedSettings,
-    connection: state.connectionManager.selected ? state.connectionManager.connections[state.connectionManager.selected] : undefined,
+    connection: state.connectionManager.selected
+      ? state.connectionManager.connections[state.connectionManager.selected]
+      : undefined,
   }
 }
 
@@ -125,4 +127,7 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ConnectionSetup))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(ConnectionSetup))

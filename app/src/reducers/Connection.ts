@@ -27,7 +27,7 @@ export enum ActionTypes {
 }
 
 export interface SetConnecting {
-  type: ActionTypes.CONNECTION_SET_CONNECTING,
+  type: ActionTypes.CONNECTION_SET_CONNECTING
   connectionId: string
 }
 

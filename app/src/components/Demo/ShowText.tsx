@@ -8,7 +8,7 @@ interface State {
   location: string
 }
 
-class Demo extends React.Component<{classes: any}, State> {
+class Demo extends React.Component<{ classes: any }, State> {
   private timer: any
   constructor(props: any) {
     super(props)
@@ -20,20 +20,24 @@ class Demo extends React.Component<{classes: any}, State> {
   }
 
   public componentDidMount() {
-    (window as any).demo.showMessage = (message: string, location: string, duration: number, keys: Array<string> = []) => {
+    ;(window as any).demo.showMessage = (
+      message: string,
+      location: string,
+      duration: number,
+      keys: Array<string> = []
+    ) => {
       this.clearTimer()
       this.setState({ message, location, keys })
       this.timer = setTimeout(() => this.setState({ message: undefined }), duration)
     }
-
-    (window as any).demo.hideMessage = () => {
+    ;(window as any).demo.hideMessage = () => {
       this.clearTimer()
       this.setState({ message: undefined })
     }
   }
 
   public render() {
-    const positions: {[s: string]: number} = {
+    const positions: { [s: string]: number } = {
       top: 0,
       bottom: -65,
       middle: -32,
@@ -52,7 +56,6 @@ class Demo extends React.Component<{classes: any}, State> {
       color: 'white',
       backgroundColor: 'rgba(0, 0, 0, 0.8)',
       borderRadius: '16px',
-
     }
 
     if (!this.state.message) {
@@ -61,7 +64,8 @@ class Demo extends React.Component<{classes: any}, State> {
 
     let keys: Array<any> = []
     if (this.state.keys.length > 0) {
-      keys = this.state.keys.map(key => [<Key key={key} keyboardKey={key} />])
+      keys = this.state.keys
+        .map(key => [<Key key={key} keyboardKey={key} />])
         .reduce((prev, current) => {
           return [prev, '+' as any, current]
         })

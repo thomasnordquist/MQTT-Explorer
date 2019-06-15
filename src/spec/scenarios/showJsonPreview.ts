@@ -1,4 +1,4 @@
-import { Browser } from 'webdriverio'
+import { Browser, Element } from 'webdriverio'
 import { expandTopic, sleep } from '../util'
 
 export async function showJsonPreview(browser: Browser) {

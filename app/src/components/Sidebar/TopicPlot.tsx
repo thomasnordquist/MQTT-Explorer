@@ -16,7 +16,8 @@ function nodeToHistory(history: q.MessageHistory) {
     .map((message: q.Message) => {
       const value = message.value ? toPlottableValue(Base64Message.toUnicodeString(message.value)) : NaN
       return { x: message.received.getTime(), y: toPlottableValue(value) }
-    }).filter(data => !isNaN(data.y as any)) as any
+    })
+    .filter(data => !isNaN(data.y as any)) as any
 }
 
 function nodeDotPathToHistory(history: q.MessageHistory, dotPath: string) {
@@ -31,7 +32,8 @@ function nodeDotPathToHistory(history: q.MessageHistory, dotPath: string) {
       let value = dotProp.get(json, dotPath)
 
       return { x: message.received.getTime(), y: toPlottableValue(value) }
-    }).filter(data => !isNaN(data.y as any)) as any
+    })
+    .filter(data => !isNaN(data.y as any)) as any
 }
 
 function render(props: Props) {

@@ -22,13 +22,13 @@ const styles = (theme: Theme) => ({
 interface Props {
   classes: any
   actions: {
-    tree: typeof treeActions,
+    tree: typeof treeActions
   }
   paused: boolean
   tree?: q.Tree<any>
 }
 
-class PauseButton extends React.Component<Props, {changes: number}> {
+class PauseButton extends React.Component<Props, { changes: number }> {
   private timer?: any
   constructor(props: Props) {
     super(props)
@@ -42,7 +42,8 @@ class PauseButton extends React.Component<Props, {changes: number}> {
 
     return (
       <span className={this.props.classes.bufferStats}>
-        {this.state.changes} changes<br />
+        {this.state.changes} changes
+        <br />
         buffer at {Math.round(this.props.tree.unmergedChanges().fillState() * 10000) / 100}%
       </span>
     )
@@ -66,12 +67,18 @@ class PauseButton extends React.Component<Props, {changes: number}> {
   }
 
   public render() {
-    const message = this.props.paused ? 'Resumes updating the tree, after applying all recorded changes' : 'Stops all updates, records changes until the buffer is full.'
+    const message = this.props.paused
+      ? 'Resumes updating the tree, after applying all recorded changes'
+      : 'Stops all updates, records changes until the buffer is full.'
     return (
       <div style={{ display: 'inline-flex' }}>
         <span>
           <CustomIconButton onClick={this.props.actions.tree.togglePause} tooltip={message}>
-            {this.props.paused ? <Resume className={this.props.classes.icon} /> : <Pause className={this.props.classes.icon} />}
+            {this.props.paused ? (
+              <Resume className={this.props.classes.icon} />
+            ) : (
+              <Pause className={this.props.classes.icon} />
+            )}
           </CustomIconButton>
         </span>
         {this.props.paused ? this.renderBufferStats() : null}
@@ -95,4 +102,7 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(PauseButton))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(PauseButton))

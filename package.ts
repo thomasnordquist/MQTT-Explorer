@@ -59,24 +59,24 @@ const mac: builder.CliOptions = {
 
 async function executeBuild() {
   switch (process.argv[2]) {
-  case 'win':
-    await buildWithOptions(winPortable, { platform: 'win', package: 'portable' })
-    await buildWithOptions(winNsis, { platform: 'win', package: 'nsis' })
-    break
-  case 'appx':
-    await buildWithOptions(winAppx, { platform: 'win', package: 'appx' })
-    break
-  case 'linux':
-    await buildWithOptions(linuxAppImage, { platform: 'linux', package: 'AppImage' })
-    await buildWithOptions(linuxSnap, { platform: 'linux', package: 'snap' })
-    break
-  case 'mac':
-    await buildWithOptions(mac, { platform: 'mac', package: 'mas' })
-    await buildWithOptions(mac, { platform: 'mac', package: 'dmg' })
-    await buildWithOptions(mac, { platform: 'mac', package: 'zip' })
-    break
-  default:
-    await buildWithOptions({ ...mac, projectDir: '' }, { platform: 'mac', package: 'mas-dev' })
+    case 'win':
+      await buildWithOptions(winPortable, { platform: 'win', package: 'portable' })
+      await buildWithOptions(winNsis, { platform: 'win', package: 'nsis' })
+      break
+    case 'appx':
+      await buildWithOptions(winAppx, { platform: 'win', package: 'appx' })
+      break
+    case 'linux':
+      await buildWithOptions(linuxAppImage, { platform: 'linux', package: 'AppImage' })
+      await buildWithOptions(linuxSnap, { platform: 'linux', package: 'snap' })
+      break
+    case 'mac':
+      await buildWithOptions(mac, { platform: 'mac', package: 'mas' })
+      await buildWithOptions(mac, { platform: 'mac', package: 'dmg' })
+      await buildWithOptions(mac, { platform: 'mac', package: 'zip' })
+      break
+    default:
+      await buildWithOptions({ ...mac, projectDir: '' }, { platform: 'mac', package: 'mas-dev' })
   }
 }
 
@@ -90,7 +90,7 @@ type Packages = 'portable' | 'nsis' | 'appx' | 'AppImage' | 'snap' | 'dmg' | 'zi
 async function buildWithOptions(options: builder.CliOptions, buildInfo: BuildInfo) {
   fs.writeFileSync(path.join(options.projectDir!, 'buildOptions.json'), JSON.stringify(buildInfo))
 
-  const jsonLocation = path.join((options.projectDir as string), 'package.json')
+  const jsonLocation = path.join(options.projectDir as string, 'package.json')
   const packageJsonStr = fs.readFileSync(jsonLocation).toString()
 
   const packageJson = JSON.parse(fs.readFileSync(jsonLocation).toString())
@@ -102,7 +102,10 @@ async function buildWithOptions(options: builder.CliOptions, buildInfo: BuildInf
 
   if (buildInfo.platform === 'mac') {
     console.log(buildInfo.package)
-    const provisioningProfile = (buildInfo.package === 'mas') ? 'res/MQTT_Explorer_Store_Distribution_Profile.provisionprofile' : 'res/MQTTExplorerdmg.provisionprofile'
+    const provisioningProfile =
+      buildInfo.package === 'mas'
+        ? 'res/MQTT_Explorer_Store_Distribution_Profile.provisionprofile'
+        : 'res/MQTTExplorerdmg.provisionprofile'
     dotProp.set(packageJson, 'build.mac.provisioningProfile', provisioningProfile)
   }
 

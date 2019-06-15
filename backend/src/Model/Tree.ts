@@ -1,11 +1,6 @@
 import { ChangeBuffer } from './ChangeBuffer'
 import { Destroyable } from './Destroyable'
-import {
-  EventBusInterface,
-  EventDispatcher,
-  makeConnectionMessageEvent,
-  MqttMessage
-} from '../../../events'
+import { EventBusInterface, EventDispatcher, makeConnectionMessageEvent, MqttMessage } from '../../../events'
 import { TreeNode } from './'
 import { TreeNodeFactory } from './TreeNodeFactory'
 
@@ -35,7 +30,11 @@ export class Tree<ViewModel extends Destroyable> extends TreeNode<ViewModel> {
     this.didReceive.removeAllListeners()
   }
 
-  public updateWithConnection(emitter: EventBusInterface, connectionId: string, nodeFilter?: (node: TreeNode<ViewModel>) => boolean) {
+  public updateWithConnection(
+    emitter: EventBusInterface,
+    connectionId: string,
+    nodeFilter?: (node: TreeNode<ViewModel>) => boolean
+  ) {
     this.updateSource = emitter
     this.connectionId = connectionId
     this.nodeFilter = nodeFilter
@@ -49,7 +48,7 @@ export class Tree<ViewModel extends Destroyable> extends TreeNode<ViewModel> {
   }
 
   public applyUnmergedChanges() {
-    this.unmergedMessages.popAll().forEach((msg) => {
+    this.unmergedMessages.popAll().forEach(msg => {
       const edges = msg.topic.split('/')
       const node = TreeNodeFactory.fromEdgesAndValue<ViewModel>(edges, msg.payload)
       node.mqttMessage = msg

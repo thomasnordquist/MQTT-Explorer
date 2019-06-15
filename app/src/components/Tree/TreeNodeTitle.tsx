@@ -14,17 +14,25 @@ export interface TreeNodeProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
-
   private renderSourceEdge() {
     const name = this.props.name || (this.props.treeNode.sourceEdge && this.props.treeNode.sourceEdge.name)
 
-    return <span key="edge" className={this.props.classes.sourceEdge}>{name}</span>
+    return (
+      <span key="edge" className={this.props.classes.sourceEdge}>
+        {name}
+      </span>
+    )
   }
 
   private renderValue() {
-    return this.props.treeNode.message && this.props.treeNode.message.value && this.props.treeNode.message.length > 0
-      ? <span key="value" className={this.props.classes.value}> = {Base64Message.toUnicodeString(this.props.treeNode.message.value).slice(0, 120)}</span>
-      : null
+    return this.props.treeNode.message &&
+      this.props.treeNode.message.value &&
+      this.props.treeNode.message.length > 0 ? (
+      <span key="value" className={this.props.classes.value}>
+        {' '}
+        = {Base64Message.toUnicodeString(this.props.treeNode.message.value).slice(0, 120)}
+      </span>
+    ) : null
   }
 
   private renderExpander() {
@@ -32,7 +40,11 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
       return null
     }
 
-    return <span key="expander" className={this.props.classes.expander} onClick={this.props.toggleCollapsed}>{this.props.collapsed ? '▶' : '▼'}</span>
+    return (
+      <span key="expander" className={this.props.classes.expander} onClick={this.props.toggleCollapsed}>
+        {this.props.collapsed ? '▶' : '▼'}
+      </span>
+    )
   }
 
   private renderMetadata() {
@@ -41,16 +53,16 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
     }
 
     const messages = this.props.treeNode.leafMessageCount()
-    return <span key="metadata" className={this.props.classes.collapsedSubnodes}>{`(${this.props.treeNode.childTopicCount()} topics, ${messages} messages)`}</span>
+    return (
+      <span
+        key="metadata"
+        className={this.props.classes.collapsedSubnodes}
+      >{`(${this.props.treeNode.childTopicCount()} topics, ${messages} messages)`}</span>
+    )
   }
 
   public render() {
-    return ([
-      this.renderExpander(),
-      this.renderSourceEdge(),
-      this.renderMetadata(),
-      this.renderValue(),
-    ])
+    return [this.renderExpander(), this.renderSourceEdge(), this.renderMetadata(), this.renderValue()]
   }
 }
 

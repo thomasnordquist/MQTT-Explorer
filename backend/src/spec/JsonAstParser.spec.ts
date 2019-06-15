@@ -26,16 +26,11 @@ describe('access JSON values via dot property paths', () => {
     expect(result[0].path).to.eq('foo.bar')
     expect(result[0].line).to.eq(3)
     expect(dotProp.get(data, result[0].path)).to.eq(4)
-
   })
 
   it('array path', () => {
     const data = {
-      foo: [
-        1,
-        2,
-        3,
-      ],
+      foo: [1, 2, 3],
     }
 
     const result = parseJson(JSON.stringify(data, undefined, 2))
@@ -48,7 +43,7 @@ describe('access JSON values via dot property paths', () => {
 
   it('should fail parsing invalid json', () => {
     expect(() => {
-      const result = parseJson("BLE2MQTT-8C48")
+      const result = parseJson('BLE2MQTT-8C48')
     }).to.throw()
   })
 })

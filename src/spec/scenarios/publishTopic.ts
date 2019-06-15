@@ -1,5 +1,13 @@
-import { clickOn, sleep, writeText, delteTextWithBackspaces, expandTopic, moveToCenterOfElement, showText } from '../util'
-import { Browser } from 'webdriverio'
+import { Browser, Element } from 'webdriverio'
+import {
+  clickOn,
+  sleep,
+  writeText,
+  delteTextWithBackspaces,
+  expandTopic,
+  moveToCenterOfElement,
+  showText,
+} from '../util'
 
 export async function publishTopic(browser: Browser) {
   await expandTopic('kitchen/lamp/state', browser)

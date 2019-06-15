@@ -68,7 +68,7 @@ export class MqttSource implements DataSource<MqttOptions> {
 
     client.on('connect', () => {
       this.stateMachine.setConnected(true)
-      options.subscriptions.forEach((subscription) => {
+      options.subscriptions.forEach(subscription => {
         client.subscribe(subscription, (err: Error) => {
           if (err) {
             this.stateMachine.setError(err)
@@ -86,10 +86,10 @@ export class MqttSource implements DataSource<MqttOptions> {
 
   public publish(msg: MqttMessage) {
     if (this.client) {
-      this.client.publish(
-        msg.topic,
-        msg.payload ? Base64Message.toUnicodeString(msg.payload) : '',
-        { qos: msg.qos, retain: msg.retain })
+      this.client.publish(msg.topic, msg.payload ? Base64Message.toUnicodeString(msg.payload) : '', {
+        qos: msg.qos,
+        retain: msg.retain,
+      })
     }
   }
 

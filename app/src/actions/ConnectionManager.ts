@@ -1,6 +1,11 @@
 import { AppState } from '../reducers'
 import { clearLegacyConnectionOptions, loadLegacyConnectionOptions } from '../model/LegacyConnectionSettings'
-import { ConnectionOptions, createEmptyConnection, makeDefaultConnections, CertificateParameters } from '../model/ConnectionOptions'
+import {
+  ConnectionOptions,
+  createEmptyConnection,
+  makeDefaultConnections,
+  CertificateParameters,
+} from '../model/ConnectionOptions'
 import { default as persistentStorage, StorageIdentifier } from '../utils/PersistentStorage'
 import { Dispatch } from 'redux'
 import { showError } from './Global'
@@ -8,12 +13,11 @@ import { remote } from 'electron'
 import * as fs from 'fs'
 import * as path from 'path'
 
-import {
-  ActionTypes,
-  Action,
-} from '../reducers/ConnectionManager'
+import { ActionTypes, Action } from '../reducers/ConnectionManager'
 
-const storedConnectionsIdentifier: StorageIdentifier<{[s: string]: ConnectionOptions}> = {
+const storedConnectionsIdentifier: StorageIdentifier<{
+  [s: string]: ConnectionOptions
+}> = {
   id: 'ConnectionManager_connections',
 }
 
@@ -37,13 +41,18 @@ export const loadConnectionSettings = () => async (dispatch: Dispatch<any>, getS
   }
 }
 
-export const selectCertificate = (connectionId: string) => async (dispatch: Dispatch<any>, getState: () => AppState) => {
+export const selectCertificate = (connectionId: string) => async (
+  dispatch: Dispatch<any>,
+  getState: () => AppState
+) => {
   try {
     const certificate = await openCertificate()
     console.log(certificate)
-    dispatch(updateConnection(connectionId, {
-      selfSignedCertificate: certificate,
-    }))
+    dispatch(
+      updateConnection(connectionId, {
+        selfSignedCertificate: certificate,
+      })
+    )
   } catch (error) {
     console.log(error)
     dispatch(showError(error))
@@ -57,30 +66,33 @@ async function openCertificate(): Promise<CertificateParameters> {
   }
 
   return new Promise((resolve, reject) => {
-    remote.dialog.showOpenDialog({ properties: ['openFile'], securityScopedBookmarks: true }, (filePaths?: Array<string>) => {
-      const selectedFile = filePaths && filePaths[0]
-      if (!selectedFile) {
-        reject(rejectReasons.noCertificateSelected)
-        return
-      }
-
-      fs.readFile(selectedFile, (error, data) => {
-        if (error) {
-          reject(error)
+    remote.dialog.showOpenDialog(
+      { properties: ['openFile'], securityScopedBookmarks: true },
+      (filePaths?: Array<string>) => {
+        const selectedFile = filePaths && filePaths[0]
+        if (!selectedFile) {
+          reject(rejectReasons.noCertificateSelected)
           return
         }
 
-        if (data.length > 16_384 || data.length < 128) {
-          reject(rejectReasons.certificateSizeDoesNotMatch)
-          return
-        }
+        fs.readFile(selectedFile, (error, data) => {
+          if (error) {
+            reject(error)
+            return
+          }
 
-        resolve({
-          data: data.toString('base64'),
-          name: path.basename(selectedFile),
+          if (data.length > 16_384 || data.length < 128) {
+            reject(rejectReasons.certificateSizeDoesNotMatch)
+            return
+          }
+
+          resolve({
+            data: data.toString('base64'),
+            name: path.basename(selectedFile),
+          })
         })
-      })
-    })
+      }
+    )
   })
 }
 
@@ -117,7 +129,7 @@ export const createConnection = () => (dispatch: Dispatch<any>) => {
   dispatch(selectConnection(newConnection.id))
 }
 
-export const setConnections = (connections: {[s: string]: ConnectionOptions}): Action => ({
+export const setConnections = (connections: { [s: string]: ConnectionOptions }): Action => ({
   connections,
   type: ActionTypes.CONNECTION_MANAGER_SET_CONNECTIONS,
 })
@@ -132,7 +144,7 @@ export const addConnection = (connection: ConnectionOptions): Action => ({
   type: ActionTypes.CONNECTION_MANAGER_ADD_CONNECTION,
 })
 
-export const toggleAdvancedSettings = (): Action  => ({
+export const toggleAdvancedSettings = (): Action => ({
   type: ActionTypes.CONNECTION_MANAGER_TOGGLE_ADVANCED_SETTINGS,
 })
 

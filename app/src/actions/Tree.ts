@@ -9,49 +9,55 @@ import { TopicViewModel } from '../model/TopicViewModel'
 import { globalActions } from '.'
 const debounce = require('lodash.debounce')
 
-export const selectTopic = (topic: q.TreeNode<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState) => {
+export const selectTopic = (topic: q.TreeNode<TopicViewModel>) => (
+  dispatch: Dispatch<any>,
+  getState: () => AppState
+) => {
   debouncedSelectTopic(topic, dispatch, getState)
 }
 
-const debouncedSelectTopic = debounce((topic: q.TreeNode<TopicViewModel>, dispatch: Dispatch<any>, getState: () => AppState) => {
-  const previouslySelectedTopic = getState().tree.get('selectedTopic')
+const debouncedSelectTopic = debounce(
+  (topic: q.TreeNode<TopicViewModel>, dispatch: Dispatch<any>, getState: () => AppState) => {
+    const previouslySelectedTopic = getState().tree.get('selectedTopic')
 
-  if (previouslySelectedTopic === topic) {
-    return
-  }
+    if (previouslySelectedTopic === topic) {
+      return
+    }
 
-  // Update publish topic
-  let setTopicDispatch: any | undefined
-  if (!getState().publish.topic) {
-    setTopicDispatch = setTopic(topic.path())
-  } else if (previouslySelectedTopic && (previouslySelectedTopic.path() === getState().publish.topic)) {
-    setTopicDispatch = setTopic(topic.path())
-  }
+    // Update publish topic
+    let setTopicDispatch: any | undefined
+    if (!getState().publish.topic) {
+      setTopicDispatch = setTopic(topic.path())
+    } else if (previouslySelectedTopic && previouslySelectedTopic.path() === getState().publish.topic) {
+      setTopicDispatch = setTopic(topic.path())
+    }
 
-  if (previouslySelectedTopic && previouslySelectedTopic.viewModel) {
-    previouslySelectedTopic.viewModel.setSelected(false)
-  }
+    if (previouslySelectedTopic && previouslySelectedTopic.viewModel) {
+      previouslySelectedTopic.viewModel.setSelected(false)
+    }
 
-  if (topic.viewModel) {
-    topic.viewModel.setSelected(true)
-  }
+    if (topic.viewModel) {
+      topic.viewModel.setSelected(true)
+    }
 
-  const selectTreeTopicDispatch = {
-    selectedTopic: topic,
-    type: ActionTypes.TREE_SELECT_TOPIC,
-  }
+    const selectTreeTopicDispatch = {
+      selectedTopic: topic,
+      type: ActionTypes.TREE_SELECT_TOPIC,
+    }
 
-  dispatch({
-    type: SidebarActionTypes.SIDEBAR_SET_COMPARE_MESSAGE,
-    message: undefined,
-  })
+    dispatch({
+      type: SidebarActionTypes.SIDEBAR_SET_COMPARE_MESSAGE,
+      message: undefined,
+    })
 
-  if (setTopicDispatch) {
-    dispatch(batchActions([selectTreeTopicDispatch, setTopicDispatch]))
-  } else {
-    dispatch(selectTreeTopicDispatch)
-  }
-}, 70)
+    if (setTopicDispatch) {
+      dispatch(batchActions([selectTreeTopicDispatch, setTopicDispatch]))
+    } else {
+      dispatch(selectTreeTopicDispatch)
+    }
+  },
+  70
+)
 
 function destroyUnreferencedTree(state: AppState) {
   const visibleTree = state.tree.get('tree')
@@ -73,7 +79,10 @@ export const resetStore = () => (dispatch: Dispatch<any>, getState: () => AppSta
   })
 }
 
-export const showTree = (tree: q.Tree<TopicViewModel> | undefined) => (dispatch: Dispatch<any>, getState: () => AppState): AnyAction => {
+export const showTree = (tree: q.Tree<TopicViewModel> | undefined) => (
+  dispatch: Dispatch<any>,
+  getState: () => AppState
+): AnyAction => {
   destroyUnreferencedTree(getState())
 
   return dispatch({

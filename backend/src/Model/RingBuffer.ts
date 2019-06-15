@@ -26,7 +26,7 @@ export class RingBuffer<T extends Lengthwise> {
     if (remainingSize < 0) {
       this.freeSomeSpace(Math.abs(remainingSize))
     }
-    while ((this.end - this.start) >= this.maxItems) {
+    while (this.end - this.start >= this.maxItems) {
       this.dropFirst()
     }
   }

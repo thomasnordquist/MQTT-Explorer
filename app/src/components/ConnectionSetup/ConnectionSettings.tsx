@@ -29,17 +29,14 @@ import ConnectionHealthIndicator from '../helper/ConnectionHealthIndicator'
 
 interface Props {
   connection: ConnectionOptions
-  classes: {[s: string]: string}
-  actions: typeof connectionActions,
+  classes: { [s: string]: string }
+  actions: typeof connectionActions
   managerActions: typeof connectionManagerActions
   connected: boolean
   connecting: boolean
 }
 
-const protocols = [
-  'mqtt',
-  'ws',
-]
+const protocols = ['mqtt', 'ws']
 
 interface State {
   showPassword: boolean
@@ -127,20 +124,12 @@ class ConnectionSettings extends React.Component<Props, State> {
     const { classes, connection } = this.props
 
     const certSwitch = (
-      <Switch
-        checked={connection.certValidation}
-        onChange={this.toggleCertValidation}
-        color="primary"
-      />
+      <Switch checked={connection.certValidation} onChange={this.toggleCertValidation} color="primary" />
     )
 
     return (
       <div className={classes.switch}>
-        <FormControlLabel
-          control={certSwitch}
-          label="Validate certificate"
-          labelPlacement="bottom"
-        />
+        <FormControlLabel control={certSwitch} label="Validate certificate" labelPlacement="bottom" />
       </div>
     )
   }
@@ -154,21 +143,11 @@ class ConnectionSettings extends React.Component<Props, State> {
   private renderTlsSwitch() {
     const { classes, connection } = this.props
 
-    const tlsSwitch = (
-      <Switch
-        checked={connection.encryption}
-        onChange={this.toggleTls}
-        color="primary"
-      />
-    )
+    const tlsSwitch = <Switch checked={connection.encryption} onChange={this.toggleTls} color="primary" />
 
     return (
       <div className={classes.switch}>
-        <FormControlLabel
-          control={tlsSwitch}
-          label="Encryption (tls)"
-          labelPlacement="bottom"
-        />
+        <FormControlLabel control={tlsSwitch} label="Encryption (tls)" labelPlacement="bottom" />
       </div>
     )
   }
@@ -185,12 +164,13 @@ class ConnectionSettings extends React.Component<Props, State> {
     if (this.props.connecting) {
       return (
         <Button variant="contained" color="primary" className={classes.button} onClick={actions.disconnect}>
-          <ConnectionHealthIndicator />&nbsp;&nbsp;Abort
+          <ConnectionHealthIndicator />
+          &nbsp;&nbsp;Abort
         </Button>
       )
     }
     return (
-       <Button variant="contained" color="primary" className={classes.button} onClick={this.onClickConnect}>
+      <Button variant="contained" color="primary" className={classes.button} onClick={this.onClickConnect}>
         <PowerSettingsNew /> Connect
       </Button>
     )
@@ -212,10 +192,7 @@ class ConnectionSettings extends React.Component<Props, State> {
 
     const passwordVisibilityButton = (
       <InputAdornment position="end">
-        <IconButton
-          aria-label="Toggle password visibility"
-          onClick={this.handleClickShowPassword}
-        >
+        <IconButton aria-label="Toggle password visibility" onClick={this.handleClickShowPassword}>
           {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
         </IconButton>
       </InputAdornment>
@@ -287,15 +264,28 @@ class ConnectionSettings extends React.Component<Props, State> {
           <br />
           <div>
             <div style={{ float: 'left' }}>
-              <Button variant="contained" className={classes.button} onClick={() => this.props.managerActions.deleteConnection(this.props.connection.id)}>
+              <Button
+                variant="contained"
+                className={classes.button}
+                onClick={() => this.props.managerActions.deleteConnection(this.props.connection.id)}
+              >
                 Delete <Delete />
               </Button>
-              <Button variant="contained" className={classes.button} onClick={this.props.managerActions.toggleAdvancedSettings}>
+              <Button
+                variant="contained"
+                className={classes.button}
+                onClick={this.props.managerActions.toggleAdvancedSettings}
+              >
                 <Settings /> Advanced
               </Button>
             </div>
-            <div style={{ float : 'right' }}>
-              <Button variant="contained" color="secondary" className={classes.button} onClick={this.props.managerActions.saveConnectionSettings}>
+            <div style={{ float: 'right' }}>
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                onClick={this.props.managerActions.saveConnectionSettings}
+              >
                 <Save /> Save
               </Button>
               {this.renderConnectButton()}
@@ -336,4 +326,7 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ConnectionSettings))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(ConnectionSettings))

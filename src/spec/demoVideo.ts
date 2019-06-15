@@ -1,30 +1,23 @@
+import * as fs from 'fs'
 import * as os from 'os'
 import * as webdriverio from 'webdriverio'
 import mockMqtt, { stop as stopMqtt } from './mock-mqtt'
 import { clearOldTopics } from './scenarios/clearOldTopics'
 import { clearSearch, searchTree } from './scenarios/searchTree'
+import { clickOnHistory, createFakeMousePointer, hideText, showText, sleep } from './util'
 import { connectTo } from './scenarios/connect'
 import { copyTopicToClipboard } from './scenarios/copyTopicToClipboard'
 import { copyValueToClipboard } from './scenarios/copyValueToClipboard'
 import { disconnect } from './scenarios/disconnect'
 import { publishTopic } from './scenarios/publishTopic'
+import { SceneBuilder } from './SceneBuilder'
+import { showAdvancedConnectionSettings } from './scenarios/showAdvancedConnectionSettings'
 import { showJsonFormatting } from './scenarios/showJsonFormatting'
 import { showJsonPreview } from './scenarios/showJsonPreview'
 import { showMenu } from './scenarios/showMenu'
 import { showNumericPlot } from './scenarios/showNumericPlot'
 import { showOffDiffCapability } from './scenarios/showOffDiffCapability'
 import { showZoomLevel } from './scenarios/showZoomLevel'
-import { showAdvancedConnectionSettings } from './scenarios/showAdvancedConnectionSettings'
-import { SceneBuilder } from './SceneBuilder'
-import * as fs from 'fs'
-
-import {
-  clickOnHistory,
-  createFakeMousePointer,
-  hideText,
-  showText,
-  sleep,
-} from './util'
 
 process.on('unhandledRejection', (error: Error | any) => {
   console.error('unhandledRejection', error.message, error.stack)
@@ -41,7 +34,13 @@ const options = {
     browserName: 'electron',
     chromeOptions: {
       binary: `${__dirname}/../../../node_modules/.bin/electron`,
-      args: [`--app=${__dirname}/../../..`, '--force-device-scale-factor=1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-extensions'].concat(runningUiTestOnCi),
+      args: [
+        `--app=${__dirname}/../../..`,
+        '--force-device-scale-factor=1',
+        '--no-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-extensions',
+      ].concat(runningUiTestOnCi),
     },
     windowTypes: ['app', 'webview'],
   },
@@ -54,7 +53,6 @@ async function doStuff() {
 
   const browser = await webdriverio.remote(options)
   await createFakeMousePointer(browser)
-
 
   // Wait for Username input to be visible
   await browser.$('//label[contains(text(), "Username")]/..//input')

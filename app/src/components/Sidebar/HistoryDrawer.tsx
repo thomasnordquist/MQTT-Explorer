@@ -38,7 +38,9 @@ class HistoryDrawer extends React.Component<Props, State> {
 
   public renderHistory() {
     const style = (element: HistoryItem) => ({
-      backgroundColor: element.selected ? this.props.theme.palette.action.selected : this.props.theme.palette.action.hover,
+      backgroundColor: element.selected
+        ? this.props.theme.palette.action.selected
+        : this.props.theme.palette.action.hover,
       margin: '8px',
       padding: '8px 8px 0 8px',
       cursor: this.props.onClick ? 'pointer' : 'inherit',
@@ -50,11 +52,16 @@ class HistoryDrawer extends React.Component<Props, State> {
         key={element.key}
         style={style(element)}
         onClick={(event: React.MouseEvent) => this.props.onClick && this.props.onClick(index, event.target)}
-        tabIndex={0} onKeyDown={this.handleCtrlA}
+        tabIndex={0}
+        onKeyDown={this.handleCtrlA}
       >
-        <div><i>{element.title}</i></div>
+        <div>
+          <i>{element.title}</i>
+        </div>
         <div style={messageStyle}>
-          <span><pre>{element.value}</pre></span>
+          <span>
+            <pre>{element.value}</pre>
+          </span>
         </div>
       </div>
     ))
@@ -63,11 +70,7 @@ class HistoryDrawer extends React.Component<Props, State> {
 
     return (
       <div className={this.props.classes.main}>
-        <Typography
-          component={'span'}
-          onClick={this.toggle}
-          style={{ cursor: 'pointer' }}
-        >
+        <Typography component={'span'} onClick={this.toggle} style={{ cursor: 'pointer' }}>
           <Badge
             classes={{ badge: this.props.classes.badge }}
             invisible={!visible}
@@ -78,7 +81,7 @@ class HistoryDrawer extends React.Component<Props, State> {
           </Badge>
           <div style={{ float: 'right' }}>{this.state.collapsed ? this.props.contentTypeIndicator : null}</div>
         </Typography>
-        <div style={{ maxHeight: '230px', overflowY: 'scroll'  }}>
+        <div style={{ maxHeight: '230px', overflowY: 'scroll' }}>
           {this.state.collapsed ? null : this.props.children}
           {this.state.collapsed ? null : elements}
         </div>
@@ -87,13 +90,7 @@ class HistoryDrawer extends React.Component<Props, State> {
   }
 
   public render() {
-    return (
-      <div
-        style={{ display: 'block', width: '100%' }}
-      >
-        {this.renderHistory()}
-      </div>
-    )
+    return <div style={{ display: 'block', width: '100%' }}>{this.renderHistory()}</div>
   }
 }
 

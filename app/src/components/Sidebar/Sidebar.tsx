@@ -14,13 +14,7 @@ import { settingsActions, sidebarActions } from '../../actions'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { TopicViewModel } from '../../model/TopicViewModel'
 
-import {
-  ExpansionPanel,
-  ExpansionPanelDetails,
-  ExpansionPanelSummary,
-  Typography,
-  Badge,
-} from '@material-ui/core'
+import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography, Badge } from '@material-ui/core'
 
 const throttle = require('lodash.throttle')
 
@@ -76,7 +70,7 @@ class Sidebar extends React.Component<Props, State> {
   private renderRecursiveTopicDeleteButton() {
     const deleteLimit = 50
     const topicCount = this.props.node ? this.props.node.childTopicCount() : 0
-    if ((!this.props.node || topicCount === 0) || (this.props.node.message && topicCount === 1)) {
+    if (!this.props.node || topicCount === 0 || (this.props.node.message && topicCount === 1)) {
       return null
     }
 
@@ -86,7 +80,10 @@ class Sidebar extends React.Component<Props, State> {
         badgeContent={<span style={{ whiteSpace: 'nowrap' }}>{topicCount >= deleteLimit ? '50+' : topicCount}</span>}
         color="secondary"
       >
-        <CustomIconButton onClick={() => this.deleteTopic(this.props.node, true, deleteLimit)} tooltip={`Deletes up to ${deleteLimit} sub-topics with a single click`}>
+        <CustomIconButton
+          onClick={() => this.deleteTopic(this.props.node, true, deleteLimit)}
+          tooltip={`Deletes up to ${deleteLimit} sub-topics with a single click`}
+        >
           <Delete style={{ marginTop: '-3px' }} color="action" />
         </CustomIconButton>
       </Badge>
@@ -112,7 +109,9 @@ class Sidebar extends React.Component<Props, State> {
       <div>
         <ExpansionPanel key="topic" defaultExpanded={true} disabled={!Boolean(this.props.node)}>
           <ExpansionPanelSummary expandIcon={<ExpandMore />} style={summaryStyle}>
-            <Typography className={classes.heading}>Topic {copyTopic} {deleteTopic} {deleteRecursiveTopic}</Typography>
+            <Typography className={classes.heading}>
+              Topic {copyTopic} {deleteTopic} {deleteRecursiveTopic}
+            </Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={this.detailsStyle}>
             <Topic node={this.props.node} didSelectNode={this.updateNode} />
@@ -204,4 +203,9 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Sidebar))
+export default withStyles(styles)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Sidebar)
+)

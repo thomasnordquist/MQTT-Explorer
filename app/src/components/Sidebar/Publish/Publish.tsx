@@ -53,7 +53,6 @@ interface State {
 }
 
 class Publish extends React.Component<Props, State> {
-
   private editorOptions = {
     showLineNumbers: false,
     tabSize: 2,
@@ -108,18 +107,18 @@ class Publish extends React.Component<Props, State> {
     return (
       <div>
         <FormControl style={{ width: '100%' }}>
-            <InputLabel htmlFor="publish-topic">Topic</InputLabel>
-            <Input
-              id="publish-topic"
-              value={topicStr}
-              startAdornment={<span/>}
-              endAdornment={<ClearAdornment action={this.clearTopic} value={topicStr} />}
-              onBlur={this.onTopicBlur}
-              onChange={this.updateTopic}
-              multiline={true}
-              placeholder="example/topic"
-            />
-          </FormControl>
+          <InputLabel htmlFor="publish-topic">Topic</InputLabel>
+          <Input
+            id="publish-topic"
+            value={topicStr}
+            startAdornment={<span />}
+            endAdornment={<ClearAdornment action={this.clearTopic} value={topicStr} />}
+            onBlur={this.onTopicBlur}
+            onChange={this.updateTopic}
+            multiline={true}
+            placeholder="example/topic"
+          />
+        </FormControl>
       </div>
     )
   }
@@ -132,13 +131,7 @@ class Publish extends React.Component<Props, State> {
 
   private publishButton() {
     return (
-      <Button
-        variant="contained"
-        size="small"
-        color="primary"
-        onClick={this.publish}
-        id="publish-button"
-      >
+      <Button variant="contained" size="small" color="primary" onClick={this.publish} id="publish-button">
         <Navigation style={{ marginRight: '8px' }} /> Publish
       </Button>
     )
@@ -162,7 +155,11 @@ class Publish extends React.Component<Props, State> {
 
     return (
       <Tooltip title="Format JSON">
-        <Fab style={{ width: '36px', height: '36px', marginLeft: '8px' }} onClick={this.formatJson} id="sidebar-publish-format-json">
+        <Fab
+          style={{ width: '36px', height: '36px', marginLeft: '8px' }}
+          onClick={this.formatJson}
+          id="sidebar-publish-format-json"
+        >
           <FormatAlignLeft style={{ fontSize: '20px' }} />
         </Fab>
       </Tooltip>
@@ -175,9 +172,7 @@ class Publish extends React.Component<Props, State> {
         <div style={{ width: '100%', lineHeight: '64px' }}>
           {this.renderEditorModeSelection()}
           {this.renderFormatJson()}
-          <div style={{ float: 'right', marginRight: '16px' }}>
-            {this.publishButton()}
-          </div>
+          <div style={{ float: 'right', marginRight: '16px' }}>{this.publishButton()}</div>
         </div>
       </div>
     )
@@ -239,30 +234,36 @@ class Publish extends React.Component<Props, State> {
         onChange={this.onChangeQoS}
       >
         <MenuItem key={0} value={0} style={itemStyle}>
-          <Tooltip title="At most once"><div style={tooltipStyle}>0</div></Tooltip>
+          <Tooltip title="At most once">
+            <div style={tooltipStyle}>0</div>
+          </Tooltip>
         </MenuItem>
         <MenuItem key={1} value={1} style={itemStyle}>
-          <Tooltip title="At least once"><div style={tooltipStyle}>1</div></Tooltip>
+          <Tooltip title="At least once">
+            <div style={tooltipStyle}>1</div>
+          </Tooltip>
         </MenuItem>
         <MenuItem key={2} value={2} style={itemStyle}>
-          <Tooltip title="Exactly once"><div style={tooltipStyle}>2</div></Tooltip>
+          <Tooltip title="Exactly once">
+            <div style={tooltipStyle}>2</div>
+          </Tooltip>
         </MenuItem>
       </TextField>
     )
     return (
       <div style={{ marginTop: '8px', clear: 'both' }}>
         <div style={{ width: '100%', textAlign: 'right' }}>
-          <FormControlLabel
-            style={labelStyle}
-            control={qosSelect}
-            label="QoS"
-            labelPlacement="start"
-          />
-          <Tooltip title="Retained messages only appear to be retained, when client subscribes after the initial publish." placement="top">
+          <FormControlLabel style={labelStyle} control={qosSelect} label="QoS" labelPlacement="start" />
+          <Tooltip
+            title="Retained messages only appear to be retained, when client subscribes after the initial publish."
+            placement="top"
+          >
             <FormControlLabel
               value="retain"
               style={labelStyle}
-              control={<Checkbox color="primary" checked={this.props.retain} onChange={this.props.actions.toggleRetain} />}
+              control={
+                <Checkbox color="primary" checked={this.props.retain} onChange={this.props.actions.toggleRetain} />
+              }
               label="retain"
               labelPlacement="end"
             />
@@ -343,4 +344,7 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTheme(Publish))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withTheme(Publish))

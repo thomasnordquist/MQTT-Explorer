@@ -13,7 +13,9 @@
     "array-type": [true, "generic"],
     "prefer-array-literal": false,
     "function-name": false,
+    "ter-arrow-parens": [true, "as-needed"],
     "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"],
+    "no-implicit-dependencies": [true, "dev", "optional"],
     "trailing-comma": [
       true,
       {
