@@ -107,7 +107,5 @@
     "sha1": "^1.1.1",
     "yarn-run-all": "^3.1.1"
   },
-  "optionalDependencies": {
-    "ffmpeg-concat": "^1.0.13"
-  }
+  "optionalDependencies": {}
 }
