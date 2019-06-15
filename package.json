@@ -10,7 +10,7 @@
     "dev": "npm-run-all --parallel dev:*",
     "dev:app": "cd app && npm run dev",
     "dev:electron": "tsc && electron . --development",
-    "lint": "yarn run lint:prettier; yarn run lint:tslint",
+    "lint": "yarn run lint:prettier && yarn run lint:tslint",
     "lint:prettier": "prettier --check \"**/*.ts{x,}\"",
     "lint:tslint": "node_modules/.bin/tslint -p ./",
     "build": "tsc && cd app && yarn run build && cd ..",
