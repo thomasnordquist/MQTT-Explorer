@@ -1,8 +1,9 @@
 #!./node_modules/.bin/ts-node
-
 import * as fs from 'fs'
-import { Scene, SceneNames } from '../src/spec/SceneBuilder'
 import { exec } from './util'
+import { Scene, SceneNames } from '../src/spec/SceneBuilder'
+
+// tslint:disable-next-line
 const concat = require('ffmpeg-concat')
 
 async function cutScenes(scenes: Array<Scene>) {
