@@ -16,6 +16,7 @@ build_script:
   - yarn package appx
 
 test_script:
+  - yarn lint
   - yarn test
 
 artifacts:
