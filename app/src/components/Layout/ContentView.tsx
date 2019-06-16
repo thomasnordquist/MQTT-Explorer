@@ -19,24 +19,20 @@ interface Props {
 function ContentView(props: Props) {
   const [height, setHeight] = React.useState<string | number>('100%')
   const [detectedHeight, setDetectedHeight] = React.useState(0)
-  const [chatPanelItemCount, setChartPanelItemCount] = React.useState(props.chartPanelItems.count())
   const detectSize = React.useCallback((width, height) => {
-    console.log(width, height)
     setDetectedHeight(height)
   }, [])
 
   // Open chart panel on start and when a new chart is added but the panel is closed
   React.useEffect(() => {
-    const almostAtFullHeight = !isNaN(height as any) && Math.abs(detectedHeight - (height as number)) < 20
-    if ((!height || height === '100%' || almostAtFullHeight) && props.chartPanelItems.count() > 0) {
+    const almostClosed = !isNaN(height as any) && detectedHeight < 30
+    if ((!height || height === '100%' || almostClosed) && props.chartPanelItems.count() > 0) {
       setHeight('calc(100% - 250px)')
     }
 
     if (props.chartPanelItems.count() === 0) {
       setHeight('100%')
     }
-
-    setChartPanelItemCount(props.chartPanelItems.count())
   }, [props.chartPanelItems])
 
   return (
@@ -50,12 +46,10 @@ function ContentView(props: Props) {
         allowResize={true}
         style={{ height: 'calc(100vh - 64px)' }}
         pane1Style={{ maxHeight: '100%' }}
-        pane2Style={{ maxWidth: '100%', overflow: 'hidden auto' }}
+        pane2Style={{ maxWidth: '100%', overflow: 'hidden scroll' }}
         onChange={setHeight}
       >
         <span>
-          <ReactResizeDetector handleHeight={true} onResize={detectSize} />
-
           <ReactSplitPane
             step={20}
             primary="second"
@@ -74,7 +68,10 @@ function ContentView(props: Props) {
             </div>
           </ReactSplitPane>
         </span>
-        <ChartPanel />
+        <div>
+          <ReactResizeDetector handleHeight={true} onResize={detectSize} />
+          <ChartPanel />
+        </div>
       </ReactSplitPane>
     </div>
   )
