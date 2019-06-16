@@ -65,11 +65,12 @@ export function createEmptyConnection(): ConnectionOptions {
 
 export function makeDefaultConnections() {
   return {
-    'iot.eclipse.org': {
+    // remember: there was also iot.eclipse.org once
+    'mqtt.eclipse.org': {
       ...createEmptyConnection(),
-      id: 'iot.eclipse.org',
-      name: 'iot.eclipse.org',
-      host: 'iot.eclipse.org',
+      id: 'mqtt.eclipse.org',
+      name: 'mqtt.eclipse.org',
+      host: 'mqtt.eclipse.org',
     },
     'test.mosquitto.org': {
       ...createEmptyConnection(),

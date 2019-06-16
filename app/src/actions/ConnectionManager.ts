@@ -166,16 +166,38 @@ export const deleteConnection = (connectionId: string) => (dispatch: Dispatch<an
 }
 
 async function ensureConnectionsHaveBeenInitialized() {
-  const connections = await persistentStorage.load(storedConnectionsIdentifier)
+  let connections = await persistentStorage.load(storedConnectionsIdentifier)
   const requiresInitialization = !connections
   if (requiresInitialization) {
     const migratedConnection = loadLegacyConnectionOptions()
     const defaultConnections = makeDefaultConnections()
-    persistentStorage.store(storedConnectionsIdentifier, {
+    connections = {
       ...migratedConnection,
       ...defaultConnections,
-    })
+    }
+    await persistentStorage.store(storedConnectionsIdentifier, connections)
 
     clearLegacyConnectionOptions()
   }
+
+  // Migrate connections, rewrite dictionary to "keep" it "ordered" (dictionaries do not have a guaranteed order)
+  const mayNeedMigrations = connections && connections['iot.eclipse.org']
+  if (connections && mayNeedMigrations) {
+    let newConnections = {}
+    for (const connection of Object.values(connections)) {
+      addMigratedConnection(newConnections, connection)
+    }
+
+    await persistentStorage.store(storedConnectionsIdentifier, newConnections)
+  }
+}
+
+function addMigratedConnection(newConnections: { [key: string]: ConnectionOptions }, connection: ConnectionOptions) {
+  // The host has been renamed, only change the host if it has not been changed
+  if (connection.id === 'iot.eclipse.org' && connection.host === 'iot.eclipse.org') {
+    connection.id = 'mqtt.eclipse.org'
+    connection.host = 'mqtt.eclipse.org'
+    connection.name = 'mqtt.eclipse.org'
+  }
+  newConnections[connection.id] = connection
 }
