@@ -8,7 +8,8 @@ import { bindActionCreators } from 'redux'
 import { chartActions } from '../../actions'
 import { ChartParameters } from '../../reducers/Charts'
 import { connect } from 'react-redux'
-import { Paper, Theme, Typography, withStyles, Fade } from '@material-ui/core'
+import { Fade, Paper, Theme, Typography, withStyles } from '@material-ui/core'
+const throttle = require('lodash.throttle')
 
 interface Props {
   parameters: ChartParameters
@@ -31,7 +32,7 @@ function Chart(props: Props) {
 
   /** If a node is not available when the plot is shown, keep polling until it has been created */
   function pollForTreeNode() {
-    const onUpdateCallback = () => setLastUpdate(treeNode ? treeNode.lastUpdate : 0)
+    const onUpdateCallback = throttle(() => setLastUpdate(treeNode ? treeNode.lastUpdate : 0), 300)
     let intervalTimer: any
 
     if (!treeNode) {
