@@ -45,7 +45,7 @@ class Topic extends React.Component<Props, {}> {
           className={this.props.classes.button}
           key={edge!.hash()}
         >
-          {edge!.name}
+          {edge!.name || <span dangerouslySetInnerHTML={{ __html: '&nbsp;' }} />}
         </Button>,
       ])
 
