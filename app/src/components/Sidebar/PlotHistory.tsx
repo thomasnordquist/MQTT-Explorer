@@ -1,14 +1,16 @@
 import * as React from 'react'
 import DateFormatter from '../helper/DateFormatter'
 import { default as ReactResizeDetector } from 'react-resize-detector'
+import { Theme } from '@material-ui/core'
+import { withTheme } from '@material-ui/styles'
 import 'react-vis/dist/style.css'
 const { XYPlot, LineMarkSeries, Hint, XAxis, YAxis, HorizontalGridLines } = require('react-vis')
 const abbreviate = require('number-abbreviate')
 
 interface Props {
   data: Array<{ x: number; y: number }>
+  theme: Theme
 }
-// const configuredCurve = d3Shape.curveBundle.beta(1)
 
 interface Stats {
   width: number
@@ -52,6 +54,7 @@ class PlotHistory extends React.Component<Props, Stats> {
           <XAxis />
           <YAxis width={45} tickFormat={(num: number) => abbreviate(num)} />
           <LineMarkSeries
+            color={this.props.theme.palette.secondary.dark}
             onValueMouseOver={this._rememberValue}
             onValueMouseOut={this._forgetValue}
             size={3}
@@ -66,4 +69,4 @@ class PlotHistory extends React.Component<Props, Stats> {
   }
 }
 
-export default PlotHistory
+export default withTheme(PlotHistory)
