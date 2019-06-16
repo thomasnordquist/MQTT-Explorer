@@ -1,6 +1,6 @@
 import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
-import BarChart from '@material-ui/icons/BarChart'
+import ShowChart from '@material-ui/icons/ShowChart'
 import Copy from '../../helper/Copy'
 import DateFormatter from '../../helper/DateFormatter'
 import History from '../HistoryDrawer'
@@ -8,6 +8,9 @@ import TopicPlot from '../../TopicPlot'
 import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
 import { isPlottable } from '../CodeDiff/util'
 import { TopicViewModel } from '../../../model/TopicViewModel'
+import { bindActionCreators } from 'redux'
+import { chartActions } from '../../../actions'
+import { connect } from 'react-redux'
 
 const throttle = require('lodash.throttle')
 
@@ -15,6 +18,9 @@ interface Props {
   node?: q.TreeNode<TopicViewModel>
   selected?: q.Message
   onSelect: (message: q.Message) => void
+  actions: {
+    charts: typeof chartActions
+  }
 }
 
 interface State {
@@ -30,6 +36,18 @@ class MessageHistory extends React.Component<Props, State> {
   constructor(props: any) {
     super(props)
     this.state = {}
+  }
+
+  private addNodeToCharts = (event: React.MouseEvent) => {
+    event.preventDefault()
+    event.stopPropagation()
+
+    const { node } = this.props
+    if (!node) {
+      return null
+    }
+
+    this.props.actions.charts.addChart({ topic: node.path() })
   }
 
   private displayMessage = (index: number, eventTarget: EventTarget) => {
@@ -91,7 +109,7 @@ class MessageHistory extends React.Component<Props, State> {
       <div>
         <History
           items={historyElements}
-          contentTypeIndicator={isMessagePlottable ? <BarChart /> : undefined}
+          contentTypeIndicator={isMessagePlottable ? <ShowChart onClick={this.addNodeToCharts} /> : undefined}
           onClick={this.displayMessage}
         >
           {isMessagePlottable ? <TopicPlot history={node.messageHistory} /> : null}
@@ -101,4 +119,13 @@ class MessageHistory extends React.Component<Props, State> {
   }
 }
 
-export default MessageHistory
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: { charts: bindActionCreators(chartActions, dispatch) },
+  }
+}
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(MessageHistory)

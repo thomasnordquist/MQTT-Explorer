@@ -8,13 +8,12 @@ import NodeStats from './NodeStats'
 import Topic from './Topic'
 import ValuePanel from './ValueRenderer/ValuePanel'
 import { AppState } from '../../reducers'
+import { Badge, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography } from '@material-ui/core'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { settingsActions, sidebarActions } from '../../actions'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { TopicViewModel } from '../../model/TopicViewModel'
-
-import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography, Badge } from '@material-ui/core'
 
 const throttle = require('lodash.throttle')
 
