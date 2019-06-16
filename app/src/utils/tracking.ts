@@ -28,5 +28,5 @@ export function trackEvent(name: string) {
   if (name.match(/^@@redux/)) {
     return
   }
-  electronRendererTelementry.trackEvent(name)
+  // electronRendererTelementry.trackEvent(name)
 }
