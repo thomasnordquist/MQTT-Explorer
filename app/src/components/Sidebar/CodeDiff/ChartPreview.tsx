@@ -38,7 +38,7 @@ function ChartPreview(props: Props) {
 
   const hasEnoughDataToDisplayDiagrams = props.treeNode.messageHistory.count() > 1
 
-  let preview = hasEnoughDataToDisplayDiagrams ? (
+  const addChartToPanelButton = hasEnoughDataToDisplayDiagrams ? (
     <Tooltip title="Click to add to chart panel">
       <ShowChart
         ref={chartIconRef}
@@ -56,7 +56,7 @@ function ChartPreview(props: Props) {
 
   return (
     <span>
-      {preview}
+      {addChartToPanelButton}
       <Popper open={open} anchorEl={chartIconRef.current} placement="left-end">
         <Fade in={open} timeout={300}>
           <Paper style={{ width: '300px' }}>

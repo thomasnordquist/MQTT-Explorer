@@ -1,4 +1,3 @@
-import * as q from '../../../../backend/src/Model'
 import * as React from 'react'
 import DateFormatter from '../helper/DateFormatter'
 import { default as ReactResizeDetector } from 'react-resize-detector'

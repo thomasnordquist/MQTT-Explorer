@@ -15,7 +15,9 @@ import * as path from 'path'
 
 import { ActionTypes, Action } from '../reducers/ConnectionManager'
 
-type ConnectionDictionary = { [s: string]: ConnectionOptions }
+interface ConnectionDictionary {
+  [s: string]: ConnectionOptions
+}
 const storedConnectionsIdentifier: StorageIdentifier<ConnectionDictionary> = {
   id: 'ConnectionManager_connections',
 }
