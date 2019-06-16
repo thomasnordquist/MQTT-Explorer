@@ -9,7 +9,7 @@ import { ValueRendererDisplayMode } from '../../../reducers/Settings'
 
 interface Props {
   message: q.Message
-  messageHistory: q.MessageHistory
+  treeNode: q.TreeNode<any>
   compareWith?: q.Message
   renderMode: ValueRendererDisplayMode
 }
@@ -27,7 +27,7 @@ class ValueRenderer extends React.Component<Props, State> {
   private renderDiff(current: string = '', previous: string = '', language?: 'json') {
     return (
       <CodeDiff
-        messageHistory={this.props.messageHistory}
+        treeNode={this.props.treeNode}
         previous={previous}
         current={current}
         language={language}
@@ -65,9 +65,8 @@ class ValueRenderer extends React.Component<Props, State> {
   }
 
   public renderValue() {
-    const { message, messageHistory, compareWith, renderMode } = this.props
-
-    const previousMessages = messageHistory.toArray()
+    const { message, treeNode, compareWith, renderMode } = this.props
+    const previousMessages = treeNode.messageHistory.toArray()
     const previousMessage = previousMessages[previousMessages.length - 2]
     let compareMessage = compareWith || previousMessage || message
     if (renderMode === 'raw') {

@@ -104,6 +104,7 @@ const styles = (theme: Theme) => ({
   },
   textColor: {
     color: theme.palette.text.primary,
+    userSelect: 'all' as 'all',
   },
   centered: {
     textAlign: 'center' as 'center',

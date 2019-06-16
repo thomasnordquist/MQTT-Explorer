@@ -97,19 +97,16 @@ const styles = (theme: Theme) => {
   const drawerWidth = 300
   const contentBaseStyle = {
     width: '100vw',
-    overflow: 'hidden' as 'hidden',
     backgroundColor: theme.palette.background.default,
   }
 
   return {
     heightProperty: {
-      height: 'calc(100vh - 64px) !important',
+      height: '100%', // 'calc(100vh - 64px) !important',
     },
     paneDefaults: {
       backgroundColor: theme.palette.background.default,
       color: theme.palette.text.primary,
-      overflowY: 'scroll' as 'scroll',
-      overflowX: 'hidden' as 'hidden',
       display: 'block' as 'block',
       height: 'calc(100vh - 64px)',
     },

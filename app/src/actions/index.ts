@@ -1,3 +1,4 @@
+import * as chartActions from './Charts'
 import * as connectionActions from './Connection'
 import * as connectionManagerActions from './ConnectionManager'
 import * as globalActions from './Global'
@@ -10,6 +11,7 @@ import * as updateNotifierActions from './UpdateNotifier'
 export {
   settingsActions,
   treeActions,
+  chartActions,
   publishActions,
   updateNotifierActions,
   connectionActions,

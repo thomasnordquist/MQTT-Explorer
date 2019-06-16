@@ -15,9 +15,8 @@ import * as path from 'path'
 
 import { ActionTypes, Action } from '../reducers/ConnectionManager'
 
-const storedConnectionsIdentifier: StorageIdentifier<{
-  [s: string]: ConnectionOptions
-}> = {
+type ConnectionDictionary = { [s: string]: ConnectionOptions }
+const storedConnectionsIdentifier: StorageIdentifier<ConnectionDictionary> = {
   id: 'ConnectionManager_connections',
 }
 
@@ -47,14 +46,12 @@ export const selectCertificate = (connectionId: string) => async (
 ) => {
   try {
     const certificate = await openCertificate()
-    console.log(certificate)
     dispatch(
       updateConnection(connectionId, {
         selfSignedCertificate: certificate,
       })
     )
   } catch (error) {
-    console.log(error)
     dispatch(showError(error))
   }
 }

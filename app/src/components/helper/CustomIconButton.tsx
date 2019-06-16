@@ -15,6 +15,9 @@ const styles = (theme: Theme) => ({
     width: '32px',
     height: '32px',
   },
+  label: {
+    marginTop: '-2px',
+  },
 })
 
 class CustomIconButton extends React.Component<Props, {}> {
@@ -30,7 +33,7 @@ class CustomIconButton extends React.Component<Props, {}> {
   public render() {
     return (
       <IconButton className={this.props.classes.button} onClick={this.onClick}>
-        <Tooltip title={this.props.tooltip}>
+        <Tooltip title={this.props.tooltip} className={this.props.classes.label}>
           <span>{this.props.children}</span>
         </Tooltip>
       </IconButton>

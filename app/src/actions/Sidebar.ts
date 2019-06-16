@@ -44,7 +44,6 @@ export const clearTopic = (topic: q.TreeNode<any>, recursive: boolean, subtopicC
       .filter(topic => Boolean(topic.message && topic.message.value))
       .slice(0, subtopicClearLimit)
       .forEach(topic => {
-        console.log('deleting', topic.path())
         const mqttMessage = {
           topic: topic.path(),
           payload: null,

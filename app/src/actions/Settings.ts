@@ -1,15 +1,15 @@
 import * as q from '../../../backend/src/Model'
+import { ActionTypes, SettingsState, TopicOrder } from '../reducers/Settings'
 import { AppState } from '../reducers'
 import { autoExpandLimitSet } from '../components/SettingsDrawer/Settings'
+import { Base64Message } from '../../../backend/src/Model/Base64Message'
 import { batchActions } from 'redux-batched-actions'
 import { default as persistentStorage, StorageIdentifier } from '../utils/PersistentStorage'
 import { Dispatch } from 'redux'
+import { globalActions } from './'
 import { showError } from './Global'
 import { showTree } from './Tree'
 import { TopicViewModel } from '../model/TopicViewModel'
-import { ActionTypes, SettingsState, TopicOrder } from '../reducers/Settings'
-import { Base64Message } from '../../../backend/src/Model/Base64Message'
-import { globalActions } from '.'
 
 const settingsIdentifier: StorageIdentifier<Partial<SettingsState>> = {
   id: 'Settings',

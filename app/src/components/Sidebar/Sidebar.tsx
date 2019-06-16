@@ -188,7 +188,6 @@ const mapDispatchToProps = (dispatch: any) => {
 const styles = (theme: Theme) => ({
   drawer: {
     display: 'block' as 'block',
-    height: '100%',
   },
   badge: {
     top: '3px',

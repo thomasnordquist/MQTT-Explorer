@@ -1,125 +1,181 @@
 <!DOCTYPE html>
 <html>
-    <head>
-      <meta charset="UTF-8" />
-      <meta
-        name="viewport"
-        content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
-      >
-      <title>MQTT Explorer</title>
-      <script src="./bugtracking.bundle.js"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no" />
+    <title>MQTT Explorer</title>
+    <script src="./bugtracking.bundle.js"></script>
 
-      <style>
-        body, html {
-          margin: 0;
-          padding: 0;
-        }
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+      }
 
-        [tabindex] {
-          outline: none;
-        }
+      [tabindex] {
+        outline: none;
+      }
 
-        @keyframes updateDark {
-          0%   {background-color: none;}
-          25%  {background-color: #3f51b5;}
-          50%  {background-color: #3f51b5;}
-          100% {background-color: none;}
+      @keyframes updateDark {
+        0% {
+          background-color: none;
         }
+        25% {
+          background-color: #3f51b5;
+        }
+        50% {
+          background-color: #3f51b5;
+        }
+        100% {
+          background-color: none;
+        }
+      }
 
-        @keyframes updateLight {
-          0%   {background-color: none; color: inherit}
-          25%  {background-color: #bfc9c8; color: #000}
-          50%  {background-color: #bfc9c8; color: #000}
-          100% {background-color: none; color: inherit}
+      @keyframes updateLight {
+        0% {
+          background-color: none;
+          color: inherit;
         }
+        25% {
+          background-color: #bfc9c8;
+          color: #000;
+        }
+        50% {
+          background-color: #bfc9c8;
+          color: #000;
+        }
+        100% {
+          background-color: none;
+          color: inherit;
+        }
+      }
 
-        ::-webkit-scrollbar {
-          width: 8px;
-          height: 8px;
-        }
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
 
-        ::-webkit-scrollbar-corner {
-          background-color: rgba(0, 0, 0, 0.0);
-        }
+      ::-webkit-scrollbar-corner {
+        background-color: rgba(0, 0, 0, 0);
+      }
 
-        ::-webkit-scrollbar-track {
-          -webkit-box-shadow: inset 0 0 6px rgba(60,60,60,0.5);
-          background-color: rgba(140,140,140,0.1);
-        }
+      ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(60, 60, 60, 0.5);
+        background-color: rgba(140, 140, 140, 0.1);
+      }
 
-        ::-webkit-scrollbar-thumb {
-          background-color: rgba(140,140,140,0.8);
-        }
-      </style>
-      <style>
-        .Resizer {
-            background: #eee;
-            opacity: .2;
-            z-index: 1;
-            -moz-box-sizing: border-box;
-            -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-            -moz-background-clip: padding;
-            -webkit-background-clip: padding;
-            background-clip: padding-box;
-        }
+      ::-webkit-scrollbar-thumb {
+        background-color: rgba(140, 140, 140, 0.8);
+      }
+    </style>
+    <style>
+      .Resizer {
+        background: rgba(200, 200, 200, 0);
+        z-index: 10;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        -moz-background-clip: padding;
+        -webkit-background-clip: padding;
+        background-clip: padding-box;
+      }
 
-        .Resizer:hover {
-            -webkit-transition: all 0.3s ease-out;
-            transition: all 0.3s ease-out;
-        }
+      .Resizer:hover {
+        -webkit-transition: all 0.3s ease-out;
+        transition: all 0.3s ease-out;
+      }
 
-        .Resizer.horizontal {
-            height: 11px;
-            margin: -5px 0;
-            border-top: 5px solid rgba(255, 255, 255, 0);
-            border-bottom: 5px solid rgba(255, 255, 255, 0);
-            cursor: row-resize;
-            width: 100%;
-        }
+      .Resizer.horizontal {
+        height: 10px;
+        margin: -10px 0 0 0;
+        border-top: 5px solid rgba(255, 255, 255, 0);
+        border-bottom: 5px solid rgba(255, 255, 255, 0);
+        cursor: row-resize;
+        width: 100%;
+      }
 
-        .Resizer.horizontal:hover {
-            border-top: 5px solid rgba(120, 120, 120, 0.5);
-            border-bottom: 5px solid rgba(120, 120, 120, 0.5);
-        }
+      .Resizer.horizontal::before {
+        content: '•••';
+        display: inline-block;
+        vertical-align: middle;
+        text-align: center;
+        width: 100%;
+        margin-top: -22px;
+        color: #aaa;
+        opacity: 1;
+      }
 
-        .Resizer.vertical {
-            width: 2px;
-            margin: 0px -8px 0px 0px;
-            border-left: 4px solid rgba(128, 128, 128, 0);
-            border-right: 4px solid rgba(128, 128, 128, 0);
-            cursor: col-resize;
-        }
+      .Resizer.horizontal:hover {
+        border-top: 5px solid rgba(120, 120, 120, 0.3);
+        border-bottom: 5px solid rgba(120, 120, 120, 0.3);
+      }
 
-        .Resizer.vertical:hover {
-            border-left: 4px solid rgba(130, 130, 130, 1);
-            border-right: 4px solid rgba(140, 140, 140, 1);
-        }
+      .Resizer.vertical {
+        width: 2px;
+        margin: 0px -8px 0px 0px;
+        border-left: 4px solid rgba(128, 128, 128, 0);
+        border-right: 4px solid rgba(128, 128, 128, 0);
+        cursor: col-resize;
+      }
 
-        .Resizer.disabled {
-          cursor: not-allowed;
-        }
-        .Resizer.disabled:hover {
-          border-color: transparent;
-        }
+      .Resizer.vertical::before {
+        content: '•••';
+        margin-left: -6px;
+        height: 100%;
+        display: inline-block;
+        vertical-align: middle;
+        text-align: center;
+        color: #aaa;
+        opacity: 1;
+        writing-mode: vertical-lr;
+        text-orientation: sideways;
+      }
 
-      </style>
-    </head>
-    <body>
-        <div id="app" style="font:-webkit-control"></div>
-        <script>
-            function loadScript(path) {
-              var script = document.createElement("script");
-              script.src = path
-              document.head.appendChild(script);
-            }
-    
-            document.addEventListener('DOMContentLoaded', onLoad(), false);
-            function onLoad() {
-              // <% _.forEach(htmlWebpackPlugin.files.js, function(file) { %>loadScript("<%- file %>");<% }); %>
-              // loadScript("<%= JSON.stringify(htmlWebpackPlugin) %>")
-            }
-          </script>
-          <% _.forEach(htmlWebpackPlugin.files.js, function(file) { %><script src="<%- file %>"></script><% }); %>
-    </body>
+      .Resizer.vertical:hover {
+        border-left: 4px solid rgba(130, 130, 130, 0.3);
+        border-right: 4px solid rgba(140, 140, 140, 0.3);
+      }
+
+      .Resizer.disabled {
+        cursor: not-allowed;
+      }
+      .Resizer.disabled:hover {
+        border-color: transparent;
+      }
+
+      .example-enter {
+        opacity: 0;
+      }
+      .example-enter-active {
+        opacity: 1;
+        transition: opacity 300ms ease-in;
+      }
+      .example-exit {
+        opacity: 1;
+      }
+      .example-exit-active {
+        opacity: 0;
+        transition: opacity 300ms ease-in;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" style="font:-webkit-control"></div>
+    <script>
+      function loadScript(path) {
+        var script = document.createElement('script')
+        script.src = path
+        document.head.appendChild(script)
+      }
+
+      document.addEventListener('DOMContentLoaded', onLoad(), false)
+      function onLoad() {
+        // <% _.forEach(htmlWebpackPlugin.files.js, function(file) { %>loadScript("<%- file %>");<% }); %>
+        // loadScript("<%= JSON.stringify(htmlWebpackPlugin) %>")
+      }
+    </script>
+    <% _.forEach(htmlWebpackPlugin.files.js, function(file) { %><script src="<%- file %>"></script
+    ><% }); %>
+  </body>
 </html>

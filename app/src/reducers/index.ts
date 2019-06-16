@@ -1,3 +1,4 @@
+import { chartsReducer, ChartsState } from './Charts'
 import { combineReducers } from 'redux'
 import { connectionManagerReducer, ConnectionManagerState } from './ConnectionManager'
 import { connectionReducer, ConnectionState } from './Connection'
@@ -13,6 +14,7 @@ export interface AppState {
   tree: TreeState
   settings: Record<SettingsState>
   publish: PublishState
+  charts: ChartsState
   sidebar: SidebarState
   connection: ConnectionState
   connectionManager: ConnectionManagerState
@@ -20,6 +22,7 @@ export interface AppState {
 
 export default combineReducers({
   globalState,
+  charts: chartsReducer,
   publish: publishReducer,
   sidebar: sidebarReducer,
   connection: connectionReducer,

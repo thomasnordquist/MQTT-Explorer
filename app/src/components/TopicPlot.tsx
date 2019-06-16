@@ -1,9 +1,9 @@
 import * as dotProp from 'dot-prop'
-import * as q from '../../../../backend/src/Model'
+import * as q from '../../../backend/src/Model'
 import * as React from 'react'
-import PlotHistory from './PlotHistory'
-import { Base64Message } from '../../../../backend/src/Model/Base64Message'
-import { toPlottableValue } from './CodeDiff/util'
+import PlotHistory from './Sidebar/PlotHistory'
+import { Base64Message } from '../../../backend/src/Model/Base64Message'
+import { toPlottableValue } from './Sidebar/CodeDiff/util'
 
 interface Props {
   history: q.MessageHistory
@@ -38,7 +38,6 @@ function nodeDotPathToHistory(history: q.MessageHistory, dotPath: string) {
 
 function render(props: Props) {
   const data = props.dotPath ? nodeDotPathToHistory(props.history, props.dotPath) : nodeToHistory(props.history)
-  console.log(props.dotPath, data)
   return <PlotHistory data={data} />
 }
 

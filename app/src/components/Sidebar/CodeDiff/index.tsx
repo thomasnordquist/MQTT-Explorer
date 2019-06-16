@@ -12,7 +12,7 @@ import { withStyles } from '@material-ui/core'
 import 'prismjs/components/prism-json'
 
 interface Props {
-  messageHistory: q.MessageHistory
+  treeNode: q.TreeNode<any>
   previous: string
   current: string
   nameOfCompareMessage: string
@@ -93,7 +93,7 @@ class CodeDiff extends React.Component<Props, State> {
           <Gutters
             className={this.props.classes.gutters}
             changes={changes}
-            messageHistory={this.props.messageHistory}
+            treeNode={this.props.treeNode}
             literalPositions={literalPositions}
           />
           <pre className={this.props.classes.codeBlock}>{code}</pre>

@@ -1,4 +1,3 @@
-import * as moment from 'moment'
 import { createReducer } from './lib'
 import { Record } from 'immutable'
 

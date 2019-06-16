@@ -53,13 +53,7 @@ class ValuePanel extends React.Component<Props, State> {
       return null
     }
 
-    return (
-      <ValueRenderer
-        message={node.message}
-        messageHistory={node.messageHistory}
-        compareWith={this.props.compareMessage}
-      />
-    )
+    return <ValueRenderer treeNode={node} message={node.message} compareWith={this.props.compareMessage} />
   }
 
   private renderViewOptions() {
