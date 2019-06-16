@@ -20,7 +20,7 @@ class DateFormatter extends React.Component<Props, {}> {
   private intervalSince(intervalSince: Date) {
     const interval = intervalSince.getTime() - this.props.date.getTime()
     const unit = this.unitForInterval(interval)
-    return `${moment.duration(interval).as(unit)} ${unitMapping[unit]}`
+    return `${Math.round(moment.duration(interval).as(unit) * 100) / 100} ${unitMapping[unit]}`
   }
 
   private legacyDate() {

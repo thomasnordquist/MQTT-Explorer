@@ -68,7 +68,7 @@ class MessageHistory extends React.Component<Props, State> {
         title: (
           <span>
             <DateFormatter date={message.received} />
-            {previousMessage ? (
+            {previousMessage && previousMessage !== message ? (
               <i>
                 (-
                 <DateFormatter date={message.received} intervalSince={previousMessage.received} />)
