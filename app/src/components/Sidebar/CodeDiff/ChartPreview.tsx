@@ -26,6 +26,7 @@ function ChartPreview(props: Props) {
       topic: props.treeNode.path(),
       dotPath: props.literal.path,
     })
+    setOpen(false)
   }, [props.literal.path, props.treeNode])
 
   const mouseOver = React.useCallback(() => {
