@@ -1,8 +1,7 @@
 import * as React from 'react'
 import DateFormatter from '../helper/DateFormatter'
 import { default as ReactResizeDetector } from 'react-resize-detector'
-import { Theme } from '@material-ui/core'
-import { withTheme } from '@material-ui/styles'
+import { Theme, withTheme } from '@material-ui/core'
 import 'react-vis/dist/style.css'
 const { XYPlot, LineMarkSeries, Hint, XAxis, YAxis, HorizontalGridLines } = require('react-vis')
 const abbreviate = require('number-abbreviate')
@@ -12,61 +11,47 @@ interface Props {
   theme: Theme
 }
 
-interface Stats {
-  width: number
-  value?: any
-}
+export default withTheme((props: Props) => {
+  const [width, setWidth] = React.useState(300)
+  const [tooltip, setTooltip] = React.useState({ value: undefined })
+  const detectResize = React.useCallback(width => setWidth(width), [])
 
-class PlotHistory extends React.Component<Props, Stats> {
-  constructor(props: Props) {
-    super(props)
-    this.state = { width: 300 }
-  }
-
-  private resize = (width: number, height: number) => {
-    this.setState({ width: width - 12 })
-  }
-
-  private hintFormatter = (point: any) => {
+  const hintFormatter = React.useCallback((point: any) => {
     return [
       { title: <b>Time</b>, value: <DateFormatter date={new Date(point.x)} /> },
       { title: <b>Value</b>, value: point.y },
     ]
-  }
+  }, [])
 
-  private _forgetValue = () => {
-    this.setState({
-      value: undefined,
-    })
-  }
+  const hideTooltip = React.useCallback(() => {
+    setTooltip({ value: undefined })
+  }, [])
 
-  private _rememberValue = (value: any) => {
-    this.setState({ value })
-  }
+  const showTooltip = React.useCallback((value: any) => {
+    setTooltip({ value })
+  }, [])
 
-  public render() {
-    const data = this.props.data
+  const data = props.data
 
+  return React.useMemo(() => {
     return (
       <div style={{ height: '150px', overflow: 'hidden' }}>
-        <XYPlot width={this.state.width} height={180}>
+        <XYPlot width={width} height={180}>
           <HorizontalGridLines />
           <XAxis />
           <YAxis width={45} tickFormat={(num: number) => abbreviate(num)} />
           <LineMarkSeries
-            color={this.props.theme.palette.secondary.dark}
-            onValueMouseOver={this._rememberValue}
-            onValueMouseOut={this._forgetValue}
+            color={props.theme.palette.secondary.dark}
+            onValueMouseOver={showTooltip}
+            onValueMouseOut={hideTooltip}
             size={3}
             data={data}
             curve="curveMonotoneX"
           />
-          {this.state.value ? <Hint format={this.hintFormatter} value={this.state.value} /> : null}
+          {tooltip.value ? <Hint format={hintFormatter} value={tooltip.value} /> : null}
         </XYPlot>
-        <ReactResizeDetector handleWidth={true} onResize={this.resize} />
+        <ReactResizeDetector handleWidth={true} onResize={detectResize} />
       </div>
     )
-  }
-}
-
-export default withTheme(PlotHistory)
+  }, [width, data, tooltip])
+})
