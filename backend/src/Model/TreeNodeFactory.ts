@@ -22,13 +22,14 @@ export abstract class TreeNodeFactory {
 
   public static fromEdgesAndValue<ViewModel extends Destroyable>(
     edgeNames: Array<string>,
-    value?: Base64Message | null
+    value?: Base64Message | null,
+    receiveDate: Date = new Date()
   ): TreeNode<ViewModel> {
     const node = new TreeNode<ViewModel>()
     node.setMessage({
       value: value || undefined,
       length: value ? value.length : 0,
-      received: new Date(),
+      received: receiveDate,
       messageNumber: this.messageCounter,
     })
     this.messageCounter += 1
