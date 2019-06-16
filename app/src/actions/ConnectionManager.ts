@@ -194,7 +194,13 @@ async function ensureConnectionsHaveBeenInitialized() {
 
 function addMigratedConnection(newConnections: { [key: string]: ConnectionOptions }, connection: ConnectionOptions) {
   // The host has been renamed, only change the host if it has not been changed
-  if (connection.id === 'iot.eclipse.org' && connection.host === 'iot.eclipse.org') {
+  // Also check for ssl since SSL is not yet working
+  if (
+    connection.id === 'iot.eclipse.org' &&
+    connection.host === 'iot.eclipse.org' &&
+    connection.port === 1883 &&
+    !connection.encryption
+  ) {
     connection.id = 'mqtt.eclipse.org'
     connection.host = 'mqtt.eclipse.org'
     connection.name = 'mqtt.eclipse.org'
