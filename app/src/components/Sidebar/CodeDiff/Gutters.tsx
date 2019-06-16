@@ -4,10 +4,9 @@ import * as React from 'react'
 import Add from '@material-ui/icons/Add'
 import ChartPreview from './ChartPreview'
 import Remove from '@material-ui/icons/Remove'
-import ShowChart from '@material-ui/icons/ShowChart'
-import { Theme, Tooltip } from '@material-ui/core'
 import { JsonPropertyLocation } from '../../../../../backend/src/JsonAstParser'
 import { lineChangeStyle, trimNewlineRight } from './util'
+import { Theme } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles'
 
 interface Props {
@@ -53,12 +52,14 @@ function tokensForLine(change: diff.Change, line: number, props: Props) {
   const { classes, literalPositions } = props
   const literal = literalPositions[line]
 
-  let chartPreview = null
-  if (literal) {
-    chartPreview = (
-      <ChartPreview treeNode={props.treeNode} classes={{ icon: props.classes.iconButton }} literal={literal} />
-    )
-  }
+  const chartPreview = Boolean(literal) ? (
+    <ChartPreview
+      key="chartPreview"
+      treeNode={props.treeNode}
+      classes={{ icon: props.classes.iconButton }}
+      literal={literal}
+    />
+  ) : null
 
   if (change.added) {
     return [chartPreview, <Add key="add" className={classes.icon} />]

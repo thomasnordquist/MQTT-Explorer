@@ -28,24 +28,6 @@ function spacingForChartCount(count: number): 4 | 6 | 12 {
   }
 }
 
-// function FadingChart(props: { chartParameters: ChartParameters; chartsInView: number; key: any }) {
-//   const { chartsInView, chartParameters } = props
-//   const [spacing, setSpacing] = React.useState(spacingForChartCount(chartsInView))
-
-//   // Update spacing after animations have completed
-//   React.useEffect(() => {
-//     const newSpacing = spacingForChartCount(chartsInView)
-//     if (spacing !== newSpacing) {
-//       setSpacing(newSpacing)
-//       // setTimeout(() => , 500)
-//     }
-//   })
-
-//   return (
-
-//   )
-// }
-
 function ChartPanel(props: Props) {
   const chartsInView = props.charts.count()
 
