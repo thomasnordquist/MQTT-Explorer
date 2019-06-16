@@ -81,7 +81,7 @@ function Chart(props: Props) {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    tree: state.tree.get('tree'),
+    tree: state.connection.tree,
   }
 }
 
