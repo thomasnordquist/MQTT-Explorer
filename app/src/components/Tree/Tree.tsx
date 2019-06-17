@@ -110,6 +110,7 @@ class TreeComponent extends React.PureComponent<Props, State> {
       overflowY: 'scroll',
       overflowX: 'hidden',
       height: '100%',
+      width: '100%',
       paddingBottom: '16px', // avoid conflict with chart panel Resizer
     }
 

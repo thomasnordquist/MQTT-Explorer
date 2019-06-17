@@ -114,15 +114,16 @@
       .Resizer.vertical {
         width: 2px;
         margin: 0px -8px 0px 0px;
-        border-left: 4px solid rgba(128, 128, 128, 0);
-        border-right: 4px solid rgba(128, 128, 128, 0);
+        border-left: 0px solid rgba(128, 128, 128, 0);
+        border-right: 8px solid rgba(128, 128, 128, 0);
         cursor: col-resize;
       }
 
       .Resizer.vertical::before {
         content: '•••';
-        margin-left: -6px;
-        height: 100%;
+        margin-left: -11px;
+        height: 3em;
+        margin-top: calc(50vh - 32px);
         display: inline-block;
         vertical-align: middle;
         text-align: center;
@@ -133,8 +134,8 @@
       }
 
       .Resizer.vertical:hover {
-        border-left: 4px solid rgba(130, 130, 130, 0.3);
-        border-right: 4px solid rgba(140, 140, 140, 0.3);
+        border-left: 0px solid rgba(130, 130, 130, 0.3);
+        border-right: 8px solid rgba(140, 140, 140, 0.3);
       }
 
       .Resizer.disabled {

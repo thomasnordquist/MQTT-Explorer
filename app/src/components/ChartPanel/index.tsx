@@ -18,6 +18,7 @@ interface Props {
   actions: {
     chart: typeof chartActions
   }
+  classes: any
 }
 
 function spacingForChartCount(count: number): 4 | 6 | 12 {
@@ -75,7 +76,7 @@ function ChartPanel(props: Props) {
   ))
 
   return (
-    <div style={{ width: '100%', height: '100%', padding: '8px', flex: 1, overflow: 'hidden scroll' }}>
+    <div className={props.classes.container}>
       <Grid container spacing={1}>
         <TransitionGroup component={null} className="example">
           {charts}
@@ -114,7 +115,16 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-const styles = (theme: Theme) => ({})
+const styles = (theme: Theme) => ({
+  container: {
+    backgroundColor: theme.palette.background.default,
+    width: '100%',
+    height: '100%',
+    padding: '8px',
+    flex: 1,
+    overflow: 'hidden scroll',
+  },
+})
 
 export default connect(
   mapStateToProps,

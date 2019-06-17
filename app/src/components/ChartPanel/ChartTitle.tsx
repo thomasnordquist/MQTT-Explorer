@@ -11,7 +11,7 @@ function ChartTitle(props: { parameters: ChartParameters; classes: any }) {
       </Typography>
       <br />
       <Typography variant="caption" className={classes.topic}>
-        {parameters.dotPath ? parameters.topic : ''}
+        {parameters.dotPath ? parameters.topic : <span dangerouslySetInnerHTML={{ __html: '&nbsp;' }}></span>}
       </Typography>
     </div>
   )

@@ -18,9 +18,15 @@ interface Props {
 
 function ContentView(props: Props) {
   const [height, setHeight] = React.useState<string | number>('100%')
+  const [sidebarWidth, setSidebarWidth] = React.useState<string | number>(500)
   const [detectedHeight, setDetectedHeight] = React.useState(0)
+  const [detectedSidebarWidth, setDetectedSidebarWidth] = React.useState(0)
   const detectSize = React.useCallback((width, newHeight) => {
     setDetectedHeight(newHeight)
+  }, [])
+
+  const detectSidebarSize = React.useCallback(width => {
+    setDetectedSidebarWidth(width)
   }, [])
 
   const closeDrawerCompletelyIfItSitsOnTheEdge = React.useCallback(() => {
@@ -28,6 +34,12 @@ function ContentView(props: Props) {
       setHeight('100%')
     }
   }, [detectedHeight])
+
+  const closeSidebarCompletelyIfItSitsOnTheEdge = React.useCallback(() => {
+    if (detectedSidebarWidth < 30) {
+      setSidebarWidth('0%')
+    }
+  }, [detectedSidebarWidth])
 
   // Open chart panel on start and when a new chart is added but the panel is closed
   React.useEffect(() => {
@@ -43,45 +55,56 @@ function ContentView(props: Props) {
 
   return (
     <div className={props.paneDefaults}>
-      <ReactSplitPane
-        step={10}
-        split="horizontal"
-        minSize={0}
-        size={height}
-        defaultSize={'100%'}
-        allowResize={true}
-        style={{ height: 'calc(100vh - 64px)' }}
-        pane1Style={{ maxHeight: '100%' }}
-        pane2Style={{ borderTop: '1px solid #999', display: 'flex' }}
-        onChange={setHeight}
-        onDragFinished={closeDrawerCompletelyIfItSitsOnTheEdge}
-      >
-        <span>
-          <ReactSplitPane
-            step={20}
-            primary="second"
-            className={props.heightProperty}
-            split="vertical"
-            minSize={250}
-            defaultSize={500}
-            allowResize={true}
-            style={{ height: '100%' }}
-            pane1Style={{ overflowX: 'hidden' }}
-            resizerStyle={{ height: '100%' }}
-          >
-            <Tree />
-            <div className={props.paneDefaults} style={{ height: '100%', overflowY: 'auto', overflowX: 'hidden' }}>
+      <span>
+        <ReactSplitPane
+          step={20}
+          primary="second"
+          className={props.heightProperty}
+          split="vertical"
+          minSize={0}
+          size={sidebarWidth}
+          onChange={setSidebarWidth}
+          onDragFinished={closeSidebarCompletelyIfItSitsOnTheEdge}
+          defaultSize={500}
+          allowResize={true}
+          style={{ height: '100%' }}
+          pane1Style={{ overflowX: 'hidden' }}
+          resizerStyle={{ height: '100%' }}
+        >
+          <span>
+            <ReactSplitPane
+              step={10}
+              split="horizontal"
+              minSize={0}
+              size={height}
+              defaultSize={'100%'}
+              allowResize={true}
+              style={{ height: 'calc(100vh - 64px)' }}
+              pane1Style={{ maxHeight: '100%' }}
+              pane2Style={{ borderTop: '1px solid #999', display: 'flex' }}
+              onChange={setHeight}
+              onDragFinished={closeDrawerCompletelyIfItSitsOnTheEdge}
+            >
+              <Tree />
+              {/** Passing height constraints via flex options down */}
+              <div style={{ flex: 1, display: 'flex', height: '100%', width: '100%' }}>
+                {/** Resize detector must not be in the scroll zone, it needs to detect actual available size */}
+                <ReactResizeDetector handleHeight={true} onResize={detectSize} />
+                <ChartPanel />
+              </div>
+            </ReactSplitPane>
+          </span>
+          <div>
+            <ReactResizeDetector handleWidth={true} onResize={detectSidebarSize} />
+            <div
+              className={props.paneDefaults}
+              style={{ minWidth: '250px', height: '100%', overflowY: 'auto', overflowX: 'hidden' }}
+            >
               <Sidebar connectionId={props.connectionId} />
             </div>
-          </ReactSplitPane>
-        </span>
-        {/** Passing height constraints via flex options down */}
-        <div style={{ flex: 1, display: 'flex', height: '100%' }}>
-          {/** Resize detector must not be in the scroll zone, it needs to detect actual available size */}
-          <ReactResizeDetector handleHeight={true} onResize={detectSize} />
-          <ChartPanel />
-        </div>
-      </ReactSplitPane>
+          </div>
+        </ReactSplitPane>
+      </span>
     </div>
   )
 }
