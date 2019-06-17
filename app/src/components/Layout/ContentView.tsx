@@ -46,7 +46,7 @@ function ContentView(props: Props) {
         allowResize={true}
         style={{ height: 'calc(100vh - 64px)' }}
         pane1Style={{ maxHeight: '100%' }}
-        pane2Style={{ maxWidth: '100%', overflow: 'hidden scroll' }}
+        pane2Style={{ borderTop: '1px solid #999', overflow: 'hidden scroll' }}
         onChange={setHeight}
       >
         <span>
