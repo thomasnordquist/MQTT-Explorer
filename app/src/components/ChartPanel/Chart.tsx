@@ -8,7 +8,8 @@ import { bindActionCreators } from 'redux'
 import { chartActions } from '../../actions'
 import { ChartParameters } from '../../reducers/Charts'
 import { connect } from 'react-redux'
-import { Fade, Paper, Theme, Typography, withStyles } from '@material-ui/core'
+import { Paper, Theme, Typography, withStyles } from '@material-ui/core'
+import { SettingsButton } from './ChartSettings/SettingsButton'
 const throttle = require('lodash.throttle')
 
 interface Props {
@@ -28,41 +29,17 @@ function Chart(props: Props) {
   const { tree, parameters } = props
   const initialTreeNode = tree.findNode(parameters.topic)
   const [treeNode, setTreeNode] = React.useState<q.TreeNode<any> | undefined>(initialTreeNode)
-  const [lastUpdate, setLastUpdate] = React.useState(0)
+  usePollingToFetchTreeNode(treeNode, tree, parameters, setTreeNode)
 
-  /** If a node is not available when the plot is shown, keep polling until it has been created */
-  function pollForTreeNode() {
-    const onUpdateCallback = throttle(() => setLastUpdate(treeNode ? treeNode.lastUpdate : 0), 300)
-    let intervalTimer: any
-
-    if (!treeNode) {
-      intervalTimer = setInterval(() => {
-        const node = tree.findNode(parameters.topic)
-        if (node) {
-          setTreeNode(node)
-          node.onMessage.subscribe(onUpdateCallback)
-          clearInterval(intervalTimer)
-        }
-      }, 500)
-    } else {
-      treeNode.onMessage.subscribe(onUpdateCallback)
-    }
-
-    return function cleanup() {
-      treeNode && treeNode.onMessage.unsubscribe(onUpdateCallback)
-      intervalTimer && clearInterval(intervalTimer)
-    }
-  }
-  React.useEffect(pollForTreeNode)
-
-  const onClick = React.useCallback(() => {
+  const onRemove = React.useCallback(() => {
     props.actions.chart.removeChart(props.parameters)
   }, [props.parameters])
 
   return (
     <Paper style={{ padding: '8px' }}>
       <div style={{ float: 'right' }}>
-        <CustomIconButton tooltip="Remove chart" onClick={onClick}>
+        <SettingsButton parameters={parameters} />
+        <CustomIconButton tooltip="Remove chart" onClick={onRemove}>
           <Clear />
         </CustomIconButton>
       </div>
@@ -74,7 +51,16 @@ function Chart(props: Props) {
         {parameters.topic}
       </Typography>
       <br />
-      {treeNode ? <TopicPlot history={treeNode.messageHistory} dotPath={parameters.dotPath} /> : <span>No data</span>}
+      {treeNode ? (
+        <TopicPlot
+          interpolation={props.parameters.interpolation}
+          range={props.parameters.range ? [props.parameters.range.from, props.parameters.range.to] : undefined}
+          history={treeNode.messageHistory}
+          dotPath={parameters.dotPath}
+        />
+      ) : (
+        <span>No data</span>
+      )}
     </Paper>
   )
 }
@@ -106,3 +92,37 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(withStyles(styles)(Chart))
+
+/**
+ * If a node is not available when the plot is shown, keep polling until it has been created
+ */
+function usePollingToFetchTreeNode(
+  treeNode: q.TreeNode<any> | undefined,
+  tree: q.Tree<any>,
+  parameters: ChartParameters,
+  setTreeNode: React.Dispatch<React.SetStateAction<q.TreeNode<any> | undefined>>
+) {
+  const [lastUpdate, setLastUpdate] = React.useState(0)
+
+  function pollForTreeNode() {
+    const onUpdateCallback = throttle(() => setLastUpdate(treeNode ? treeNode.lastUpdate : 0), 300)
+    let intervalTimer: any
+    if (!treeNode) {
+      intervalTimer = setInterval(() => {
+        const node = tree.findNode(parameters.topic)
+        if (node) {
+          setTreeNode(node)
+          node.onMessage.subscribe(onUpdateCallback)
+          clearInterval(intervalTimer)
+        }
+      }, 500)
+    } else {
+      treeNode.onMessage.subscribe(onUpdateCallback)
+    }
+    return function cleanup() {
+      treeNode && treeNode.onMessage.unsubscribe(onUpdateCallback)
+      intervalTimer && clearInterval(intervalTimer)
+    }
+  }
+  React.useEffect(pollForTreeNode)
+}

@@ -66,7 +66,7 @@ export const addChart = (chartParameters: ChartParameters) => async (
   dispatch: Dispatch<any>,
   getState: () => AppState
 ) => {
-  let chartExists = Boolean(
+  const chartExists = Boolean(
     getState()
       .charts.get('charts')
       .find(chart => chart.topic === chartParameters.topic && chart.dotPath === chartParameters.dotPath)
@@ -78,6 +78,19 @@ export const addChart = (chartParameters: ChartParameters) => async (
   dispatch({
     type: ActionTypes.CHARTS_ADD,
     chart: chartParameters,
+  })
+  dispatch(saveCharts())
+}
+
+export const updateChart = (chartParameters: ChartParameters) => async (
+  dispatch: Dispatch<any>,
+  getState: () => AppState
+) => {
+  dispatch({
+    type: ActionTypes.CHARTS_UPDATE,
+    topic: chartParameters.topic,
+    dotPath: chartParameters.dotPath,
+    parameters: chartParameters,
   })
   dispatch(saveCharts())
 }

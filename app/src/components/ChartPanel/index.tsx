@@ -60,7 +60,7 @@ function ChartPanel(props: Props) {
   ))
 
   return (
-    <div style={{ width: '100%', height: '100%', padding: '8px', borderTop: '1px solid #999' }}>
+    <div style={{ width: '100%', height: '100%', padding: '8px' }}>
       <Grid container spacing={1}>
         <TransitionGroup component={null} className="example">
           {charts}

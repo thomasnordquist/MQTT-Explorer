@@ -4,10 +4,13 @@ import * as React from 'react'
 import PlotHistory from './Sidebar/PlotHistory'
 import { Base64Message } from '../../../backend/src/Model/Base64Message'
 import { toPlottableValue } from './Sidebar/CodeDiff/util'
+import { PlotCurveTypes } from '../reducers/Charts'
 
 interface Props {
   history: q.MessageHistory
   dotPath?: string
+  interpolation?: PlotCurveTypes
+  range?: [number?, number?]
 }
 
 function nodeToHistory(history: q.MessageHistory) {
@@ -38,7 +41,7 @@ function nodeDotPathToHistory(history: q.MessageHistory, dotPath: string) {
 
 function render(props: Props) {
   const data = props.dotPath ? nodeDotPathToHistory(props.history, props.dotPath) : nodeToHistory(props.history)
-  return <PlotHistory data={data} />
+  return <PlotHistory range={props.range} interpolation={props.interpolation} data={data} />
 }
 
 export default render
