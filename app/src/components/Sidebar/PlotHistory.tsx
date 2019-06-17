@@ -14,7 +14,7 @@ interface Props {
 export default withTheme((props: Props) => {
   const [width, setWidth] = React.useState(300)
   const [tooltip, setTooltip] = React.useState({ value: undefined })
-  const detectResize = React.useCallback(width => setWidth(width), [])
+  const detectResize = React.useCallback(newWidth => setWidth(newWidth), [])
 
   const hintFormatter = React.useCallback((point: any) => {
     return [
@@ -41,7 +41,11 @@ export default withTheme((props: Props) => {
           <XAxis />
           <YAxis width={45} tickFormat={(num: number) => abbreviate(num)} />
           <LineMarkSeries
-            color={props.theme.palette.secondary.dark}
+            color={
+              props.theme.palette.type === 'light'
+                ? props.theme.palette.secondary.dark
+                : props.theme.palette.primary.light
+            }
             onValueMouseOver={showTooltip}
             onValueMouseOut={hideTooltip}
             size={3}

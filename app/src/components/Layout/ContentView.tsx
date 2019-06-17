@@ -19,8 +19,8 @@ interface Props {
 function ContentView(props: Props) {
   const [height, setHeight] = React.useState<string | number>('100%')
   const [detectedHeight, setDetectedHeight] = React.useState(0)
-  const detectSize = React.useCallback((width, height) => {
-    setDetectedHeight(height)
+  const detectSize = React.useCallback((width, newHeight) => {
+    setDetectedHeight(newHeight)
   }, [])
 
   // Open chart panel on start and when a new chart is added but the panel is closed

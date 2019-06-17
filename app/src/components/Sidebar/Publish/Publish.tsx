@@ -8,31 +8,23 @@ import Navigation from '@material-ui/icons/Navigation'
 import { AppState } from '../../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { default as AceEditor } from 'react-ace'
 import { globalActions, publishActions } from '../../../actions'
-import 'brace/mode/json'
-import 'brace/theme/dawn'
-import 'brace/theme/monokai'
-import 'brace/mode/xml'
-import 'brace/mode/text'
-import 'react-ace'
 
 import {
   Button,
   FormControlLabel,
-  Radio,
-  RadioGroup,
-  TextField,
   FormControl,
   InputLabel,
   Input,
   Checkbox,
-  MenuItem,
   Tooltip,
   Fab,
   Theme,
   withTheme,
 } from '@material-ui/core'
+import { EditorModeSelect } from './EditorModeSelect'
+import QosSelect from './QosSelect'
+import Editor from './Editor'
 
 const sha1 = require('sha1')
 
@@ -44,7 +36,6 @@ interface Props {
   globalActions: typeof globalActions
   retain: boolean
   editorMode: string
-  qos: 0 | 1 | 2
   theme: Theme
 }
 
@@ -53,16 +44,12 @@ interface State {
 }
 
 class Publish extends React.Component<Props, State> {
-  private editorOptions = {
-    showLineNumbers: false,
-    tabSize: 2,
-  }
   constructor(props: any) {
     super(props)
     this.state = { history: [] }
   }
 
-  private updatePayload = (payload: string, event?: any) => {
+  private updatePayload = (payload: string) => {
     this.props.actions.setPayload(payload)
   }
 
@@ -170,7 +157,7 @@ class Publish extends React.Component<Props, State> {
     return (
       <div style={{ marginTop: '16px' }}>
         <div style={{ width: '100%', lineHeight: '64px' }}>
-          {this.renderEditorModeSelection()}
+          <EditorModeSelect value={this.props.editorMode} onChange={this.updateMode} />
           {this.renderFormatJson()}
           <div style={{ float: 'right', marginRight: '16px' }}>{this.publishButton()}</div>
         </div>
@@ -178,82 +165,13 @@ class Publish extends React.Component<Props, State> {
     )
   }
 
-  private renderEditorModeSelection() {
-    const labelStyle = { margin: '0 8px 0 8px' }
-    return (
-      <RadioGroup
-        style={{ display: 'inline-block', float: 'left' }}
-        value={this.props.editorMode}
-        onChange={this.updateMode}
-        row={true}
-      >
-        <FormControlLabel
-          value="text"
-          style={labelStyle}
-          control={<Radio color="primary" />}
-          label="raw"
-          labelPlacement="top"
-        />
-        <FormControlLabel
-          value="xml"
-          style={labelStyle}
-          control={<Radio color="primary" />}
-          label="xml"
-          labelPlacement="top"
-        />
-        <FormControlLabel
-          value="json"
-          style={labelStyle}
-          control={<Radio color="primary" />}
-          label="json"
-          labelPlacement="top"
-        />
-      </RadioGroup>
-    )
-  }
-
-  private onChangeQoS = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(event.target.value, 10)
-    if (value !== 0 && value !== 1 && value !== 2) {
-      return
-    }
-
-    this.props.actions.setQoS(value)
-  }
-
   private publishMode() {
     const labelStyle = { margin: '0 8px 0 8px' }
-    const itemStyle = { padding: '0' }
-    const tooltipStyle = { textAlign: 'center' as 'center', width: '100%' }
-    const qosSelect = (
-      <TextField
-        select={true}
-        value={this.props.qos}
-        margin="normal"
-        style={{ margin: '8px 0 8px 8px' }}
-        onChange={this.onChangeQoS}
-      >
-        <MenuItem key={0} value={0} style={itemStyle}>
-          <Tooltip title="At most once">
-            <div style={tooltipStyle}>0</div>
-          </Tooltip>
-        </MenuItem>
-        <MenuItem key={1} value={1} style={itemStyle}>
-          <Tooltip title="At least once">
-            <div style={tooltipStyle}>1</div>
-          </Tooltip>
-        </MenuItem>
-        <MenuItem key={2} value={2} style={itemStyle}>
-          <Tooltip title="Exactly once">
-            <div style={tooltipStyle}>2</div>
-          </Tooltip>
-        </MenuItem>
-      </TextField>
-    )
+
     return (
       <div style={{ marginTop: '8px', clear: 'both' }}>
         <div style={{ width: '100%', textAlign: 'right' }}>
-          <FormControlLabel style={labelStyle} control={qosSelect} label="QoS" labelPlacement="start" />
+          <FormControlLabel style={labelStyle} control={<QosSelect />} label="QoS" labelPlacement="start" />
           <Tooltip
             title="Retained messages only appear to be retained, when client subscribes after the initial publish."
             placement="top"
@@ -288,39 +206,15 @@ class Publish extends React.Component<Props, State> {
     this.props.actions.setPayload(message.payload)
   }
 
-  private editor() {
-    return (
-      <div style={{ width: '100%', display: 'block' }}>
-        {this.editorMode()}
-        {this.renderEditor()}
-        {this.publishMode()}
-      </div>
-    )
-  }
-
-  private renderEditor() {
-    return (
-      <AceEditor
-        style={{}}
-        mode={this.props.editorMode}
-        theme={this.props.theme.palette.type === 'dark' ? 'monokai' : 'dawn'}
-        name="UNIQUE_ID_OF_DIV"
-        width="100%"
-        height="200px"
-        showGutter={true}
-        value={this.props.payload}
-        onChange={this.updatePayload}
-        setOptions={this.editorOptions}
-        editorProps={{ $blockScrolling: true }}
-      />
-    )
-  }
-
   public render() {
     return (
       <div style={{ flexGrow: 1, marginLeft: '8px' }}>
         {this.topic()}
-        {this.editor()}
+        <div style={{ width: '100%', display: 'block' }}>
+          {this.editorMode()}
+          <Editor value={this.props.payload} editorMode={this.props.editorMode} onChange={this.updatePayload} />
+          {this.publishMode()}
+        </div>
         {this.history()}
       </div>
     )
@@ -340,7 +234,6 @@ const mapStateToProps = (state: AppState) => {
     payload: state.publish.payload,
     editorMode: state.publish.editorMode,
     retain: state.publish.retain,
-    qos: state.publish.qos,
   }
 }
 
