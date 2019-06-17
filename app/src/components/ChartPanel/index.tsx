@@ -73,7 +73,7 @@ function ChartPanel(props: Props) {
   ))
 
   return (
-    <div style={{ width: '100%', height: '100%', padding: '8px' }}>
+    <div style={{ width: '100%', height: '100%', padding: '8px', flex: 1, overflow: 'hidden scroll' }}>
       <Grid container spacing={1}>
         <TransitionGroup component={null} className="example">
           {charts}
