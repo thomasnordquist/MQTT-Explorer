@@ -24,7 +24,7 @@ function ChartPreview(props: Props) {
   const onClick = React.useCallback(() => {
     props.actions.chart.addChart({
       topic: props.treeNode.path(),
-      dotPath: props.literal.path,
+      dotPath: props.literal.path !== '' ? props.literal.path : undefined,
     })
     setOpen(false)
   }, [props.literal.path, props.treeNode])
