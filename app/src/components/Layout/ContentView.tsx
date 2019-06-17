@@ -23,6 +23,12 @@ function ContentView(props: Props) {
     setDetectedHeight(newHeight)
   }, [])
 
+  const closeDrawerCompletelyIfItSitsOnTheEdge = React.useCallback(() => {
+    if (detectedHeight < 30) {
+      setHeight('100%')
+    }
+  }, [detectedHeight])
+
   // Open chart panel on start and when a new chart is added but the panel is closed
   React.useEffect(() => {
     const almostClosed = !isNaN(height as any) && detectedHeight < 30
@@ -48,6 +54,7 @@ function ContentView(props: Props) {
         pane1Style={{ maxHeight: '100%' }}
         pane2Style={{ borderTop: '1px solid #999', display: 'flex' }}
         onChange={setHeight}
+        onDragFinished={closeDrawerCompletelyIfItSitsOnTheEdge}
       >
         <span>
           <ReactSplitPane

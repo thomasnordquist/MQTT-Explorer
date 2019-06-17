@@ -1,10 +1,11 @@
+import * as q from '../../../../backend/src/Model'
 import * as React from 'react'
-import Chart from './Chart'
 import ShowChart from '@material-ui/icons/ShowChart'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { chartActions } from '../../actions'
 import { ChartParameters } from '../../reducers/Charts'
+import { ChartWithTreeNode } from './ChartWithTreeNode'
 import { connect } from 'react-redux'
 import { Grid, Theme, Typography, withStyles } from '@material-ui/core'
 import { List } from 'immutable'
@@ -13,6 +14,7 @@ const { TransitionGroup, CSSTransition } = require('react-transition-group/esm')
 interface Props {
   charts: List<ChartParameters>
   connectionId?: string
+  tree?: q.Tree<any>
   actions: {
     chart: typeof chartActions
   }
@@ -67,7 +69,7 @@ function ChartPanel(props: Props) {
       classNames="example"
     >
       <Grid item xs={mapWidth(chartParameters.width, spacing)}>
-        <Chart parameters={chartParameters} />
+        <ChartWithTreeNode tree={props.tree} parameters={chartParameters} />
       </Grid>
     </CSSTransition>
   ))
@@ -100,6 +102,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     charts: state.charts.get('charts'),
     connectionId: state.connection.connectionId,
+    tree: state.connection.tree,
   }
 }
 
