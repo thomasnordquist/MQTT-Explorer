@@ -12,6 +12,7 @@ interface Props {
   theme: Theme
   interpolation?: PlotCurveTypes
   range?: [number?, number?]
+  color?: string
 }
 
 function mapCurveType(type: PlotCurveTypes | undefined) {
@@ -58,6 +59,12 @@ export default withTheme((props: Props) => {
       ? [props.range[0] || calculatedDomain[0], props.range[1] || calculatedDomain[1]]
       : calculatedDomain
 
+    let color: string =
+      props.theme.palette.type === 'light' ? props.theme.palette.secondary.dark : props.theme.palette.primary.light
+    if (props.color) {
+      color = props.color
+    }
+
     return (
       <div style={{ height: '150px', overflow: 'hidden' }}>
         <XYPlot width={width} height={180} yDomain={yDomain}>
@@ -65,11 +72,7 @@ export default withTheme((props: Props) => {
           <XAxis />
           <YAxis width={45} tickFormat={(num: number) => abbreviate(num)} />
           <LineMarkSeries
-            color={
-              props.theme.palette.type === 'light'
-                ? props.theme.palette.secondary.dark
-                : props.theme.palette.primary.light
-            }
+            color={color}
             onValueMouseOver={showTooltip}
             onValueMouseOut={hideTooltip}
             size={3}

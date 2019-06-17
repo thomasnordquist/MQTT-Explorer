@@ -28,6 +28,19 @@ function spacingForChartCount(count: number): 4 | 6 | 12 {
   }
 }
 
+function mapWidth(width: 'big' | 'medium' | 'small' | undefined, calculatedSpacing: 4 | 6 | 12): 4 | 6 | 12 {
+  switch (width) {
+    case 'big':
+      return 12
+    case 'medium':
+      return 6
+    case 'small':
+      return 4
+    default:
+      return calculatedSpacing
+  }
+}
+
 function ChartPanel(props: Props) {
   const chartsInView = props.charts.count()
 
@@ -53,7 +66,7 @@ function ChartPanel(props: Props) {
       timeout={{ enter: 500, exit: 500 }}
       classNames="example"
     >
-      <Grid item xs={spacing}>
+      <Grid item xs={mapWidth(chartParameters.width, spacing)}>
         <Chart parameters={chartParameters} />
       </Grid>
     </CSSTransition>

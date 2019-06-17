@@ -106,6 +106,18 @@ export const removeChart = (chartParameters: ChartParameters) => async (
   dispatch(saveCharts())
 }
 
+export const moveChartUp = (parameters: { topic: string; dotPath?: string }) => async (
+  dispatch: Dispatch<any>,
+  getState: () => AppState
+) => {
+  dispatch({
+    topic: parameters.topic,
+    dotPath: parameters.dotPath,
+    type: ActionTypes.CHARTS_MOVE_UP,
+  })
+  dispatch(saveCharts())
+}
+
 export const setCharts = (charts: Array<ChartParameters>): Action => {
   return {
     charts,

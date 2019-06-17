@@ -1,6 +1,7 @@
 import { Action } from 'redux'
 import { createReducer } from './lib'
 import { Record, List } from 'immutable'
+import MoveUp from '../components/ChartPanel/ChartSettings/MoveUp'
 
 export type PlotCurveTypes = 'curve' | 'linear' | 'cubic_basis_spline' | 'step_after' | 'step_before'
 
@@ -12,6 +13,8 @@ export interface ChartParameters {
     from?: number
     to?: number
   }
+  width?: 'big' | 'medium' | 'small'
+  color?: string
 }
 
 export interface ChartsStateModel {
@@ -20,18 +23,25 @@ export interface ChartsStateModel {
 
 export type ChartsState = Record<ChartsStateModel>
 
-export type Action = AddChart | RemoveChart | SetCharts | UpdateChart
+export type Action = AddChart | RemoveChart | SetCharts | UpdateChart | MoveUp
 
 export enum ActionTypes {
   CHARTS_ADD = 'CHARTS_ADD',
   CHARTS_REMOVE = 'CHARTS_REMOVE',
   CHARTS_SET = 'CHARTS_SET',
   CHARTS_UPDATE = 'CHARTS_UPDATE',
+  CHARTS_MOVE_UP = 'CHARTS_MOVE_UP',
 }
 
 export interface AddChart {
   type: ActionTypes.CHARTS_ADD
   chart: ChartParameters
+}
+
+export interface MoveUp {
+  type: ActionTypes.CHARTS_ADD
+  topic: string
+  dotPath?: string
 }
 
 export interface UpdateChart {
@@ -60,10 +70,24 @@ export const chartsReducer = createReducer(initialState(), {
   CHARTS_REMOVE: removeChart,
   CHARTS_SET: setCharts,
   CHARTS_UPDATE: updateChart,
+  CHARTS_MOVE_UP: moveUp,
 })
 
 function addChart(state: ChartsState, action: AddChart) {
   return state.set('charts', state.get('charts').push(action.chart))
+}
+
+function moveUp(state: ChartsState, action: MoveUp) {
+  const charts = state.get('charts')
+  const idx = charts.findIndex(chart => chart.topic === action.topic && chart.dotPath === action.dotPath)
+  const item = charts.get(idx)
+  const previousItem = charts.get(idx - 1)
+
+  if (idx === 0 || !item || !previousItem) {
+    return
+  }
+  const newlyOrderedCharts = charts.set(idx - 1, item).set(idx, previousItem)
+  return state.set('charts', newlyOrderedCharts)
 }
 
 function updateChart(state: ChartsState, action: UpdateChart) {

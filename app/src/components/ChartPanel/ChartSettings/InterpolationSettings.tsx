@@ -23,7 +23,7 @@ function InterpolationSettings(props: {
   }
   anchorEl?: Element
   open: boolean
-  onClose: () => void
+  close: () => void
 }) {
   const callbacks = React.useMemo(() => {
     const createCurveCallback = (curve: PlotCurveTypes) => () => {
@@ -46,7 +46,7 @@ function InterpolationSettings(props: {
   }, [curves, props.chart])
 
   return (
-    <Menu id="long-menu" anchorEl={props.anchorEl} open={props.open} onClose={props.onClose}>
+    <Menu anchorEl={props.anchorEl} open={props.open} onClose={props.close}>
       {menuItems}
     </Menu>
   )

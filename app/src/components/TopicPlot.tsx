@@ -11,6 +11,7 @@ interface Props {
   dotPath?: string
   interpolation?: PlotCurveTypes
   range?: [number?, number?]
+  color?: string
 }
 
 function nodeToHistory(history: q.MessageHistory) {
@@ -41,7 +42,7 @@ function nodeDotPathToHistory(history: q.MessageHistory, dotPath: string) {
 
 function render(props: Props) {
   const data = props.dotPath ? nodeDotPathToHistory(props.history, props.dotPath) : nodeToHistory(props.history)
-  return <PlotHistory range={props.range} interpolation={props.interpolation} data={data} />
+  return <PlotHistory color={props.color} range={props.range} interpolation={props.interpolation} data={data} />
 }
 
 export default render

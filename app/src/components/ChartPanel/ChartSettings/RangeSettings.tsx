@@ -34,13 +34,7 @@ function RangeSettings(props: {
   const setFromHandler = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => setRangeFrom(e.target.value), [])
   const setToHandler = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => setRangeTo(e.target.value), [])
   return (
-    <Menu
-      style={{ textAlign: 'center' }}
-      id="long-menu"
-      anchorEl={props.anchorEl}
-      open={props.open}
-      onClose={props.onClose}
-    >
+    <Menu style={{ textAlign: 'center' }} anchorEl={props.anchorEl} open={props.open} onClose={props.onClose}>
       <Typography>Define custom ranges for the Y-Axis</Typography>
       <div style={{ padding: '0 16px' }}>
         <TextField

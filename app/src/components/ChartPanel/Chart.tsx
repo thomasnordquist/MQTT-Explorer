@@ -53,6 +53,7 @@ function Chart(props: Props) {
       <br />
       {treeNode ? (
         <TopicPlot
+          color={props.parameters.color}
           interpolation={props.parameters.interpolation}
           range={props.parameters.range ? [props.parameters.range.from, props.parameters.range.to] : undefined}
           history={treeNode.messageHistory}
