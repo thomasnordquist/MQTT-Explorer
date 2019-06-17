@@ -6,6 +6,7 @@ interface Props {
   onClick: any
   tooltip: string
   classes: any
+  style?: React.CSSProperties
 }
 
 const styles = (theme: Theme) => ({
@@ -32,7 +33,7 @@ class CustomIconButton extends React.Component<Props, {}> {
 
   public render() {
     return (
-      <IconButton className={this.props.classes.button} onClick={this.onClick}>
+      <IconButton className={this.props.classes.button} style={this.props.style} onClick={this.onClick}>
         <Tooltip title={this.props.tooltip} className={this.props.classes.label}>
           <span>{this.props.children}</span>
         </Tooltip>

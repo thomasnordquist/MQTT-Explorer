@@ -11,6 +11,7 @@ import { TopicViewModel } from '../../../model/TopicViewModel'
 import { bindActionCreators } from 'redux'
 import { chartActions } from '../../../actions'
 import { connect } from 'react-redux'
+import CustomIconButton from '../../helper/CustomIconButton'
 
 const throttle = require('lodash.throttle')
 
@@ -109,7 +110,19 @@ class MessageHistory extends React.Component<Props, State> {
       <div>
         <History
           items={historyElements}
-          contentTypeIndicator={isMessagePlottable ? <ShowChart onClick={this.addNodeToCharts} /> : undefined}
+          contentTypeIndicator={
+            isMessagePlottable ? (
+              <CustomIconButton
+                style={{ height: '22px', width: '22px' }}
+                onClick={this.addNodeToCharts}
+                tooltip="Add to chart panel"
+              >
+                <ShowChart style={{ marginTop: '-5px' }} />
+              </CustomIconButton>
+            ) : (
+              undefined
+            )
+          }
           onClick={this.displayMessage}
         >
           {isMessagePlottable ? <TopicPlot history={node.messageHistory} /> : null}
