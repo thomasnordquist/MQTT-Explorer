@@ -2,7 +2,7 @@ import { Action, ActionTypes, ChartParameters } from '../reducers/Charts'
 import { AppState } from '../reducers'
 import { default as persistentStorage, StorageIdentifier } from '../utils/PersistentStorage'
 import { Dispatch } from 'redux'
-import { showError } from './Global'
+import { showError, showNotification } from './Global'
 
 interface ConnectionViewState {
   charts: Array<ChartParameters>
@@ -72,6 +72,7 @@ export const addChart = (chartParameters: ChartParameters) => async (
       .find(chart => chart.topic === chartParameters.topic && chart.dotPath === chartParameters.dotPath)
   )
   if (chartExists) {
+    dispatch(showNotification('Already added'))
     return
   }
 
@@ -80,6 +81,7 @@ export const addChart = (chartParameters: ChartParameters) => async (
     chart: chartParameters,
   })
   dispatch(saveCharts())
+  dispatch(showNotification('Added to chart panel'))
 }
 
 export const updateChart = (chartParameters: ChartParameters) => async (
