@@ -50,12 +50,12 @@ async function valuePreviewGuttersShowChartIcon(name: string, browser: Browser) 
       // ignore
     }
   }
-  return await browser.$(`//*[contains(@data-test-type, "ShowChart")][contains(@data-test, "${name}")]`)
+  return browser.$(`//*[contains(@data-test-type, "ShowChart")][contains(@data-test, "${name}")]`)
 }
 
 async function chartSettings(name: string, browser: Browser) {
   const settings = await browser.$(`//*[contains(@data-test-type, "ChartSettings")][contains(@data-test, "${name}")]`)
-  return await clickOn(settings, browser)
+  return clickOn(settings, browser)
 }
 
 async function clickAway(name: string, browser: Browser) {
@@ -67,7 +67,7 @@ async function clickAway(name: string, browser: Browser) {
 
 async function removeChart(name: string, browser: Browser) {
   const remove = await browser.$(`//*[contains(@data-test-type, "RemoveChart")][contains(@data-test, "${name}")]`)
-  return await clickOn(remove, browser)
+  return clickOn(remove, browser)
 }
 
 async function clickOnMenuPoint(name: string, browser: Browser) {
