@@ -37,7 +37,7 @@
   <a href="./img/screen-composite.png"><img src="./img/screen-composite_small.png" /></a>
 </span>
 
-## Version 
+## Version 0.3.0
 
 MQTT Explorer is a comprehensive MQTT client that provides a structured overview of your MQTT topics and makes working with devices/services on your broker dead-simple.
 
