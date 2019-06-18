@@ -1,6 +1,19 @@
 [back](./)
 
-# Upcoming Release
+# 0.3.0
+
+  - Add functionality to plot JSON data
+  - Add chart panel, containing multiple plots (bottom panel)
+  - Chart panel and settings will be restored on restart
+  - Charts can be paused
+  - Panels can be hidden/overlap others completely
+  - Plot range can be customized
+  - Plot interpolation can be customized
+  - Migrated public broker from iot.eclipse.org to mqtt.eclipse.org
+  - Fix unrounded time intervals in the message history
+  - Fix weird plot curve interpolations
+
+# 0.2.6
 
   - Add a pause function
   - Add light / dark themes
