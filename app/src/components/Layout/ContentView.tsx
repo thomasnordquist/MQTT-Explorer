@@ -94,7 +94,7 @@ function ContentView(props: Props) {
               </div>
             </ReactSplitPane>
           </span>
-          <div>
+          <div style={{ height: '100%' }}>
             <ReactResizeDetector handleWidth={true} onResize={detectSidebarSize} />
             <div
               className={props.paneDefaults}
