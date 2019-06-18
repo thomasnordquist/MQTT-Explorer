@@ -52,7 +52,11 @@ function Chart(props: Props) {
   }, [props.parameters])
 
   return (
-    <Paper style={{ padding: '8px' }}>
+    <Paper
+      style={{ padding: '8px' }}
+      data-test-type="ChartPaper"
+      data-test={`${props.parameters.topic}-${props.parameters.dotPath || ''}`}
+    >
       <div style={{ display: 'flex' }}>
         <div style={{ display: 'flex', flexGrow: 1, overflow: 'hidden' }}>
           <ChartTitle parameters={parameters} />

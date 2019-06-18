@@ -19,7 +19,7 @@ export function ChartActions(props: {
       </CustomIconButton>
       <SettingsButton parameters={props.parameters} />
       <CustomIconButton tooltip="Remove chart" onClick={props.onRemove}>
-        <Clear />
+        <Clear data-test-type="RemoveChart" data-test={`${props.parameters.topic}-${props.parameters.dotPath || ''}`} />
       </CustomIconButton>
     </div>
   )

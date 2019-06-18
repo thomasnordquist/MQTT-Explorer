@@ -47,11 +47,19 @@ function ChartPreview(props: Props) {
         onMouseEnter={mouseOver}
         onMouseLeave={mouseOut}
         onClick={onClick}
+        data-test-type="ShowChart"
+        data-test={props.literal.path}
       />
     </Tooltip>
   ) : (
     <Tooltip title="Add to chart panel, not enough data for preview">
-      <ShowChart onClick={onClick} className={props.classes.icon} style={{ color: '#aaa' }} />
+      <ShowChart
+        onClick={onClick}
+        className={props.classes.icon}
+        style={{ color: '#aaa' }}
+        data-test-type="ShowChart"
+        data-test={props.literal.path}
+      />
     </Tooltip>
   )
 

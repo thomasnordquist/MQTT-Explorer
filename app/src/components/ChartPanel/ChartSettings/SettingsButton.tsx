@@ -19,7 +19,11 @@ export function SettingsButton(props: { parameters: ChartParameters }) {
     <span>
       <ChartSettings open={visible} close={close} anchorEl={settingsRef} chart={props.parameters} />
       <CustomIconButton tooltip="Chart settings" onClick={toggleSettings}>
-        <MoreVertIcon ref={settingsRef as any} />
+        <MoreVertIcon
+          ref={settingsRef as any}
+          data-test-type="ChartSettings"
+          data-test={`${props.parameters.topic}-${props.parameters.dotPath || ''}`}
+        />
       </CustomIconButton>
     </span>
   )
