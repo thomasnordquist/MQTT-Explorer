@@ -62,13 +62,6 @@ async function doStuff() {
     await sleep(2000)
   })
 
-  await scenes.record('topic_updates', async () => {
-    await showText('Topic overview', 1000, browser, 'top')
-    await sleep(1000)
-    await showText('Indicate topic updates', 1000, browser, 'middle')
-    await sleep(1000)
-  })
-
   await scenes.record('numeric_plots', async () => {
     await showText('Plot topic history', 2000, browser)
     await showNumericPlot(browser)
