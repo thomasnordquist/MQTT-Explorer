@@ -21,8 +21,8 @@ function connectMqtt(): Promise<mqtt.MqttClient> {
   })
 }
 
-function temperature(base = 18, sineCoefficient = 2, offset = 0) {
-  const temp = base + Math.sin(Date.now() / 1000 / 5 + offset) * sineCoefficient + Math.random()
+function temperature(base = 18, sineCoefficient = 2, offset = 0, speed = 1) {
+  const temp = base + Math.sin((Date.now() * speed) / 1000 / 5 + offset) * sineCoefficient + Math.random()
 
   return String(Math.round(temp * 100) / 100)
 }
@@ -80,6 +80,21 @@ function generateData(client: mqtt.MqttClient) {
       )
     }
   })
+
+  const coffeeMaker = {
+    heater: 'on',
+    temperature: 92.5,
+    waterLevel: 0.5,
+    update: new Date(),
+  }
+  intervals.push(
+    setInterval(() => {
+      const newTemp = parseFloat(temperature(90.3, -5, 0, 3))
+      coffeeMaker.heater = newTemp > coffeeMaker.temperature ? 'on' : 'off'
+      coffeeMaker.temperature = newTemp
+      client.publish('kitchen/coffee_maker', JSON.stringify(coffeeMaker), { retain: true, qos: 2 })
+    }, 1500)
+  )
 
   intervals.push(setInterval(() => client.publish('kitchen/temperature', temperature()), 1500))
   intervals.push(setInterval(() => client.publish('kitchen/humidity', temperature(60, -5, 0)), 1800))

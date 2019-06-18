@@ -1,15 +1,15 @@
 import { Browser, Element } from 'webdriverio'
-import { clickOn, sleep, writeTextToInput } from '../util'
+import { clickOn, sleep, setTextInInput } from '../util'
 
 export async function showAdvancedConnectionSettings(browser: Browser) {
   const advancedSettingsButton = await browser.$('//button/span[contains(text(),"Advanced")]')
   const addButton = await browser.$('//button/span[contains(text(),"Add")]')
 
   await clickOn(advancedSettingsButton, browser)
-  await writeTextToInput('Subscription', 'garden/#', browser, false)
+  await setTextInInput('Subscription', 'garden/#', browser)
   await clickOn(addButton, browser)
 
-  await writeTextToInput('Subscription', 'livingroom/#', browser, false)
+  await setTextInInput('Subscription', 'livingroom/#', browser)
   await clickOn(addButton, browser)
 
   await deleteFirstSubscribedTopic(browser)

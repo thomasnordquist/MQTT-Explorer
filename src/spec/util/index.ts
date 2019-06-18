@@ -37,13 +37,11 @@ export async function deleteTextWithBackspaces(element: Element, browser: Browse
   }
 }
 
-export async function writeTextToInput(name: string, text: string, browser: Browser, wait: boolean = true) {
+export async function setTextInInput(name: string, text: string, browser: Browser) {
   const input = await browser.$(`//label[contains(text(), "${name}")]/..//input`)
   await clickOn(input, browser, 1)
-  wait && (await sleep(500))
-  input.clearValue()
-  wait && (await sleep(500))
-  await writeText(text, browser)
+  await input.clearValue()
+  await browser.keys(text)
 }
 
 export async function moveToCenterOfElement(element: Element, browser: Browser) {
