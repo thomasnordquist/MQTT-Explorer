@@ -3,7 +3,7 @@ import {
   clickOn,
   sleep,
   writeText,
-  delteTextWithBackspaces,
+  deleteTextWithBackspaces,
   expandTopic,
   moveToCenterOfElement,
   showText,
@@ -13,7 +13,7 @@ export async function publishTopic(browser: Browser) {
   await expandTopic('kitchen/lamp/state', browser)
   const topicInput = await browser.$('//textarea[contains(text(),"kitchen/lamp/state")][1]')
   await clickOn(topicInput, browser)
-  await delteTextWithBackspaces(topicInput, browser, 120, 5)
+  await deleteTextWithBackspaces(topicInput, browser, 120, 5)
   await writeText('set', browser, 300)
 
   const payloadInput = await browser.$('//*[contains(@class, "ace_text-input")]')
