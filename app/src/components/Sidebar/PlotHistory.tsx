@@ -84,7 +84,7 @@ export default withTheme((props: Props) => {
         <ReactResizeDetector handleWidth={true} onResize={detectResize} />
       </div>
     )
-  }, [width, props.data, tooltip, props.interpolation, props.range])
+  }, [width, props.data, tooltip, props.interpolation, props.range, props.color, props.theme])
 })
 
 function domainForData(data: Array<{ x: number; y: number }>): [number, number] {
