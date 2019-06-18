@@ -42,7 +42,7 @@ export async function writeTextToInput(name: string, text: string, browser: Brow
   await clickOn(input, browser, 1)
   wait && (await sleep(500))
   input.clearValue()
-  wait && (await sleep(300))
+  wait && (await sleep(500))
   await writeText(text, browser)
 }
 
