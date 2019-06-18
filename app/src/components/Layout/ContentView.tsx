@@ -18,7 +18,7 @@ interface Props {
 
 function ContentView(props: Props) {
   const [height, setHeight] = React.useState<string | number>('100%')
-  const [sidebarWidth, setSidebarWidth] = React.useState<string | number>(500)
+  const [sidebarWidth, setSidebarWidth] = React.useState<string | number>('40%')
   const [detectedHeight, setDetectedHeight] = React.useState(0)
   const [detectedSidebarWidth, setDetectedSidebarWidth] = React.useState(0)
   const detectSize = React.useCallback((width, newHeight) => {
@@ -65,7 +65,6 @@ function ContentView(props: Props) {
           size={sidebarWidth}
           onChange={setSidebarWidth}
           onDragFinished={closeSidebarCompletelyIfItSitsOnTheEdge}
-          defaultSize={500}
           allowResize={true}
           style={{ height: '100%' }}
           pane1Style={{ overflowX: 'hidden' }}
@@ -77,7 +76,6 @@ function ContentView(props: Props) {
               split="horizontal"
               minSize={0}
               size={height}
-              defaultSize={'100%'}
               allowResize={true}
               style={{ height: 'calc(100vh - 64px)' }}
               pane1Style={{ maxHeight: '100%' }}
