@@ -12,8 +12,8 @@ function startServer(): Promise<mqtt.MqttClient> {
 function connectMqtt(): Promise<mqtt.MqttClient> {
   return new Promise(resolve => {
     const client = mqtt.connect('mqtt://127.0.0.1:1883', {
-      username: 'thomas',
-      password: 'bierbier',
+      username: '',
+      password: '',
     })
     client.once('connect', () => {
       resolve(client)
