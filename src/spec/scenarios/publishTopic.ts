@@ -17,10 +17,11 @@ export async function publishTopic(browser: Browser) {
   await writeText('set', browser, 300)
 
   const payloadInput = await browser.$('//*[contains(@class, "ace_text-input")]')
-  await payloadInput.setValue('o')
-  await sleep(300)
-  await payloadInput.setValue('n')
-  await sleep(700)
+  await writeTextPayload(payloadInput, '{"action": "setState", "state": "on" }')
+
+  await sleep(500)
+  const formatJsonButton = await browser.$('#sidebar-publish-format-json')
+  await clickOn(formatJsonButton, browser)
 
   const publishButton = await browser.$('#publish-button')
   await moveToCenterOfElement(publishButton, browser)
@@ -28,4 +29,15 @@ export async function publishTopic(browser: Browser) {
   await sleep(500)
 
   await clickOn(publishButton, browser)
+
+  const sidebarDrawer = await browser.$('#Sidebar')
+  await sidebarDrawer.scrollIntoView()
+}
+
+async function writeTextPayload(payloadInput: any, text: string) {
+  const chars = text.split('')
+  for (const char of chars) {
+    await payloadInput.setValue(char)
+    await sleep(10)
+  }
 }

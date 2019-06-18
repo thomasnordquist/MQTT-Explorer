@@ -12,7 +12,6 @@ import { disconnect } from './scenarios/disconnect'
 import { publishTopic } from './scenarios/publishTopic'
 import { SceneBuilder } from './SceneBuilder'
 import { showAdvancedConnectionSettings } from './scenarios/showAdvancedConnectionSettings'
-import { showJsonFormatting } from './scenarios/showJsonFormatting'
 import { showJsonPreview } from './scenarios/showJsonPreview'
 import { showMenu } from './scenarios/showMenu'
 import { showNumericPlot } from './scenarios/showNumericPlot'
@@ -59,11 +58,11 @@ async function doStuff() {
   const scenes = new SceneBuilder()
   await scenes.record('connect', async () => {
     await connectTo('127.0.0.1', browser)
-    await sleep(2000)
+    await sleep(1000)
   })
 
   await scenes.record('numeric_plots', async () => {
-    await showText('Plot topic history', 2000, browser)
+    await showText('Plot topic history', 1500, browser)
     await showNumericPlot(browser)
     await sleep(2000)
   })
@@ -80,20 +79,14 @@ async function doStuff() {
   })
 
   await scenes.record('publish_topic', async () => {
-    await showText('Publish topics', 2000, browser, 'top')
+    await showText('Publish topics', 1500, browser, 'top')
     await clickOnHistory(browser)
     await publishTopic(browser)
     await sleep(1000)
   })
 
-  await scenes.record('json_formatting_publish', async () => {
-    await showText('Write JSON with ease', 2000, browser, 'top')
-    await showJsonFormatting(browser)
-    await sleep(1000)
-  })
-
   await scenes.record('clipboard', async () => {
-    await showText('Copy to Clipboard', 2000, browser)
+    await showText('Copy to Clipboard', 1500, browser)
     await copyTopicToClipboard(browser)
     await hideText(browser)
     await copyValueToClipboard(browser)
@@ -112,25 +105,25 @@ async function doStuff() {
 
   await scenes.record('delete_retained_topics', async () => {
     await hideText(browser)
-    await showText('Delete retained topics', 0, browser)
+    await showText('Delete retained topics', 5000, browser)
     await clearOldTopics(browser)
     await hideText(browser)
   })
 
   await scenes.record('settings', async () => {
-    await showText('Display Options', 2000, browser)
+    await showText('Settings', 1500, browser)
     await showMenu(browser)
   })
 
   await scenes.record('customize_subscriptions', async () => {
     await sleep(2000)
     await disconnect(browser)
-    await showText('Customize Subscriptions', 1000, browser, 'top')
+    await showText('Customize Subscriptions', 1500, browser, 'top')
     await showAdvancedConnectionSettings(browser)
   })
 
   await scenes.record('keyboard_shortcuts', async () => {
-    await showText('Keyboard shortcuts', 1750, browser, 'middle')
+    await showText('Keyboard shortcuts', 1500, browser, 'middle')
     await sleep(1750)
     await showZoomLevel(browser)
   })

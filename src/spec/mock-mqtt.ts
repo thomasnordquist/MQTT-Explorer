@@ -52,7 +52,9 @@ function generateData(client: mqtt.MqttClient) {
     retain: true,
     qos: 0,
   })
-  intervals.push(setInterval(() => client.publish('livingroom/temperature', temperature()), 1000))
+  intervals.push(
+    setInterval(() => client.publish('livingroom/temperature', temperature(), { retain: true, qos: 0 }), 1000)
+  )
   intervals.push(setInterval(() => client.publish('livingroom/humidity', temperature(60, -2, 0)), 1000))
 
   client.publish('livingroom/lamp-1/state', 'on', { retain: true, qos: 0 })
@@ -72,7 +74,7 @@ function generateData(client: mqtt.MqttClient) {
     if (topic === 'kitchen/lamp/set') {
       setTimeout(
         () =>
-          client.publish('kitchen/lamp/state', payload, {
+          client.publish('kitchen/lamp/state', JSON.parse(payload.toString()).state, {
             retain: true,
             qos: 0,
           }),
@@ -96,8 +98,12 @@ function generateData(client: mqtt.MqttClient) {
     }, 1500)
   )
 
-  intervals.push(setInterval(() => client.publish('kitchen/temperature', temperature()), 1500))
-  intervals.push(setInterval(() => client.publish('kitchen/humidity', temperature(60, -5, 0)), 1800))
+  intervals.push(
+    setInterval(() => client.publish('kitchen/temperature', temperature(), { retain: true, qos: 0 }), 1500)
+  )
+  intervals.push(
+    setInterval(() => client.publish('kitchen/humidity', temperature(60, -5, 0), { retain: true, qos: 0 }), 1800)
+  )
 
   client.publish('garden/pump/state', 'off', { retain: true, qos: 0 })
   client.publish('garden/water/level', '70%', { retain: true, qos: 0 })
