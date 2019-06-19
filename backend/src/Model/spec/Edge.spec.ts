@@ -10,7 +10,7 @@ describe('Edge', () => {
     expect(e.name).to.equal('foo')
   })
 
-  it('firstEdge should retireve the first edge', () => {
+  it('firstEdge should retrieve the first edge', () => {
     const topics = 'foo/bar/baz'.split('/')
     const leaf = TreeNodeFactory.fromEdgesAndValue(topics, undefined)
     const bazEdge = leaf.sourceEdge

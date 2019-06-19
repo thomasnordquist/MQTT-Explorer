@@ -20,9 +20,9 @@ describe('EventDispatcher', async () => {
   it('should unsubscribe', async function() {
     const dispatcher = new EventDispatcher<string, string>()
     this.timeout(300)
-    let incrementee = 0
+    let callbackCounter = 0
     const callback = (msg: any) => {
-      incrementee += 1
+      callbackCounter += 1
     }
 
     dispatcher.subscribe(callback)
@@ -36,6 +36,6 @@ describe('EventDispatcher', async () => {
     // should not cause any increment
     dispatcher.dispatch('hello')
 
-    expect(incrementee).to.eq(1)
+    expect(callbackCounter).to.eq(1)
   })
 })

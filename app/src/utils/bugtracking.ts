@@ -1,4 +1,4 @@
-import { electronRendererTelementry } from 'electron-telemetry'
+import { electronRendererTelemetry } from 'electron-telemetry'
 
-const telemetry = electronRendererTelementry
-electronRendererTelementry.registerErrorHandler()
+const telemetry = electronRendererTelemetry
+electronRendererTelemetry.registerErrorHandler()

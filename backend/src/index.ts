@@ -62,17 +62,17 @@ export class ConnectionManager {
     })
   }
 
-  public removeConnection(conenctionId: string) {
-    const connection = this.connections[conenctionId]
+  public removeConnection(connectionId: string) {
+    const connection = this.connections[connectionId]
     if (connection) {
-      backendEvents.unsubscribeAll(makePublishEvent(conenctionId))
+      backendEvents.unsubscribeAll(makePublishEvent(connectionId))
       connection.disconnect()
-      delete this.connections[conenctionId]
+      delete this.connections[connectionId]
       connection.stateMachine.onUpdate.removeAllListeners()
     }
   }
 
   public closeAllConnections() {
-    Object.keys(this.connections).forEach(conenctionId => this.removeConnection(conenctionId))
+    Object.keys(this.connections).forEach(connectionId => this.removeConnection(connectionId))
   }
 }

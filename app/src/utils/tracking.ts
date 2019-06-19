@@ -1,18 +1,18 @@
-import { electronRendererTelementry } from 'electron-telemetry'
+import { electronRendererTelemetry } from 'electron-telemetry'
 
 // Used to determine long-time-stability and memory leaks
 function trackProcessStatistics() {
   setInterval(() => {
     try {
-      electronRendererTelementry.trackCustomEvent({
+      electronRendererTelemetry.trackCustomEvent({
         name: 'heapStatistics',
         payload: process.getHeapStatistics(),
       })
-      electronRendererTelementry.trackCustomEvent({
+      electronRendererTelemetry.trackCustomEvent({
         name: 'cpuUsage',
         payload: process.getCPUUsage(),
       })
-      electronRendererTelementry.trackCustomEvent({
+      electronRendererTelemetry.trackCustomEvent({
         name: 'runningSince',
         payload: performance.now(),
       })
@@ -30,6 +30,6 @@ export function trackEvent(name: string) {
   }
   const blacklist = ['CONNECTION_SET_HEALTH']
   if (blacklist.indexOf(name) === -1) {
-    electronRendererTelementry.trackEvent(name)
+    electronRendererTelemetry.trackEvent(name)
   }
 }

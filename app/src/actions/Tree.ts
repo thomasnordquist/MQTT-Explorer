@@ -104,7 +104,7 @@ export const togglePause = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatc
   setTimeout(() => {
     tree && tree.applyUnmergedChanges()
     if (paused && changes > 0) {
-      dispatch(globalActions.showNotification(`Sucessfully applied ${changes} changes.`))
+      dispatch(globalActions.showNotification(`Successfully applied ${changes} changes.`))
     }
   }, 50)
 
