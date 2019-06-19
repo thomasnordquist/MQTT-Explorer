@@ -76,7 +76,7 @@
     "chai": "^4.2.0",
     "cspell": "^4.0.23",
     "electron": "5.0.4",
-    "electron-builder": "20.44.1",
+    "electron-builder": "20.44.2",
     "fs-extra": "^8.0.1",
     "mime": "^2.4.0",
     "mocha": "^6.1.4",
