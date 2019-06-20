@@ -14,6 +14,8 @@ export interface MqttOptions {
   clientId?: string
   subscriptions: Array<string>
   certificateAuthority?: string
+  clientCertificate?: string
+  clientKey?: string
 }
 
 export class MqttSource implements DataSource<MqttOptions> {
@@ -44,8 +46,10 @@ export class MqttSource implements DataSource<MqttOptions> {
       username: options.username,
       password: options.password,
       clientId: options.clientId,
-      servername: options.tls ? url.host : undefined,
+      servername: options.tls ? url.hostname : undefined,
       ca: options.certificateAuthority ? Buffer.from(options.certificateAuthority, 'base64') : undefined,
+      cert: options.clientCertificate ? Buffer.from(options.clientCertificate, 'base64') : undefined,
+      key: options.clientKey ? Buffer.from(options.clientKey, 'base64') : undefined,
     } as any)
 
     this.client = client

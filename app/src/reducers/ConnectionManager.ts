@@ -6,12 +6,14 @@ export interface ConnectionManagerState {
   connections: { [s: string]: ConnectionOptions }
   selected?: string
   showAdvancedSettings: boolean
+  showCertificateSettings: boolean
 }
 
 const initialState: ConnectionManagerState = {
   connections: {},
   selected: undefined,
   showAdvancedSettings: false,
+  showCertificateSettings: false,
 }
 
 export type Action =
@@ -21,6 +23,7 @@ export type Action =
   | AddConnection
   | DeleteConnection
   | ToggleAdvancedSettings
+  | ToggleCertificateSettings
   | DeleteSubscription
   | AddSubscription
 
@@ -31,6 +34,7 @@ export enum ActionTypes {
   CONNECTION_MANAGER_ADD_CONNECTION = 'CONNECTION_MANAGER_ADD_CONNECTION',
   CONNECTION_MANAGER_DELETE_CONNECTION = 'CONNECTION_MANAGER_DELETE_CONNECTION',
   CONNECTION_MANAGER_TOGGLE_ADVANCED_SETTINGS = 'CONNECTION_MANAGER_TOGGLE_ADVANCED_SETTINGS',
+  CONNECTION_MANAGER_TOGGLE_CERTIFICATE_SETTINGS = 'CONNECTION_MANAGER_TOGGLE_CERTIFICATE_SETTINGS',
   CONNECTION_MANAGER_ADD_SUBSCRIPTION = 'CONNECTION_MANAGER_ADD_SUBSCRIPTION',
   CONNECTION_MANAGER_DELETE_SUBSCRIPTION = 'CONNECTION_MANAGER_DELETE_SUBSCRIPTION',
 }
@@ -77,6 +81,10 @@ export interface ToggleAdvancedSettings {
   type: ActionTypes.CONNECTION_MANAGER_TOGGLE_ADVANCED_SETTINGS
 }
 
+export interface ToggleCertificateSettings {
+  type: ActionTypes.CONNECTION_MANAGER_TOGGLE_CERTIFICATE_SETTINGS
+}
+
 export const connectionManagerReducer = createReducer(initialState, {
   CONNECTION_MANAGER_SET_CONNECTIONS: setConnections,
   CONNECTION_MANAGER_SELECT_CONNECTION: selectConnection,
@@ -84,6 +92,7 @@ export const connectionManagerReducer = createReducer(initialState, {
   CONNECTION_MANAGER_ADD_CONNECTION: addConnection,
   CONNECTION_MANAGER_DELETE_CONNECTION: deleteConnection,
   CONNECTION_MANAGER_TOGGLE_ADVANCED_SETTINGS: toggleAdvancedSettings,
+  CONNECTION_MANAGER_TOGGLE_CERTIFICATE_SETTINGS: toggleCertificateSettings,
   CONNECTION_MANAGER_DELETE_SUBSCRIPTION: deleteSubscription,
   CONNECTION_MANAGER_ADD_SUBSCRIPTION: addSubscription,
 })
@@ -106,6 +115,16 @@ function toggleAdvancedSettings(state: ConnectionManagerState, action: ToggleAdv
   return {
     ...state,
     showAdvancedSettings: !state.showAdvancedSettings,
+  }
+}
+
+function toggleCertificateSettings(
+  state: ConnectionManagerState,
+  action: ToggleCertificateSettings
+): ConnectionManagerState {
+  return {
+    ...state,
+    showCertificateSettings: !state.showCertificateSettings,
   }
 }
 

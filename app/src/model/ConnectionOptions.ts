@@ -20,6 +20,8 @@ export interface ConnectionOptions {
   encryption: boolean
   certValidation: boolean
   selfSignedCertificate?: CertificateParameters
+  clientCertificate?: CertificateParameters
+  clientKey?: CertificateParameters
   clientId?: string
   subscriptions: Array<string>
 }
@@ -38,6 +40,8 @@ export function toMqttConnection(options: ConnectionOptions): MqttOptions | unde
     certValidation: options.certValidation,
     subscriptions: options.subscriptions,
     certificateAuthority: options.selfSignedCertificate ? options.selfSignedCertificate.data : undefined,
+    clientCertificate: options.clientCertificate ? options.clientCertificate.data : undefined,
+    clientKey: options.clientKey ? options.clientKey.data : undefined,
   }
 }
 

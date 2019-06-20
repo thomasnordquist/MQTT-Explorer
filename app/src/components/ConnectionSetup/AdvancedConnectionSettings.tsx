@@ -44,29 +44,6 @@ class ConnectionSettings extends React.Component<Props, State> {
     })
   }
 
-  private renderCertificateInfo() {
-    if (!this.props.connection.selfSignedCertificate) {
-      return null
-    }
-
-    return (
-      <span>
-        <Tooltip title={this.props.connection.selfSignedCertificate.name}>
-          <Typography className={this.props.classes.certificateName}>
-            <ClearAdornment action={this.clearCertificate} value={this.props.connection.selfSignedCertificate.name} />
-            {this.props.connection.selfSignedCertificate.name}
-          </Typography>
-        </Tooltip>
-      </span>
-    )
-  }
-
-  private clearCertificate = () => {
-    this.props.managerActions.updateConnection(this.props.connection.id, {
-      selfSignedCertificate: undefined,
-    })
-  }
-
   private renderSubscriptions() {
     const connection = this.props.connection
     return connection.subscriptions.map(subscription => (
@@ -122,16 +99,15 @@ class ConnectionSettings extends React.Component<Props, State> {
             </Grid>
             <Grid item={true} xs={3} className={classes.gridPadding}>
               <div>
-                <Tooltip title="Select certificate to verify authenticity of a self-signed certificate" placement="top">
+                <Tooltip title="Manage tls connection certificates" placement="top">
                   <Button
                     variant="contained"
                     className={classes.button}
-                    onClick={() => this.props.managerActions.selectCertificate(this.props.connection.id)}
+                    onClick={() => this.props.managerActions.toggleCertificateSettings()}
                   >
-                    <Lock /> Certificate
+                    <Lock /> Certificates
                   </Button>
                 </Tooltip>
-                {this.renderCertificateInfo()}
               </div>
             </Grid>
             <Grid item={true} xs={2} className={classes.gridPadding}>

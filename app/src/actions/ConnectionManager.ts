@@ -42,7 +42,8 @@ export const loadConnectionSettings = () => async (dispatch: Dispatch<any>, getS
   }
 }
 
-export const selectCertificate = (connectionId: string) => async (
+export type CertificateTypes = 'selfSignedCertificate' | 'clientCertificate' | 'clientKey'
+export const selectCertificate = (type: CertificateTypes, connectionId: string) => async (
   dispatch: Dispatch<any>,
   getState: () => AppState
 ) => {
@@ -50,7 +51,7 @@ export const selectCertificate = (connectionId: string) => async (
     const certificate = await openCertificate()
     dispatch(
       updateConnection(connectionId, {
-        selfSignedCertificate: certificate,
+        [type]: certificate,
       })
     )
   } catch (error) {
@@ -145,6 +146,10 @@ export const addConnection = (connection: ConnectionOptions): Action => ({
 
 export const toggleAdvancedSettings = (): Action => ({
   type: ActionTypes.CONNECTION_MANAGER_TOGGLE_ADVANCED_SETTINGS,
+})
+
+export const toggleCertificateSettings = (): Action => ({
+  type: ActionTypes.CONNECTION_MANAGER_TOGGLE_CERTIFICATE_SETTINGS,
 })
 
 export const deleteConnection = (connectionId: string) => (dispatch: Dispatch<any>, getState: () => AppState) => {

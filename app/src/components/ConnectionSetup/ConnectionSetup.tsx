@@ -9,6 +9,7 @@ import { ConnectionOptions, toMqttConnection } from '../../model/ConnectionOptio
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { Modal, Paper, Toolbar, Typography, Collapse } from '@material-ui/core'
 import AdvancedConnectionSettings from './AdvancedConnectionSettings'
+import Certificates from './Certificates'
 
 interface Props {
   actions: any
@@ -16,6 +17,7 @@ interface Props {
   connection?: ConnectionOptions
   visible: boolean
   showAdvancedSettings: boolean
+  showCertificateSettings: boolean
 }
 
 class ConnectionSetup extends React.Component<Props, {}> {
@@ -24,18 +26,21 @@ class ConnectionSetup extends React.Component<Props, {}> {
   }
 
   private renderSettings() {
-    const { connection, showAdvancedSettings } = this.props
+    const { connection, showAdvancedSettings, showCertificateSettings } = this.props
     if (!connection) {
       return null
     }
 
     return (
       <div>
-        <Collapse in={!showAdvancedSettings}>
+        <Collapse in={!showAdvancedSettings && !showCertificateSettings}>
           <ConnectionSettings connection={connection} />
         </Collapse>
-        <Collapse in={showAdvancedSettings}>
+        <Collapse in={showAdvancedSettings && !showCertificateSettings}>
           <AdvancedConnectionSettings connection={connection} />
+        </Collapse>
+        <Collapse in={showCertificateSettings}>
+          <Certificates connection={connection} />
         </Collapse>
       </div>
     )
@@ -115,6 +120,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     visible: !state.connection.connected,
     showAdvancedSettings: state.connectionManager.showAdvancedSettings,
+    showCertificateSettings: state.connectionManager.showCertificateSettings,
     connection: state.connectionManager.selected
       ? state.connectionManager.connections[state.connectionManager.selected]
       : undefined,

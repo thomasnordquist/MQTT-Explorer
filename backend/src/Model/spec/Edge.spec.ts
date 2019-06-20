@@ -1,8 +1,6 @@
-import 'mocha'
-
-import { Edge, TreeNode, TreeNodeFactory } from '../'
-
+import { Edge, TreeNodeFactory } from '../'
 import { expect } from 'chai'
+import 'mocha'
 
 describe('Edge', () => {
   it('should contain a name', () => {
