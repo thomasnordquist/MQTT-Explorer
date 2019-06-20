@@ -55,7 +55,6 @@
       "buildResources": "res",
       "output": "build"
     },
-    "afterAllArtifactBuild": "./dist/scripts/afterAllArtifactBuild.js",
     "afterPack": "./dist/scripts/afterPack.js"
   },
   "author": "Thomas Nordquist",
