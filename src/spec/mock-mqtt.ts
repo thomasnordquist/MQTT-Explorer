@@ -72,14 +72,16 @@ function generateData(client: mqtt.MqttClient) {
   client.subscribe('kitchen/lamp/set')
   client.on('message', (topic, payload) => {
     if (topic === 'kitchen/lamp/set') {
-      setTimeout(
-        () =>
+      setTimeout(() => {
+        try {
           client.publish('kitchen/lamp/state', JSON.parse(payload.toString()).state, {
             retain: true,
             qos: 0,
-          }),
-        500
-      )
+          })
+        } catch (error) {
+          console.error(error)
+        }
+      }, 500)
     }
   })
 
