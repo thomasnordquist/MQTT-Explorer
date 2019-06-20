@@ -44,8 +44,9 @@ export class MqttSource implements DataSource<MqttOptions> {
       username: options.username,
       password: options.password,
       clientId: options.clientId,
+      servername: options.tls ? url.host : undefined,
       ca: options.certificateAuthority ? Buffer.from(options.certificateAuthority, 'base64') : undefined,
-    })
+    } as any)
 
     this.client = client
 
