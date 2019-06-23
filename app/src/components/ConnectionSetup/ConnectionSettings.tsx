@@ -26,6 +26,7 @@ import {
   TextField,
 } from '@material-ui/core'
 import ConnectionHealthIndicator from '../helper/ConnectionHealthIndicator'
+import { KeyCodes } from '../../utils/KeyCodes'
 
 interface Props {
   connection: ConnectionOptions
@@ -176,7 +177,7 @@ class ConnectionSettings extends React.Component<Props, State> {
     )
   }
 
-  private onClickConnect = () => {
+  private connect() {
     if (!this.props.connection) {
       return
     }
@@ -185,6 +186,28 @@ class ConnectionSettings extends React.Component<Props, State> {
     if (mqttOptions) {
       this.props.actions.connect(mqttOptions, this.props.connection.id)
     }
+  }
+
+  private onClickConnect = () => {
+    this.connect()
+  }
+
+  private handleKeyEvent = (event: KeyboardEvent) => {
+    if (event.keyCode === KeyCodes.enter) {
+      this.connect()
+      event.preventDefault()
+    } else if (event.keyCode === KeyCodes.escape) {
+      this.props.actions.disconnect()
+      event.preventDefault()
+    }
+  }
+
+  public componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyEvent, false)
+  }
+
+  public componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyEvent, false)
   }
 
   public render() {
