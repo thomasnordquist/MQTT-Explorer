@@ -10,6 +10,7 @@ export async function showNumericPlot(browser: Browser) {
   heater = await valuePreviewGuttersShowChartIcon('heater', browser)
   await heater.click()
 
+  await sleep(1000)
   let temperature = await valuePreviewGuttersShowChartIcon('temperature', browser)
   await moveToCenterOfElement(temperature, browser)
   temperature = await valuePreviewGuttersShowChartIcon('temperature', browser)
