@@ -15,7 +15,7 @@ interface Context {
 
 export default async function(context: Context) {
   console.log(context)
-  const isLinux = context.targets.find(target => target.name === 'appImage' || target.name === 'snap')
+  const isLinux = context.targets.find(target => target.name === 'appImage')
   if (!isLinux) {
     return
   }
