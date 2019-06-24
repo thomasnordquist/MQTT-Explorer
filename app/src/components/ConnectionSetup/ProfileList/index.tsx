@@ -38,7 +38,7 @@ function ProfileList(props: Props) {
   useGlobalKeyEventHandler(KeyCodes.arrow_down, selectConnection('next'))
   useGlobalKeyEventHandler(KeyCodes.arrow_up, selectConnection('previous'))
 
-  const createConectionButton = (
+  const createConnectionButton = (
     <ListSubheader component="div">
       <AddButton action={actions.createConnection} />
       Connections
@@ -46,7 +46,7 @@ function ProfileList(props: Props) {
   )
 
   return (
-    <List style={{ height: '100%' }} component="nav" subheader={createConectionButton}>
+    <List style={{ height: '100%' }} component="nav" subheader={createConnectionButton}>
       <div className={classes.list}>
         {Object.values(connections).map(connection => (
           <ConnectionItem connection={connection} key={connection.id} selected={selected === connection.id} />
