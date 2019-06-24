@@ -1,4 +1,4 @@
-import React, { useCallback, useState, ChangeEvent, MouseEvent } from 'react'
+import React, { useCallback, useState, ChangeEvent, MouseEvent, useRef, useEffect, useMemo } from 'react'
 import { ChartParameters } from '../../../reducers/Charts'
 import { Menu, TextField, Typography } from '@material-ui/core'
 import { connect } from 'react-redux'
@@ -19,37 +19,71 @@ function RangeSettings(props: Props) {
   const [rangeFrom, setRangeFrom] = useState<string | number | undefined>(props.chart.range && props.chart.range.from)
   const [rangeTo, setRangeTo] = useState<string | number | undefined>(props.chart.range && props.chart.range.to)
   useRangeStateToFireUpdateAction(rangeFrom, rangeTo, props)
-  const dismissTabKey = (e: React.KeyboardEvent<any>) => {
+  const rangeFromRef = useRef<HTMLInputElement>()
+  const rangeToRef = useRef<HTMLInputElement>()
+
+  useEffect(() => {
+    rangeFromRef.current && rangeFromRef.current.focus()
+  }, [props.open])
+
+  const handleKeyEvents = (e: React.KeyboardEvent<any>) => {
     if (e.keyCode === KeyCodes.tab) {
+      // Switch focus between those two
+      if (document.activeElement === rangeFromRef.current) {
+        rangeToRef.current && rangeToRef.current.focus()
+      } else {
+        rangeFromRef.current && rangeFromRef.current.focus()
+      }
+
+      // Prevent closing the menu
       e.stopPropagation()
+      // Prevent default tab behavior (focus/blur)
+      e.preventDefault()
+    } else if (e.keyCode === KeyCodes.enter) {
+      props.onClose()
     }
   }
 
   const setFromHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => setRangeFrom(e.target.value), [])
   const setToHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => setRangeTo(e.target.value), [])
-  return (
-    <Menu style={{ textAlign: 'center' }} anchorEl={props.anchorEl} open={props.open} onClose={props.onClose}>
-      <Typography>Define custom ranges for the Y-Axis</Typography>
-      <div style={{ padding: '0 16px' }}>
-        <TextField
-          onKeyDownCapture={dismissTabKey}
-          style={{ marginTop: '0' }}
-          onClick={dismissClick}
-          label="from"
-          value={rangeFrom}
-          onChange={setFromHandler}
-          margin="normal"
-        />
-        <TextField
-          style={{ marginLeft: '8px', marginTop: '0' }}
-          onClick={dismissClick}
-          label="to"
-          value={rangeTo}
-          onChange={setToHandler}
-          margin="normal"
-        />
-      </div>
-    </Menu>
+  return useMemo(
+    () => (
+      <Menu
+        style={{ textAlign: 'center' }}
+        keepMounted={true}
+        anchorEl={props.anchorEl}
+        open={props.open}
+        onClose={props.onClose}
+        onKeyDownCapture={handleKeyEvents}
+      >
+        <Typography>Define custom ranges for the Y-Axis</Typography>
+        <div style={{ padding: '0 16px' }}>
+          <TextField
+            inputProps={{
+              ref: rangeFromRef,
+            }}
+            autoFocus={true}
+            style={{ marginTop: '0' }}
+            label="from"
+            value={rangeFrom}
+            onChange={setFromHandler}
+            margin="normal"
+          />
+          <TextField
+            inputProps={{
+              ref: rangeToRef,
+            }}
+            style={{ marginLeft: '8px', marginTop: '0' }}
+            onClick={dismissClick}
+            label="to"
+            value={rangeTo}
+            onChange={setToHandler}
+            margin="normal"
+          />
+        </div>
+      </Menu>
+    ),
+    [rangeFrom, rangeTo, props.open]
   )
 }
 
