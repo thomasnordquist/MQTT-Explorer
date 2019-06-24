@@ -8,6 +8,7 @@ import { InputBase } from '@material-ui/core'
 import { settingsActions } from '../../actions'
 import { fade, Theme, withStyles } from '@material-ui/core/styles'
 import { useGlobalKeyEventHandler } from '../../effects/useGlobalKeyEventHandler'
+import { KeyCodes } from '../../utils/KeyCodes'
 
 function SearchBar(props: {
   classes: any
@@ -34,10 +35,13 @@ function SearchBar(props: {
 
   useGlobalKeyEventHandler(undefined, event => {
     const isCharacter = event.key.length === 1
-    const isBackspace = event.key === 'Backspace'
-    const isBodyActiveElement = document.activeElement && document.activeElement.tagName === 'BODY'
+    const isAllowedControlCharacter = event.keyCode === KeyCodes.backspace || event.keyCode === KeyCodes.delete
+    const tagNameBlacklist = ['INPUT', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'OPTION', 'FORM']
 
-    if ((isCharacter || isBackspace) && !hasFocus && isBodyActiveElement && hasConnection) {
+    const tagElementIsNotBlacklisted =
+      document.activeElement && tagNameBlacklist.indexOf(document.activeElement.tagName) === -1
+
+    if ((isCharacter || isAllowedControlCharacter) && !hasFocus && tagElementIsNotBlacklisted && hasConnection) {
       // Focus input field, no preventDefault the event will reach the input element after it has been focussed
       inputRef.current && inputRef.current.focus()
     }
