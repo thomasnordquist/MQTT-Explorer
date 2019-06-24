@@ -10,14 +10,12 @@
     "sourceMap": true,
     "module": "esnext",
     "target": "es2017",
-    "jsx": "react"
+    "jsx": "react",
+    "types": ["react"],
+    "allowSyntheticDefaultImports": true
   },
-  "include": [
-    "./src/**/*"
-  ],
-  "exclude": [
-    "**/*.d.ts"
-  ],
+  "include": ["./src/**/*"],
+  "exclude": ["**/*.d.ts"],
   "awesomeTypescriptLoaderOptions": {
     "useCache": true,
     "transpileModule": true,
