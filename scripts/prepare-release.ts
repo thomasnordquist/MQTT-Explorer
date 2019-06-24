@@ -28,7 +28,7 @@ async function prepareRelease() {
 
   // Clean up
   await fs.remove('node_modules')
-  await exec('yarn', ['install', '--production'])
+  // await exec('yarn', ['install', '--production']) // Do not clean up, electron version detection will fail otherwise
   await fs.remove(path.join('app', 'node_modules'))
 
   chdir(originalDir)
