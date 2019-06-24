@@ -18,7 +18,7 @@ function changeAmount(props: Props) {
   }
 
   return (
-    <span style={{ display: 'block', marginBottom: '8px', float: 'right' }}>
+    <span style={{ display: 'block', textAlign: 'right' }}>
       <span>
         Comparing with <b>{props.nameOfCompareMessage}</b> message:&nbsp;
         <span className={props.classes.additions}>

@@ -165,7 +165,7 @@ class ValuePanel extends React.Component<Props, State> {
         </ExpansionPanelSummary>
         <ExpansionPanelDetails style={detailsStyle}>
           {this.renderViewOptions()}
-          <div>
+          <div style={{ marginBottom: '-8px' }}>
             <React.Suspense fallback={<div>Loading...</div>}>{this.renderValue()}</React.Suspense>
           </div>
           <div>
