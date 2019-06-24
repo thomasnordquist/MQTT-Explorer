@@ -9,8 +9,7 @@ export enum TopicOrder {
 }
 
 export type ValueRendererDisplayMode = 'diff' | 'raw'
-
-export interface SettingsState {
+interface SettingsStateModel {
   autoExpandLimit: number
   timeLocale: string
   topicOrder: TopicOrder
@@ -20,6 +19,8 @@ export interface SettingsState {
   selectTopicWithMouseOver: boolean
   theme: 'light' | 'dark'
 }
+
+export type SettingsState = Record<SettingsStateModel>
 
 export type Actions = SetAutoExpandLimitAction &
   DidLoadSettingsAction &
@@ -44,7 +45,7 @@ export enum ActionTypes {
   SETTINGS_SET_TIME_LOCALE = 'SETTINGS_SET_TIME_LOCALE',
 }
 
-const initialState = Record<SettingsState>({
+const initialState = Record<SettingsStateModel>({
   timeLocale: window.navigator.language,
   autoExpandLimit: 0,
   topicOrder: TopicOrder.none,
@@ -55,12 +56,12 @@ const initialState = Record<SettingsState>({
   topicFilter: undefined,
 })
 
-const setTheme = (theme: 'light' | 'dark') => (state: Record<SettingsState>) => {
+const setTheme = (theme: 'light' | 'dark') => (state: SettingsState) => {
   return state.set('theme', theme)
 }
 
 const reducerActions: {
-  [s: string]: (state: Record<SettingsState>, action: Actions) => Record<SettingsState>
+  [s: string]: (state: SettingsState, action: Actions) => SettingsState
 } = {
   SETTINGS_SET_AUTO_EXPAND_LIMIT: setAutoExpandLimit,
   SETTINGS_SET_TOPIC_ORDER: setTopicOrder,
@@ -83,10 +84,10 @@ export interface SetTheme {
 
 export interface DidLoadSettingsAction {
   type: ActionTypes.SETTINGS_DID_LOAD_SETTINGS
-  settings: Partial<SettingsState>
+  settings: Partial<SettingsStateModel>
 }
 
-function didLoadSettings(state: Record<SettingsState>, action: DidLoadSettingsAction) {
+function didLoadSettings(state: SettingsState, action: DidLoadSettingsAction): SettingsState {
   return state.merge(action.settings)
 }
 
@@ -95,7 +96,7 @@ export interface SetSelectTopicWithMouseOverAction {
   selectTopicWithMouseOver: boolean
 }
 
-export function setSelectTopicWithMouseOver(state: Record<SettingsState>, action: SetSelectTopicWithMouseOverAction) {
+export function setSelectTopicWithMouseOver(state: SettingsState, action: SetSelectTopicWithMouseOverAction) {
   return state.set('selectTopicWithMouseOver', !state.get('selectTopicWithMouseOver'))
 }
 
@@ -104,7 +105,7 @@ export interface SetTimeLocale {
   timeLocale: string
 }
 
-export function setTimeLocale(state: Record<SettingsState>, action: SetTimeLocale): Record<SettingsState> {
+export function setTimeLocale(state: SettingsState, action: SetTimeLocale): SettingsState {
   return state.set('timeLocale', action.timeLocale)
 }
 
@@ -113,7 +114,7 @@ export interface SetValueRendererDisplayModeAction {
   valueRendererDisplayMode: ValueRendererDisplayMode
 }
 
-export function setValueRendererDisplayMode(state: Record<SettingsState>, action: SetValueRendererDisplayModeAction) {
+export function setValueRendererDisplayMode(state: SettingsState, action: SetValueRendererDisplayModeAction) {
   return state.set('valueRendererDisplayMode', action.valueRendererDisplayMode)
 }
 
@@ -122,7 +123,7 @@ export interface SetAutoExpandLimitAction {
   autoExpandLimit: number
 }
 
-function setAutoExpandLimit(state: Record<SettingsState>, action: SetAutoExpandLimitAction) {
+function setAutoExpandLimit(state: SettingsState, action: SetAutoExpandLimitAction) {
   return state.set('autoExpandLimit', action.autoExpandLimit)
 }
 
@@ -130,7 +131,7 @@ export interface ToggleHighlightTopicUpdatesAction {
   type: ActionTypes.SETTINGS_TOGGLE_HIGHLIGHT_ACTIVITY
 }
 
-function toggleHighlightTopicUpdates(state: Record<SettingsState>, action: ToggleHighlightTopicUpdatesAction) {
+function toggleHighlightTopicUpdates(state: SettingsState, action: ToggleHighlightTopicUpdatesAction) {
   return state.set('highlightTopicUpdates', !state.get('highlightTopicUpdates'))
 }
 
@@ -139,7 +140,7 @@ export interface SetTopicOrderAction {
   topicOrder: TopicOrder
 }
 
-function setTopicOrder(state: Record<SettingsState>, action: SetTopicOrderAction) {
+function setTopicOrder(state: SettingsState, action: SetTopicOrderAction) {
   return state.set('topicOrder', action.topicOrder)
 }
 
@@ -149,6 +150,6 @@ export interface FilterTopicsAction {
 }
 
 // @Todo: move to tree reducer, should not be persisted / is no application setting
-function filterTopics(state: Record<SettingsState>, action: FilterTopicsAction) {
+function filterTopics(state: SettingsState, action: FilterTopicsAction) {
   return state.set('topicFilter', action.topicFilter)
 }

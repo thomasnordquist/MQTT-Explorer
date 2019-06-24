@@ -4,10 +4,12 @@ import { ActionTypes as SidebarActionTypes } from '../reducers/Sidebar'
 import { AnyAction, Dispatch } from 'redux'
 import { AppState } from '../reducers'
 import { batchActions } from 'redux-batched-actions'
+import { globalActions } from './'
 import { setTopic } from './Publish'
 import { TopicViewModel } from '../model/TopicViewModel'
-import { globalActions } from '.'
 const debounce = require('lodash.debounce')
+
+export { moveSelectionUpOrDownwards, moveInward, moveOutward } from './visibleTreeTraversal'
 
 export const selectTopic = (topic: q.TreeNode<TopicViewModel>) => (
   dispatch: Dispatch<any>,

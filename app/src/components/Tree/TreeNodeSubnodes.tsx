@@ -1,8 +1,8 @@
 import * as q from '../../../../backend/src/Model'
 import * as React from 'react'
 import TreeNode from './TreeNode'
-import { Record } from 'immutable'
-import { SettingsState, TopicOrder } from '../../reducers/Settings'
+import { SettingsState } from '../../reducers/Settings'
+import { sortedNodes } from '../../sortedNodes'
 import { Theme, withStyles } from '@material-ui/core'
 import { TopicViewModel } from '../../model/TopicViewModel'
 
@@ -14,7 +14,7 @@ export interface Props {
   lastUpdate: number
   selectedTopic?: q.TreeNode<TopicViewModel>
   didSelectTopic: any
-  settings: Record<SettingsState>
+  settings: SettingsState
 }
 
 interface State {
@@ -26,26 +26,6 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = { alreadyAdded: 10 }
-  }
-
-  private sortedNodes(): Array<q.TreeNode<TopicViewModel>> {
-    const { settings, treeNode } = this.props
-    const topicOrder = settings.get('topicOrder')
-
-    let edges = treeNode.edgeArray
-    if (topicOrder === TopicOrder.abc) {
-      edges = edges.sort((a, b) => a.name.localeCompare(b.name))
-    }
-
-    let nodes = edges.map(edge => edge.target)
-    if (topicOrder === TopicOrder.messages) {
-      nodes = nodes.sort((a, b) => b.leafMessageCount() - a.leafMessageCount())
-    }
-    if (topicOrder === TopicOrder.topics) {
-      nodes = nodes.sort((a, b) => b.childTopicCount() - a.childTopicCount())
-    }
-
-    return nodes
   }
 
   private renderMore() {
@@ -71,7 +51,7 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
       this.renderMore()
     }
 
-    const nodes = this.sortedNodes().slice(0, this.state.alreadyAdded)
+    const nodes = sortedNodes(this.props.settings, this.props.treeNode).slice(0, this.state.alreadyAdded)
     const listItems = nodes.map(node => {
       return (
         <TreeNode

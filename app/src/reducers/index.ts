@@ -4,7 +4,6 @@ import { connectionManagerReducer, ConnectionManagerState } from './ConnectionMa
 import { connectionReducer, ConnectionState } from './Connection'
 import { GlobalState, globalState } from './Global'
 import { publishReducer, PublishState } from './Publish'
-import { Record } from 'immutable'
 import { settingsReducer, SettingsState } from './Settings'
 import { sidebarReducer, SidebarState } from './Sidebar'
 import { treeReducer, TreeState } from './Tree'
@@ -12,7 +11,7 @@ import { treeReducer, TreeState } from './Tree'
 export interface AppState {
   globalState: GlobalState
   tree: TreeState
-  settings: Record<SettingsState>
+  settings: SettingsState
   publish: PublishState
   charts: ChartsState
   sidebar: SidebarState

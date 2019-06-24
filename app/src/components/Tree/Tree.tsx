@@ -1,13 +1,14 @@
 import * as q from '../../../../backend/src/Model'
-import * as React from 'react'
+import React from 'react'
 import TreeNode from './TreeNode'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Record } from 'immutable'
 import { SettingsState } from '../../reducers/Settings'
 import { TopicViewModel } from '../../model/TopicViewModel'
 import { treeActions } from '../../actions'
+import { useGlobalKeyEventHandler } from '../../effects/useGlobalKeyEventHandler'
+import { KeyCodes } from '../../utils/KeyCodes'
 
 const MovingAverage = require('moving-average')
 
@@ -20,14 +21,25 @@ interface Props {
   actions: typeof treeActions
   connectionId?: string
   tree?: q.Tree<TopicViewModel>
-  filter: string
   host?: string
   paused: boolean
-  settings: Record<SettingsState>
+  settings: SettingsState
 }
 
 interface State {
   lastUpdate: number
+}
+
+function ArrowKeyHandler(props: {
+  action: (direction: 'next' | 'previous') => any
+  leftAction: () => void
+  rightAction: () => void
+}) {
+  useGlobalKeyEventHandler(KeyCodes.arrow_down, () => props.action('next'), [props.action])
+  useGlobalKeyEventHandler(KeyCodes.arrow_up, () => props.action('previous'), [props.action])
+  useGlobalKeyEventHandler(KeyCodes.arrow_right, props.rightAction, [props.action])
+  useGlobalKeyEventHandler(KeyCodes.arrow_left, props.leftAction, [props.action])
+  return <div />
 }
 
 class TreeComponent extends React.PureComponent<Props, State> {
@@ -99,7 +111,7 @@ class TreeComponent extends React.PureComponent<Props, State> {
   }
 
   public render() {
-    const { tree, filter } = this.props
+    const { tree } = this.props
     if (!tree) {
       return null
     }
@@ -116,6 +128,11 @@ class TreeComponent extends React.PureComponent<Props, State> {
 
     return (
       <div style={style}>
+        <ArrowKeyHandler
+          action={this.props.actions.moveSelectionUpOrDownwards}
+          leftAction={this.props.actions.moveOutward}
+          rightAction={this.props.actions.moveInward}
+        />
         <TreeNode
           key={tree.hash()}
           isRoot={true}

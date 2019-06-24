@@ -2,11 +2,9 @@ import * as q from '../../../../backend/src/Model'
 import * as React from 'react'
 import TreeNodeSubnodes from './TreeNodeSubnodes'
 import TreeNodeTitle from './TreeNodeTitle'
-import { Record } from 'immutable'
 import { SettingsState } from '../../reducers/Settings'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { TopicViewModel } from '../../model/TopicViewModel'
-
 const debounce = require('lodash.debounce')
 
 declare var performance: any
@@ -61,7 +59,7 @@ interface Props {
   lastUpdate: number
   didSelectTopic: any
   theme: Theme
-  settings: Record<SettingsState>
+  settings: SettingsState
 }
 
 interface State {
@@ -72,9 +70,7 @@ interface State {
 
 class TreeNodeComponent extends React.Component<Props, State> {
   private animationDirty: boolean = false
-
   private cssAnimationWasSetAt?: number
-
   private willUpdateTime: number = performance.now()
   private nodeRef?: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>()
 
@@ -94,16 +90,24 @@ class TreeNodeComponent extends React.Component<Props, State> {
 
   private addSubscriber(treeNode: q.TreeNode<TopicViewModel>) {
     treeNode.viewModel = new TopicViewModel()
-    treeNode.viewModel.change.subscribe(this.viewStateHasChanged)
+    treeNode.viewModel.selectionChange.subscribe(this.selectionDidChange)
+    treeNode.viewModel.expandedChange.subscribe(this.expandedDidChange)
   }
 
-  private viewStateHasChanged = () => {
+  private selectionDidChange = () => {
     this.props.treeNode.viewModel && this.setState({ selected: this.props.treeNode.viewModel.isSelected() })
   }
 
+  private expandedDidChange = () => {
+    this.props.treeNode.viewModel && this.setState({ collapsedOverride: !this.props.treeNode.viewModel.isExpanded() })
+  }
+
   private removeSubscriber(treeNode: q.TreeNode<TopicViewModel>) {
-    treeNode.viewModel && treeNode.viewModel.change.unsubscribe(this.viewStateHasChanged)
-    treeNode.viewModel = undefined
+    if (treeNode.viewModel) {
+      treeNode.viewModel.selectionChange.unsubscribe(this.selectionDidChange)
+      treeNode.viewModel.expandedChange.unsubscribe(this.expandedDidChange)
+      treeNode.viewModel = undefined
+    }
   }
 
   private stateHasChanged(newState: State) {
@@ -160,6 +164,9 @@ class TreeNodeComponent extends React.Component<Props, State> {
   }
 
   private renderNodes() {
+    const isCollapsed = this.collapsed()
+    this.props.treeNode.viewModel && this.props.treeNode.viewModel.setExpanded(!isCollapsed, false)
+
     if (this.collapsed()) {
       return null
     }
