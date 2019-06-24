@@ -162,14 +162,6 @@ const styles = (theme: Theme) => ({
     marginTop: theme.spacing(3),
     float: 'right' as 'right',
   },
-  certificateName: {
-    width: '100%',
-    height: 'calc(1em + 4px)',
-    overflow: 'hidden' as 'hidden',
-    whiteSpace: 'nowrap' as 'nowrap',
-    textOverflow: 'ellipsis' as 'ellipsis',
-    color: theme.palette.text.hint,
-  },
 })
 
 export default connect(
