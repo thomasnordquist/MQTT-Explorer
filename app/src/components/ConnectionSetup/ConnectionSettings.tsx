@@ -158,6 +158,7 @@ function ConnectionSettings(props: Props) {
         <Grid container={true} spacing={3}>
           <Grid item={true} xs={5}>
             <TextField
+              autoFocus={true}
               label="Name"
               className={classes.textField}
               value={connection.name}
