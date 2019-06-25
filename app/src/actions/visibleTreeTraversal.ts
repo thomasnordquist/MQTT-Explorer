@@ -63,10 +63,36 @@ function nextVisibleElementInTree(
   node: q.TreeNode<TopicViewModel>,
   direction: 'next' | 'previous'
 ): q.TreeNode<TopicViewModel> | undefined {
-  const nodes = flattenVisibleTree(settings, tree)
+  const startNode = (node.sourceEdge && node.sourceEdge.source) || tree
+  const nodes = flattenNeighbors(settings, node, startNode)
   const idx = nodes.findIndex(n => n.path() === node.path())
   const indexDirection = direction === 'next' ? 1 : -1
   return nodes[idx + indexDirection]
+}
+
+/** Used to select partial relevant trees, to prevent the whole tree from being flattened */
+function flattenNeighbors(
+  settings: SettingsState,
+  selected: q.TreeNode<TopicViewModel>,
+  treeNode: q.TreeNode<TopicViewModel>
+): Array<q.TreeNode<TopicViewModel>> {
+  let candidates: Array<q.TreeNode<TopicViewModel>> = []
+  const nextNode = findNextNodeDownward(settings, selected)
+
+  const neighborsOfSelected = sortedNodes(settings, treeNode)
+  const nodeIdx = neighborsOfSelected.findIndex(n => n.path() === selected.path())
+  const previousNeighbor = neighborsOfSelected[nodeIdx - 1]
+  const parentNode = selected.sourceEdge && selected.sourceEdge.source
+
+  if (previousNeighbor) {
+    candidates = candidates
+      .concat(flattenVisibleTree(settings, previousNeighbor))
+      .concat(flattenVisibleTree(settings, selected))
+  } else if (parentNode) {
+    candidates = candidates.concat(flattenVisibleTree(settings, parentNode))
+  }
+
+  return nextNode ? candidates.concat([nextNode]) : candidates
 }
 
 /** Not very efficient but easy to implement, complexity should not be an issue here  */
@@ -74,8 +100,30 @@ function flattenVisibleTree(
   settings: SettingsState,
   treeNode: q.TreeNode<TopicViewModel>
 ): Array<q.TreeNode<TopicViewModel>> {
-  return sortedNodes(settings, treeNode)
-    .filter(isTreeNodeVisible)
-    .map(node => [node].concat(flattenVisibleTree(settings, node)))
-    .reduce((a, b) => a.concat(b), [])
+  return [treeNode].concat(
+    sortedNodes(settings, treeNode)
+      .filter(isTreeNodeVisible)
+      .map(node => flattenVisibleTree(settings, node))
+      .reduce((a, b) => a.concat(b), [])
+  )
+}
+
+function findNextNodeDownward(
+  settings: SettingsState,
+  treeNode: q.TreeNode<TopicViewModel>
+): q.TreeNode<TopicViewModel> | undefined {
+  const parent = treeNode.sourceEdge && treeNode.sourceEdge.source
+  if (!parent) {
+    return undefined
+  }
+
+  const parentNodes = sortedNodes(settings, parent)
+  const nodeIdx = parentNodes.findIndex(n => n.path() === treeNode.path())
+
+  const nextNode = parentNodes[nodeIdx + 1]
+  if (nextNode) {
+    return nextNode
+  } else {
+    return findNextNodeDownward(settings, parent)
+  }
 }

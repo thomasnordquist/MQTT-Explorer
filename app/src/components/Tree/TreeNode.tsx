@@ -95,7 +95,11 @@ class TreeNodeComponent extends React.Component<Props, State> {
   }
 
   private selectionDidChange = () => {
-    this.props.treeNode.viewModel && this.setState({ selected: this.props.treeNode.viewModel.isSelected() })
+    const selected = this.props.treeNode.viewModel && this.props.treeNode.viewModel.isSelected()
+    this.props.treeNode.viewModel && this.setState({ selected: Boolean(selected) })
+    if (selected && this.nodeRef && this.nodeRef.current) {
+      this.nodeRef.current.focus({ preventScroll: false })
+    }
   }
 
   private expandedDidChange = () => {
@@ -243,7 +247,9 @@ class TreeNodeComponent extends React.Component<Props, State> {
           onMouseOver={this.mouseOver}
           onMouseOut={this.mouseOut}
           onClick={this.didClickTitle}
+          onFocus={() => this.props.didSelectTopic(this.props.treeNode)}
           ref={this.nodeRef}
+          tabIndex={1000}
         >
           <TreeNodeTitle
             toggleCollapsed={this.toggleCollapsed}
