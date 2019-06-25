@@ -1,10 +1,11 @@
 import * as q from '../../../../backend/src/Model'
-import * as React from 'react'
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import TreeNodeSubnodes from './TreeNodeSubnodes'
 import TreeNodeTitle from './TreeNodeTitle'
 import { SettingsState } from '../../reducers/Settings'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { TopicViewModel } from '../../model/TopicViewModel'
+import { useViewModelSubscriptions } from './useViewModelSubscriptions'
 const debounce = require('lodash.debounce')
 
 declare var performance: any
@@ -53,216 +54,145 @@ interface Props {
   treeNode: q.TreeNode<TopicViewModel>
   name?: string | undefined
   collapsed?: boolean | undefined
-  performanceCallback?: ((ms: number) => void) | undefined
   classes: any
   className?: string
   lastUpdate: number
-  didSelectTopic: any
+  selectTopicAction: (treeNode: q.TreeNode<any>) => void
   theme: Theme
   settings: SettingsState
 }
 
-interface State {
-  collapsedOverride: boolean | undefined
-  mouseOver: boolean
-  selected: boolean
+function useIsAllowedToAutoExpandState(props: Props): boolean {
+  const { settings, treeNode, isRoot } = props
+  const [isAllowedToAutoExpand, setAllowAutoExpand] = useState(false)
+
+  useEffect(() => {
+    const newIsAllowedToAutoExpand = !(treeNode.edgeCount() > settings.get('autoExpandLimit'))
+    if (!isRoot && newIsAllowedToAutoExpand !== isAllowedToAutoExpand) {
+      setAllowAutoExpand(newIsAllowedToAutoExpand)
+    }
+  }, [treeNode.edgeCount(), settings.get('autoExpandLimit')])
+
+  return isAllowedToAutoExpand
 }
 
-class TreeNodeComponent extends React.Component<Props, State> {
-  private animationDirty: boolean = false
-  private cssAnimationWasSetAt?: number
-  private willUpdateTime: number = performance.now()
-  private nodeRef?: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>()
+function TreeNodeComponent(props: Props) {
+  const { classes, className, settings, theme, treeNode, lastUpdate } = props
 
-  private setHover = debounce((hover: boolean) => {
-    this.setState({ mouseOver: hover })
+  const [animationDirty, setAnimationDirty] = useState(false)
+  const [collapsed, setCollapsed] = useState<boolean | undefined>(props.collapsed)
+  const [cssAnimationWasSetAt, setCssAnimationWasSetAt] = useState(0)
+  const [willUpdateTime, setWillUpdateTime] = useState(performance.now())
+  const [isHovering, setIsHovering] = useState(false)
+  const [selected, setSelected] = useState(false)
+  const nodeRef = useRef<HTMLDivElement>()
+  const isAllowedToAutoExpand = useIsAllowedToAutoExpandState(props)
+  useViewModelSubscriptions(treeNode, nodeRef, setSelected, setCollapsed)
+
+  const setHover = debounce((hover: boolean) => {
+    setIsHovering(hover)
   }, 45)
 
-  constructor(props: Props) {
-    super(props)
+  const toggle = useCallback(() => {
+    setCollapsed(!collapsed)
+  }, [collapsed])
 
-    this.state = {
-      collapsedOverride: props.collapsed,
-      mouseOver: false,
-      selected: false,
-    }
-  }
+  const didSelectTopic = useCallback(
+    (event?: React.MouseEvent) => {
+      console.log('Did select', treeNode.path())
+      console.log(event)
+      event && event.stopPropagation()
+      props.selectTopicAction(treeNode)
+    },
+    [treeNode]
+  )
 
-  private addSubscriber(treeNode: q.TreeNode<TopicViewModel>) {
-    treeNode.viewModel = new TopicViewModel()
-    treeNode.viewModel.selectionChange.subscribe(this.selectionDidChange)
-    treeNode.viewModel.expandedChange.subscribe(this.expandedDidChange)
-  }
-
-  private selectionDidChange = () => {
-    const selected = this.props.treeNode.viewModel && this.props.treeNode.viewModel.isSelected()
-    this.props.treeNode.viewModel && this.setState({ selected: Boolean(selected) })
-    if (selected && this.nodeRef && this.nodeRef.current) {
-      this.nodeRef.current.focus({ preventScroll: false })
-    }
-  }
-
-  private expandedDidChange = () => {
-    this.props.treeNode.viewModel && this.setState({ collapsedOverride: !this.props.treeNode.viewModel.isExpanded() })
-  }
-
-  private removeSubscriber(treeNode: q.TreeNode<TopicViewModel>) {
-    if (treeNode.viewModel) {
-      treeNode.viewModel.selectionChange.unsubscribe(this.selectionDidChange)
-      treeNode.viewModel.expandedChange.unsubscribe(this.expandedDidChange)
-      treeNode.viewModel = undefined
-    }
-  }
-
-  private stateHasChanged(newState: State) {
-    return (
-      this.state.collapsedOverride !== newState.collapsedOverride ||
-      this.state.mouseOver !== newState.mouseOver ||
-      this.state.selected !== newState.selected
-    )
-  }
-
-  private toggle() {
-    this.setState({ collapsedOverride: !this.collapsed() })
-  }
-
-  private collapsed() {
-    if (this.state.collapsedOverride !== undefined) {
-      return this.state.collapsedOverride
-    }
-
-    return this.props.treeNode.edgeCount() > this.props.settings.get('autoExpandLimit')
-  }
-
-  private didSelectTopic = () => {
-    this.props.didSelectTopic(this.props.treeNode)
-  }
-
-  private didClickTitle = (event: React.MouseEvent) => {
-    event.preventDefault()
-    this.props.didSelectTopic(this.props.treeNode)
-    this.toggle()
-  }
-
-  private mouseOver = (event: React.MouseEvent) => {
+  const didClickTitle = (event: React.MouseEvent) => {
     event.stopPropagation()
-    this.setHover(true)
-    if (
-      this.props.settings.get('selectTopicWithMouseOver') &&
-      this.props.treeNode &&
-      this.props.treeNode.message &&
-      this.props.treeNode.message.value
-    ) {
-      this.props.didSelectTopic(this.props.treeNode)
-    }
+    didSelectTopic()
+    toggle()
   }
 
-  private mouseOut = (event: React.MouseEvent) => {
+  const didObtainFocus = useCallback(() => {
+    didSelectTopic()
+  }, [])
+
+  const mouseOver = (event: React.MouseEvent) => {
     event.stopPropagation()
-    this.setHover(false)
+    setHover(true)
+    if (settings.get('selectTopicWithMouseOver') && treeNode && treeNode.message && treeNode.message.value) {
+      didSelectTopic()
+    }
   }
 
-  private toggleCollapsed = (event: React.MouseEvent) => {
+  const mouseOut = (event: React.MouseEvent) => {
     event.stopPropagation()
-    this.toggle()
+    setHover(false)
   }
 
-  private renderNodes() {
-    const isCollapsed = this.collapsed()
-    this.props.treeNode.viewModel && this.props.treeNode.viewModel.setExpanded(!isCollapsed, false)
+  const toggleCollapsed = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation()
+      toggle()
+    },
+    [toggle]
+  )
 
-    if (this.collapsed()) {
-      return null
+  useEffect(() => {
+    treeNode.viewModel && treeNode.viewModel.setExpanded(!collapsed, false)
+  }, [collapsed])
+
+  return useMemo(() => {
+    const shouldBeRenderedCollapsed = Boolean(collapsed) === collapsed ? Boolean(collapsed) : !isAllowedToAutoExpand
+
+    function renderNodes() {
+      if (shouldBeRenderedCollapsed) {
+        return null
+      }
+
+      return (
+        <TreeNodeSubnodes
+          treeNode={treeNode}
+          lastUpdate={treeNode.lastUpdate}
+          selectTopicAction={props.selectTopicAction}
+          settings={settings}
+        />
+      )
     }
 
-    return (
-      <TreeNodeSubnodes
-        collapsed={this.collapsed()}
-        treeNode={this.props.treeNode}
-        lastUpdate={this.props.treeNode.lastUpdate}
-        didSelectTopic={this.props.didSelectTopic}
-        settings={this.props.settings}
-      />
-    )
-  }
-
-  public componentDidMount() {
-    const { treeNode } = this.props
-    this.addSubscriber(treeNode)
-  }
-
-  public componentWillUnmount() {
-    const { treeNode } = this.props
-    this.removeSubscriber(treeNode)
-    this.nodeRef = undefined
-  }
-
-  public shouldComponentUpdate(nextProps: Props, nextState: State) {
-    const shouldRenderToRemoveCssAnimation = this.cssAnimationWasSetAt !== undefined
-    return (
-      this.stateHasChanged(nextState) ||
-      this.props.settings !== nextProps.settings ||
-      this.props.lastUpdate !== nextProps.lastUpdate ||
-      this.animationDirty ||
-      shouldRenderToRemoveCssAnimation
-    )
-  }
-
-  public componentDidUpdate() {
-    if (this.props.performanceCallback) {
-      const renderTime = performance.now() - this.willUpdateTime
-      this.props.performanceCallback(renderTime)
-    }
-  }
-
-  public componentWillUpdate() {
-    if (this.props.performanceCallback) {
-      this.willUpdateTime = performance.now()
-    }
-  }
-
-  public render() {
-    const { classes } = this.props
-
-    const shouldStartAnimation =
-      !this.animationDirty && !this.props.isRoot && this.props.settings.get('highlightTopicUpdates')
-    const animationName = this.props.theme.palette.type === 'light' ? 'updateLight' : 'updateDark'
+    const shouldStartAnimation = settings.get('highlightTopicUpdates')
+    const animationName = theme.palette.type === 'light' ? 'updateLight' : 'updateDark'
     const animation = shouldStartAnimation
       ? { willChange: 'auto', translateZ: 0, animation: `${animationName} 0.5s` }
       : {}
-    this.animationDirty = shouldStartAnimation
 
-    const highlightClass = this.state.selected
-      ? this.props.classes.selected
-      : this.state.mouseOver
-      ? this.props.classes.hover
-      : ''
+    const highlightClass = selected ? classes.selected : isHovering ? classes.hover : ''
 
     return (
       <div>
         <div
-          key={this.props.treeNode.hash()}
-          className={`${classes.node} ${this.props.className} ${highlightClass} ${classes.title}`}
+          key={treeNode.hash()}
+          className={`${classes.node} ${className} ${highlightClass} ${classes.title}`}
           style={animation}
-          onMouseOver={this.mouseOver}
-          onMouseOut={this.mouseOut}
-          onClick={this.didClickTitle}
-          onFocus={() => this.props.didSelectTopic(this.props.treeNode)}
-          ref={this.nodeRef}
+          onMouseOver={mouseOver}
+          onMouseOut={mouseOut}
+          onClick={didClickTitle}
+          onFocus={didObtainFocus}
+          ref={nodeRef as any}
           tabIndex={1000}
         >
           <TreeNodeTitle
-            toggleCollapsed={this.toggleCollapsed}
-            didSelectNode={this.didSelectTopic}
-            collapsed={this.collapsed()}
-            treeNode={this.props.treeNode}
-            name={this.props.name}
+            toggleCollapsed={toggleCollapsed}
+            didSelectNode={didSelectTopic}
+            collapsed={shouldBeRenderedCollapsed}
+            treeNode={treeNode}
+            name={name}
           />
         </div>
-        {this.renderNodes()}
+        {renderNodes()}
       </div>
     )
-  }
+  }, [lastUpdate, treeNode, collapsed, selected, isAllowedToAutoExpand, isHovering])
 }
 
 export default withStyles(styles, { withTheme: true })(TreeNodeComponent)

@@ -56,13 +56,6 @@ class TreeComponent extends React.PureComponent<Props, State> {
     average.push(Date.now(), ms)
   }
 
-  public time(): number {
-    const time = performance.now() - this.perf
-    this.perf = performance.now()
-
-    return time
-  }
-
   public componentWillReceiveProps(nextProps: Props) {
     if (this.props.tree !== nextProps.tree) {
       if (this.props.tree) {
@@ -110,6 +103,14 @@ class TreeComponent extends React.PureComponent<Props, State> {
     }, Math.max(0, timeUntilNextUpdate))
   }
 
+  public componentWillUpdate() {
+    this.perf = performance.now()
+  }
+
+  public componentDidUpdate() {
+    this.performanceCallback(performance.now() - this.perf)
+  }
+
   public render() {
     const { tree } = this.props
     if (!tree) {
@@ -139,10 +140,9 @@ class TreeComponent extends React.PureComponent<Props, State> {
           treeNode={tree}
           name={this.props.host}
           collapsed={false}
-          performanceCallback={this.performanceCallback}
           settings={this.props.settings}
           lastUpdate={tree.lastUpdate}
-          didSelectTopic={this.props.actions.selectTopic}
+          selectTopicAction={this.props.actions.selectTopic}
         />
       </div>
     )

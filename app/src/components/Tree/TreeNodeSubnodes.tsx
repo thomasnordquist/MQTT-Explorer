@@ -9,11 +9,10 @@ import { TopicViewModel } from '../../model/TopicViewModel'
 export interface Props {
   treeNode: q.TreeNode<TopicViewModel>
   filter?: string
-  collapsed?: boolean | undefined
   classes: any
   lastUpdate: number
   selectedTopic?: q.TreeNode<TopicViewModel>
-  didSelectTopic: any
+  selectTopicAction: (treeNode: q.TreeNode<any>) => void
   settings: SettingsState
 }
 
@@ -43,7 +42,7 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
 
   public render() {
     const edges = this.props.treeNode.edgeArray
-    if (edges.length === 0 || this.props.collapsed) {
+    if (edges.length === 0) {
       return null
     }
 
@@ -59,7 +58,7 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
           treeNode={node}
           className={this.props.classes.listItem}
           lastUpdate={node.lastUpdate}
-          didSelectTopic={this.props.didSelectTopic}
+          selectTopicAction={this.props.selectTopicAction}
           settings={this.props.settings}
         />
       )
