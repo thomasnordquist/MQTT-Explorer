@@ -63,52 +63,15 @@ function nextVisibleElementInTree(
   node: q.TreeNode<TopicViewModel>,
   direction: 'next' | 'previous'
 ): q.TreeNode<TopicViewModel> | undefined {
-  const startNode = (node.sourceEdge && node.sourceEdge.source) || tree
-  const nodes = flattenNeighbors(settings, node, startNode)
-  const idx = nodes.findIndex(n => n.path() === node.path())
-  const indexDirection = direction === 'next' ? 1 : -1
-  return nodes[idx + indexDirection]
-}
-
-/** Used to select partial relevant trees, to prevent the whole tree from being flattened */
-function flattenNeighbors(
-  settings: SettingsState,
-  selected: q.TreeNode<TopicViewModel>,
-  treeNode: q.TreeNode<TopicViewModel>
-): Array<q.TreeNode<TopicViewModel>> {
-  let candidates: Array<q.TreeNode<TopicViewModel>> = []
-  const nextNode = findNextNodeDownward(settings, selected)
-
-  const neighborsOfSelected = sortedNodes(settings, treeNode)
-  const nodeIdx = neighborsOfSelected.findIndex(n => n.path() === selected.path())
-  const previousNeighbor = neighborsOfSelected[nodeIdx - 1]
-  const parentNode = selected.sourceEdge && selected.sourceEdge.source
-
-  if (previousNeighbor) {
-    candidates = candidates
-      .concat(flattenVisibleTree(settings, previousNeighbor))
-      .concat(flattenVisibleTree(settings, selected))
-  } else if (parentNode) {
-    candidates = candidates.concat(flattenVisibleTree(settings, parentNode))
+  if (direction === 'next') {
+    return findNextNodeDownward(settings, node)
+  } else {
+    return findNextNodeUpward(settings, node)
   }
-
-  return nextNode ? candidates.concat([nextNode]) : candidates
 }
 
 /** Not very efficient but easy to implement, complexity should not be an issue here  */
-function flattenVisibleTree(
-  settings: SettingsState,
-  treeNode: q.TreeNode<TopicViewModel>
-): Array<q.TreeNode<TopicViewModel>> {
-  return [treeNode].concat(
-    sortedNodes(settings, treeNode)
-      .filter(isTreeNodeVisible)
-      .map(node => flattenVisibleTree(settings, node))
-      .reduce((a, b) => a.concat(b), [])
-  )
-}
-
-function findNextNodeDownward(
+function findNextNodeUpward(
   settings: SettingsState,
   treeNode: q.TreeNode<TopicViewModel>
 ): q.TreeNode<TopicViewModel> | undefined {
@@ -117,13 +80,55 @@ function findNextNodeDownward(
     return undefined
   }
 
-  const parentNodes = sortedNodes(settings, parent)
-  const nodeIdx = parentNodes.findIndex(n => n.path() === treeNode.path())
-
-  const nextNode = parentNodes[nodeIdx + 1]
-  if (nextNode) {
-    return nextNode
+  const neighborNodes = sortedNodes(settings, parent)
+  const nodeIdx = neighborNodes.findIndex(n => n.path() === treeNode.path())
+  if (nodeIdx === 0) {
+    return parent
+  }
+  const upwardNeighbor = neighborNodes[nodeIdx - 1]
+  if (upwardNeighbor) {
+    return lastVisibleChild(settings, upwardNeighbor)
   } else {
-    return findNextNodeDownward(settings, parent)
+    return findNextNodeUpward(settings, parent)
+  }
+}
+
+function lastVisibleChild(settings: SettingsState, treeNode: q.TreeNode<TopicViewModel>): q.TreeNode<TopicViewModel> {
+  const nodes = sortedNodes(settings, treeNode).filter(isTreeNodeVisible)
+  if (nodes.length === 0) {
+    return treeNode
+  }
+  return lastVisibleChild(settings, nodes[nodes.length - 1])
+}
+
+function findNextNodeDownward(
+  settings: SettingsState,
+  treeNode: q.TreeNode<TopicViewModel>
+): q.TreeNode<TopicViewModel> | undefined {
+  const children = sortedNodes(settings, treeNode).filter(isTreeNodeVisible)
+  const firstChild = children[0]
+  if (firstChild) {
+    return firstChild
+  }
+
+  return findNextNodeDownwardNeighbor(settings, treeNode)
+}
+
+function findNextNodeDownwardNeighbor(
+  settings: SettingsState,
+  treeNode: q.TreeNode<TopicViewModel>
+): q.TreeNode<TopicViewModel> | undefined {
+  const parent = treeNode.sourceEdge && treeNode.sourceEdge.source
+  if (!parent) {
+    return undefined
+  }
+
+  const neighborNodes = sortedNodes(settings, parent).filter(isTreeNodeVisible)
+  const nodeIdx = neighborNodes.findIndex(n => n.path() === treeNode.path())
+  const downwardNeighbor = neighborNodes[nodeIdx + 1]
+  if (downwardNeighbor) {
+    return downwardNeighbor
+  } else {
+    return findNextNodeDownwardNeighbor(settings, parent)
   }
 }

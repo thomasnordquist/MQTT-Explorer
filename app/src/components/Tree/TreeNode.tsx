@@ -67,8 +67,8 @@ function useIsAllowedToAutoExpandState(props: Props): boolean {
   const [isAllowedToAutoExpand, setAllowAutoExpand] = useState(false)
 
   useEffect(() => {
-    const newIsAllowedToAutoExpand = !(treeNode.edgeCount() > settings.get('autoExpandLimit'))
-    if (!isRoot && newIsAllowedToAutoExpand !== isAllowedToAutoExpand) {
+    const newIsAllowedToAutoExpand = isRoot || treeNode.edgeCount() <= settings.get('autoExpandLimit')
+    if (newIsAllowedToAutoExpand !== isAllowedToAutoExpand) {
       setAllowAutoExpand(newIsAllowedToAutoExpand)
     }
   }, [treeNode.edgeCount(), settings.get('autoExpandLimit')])
@@ -77,45 +77,56 @@ function useIsAllowedToAutoExpandState(props: Props): boolean {
 }
 
 function TreeNodeComponent(props: Props) {
-  const { classes, className, settings, theme, treeNode, lastUpdate } = props
+  const { classes, className, settings, theme, treeNode, lastUpdate, name } = props
 
-  const [animationDirty, setAnimationDirty] = useState(false)
-  const [collapsed, setCollapsed] = useState<boolean | undefined>(props.collapsed)
-  const [cssAnimationWasSetAt, setCssAnimationWasSetAt] = useState(0)
-  const [willUpdateTime, setWillUpdateTime] = useState(performance.now())
+  const [showUpdateAnimation, setShowUpdateAnimation] = useState(false)
+  const [collapsedOverride, setCollapsedOverride] = useState<boolean | undefined>(undefined)
   const [isHovering, setIsHovering] = useState(false)
   const [selected, setSelected] = useState(false)
   const nodeRef = useRef<HTMLDivElement>()
   const isAllowedToAutoExpand = useIsAllowedToAutoExpandState(props)
-  useViewModelSubscriptions(treeNode, nodeRef, setSelected, setCollapsed)
+  useViewModelSubscriptions(treeNode, nodeRef, setSelected, setCollapsedOverride)
+  useAnimationToIndicateTopicUpdate(lastUpdate, setShowUpdateAnimation, showUpdateAnimation)
+
+  const isCollapsed =
+    Boolean(collapsedOverride) === collapsedOverride ? Boolean(collapsedOverride) : !isAllowedToAutoExpand
 
   const setHover = debounce((hover: boolean) => {
     setIsHovering(hover)
   }, 45)
 
   const toggle = useCallback(() => {
-    setCollapsed(!collapsed)
-  }, [collapsed])
+    setCollapsedOverride(!isCollapsed)
+  }, [isCollapsed])
 
   const didSelectTopic = useCallback(
     (event?: React.MouseEvent) => {
-      console.log('Did select', treeNode.path())
-      console.log(event)
       event && event.stopPropagation()
       props.selectTopicAction(treeNode)
     },
     [treeNode]
   )
 
-  const didClickTitle = (event: React.MouseEvent) => {
-    event.stopPropagation()
-    didSelectTopic()
-    toggle()
-  }
+  const didClickTitle = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation()
+      didSelectTopic()
+      toggle()
+    },
+    [toggle, didSelectTopic]
+  )
+
+  const toggleCollapsed = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation()
+      toggle()
+    },
+    [toggle]
+  )
 
   const didObtainFocus = useCallback(() => {
     didSelectTopic()
-  }, [])
+  }, [didSelectTopic])
 
   const mouseOver = (event: React.MouseEvent) => {
     event.stopPropagation()
@@ -130,23 +141,13 @@ function TreeNodeComponent(props: Props) {
     setHover(false)
   }
 
-  const toggleCollapsed = useCallback(
-    (event: React.MouseEvent) => {
-      event.stopPropagation()
-      toggle()
-    },
-    [toggle]
-  )
-
   useEffect(() => {
-    treeNode.viewModel && treeNode.viewModel.setExpanded(!collapsed, false)
-  }, [collapsed])
+    treeNode.viewModel && treeNode.viewModel.setExpanded(!isCollapsed, false)
+  }, [isCollapsed])
 
   return useMemo(() => {
-    const shouldBeRenderedCollapsed = Boolean(collapsed) === collapsed ? Boolean(collapsed) : !isAllowedToAutoExpand
-
     function renderNodes() {
-      if (shouldBeRenderedCollapsed) {
+      if (isCollapsed) {
         return null
       }
 
@@ -160,14 +161,13 @@ function TreeNodeComponent(props: Props) {
       )
     }
 
-    const shouldStartAnimation = settings.get('highlightTopicUpdates')
+    const shouldStartAnimation = settings.get('highlightTopicUpdates') && showUpdateAnimation
     const animationName = theme.palette.type === 'light' ? 'updateLight' : 'updateDark'
     const animation = shouldStartAnimation
       ? { willChange: 'auto', translateZ: 0, animation: `${animationName} 0.5s` }
       : {}
 
     const highlightClass = selected ? classes.selected : isHovering ? classes.hover : ''
-
     return (
       <div>
         <div
@@ -176,15 +176,15 @@ function TreeNodeComponent(props: Props) {
           style={animation}
           onMouseOver={mouseOver}
           onMouseOut={mouseOut}
-          onClick={didClickTitle}
           onFocus={didObtainFocus}
+          onClick={didClickTitle}
           ref={nodeRef as any}
-          tabIndex={1000}
+          tabIndex={-1}
         >
           <TreeNodeTitle
             toggleCollapsed={toggleCollapsed}
             didSelectNode={didSelectTopic}
-            collapsed={shouldBeRenderedCollapsed}
+            collapsed={isCollapsed}
             treeNode={treeNode}
             name={name}
           />
@@ -192,7 +192,26 @@ function TreeNodeComponent(props: Props) {
         {renderNodes()}
       </div>
     )
-  }, [lastUpdate, treeNode, collapsed, selected, isAllowedToAutoExpand, isHovering])
+  }, [lastUpdate, treeNode, name, isCollapsed, selected, showUpdateAnimation, isHovering])
 }
 
 export default withStyles(styles, { withTheme: true })(TreeNodeComponent)
+function useAnimationToIndicateTopicUpdate(
+  lastUpdate: number,
+  setShowUpdateAnimation: React.Dispatch<React.SetStateAction<boolean>>,
+  showUpdateAnimation: boolean
+) {
+  useEffect(() => {
+    if (Date.now() - lastUpdate < 3000) {
+      setShowUpdateAnimation(true)
+    }
+  }, [lastUpdate])
+  useEffect(() => {
+    if (showUpdateAnimation) {
+      const timeout = setTimeout(() => setShowUpdateAnimation(false), 500)
+      return function cleanup() {
+        clearTimeout(timeout)
+      }
+    }
+  }, [showUpdateAnimation])
+}

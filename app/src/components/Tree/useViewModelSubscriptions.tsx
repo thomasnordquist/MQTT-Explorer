@@ -25,7 +25,7 @@ export function useViewModelSubscriptions(
     return function cleanup() {
       removeSubscriber()
     }
-  })
+  }, [treeNode])
 
   function addSubscriber() {
     treeNode.viewModel = new TopicViewModel()
