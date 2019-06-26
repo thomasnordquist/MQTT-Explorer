@@ -13,9 +13,10 @@ export class TreeNode<ViewModel extends Destroyable> {
   public collapsed = false
   public messages: number = 0
   public lastUpdate: number = Date.now()
-  public onMerge = new EventDispatcher<void, TreeNode<ViewModel>>()
-  public onEdgesChange = new EventDispatcher<void, TreeNode<ViewModel>>()
-  public onMessage = new EventDispatcher<Message, TreeNode<ViewModel>>()
+  public onMerge = new EventDispatcher<void>()
+  public onEdgesChange = new EventDispatcher<void>()
+  public onMessage = new EventDispatcher<Message>()
+  public onDestroy = new EventDispatcher<TreeNode<ViewModel>>()
   public isTree = false
 
   private cachedPath?: string
@@ -65,7 +66,11 @@ export class TreeNode<ViewModel extends Destroyable> {
     if (!previous || !this.sourceEdge) {
       return
     }
+    this.lastUpdate = Date.now()
     previous.removeEdge(this.sourceEdge)
+    if (!this.isTree) {
+      this.destroy()
+    }
   }
 
   private findChild(edges: Array<string>): TreeNode<ViewModel> | undefined {
@@ -101,6 +106,9 @@ export class TreeNode<ViewModel extends Destroyable> {
   }
 
   public destroy() {
+    this.onDestroy.dispatch(this)
+    this.onDestroy.removeAllListeners()
+
     for (const edge of this.edgeArray) {
       edge.target.destroy()
     }
@@ -158,6 +166,8 @@ export class TreeNode<ViewModel extends Destroyable> {
     this.edgeArray.push(edge)
     edge.source = this
 
+    edge.target && edge.target.removeFromTreeIfEmpty()
+
     if (emitUpdate) {
       this.onEdgesChange.dispatch()
     }
@@ -175,8 +185,12 @@ export class TreeNode<ViewModel extends Destroyable> {
   public removeEdge(edge: Edge<any>) {
     delete this.edges[edge.name]
     this.edgeArray = Object.values(this.edges)
-    this.onMerge.dispatch()
 
+    this.removeFromTreeIfEmpty()
+    this.onMerge.dispatch()
+  }
+
+  public removeFromTreeIfEmpty() {
     if (this.isTopicEmptyLeaf()) {
       this.removeFromParent()
     }
@@ -189,10 +203,7 @@ export class TreeNode<ViewModel extends Destroyable> {
       this.mqttMessage = node.mqttMessage
     }
 
-    if (this.isTopicEmptyLeaf()) {
-      this.removeFromParent()
-    }
-
+    this.removeFromTreeIfEmpty()
     this.mergeEdges(node)
     this.onMerge.dispatch()
   }

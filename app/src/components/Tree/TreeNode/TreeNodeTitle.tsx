@@ -1,8 +1,8 @@
 import * as React from 'react'
-import * as q from '../../../../backend/src/Model'
+import * as q from '../../../../../backend/src/Model'
 import { withStyles, Theme } from '@material-ui/core'
-import { TopicViewModel } from '../../model/TopicViewModel'
-import { Base64Message } from '../../../../backend/src/Model/Base64Message'
+import { TopicViewModel } from '../../../model/TopicViewModel'
+import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
 
 export interface TreeNodeProps extends React.HTMLAttributes<HTMLElement> {
   treeNode: q.TreeNode<TopicViewModel>

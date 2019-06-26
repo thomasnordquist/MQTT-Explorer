@@ -1,7 +1,7 @@
 import * as React from 'react'
 import ChartPanel from '../ChartPanel'
 import ReactSplitPane from 'react-split-pane'
-import Tree from '../Tree/Tree'
+import Tree from '../Tree'
 import { AppState } from '../../reducers'
 import { ChartParameters } from '../../reducers/Charts'
 import { connect } from 'react-redux'

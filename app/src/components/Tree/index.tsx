@@ -1,5 +1,5 @@
 import * as q from '../../../../backend/src/Model'
-import React from 'react'
+import React, { useCallback } from 'react'
 import TreeNode from './TreeNode'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
@@ -7,7 +7,6 @@ import { connect } from 'react-redux'
 import { SettingsState } from '../../reducers/Settings'
 import { TopicViewModel } from '../../model/TopicViewModel'
 import { treeActions } from '../../actions'
-import { useGlobalKeyEventHandler } from '../../effects/useGlobalKeyEventHandler'
 import { KeyCodes } from '../../utils/KeyCodes'
 
 const MovingAverage = require('moving-average')
@@ -30,16 +29,27 @@ interface State {
   lastUpdate: number
 }
 
-function ArrowKeyHandler(props: {
-  action: (direction: 'next' | 'previous') => any
-  leftAction: () => void
-  rightAction: () => void
-}) {
-  useGlobalKeyEventHandler(KeyCodes.arrow_down, () => props.action('next'), [props.action])
-  useGlobalKeyEventHandler(KeyCodes.arrow_up, () => props.action('previous'), [props.action])
-  useGlobalKeyEventHandler(KeyCodes.arrow_right, props.rightAction, [props.action])
-  useGlobalKeyEventHandler(KeyCodes.arrow_left, props.leftAction, [props.action])
-  return <div />
+function useArrowKeyEventHandler(actions: typeof treeActions) {
+  return (event: React.KeyboardEvent) => {
+    switch (event.keyCode) {
+      case KeyCodes.arrow_down:
+        actions.moveSelectionUpOrDownwards('next')
+        event.preventDefault()
+        break
+      case KeyCodes.arrow_up:
+        actions.moveSelectionUpOrDownwards('previous')
+        event.preventDefault()
+        break
+      case KeyCodes.arrow_left:
+        actions.moveOutward()
+        event.preventDefault()
+        break
+      case KeyCodes.arrow_right:
+        actions.moveInward()
+        event.preventDefault()
+        break
+    }
+  }
 }
 
 class TreeComponent extends React.PureComponent<Props, State> {
@@ -52,6 +62,7 @@ class TreeComponent extends React.PureComponent<Props, State> {
     this.state = { lastUpdate: 0 }
   }
 
+  private keyEventHandler = useArrowKeyEventHandler(this.props.actions)
   private performanceCallback = (ms: number) => {
     average.push(Date.now(), ms)
   }
@@ -124,16 +135,12 @@ class TreeComponent extends React.PureComponent<Props, State> {
       overflowX: 'hidden',
       height: '100%',
       width: '100%',
+      outline: '24px black !important',
       paddingBottom: '16px', // avoid conflict with chart panel Resizer
     }
 
     return (
-      <div style={style}>
-        <ArrowKeyHandler
-          action={this.props.actions.moveSelectionUpOrDownwards}
-          leftAction={this.props.actions.moveOutward}
-          rightAction={this.props.actions.moveInward}
-        />
+      <div style={style} tabIndex={0} onKeyDown={this.keyEventHandler}>
         <TreeNode
           key={tree.hash()}
           isRoot={true}
@@ -142,6 +149,7 @@ class TreeComponent extends React.PureComponent<Props, State> {
           collapsed={false}
           settings={this.props.settings}
           lastUpdate={tree.lastUpdate}
+          actions={this.props.actions}
           selectTopicAction={this.props.actions.selectTopic}
         />
       </div>

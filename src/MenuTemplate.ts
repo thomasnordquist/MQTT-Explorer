@@ -10,7 +10,7 @@ const applicationMenu: MenuItemConstructorOptions = {
       click: () => {
         openAboutWindow({
           icon_path: path.join(__dirname, '..', '..', 'icon.png'),
-          license: 'AGPL-3.0',
+          license: 'CC-BY-ND-4.0',
           homepage: 'https://thomasnordquist.github.io/MQTT-Explorer/',
           bug_report_url: 'https://github.com/thomasnordquist/MQTT-Explorer/issues',
           description: 'Author: Thomas Nordquist',

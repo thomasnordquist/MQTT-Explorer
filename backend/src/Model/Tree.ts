@@ -12,7 +12,7 @@ export class Tree<ViewModel extends Destroyable> extends TreeNode<ViewModel> {
   public isTree = true
   private cachedHash = `${Math.random()}`
   private unmergedMessages: ChangeBuffer = new ChangeBuffer()
-  public didReceive = new EventDispatcher<void, Tree<ViewModel>>()
+  public didReceive = new EventDispatcher<void>()
 
   constructor() {
     super(undefined, undefined)

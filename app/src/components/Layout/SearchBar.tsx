@@ -41,7 +41,13 @@ function SearchBar(props: {
     const tagElementIsNotBlacklisted =
       document.activeElement && tagNameBlacklist.indexOf(document.activeElement.tagName) === -1
 
-    if ((isCharacter || isAllowedControlCharacter) && !hasFocus && tagElementIsNotBlacklisted && hasConnection) {
+    if (
+      (isCharacter || isAllowedControlCharacter) &&
+      !event.defaultPrevented &&
+      !hasFocus &&
+      tagElementIsNotBlacklisted &&
+      hasConnection
+    ) {
       // Focus input field, no preventDefault the event will reach the input element after it has been focussed
       inputRef.current && inputRef.current.focus()
     }

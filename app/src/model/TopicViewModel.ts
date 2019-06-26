@@ -4,8 +4,8 @@ import { EventDispatcher } from '../../../events'
 export class TopicViewModel implements Destroyable {
   private selected: boolean
   private expanded: boolean
-  public selectionChange = new EventDispatcher<void, TopicViewModel>()
-  public expandedChange = new EventDispatcher<void, TopicViewModel>()
+  public selectionChange = new EventDispatcher<void>()
+  public expandedChange = new EventDispatcher<void>()
 
   public constructor() {
     this.selected = false

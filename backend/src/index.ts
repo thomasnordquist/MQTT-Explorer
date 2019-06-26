@@ -45,7 +45,6 @@ export class ConnectionManager {
       if (buffer.length > 20000) {
         buffer = buffer.slice(0, 20000)
       }
-
       backendEvents.emit(messageEvent, {
         topic,
         payload: Base64Message.fromBuffer(buffer),

@@ -4,7 +4,7 @@ import 'mocha'
 
 describe('EventDispatcher', async () => {
   it('should dispatch', async function() {
-    const dispatcher = new EventDispatcher<string, string>()
+    const dispatcher = new EventDispatcher<string>()
     this.timeout(300)
 
     setTimeout(() => dispatcher.dispatch('hello'), 5)
@@ -18,7 +18,7 @@ describe('EventDispatcher', async () => {
   })
 
   it('should unsubscribe', async function() {
-    const dispatcher = new EventDispatcher<string, string>()
+    const dispatcher = new EventDispatcher<string>()
     this.timeout(300)
     let callbackCounter = 0
     const callback = (msg: any) => {

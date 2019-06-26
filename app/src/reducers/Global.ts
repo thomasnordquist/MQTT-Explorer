@@ -44,7 +44,6 @@ export const globalState: Reducer<Record<GlobalStateInterface>, GlobalAction> = 
   action
 ): GlobalState => {
   trackEvent(action.type)
-  console.log(action.type)
 
   switch (action.type) {
     case ActionTypes.showUpdateNotification:

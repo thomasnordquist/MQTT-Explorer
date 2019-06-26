@@ -1,10 +1,11 @@
-import * as q from '../../../../backend/src/Model'
-import * as React from 'react'
-import TreeNode from './TreeNode'
-import { SettingsState } from '../../reducers/Settings'
-import { sortedNodes } from '../../sortedNodes'
+import * as q from '../../../../../backend/src/Model'
+import React from 'react'
+import TreeNode from '.'
+import { SettingsState } from '../../../reducers/Settings'
+import { sortedNodes } from '../../../sortedNodes'
 import { Theme, withStyles } from '@material-ui/core'
-import { TopicViewModel } from '../../model/TopicViewModel'
+import { TopicViewModel } from '../../../model/TopicViewModel'
+import { treeActions } from '../../../actions'
 
 export interface Props {
   treeNode: q.TreeNode<TopicViewModel>
@@ -14,6 +15,7 @@ export interface Props {
   selectedTopic?: q.TreeNode<TopicViewModel>
   selectTopicAction: (treeNode: q.TreeNode<any>) => void
   settings: SettingsState
+  actions: typeof treeActions
 }
 
 interface State {
@@ -60,6 +62,7 @@ class TreeNodeSubnodes extends React.Component<Props, State> {
           lastUpdate={node.lastUpdate}
           selectTopicAction={this.props.selectTopicAction}
           settings={this.props.settings}
+          actions={this.props.actions}
         />
       )
     })

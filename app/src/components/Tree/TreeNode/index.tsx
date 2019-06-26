@@ -1,14 +1,16 @@
-import * as q from '../../../../backend/src/Model'
+import * as q from '../../../../../backend/src/Model'
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import TreeNodeSubnodes from './TreeNodeSubnodes'
 import TreeNodeTitle from './TreeNodeTitle'
-import { SettingsState } from '../../reducers/Settings'
+import { SettingsState } from '../../../reducers/Settings'
 import { Theme, withStyles } from '@material-ui/core/styles'
-import { TopicViewModel } from '../../model/TopicViewModel'
-import { useViewModelSubscriptions } from './useViewModelSubscriptions'
-const debounce = require('lodash.debounce')
-
-declare var performance: any
+import { TopicViewModel } from '../../../model/TopicViewModel'
+import { useViewModelSubscriptions } from './effects/useViewModelSubscriptions'
+import { treeActions } from '../../../actions'
+import { lightBlue, teal, amber, green, deepPurple, blueGrey } from '@material-ui/core/colors'
+import { useAnimationToIndicateTopicUpdate } from './effects/useAnimationToIndicateTopicUpdate'
+import { useDeleteKeyCallback } from './effects/useDeleteKeyCallback'
+import { useIsAllowedToAutoExpandState } from './effects/useIsAllowedToAutoExpandState'
 
 const styles = (theme: Theme) => {
   return {
@@ -21,6 +23,9 @@ const styles = (theme: Theme) => {
     node: {
       display: 'block',
       marginLeft: '10px',
+      '&:hover': {
+        backgroundColor: theme.palette.type === 'light' ? blueGrey[100] : theme.palette.primary.light,
+      },
     },
     topicSelect: {
       float: 'right' as 'right',
@@ -32,11 +37,9 @@ const styles = (theme: Theme) => {
       marginLeft: theme.spacing(1.5),
     },
     selected: {
-      backgroundColor: theme.palette.type === 'dark' ? 'rgba(170, 170, 170, 0.55)' : 'rgba(170, 170, 170, 0.55)',
+      backgroundColor: (theme.palette.type === 'light' ? blueGrey[300] : theme.palette.primary.main) + ' !important',
     },
-    hover: {
-      backgroundColor: theme.palette.type === 'dark' ? 'rgba(100, 100, 100, 0.55)' : 'rgba(200, 200, 200, 0.55)',
-    },
+    hover: {},
     title: {
       borderRadius: '4px',
       lineHeight: '1em',
@@ -49,7 +52,7 @@ const styles = (theme: Theme) => {
   }
 }
 
-interface Props {
+export interface Props {
   isRoot?: boolean
   treeNode: q.TreeNode<TopicViewModel>
   name?: string | undefined
@@ -57,43 +60,25 @@ interface Props {
   classes: any
   className?: string
   lastUpdate: number
+  actions: typeof treeActions
   selectTopicAction: (treeNode: q.TreeNode<any>) => void
   theme: Theme
   settings: SettingsState
 }
 
-function useIsAllowedToAutoExpandState(props: Props): boolean {
-  const { settings, treeNode, isRoot } = props
-  const [isAllowedToAutoExpand, setAllowAutoExpand] = useState(false)
-
-  useEffect(() => {
-    const newIsAllowedToAutoExpand = isRoot || treeNode.edgeCount() <= settings.get('autoExpandLimit')
-    if (newIsAllowedToAutoExpand !== isAllowedToAutoExpand) {
-      setAllowAutoExpand(newIsAllowedToAutoExpand)
-    }
-  }, [treeNode.edgeCount(), settings.get('autoExpandLimit')])
-
-  return isAllowedToAutoExpand
-}
-
 function TreeNodeComponent(props: Props) {
-  const { classes, className, settings, theme, treeNode, lastUpdate, name } = props
-
+  const { actions, classes, className, settings, theme, treeNode, lastUpdate, name } = props
+  const deleteTopicCallback = useDeleteKeyCallback(treeNode, actions)
   const [showUpdateAnimation, setShowUpdateAnimation] = useState(false)
   const [collapsedOverride, setCollapsedOverride] = useState<boolean | undefined>(undefined)
-  const [isHovering, setIsHovering] = useState(false)
   const [selected, setSelected] = useState(false)
   const nodeRef = useRef<HTMLDivElement>()
   const isAllowedToAutoExpand = useIsAllowedToAutoExpandState(props)
   useViewModelSubscriptions(treeNode, nodeRef, setSelected, setCollapsedOverride)
-  useAnimationToIndicateTopicUpdate(lastUpdate, setShowUpdateAnimation, showUpdateAnimation)
+  useAnimationToIndicateTopicUpdate(lastUpdate, selected, setShowUpdateAnimation, showUpdateAnimation)
 
   const isCollapsed =
     Boolean(collapsedOverride) === collapsedOverride ? Boolean(collapsedOverride) : !isAllowedToAutoExpand
-
-  const setHover = debounce((hover: boolean) => {
-    setIsHovering(hover)
-  }, 45)
 
   const toggle = useCallback(() => {
     setCollapsedOverride(!isCollapsed)
@@ -130,15 +115,9 @@ function TreeNodeComponent(props: Props) {
 
   const mouseOver = (event: React.MouseEvent) => {
     event.stopPropagation()
-    setHover(true)
     if (settings.get('selectTopicWithMouseOver') && treeNode && treeNode.message && treeNode.message.value) {
       didSelectTopic()
     }
-  }
-
-  const mouseOut = (event: React.MouseEvent) => {
-    event.stopPropagation()
-    setHover(false)
   }
 
   useEffect(() => {
@@ -157,6 +136,7 @@ function TreeNodeComponent(props: Props) {
           lastUpdate={treeNode.lastUpdate}
           selectTopicAction={props.selectTopicAction}
           settings={settings}
+          actions={props.actions}
         />
       )
     }
@@ -167,19 +147,19 @@ function TreeNodeComponent(props: Props) {
       ? { willChange: 'auto', translateZ: 0, animation: `${animationName} 0.5s` }
       : {}
 
-    const highlightClass = selected ? classes.selected : isHovering ? classes.hover : ''
+    const highlightClass = selected ? classes.selected : ''
     return (
       <div>
         <div
           key={treeNode.hash()}
           className={`${classes.node} ${className} ${highlightClass} ${classes.title}`}
           style={animation}
-          onMouseOver={mouseOver}
-          onMouseOut={mouseOut}
+          onMouseEnter={mouseOver}
           onFocus={didObtainFocus}
           onClick={didClickTitle}
           ref={nodeRef as any}
           tabIndex={-1}
+          onKeyDown={deleteTopicCallback}
         >
           <TreeNodeTitle
             toggleCollapsed={toggleCollapsed}
@@ -192,26 +172,7 @@ function TreeNodeComponent(props: Props) {
         {renderNodes()}
       </div>
     )
-  }, [lastUpdate, treeNode, name, isCollapsed, selected, showUpdateAnimation, isHovering])
+  }, [lastUpdate, treeNode, name, isCollapsed, selected, theme, showUpdateAnimation])
 }
 
 export default withStyles(styles, { withTheme: true })(TreeNodeComponent)
-function useAnimationToIndicateTopicUpdate(
-  lastUpdate: number,
-  setShowUpdateAnimation: React.Dispatch<React.SetStateAction<boolean>>,
-  showUpdateAnimation: boolean
-) {
-  useEffect(() => {
-    if (Date.now() - lastUpdate < 3000) {
-      setShowUpdateAnimation(true)
-    }
-  }, [lastUpdate])
-  useEffect(() => {
-    if (showUpdateAnimation) {
-      const timeout = setTimeout(() => setShowUpdateAnimation(false), 500)
-      return function cleanup() {
-        clearTimeout(timeout)
-      }
-    }
-  }, [showUpdateAnimation])
-}

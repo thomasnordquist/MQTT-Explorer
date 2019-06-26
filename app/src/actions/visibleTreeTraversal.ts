@@ -13,6 +13,7 @@ export const moveSelectionUpOrDownwards = (direction: 'next' | 'previous') => (
   const state = getState()
   const selected = state.tree.get('selectedTopic')
   const tree = state.tree.get('tree')
+
   if (!selected || !tree) {
     if (tree) {
       dispatch(selectTopic(tree))

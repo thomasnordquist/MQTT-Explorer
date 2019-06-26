@@ -8,8 +8,10 @@ import { globalActions } from './'
 import { setTopic } from './Publish'
 import { TopicViewModel } from '../model/TopicViewModel'
 const debounce = require('lodash.debounce')
+export { clearTopic } from './clearTopic'
 
 export { moveSelectionUpOrDownwards, moveInward, moveOutward } from './visibleTreeTraversal'
+import { moveSelectionUpOrDownwards } from './visibleTreeTraversal'
 
 export const selectTopic = (topic: q.TreeNode<TopicViewModel>) => (
   dispatch: Dispatch<any>,
