@@ -180,7 +180,7 @@ class UpdateNotifier extends React.Component<Props, State> {
     let regex: RegExp
     if (os.platform() === 'darwin') {
       regex = /\.dmg$/
-    } else if (os.platform() === 'darwin') {
+    } else if (os.platform() === 'win32') {
       regex = /\.exe$/
     } else {
       regex = /\.AppImage$/

@@ -192,7 +192,7 @@ class Publish extends React.Component<Props, State> {
   }
 
   private history() {
-    const items = this.state.history.reverse().map(message => ({
+    const items = [...this.state.history].reverse().map(message => ({
       key: sha1(message.topic + message.payload),
       title: message.topic,
       value: message.payload || '',

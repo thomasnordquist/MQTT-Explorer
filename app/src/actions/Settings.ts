@@ -149,9 +149,10 @@ function autoExpandLimitForTree(tree: q.Tree<TopicViewModel>) {
   if (!tree) {
     return 0
   }
+
   function closestExistingLimit(i: number): number {
-    const sorted = autoExpandLimitSet.sort((a, b) => Math.abs(a.limit - i) - Math.abs(b.limit - i))
-    return sorted[0]!.limit
+    const sorted = [...autoExpandLimitSet].sort((a, b) => Math.abs(a.limit - i) - Math.abs(b.limit - i))
+    return sorted[0].limit
   }
 
   const count = tree.childTopicCount()

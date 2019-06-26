@@ -79,7 +79,7 @@ class MessageHistory extends React.Component<Props, State> {
 
     const history = node.messageHistory.toArray()
     let previousMessage: q.Message | undefined = node.message
-    const historyElements = history.reverse().map((message, idx) => {
+    const historyElements = [...history].reverse().map((message, idx) => {
       const value = message.value ? Base64Message.toUnicodeString(message.value) : ''
       const element = {
         value,
