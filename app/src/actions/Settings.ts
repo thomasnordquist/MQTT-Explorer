@@ -1,5 +1,5 @@
 import * as q from '../../../backend/src/Model'
-import { ActionTypes, SettingsState, TopicOrder } from '../reducers/Settings'
+import { ActionTypes, SettingsStateModel, TopicOrder } from '../reducers/Settings'
 import { AppState } from '../reducers'
 import { autoExpandLimitSet } from '../components/SettingsDrawer/Settings'
 import { Base64Message } from '../../../backend/src/Model/Base64Message'
@@ -11,7 +11,7 @@ import { showError } from './Global'
 import { showTree } from './Tree'
 import { TopicViewModel } from '../model/TopicViewModel'
 
-const settingsIdentifier: StorageIdentifier<Partial<SettingsState>> = {
+const settingsIdentifier: StorageIdentifier<Partial<SettingsStateModel>> = {
   id: 'Settings',
 }
 
