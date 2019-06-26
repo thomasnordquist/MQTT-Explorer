@@ -9,7 +9,7 @@ export enum TopicOrder {
 }
 
 export type ValueRendererDisplayMode = 'diff' | 'raw'
-interface SettingsStateModel {
+export interface SettingsStateModel {
   autoExpandLimit: number
   timeLocale: string
   topicOrder: TopicOrder
