@@ -62,8 +62,7 @@ async function chartSettings(name: string, browser: Browser) {
 async function clickAway(name: string, browser: Browser) {
   const settings = await browser.$(`//*[contains(@data-test-type, "ChartPaper")][contains(@data-test, "${name}")]`)
   await moveToCenterOfElement(settings, browser)
-  const awayClickElement = await browser.$('//div[contains(@role, "presentation")]')
-  return awayClickElement.click()
+  await browser.keys(['Escape'])
 }
 
 async function removeChart(name: string, browser: Browser) {
