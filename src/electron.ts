@@ -9,6 +9,9 @@ import { menuTemplate } from './MenuTemplate'
 import buildOptions from './buildOptions'
 import { waitForDevServer, isDev, runningUiTestOnCi, loadDevTools } from './development'
 import { shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
+import { registerCrashReporter } from './registerCrashReporter'
+
+registerCrashReporter()
 
 if (!isDev() && !runningUiTestOnCi()) {
   const electronTelemetry = electronTelemetryFactory('9b0c8ca04a361eb8160d98c5', buildOptions)
