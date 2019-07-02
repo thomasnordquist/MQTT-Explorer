@@ -42,6 +42,11 @@
       "category": "Development",
       "maintainer": "Thomas Nordquist"
     },
+    "snap": {
+      "environment": {
+        "DISABLE_WAYLAND": "1"
+      }
+    },
     "appx": {
       "applicationId": "mqttexplorer",
       "identityName": "51031thomas.nordquist.MQTT-Explorer",
