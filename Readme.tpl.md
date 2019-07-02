@@ -107,6 +107,25 @@ List of useful IoT applications using MQTT to integrate devices / services
 - [zigbee2mqtt](https://github.com/Koenkk/zigbee2mqtt) - A ZigBee to MQTT bridge
 - [Tasmota](https://github.com/arendst/Sonoff-Tasmota) - ESP8266 firmware with MQTT support
 
+## Feedback
+<form action="https://docs.google.com/forms/d/e/1FAIpQLSePeIHoZxpbB_-ku4H97go8JPhfdrlxNc-nHPGQuWB6g-U3HQ/formResponse?embedded=true">
+
+### What do you like?
+<textarea style="width: 100%; border-radius: 5px; box-shadow: 5px 5px;" name="entry.1944371594"></textarea>
+
+### What can be improved?
+<textarea style="width: 100%; border-radius: 5px; box-shadow: 5px 5px;" name="entry.22814098"></textarea>
+
+### Email (optional)
+
+<span style="display: flex"><input style="padding: 8px; flex: 2; border-radius: 5px; box-shadow: 5px 5px; border: 1px solid" type="email" name="entry.2055444782" /><button type="submit" style="padding: 8px; margin-left: 16px; border: 1px solid #2879d0; border-radius: 5px; background-color: #eee; box-shadow: 5px 5px #ccc; text-align: right; color: #2879d0;">Submit</button></span>
+
+</form>
+
+<div style="text-align: center; width: 100%">
+Ideas and bugs can also be reported on [github](https://github.com/thomasnordquist/MQTT-Explorer/issues).
+</div>
+
 ## Telemetry
 
 No personal data is processed, sent or stored.
