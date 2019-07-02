@@ -6,6 +6,7 @@ import { treeActions } from '../../../../actions'
 export function useDeleteKeyCallback(topic: q.TreeNode<any>, actions: typeof treeActions) {
   return useCallback(
     (event: React.KeyboardEvent) => {
+      return
       if (event.keyCode === KeyCodes.delete || event.keyCode === KeyCodes.backspace) {
         event.stopPropagation()
         event.preventDefault()
