@@ -59,6 +59,8 @@ class Certificates extends React.Component<Props, State> {
                 title="Client Certificate"
                 certificateType="clientCertificate"
               />
+            </Grid>
+            <Grid item={true} xs={12} className={classes.gridPadding}>
               <CertificateFileSelection
                 connection={this.props.connection}
                 certificate={this.props.connection.clientKey}
@@ -67,6 +69,7 @@ class Certificates extends React.Component<Props, State> {
               />
             </Grid>
             <Grid item={true} xs={2} className={classes.gridPadding}>
+              <br />
               <Button
                 variant="contained"
                 className={classes.button}
