@@ -1,56 +1,16 @@
 import * as q from '../../../../../backend/src/Model'
-import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import TreeNodeSubnodes from './TreeNodeSubnodes'
 import TreeNodeTitle from './TreeNodeTitle'
 import { SettingsState } from '../../../reducers/Settings'
+import { styles } from './styles'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { TopicViewModel } from '../../../model/TopicViewModel'
-import { useViewModelSubscriptions } from './effects/useViewModelSubscriptions'
 import { treeActions } from '../../../actions'
-import { lightBlue, teal, amber, green, deepPurple, blueGrey } from '@material-ui/core/colors'
 import { useAnimationToIndicateTopicUpdate } from './effects/useAnimationToIndicateTopicUpdate'
 import { useDeleteKeyCallback } from './effects/useDeleteKeyCallback'
 import { useIsAllowedToAutoExpandState } from './effects/useIsAllowedToAutoExpandState'
-
-const styles = (theme: Theme) => {
-  return {
-    collapsedSubnodes: {
-      color: theme.palette.text.secondary,
-    },
-    displayBlock: {
-      display: 'block',
-    },
-    node: {
-      display: 'block',
-      marginLeft: '10px',
-      '&:hover': {
-        backgroundColor: theme.palette.type === 'light' ? blueGrey[100] : theme.palette.primary.light,
-      },
-    },
-    topicSelect: {
-      float: 'right' as 'right',
-      opacity: 0,
-      cursor: 'pointer',
-      marginTop: '-1px',
-    },
-    subnodes: {
-      marginLeft: theme.spacing(1.5),
-    },
-    selected: {
-      backgroundColor: (theme.palette.type === 'light' ? blueGrey[300] : theme.palette.primary.main) + ' !important',
-    },
-    hover: {},
-    title: {
-      borderRadius: '4px',
-      lineHeight: '1em',
-      display: 'inline-block' as 'inline-block',
-      whiteSpace: 'nowrap' as 'nowrap',
-      padding: '1px 4px 0px 4px',
-      height: '14px',
-      margin: '1px 0px 2px 0px',
-    },
-  }
-}
+import { useViewModelSubscriptions } from './effects/useViewModelSubscriptions'
 
 export interface Props {
   isRoot?: boolean
@@ -69,13 +29,21 @@ export interface Props {
 function TreeNodeComponent(props: Props) {
   const { actions, classes, className, settings, theme, treeNode, lastUpdate, name } = props
   const deleteTopicCallback = useDeleteKeyCallback(treeNode, actions)
-  const [showUpdateAnimation, setShowUpdateAnimation] = useState(false)
   const [collapsedOverride, setCollapsedOverride] = useState<boolean | undefined>(undefined)
   const [selected, setSelected] = useState(false)
   const nodeRef = useRef<HTMLDivElement>()
   const isAllowedToAutoExpand = useIsAllowedToAutoExpandState(props)
   useViewModelSubscriptions(treeNode, nodeRef, setSelected, setCollapsedOverride)
-  useAnimationToIndicateTopicUpdate(lastUpdate, selected, setShowUpdateAnimation, showUpdateAnimation)
+  const animationClass =
+    props.theme.palette.type === 'light' ? props.classes.animationLight : props.classes.animationDark
+
+  useAnimationToIndicateTopicUpdate(
+    nodeRef,
+    lastUpdate,
+    animationClass,
+    selected,
+    settings.get('highlightTopicUpdates')
+  )
 
   const isCollapsed =
     Boolean(collapsedOverride) === collapsedOverride ? Boolean(collapsedOverride) : !isAllowedToAutoExpand
@@ -141,19 +109,12 @@ function TreeNodeComponent(props: Props) {
       )
     }
 
-    const shouldStartAnimation = settings.get('highlightTopicUpdates') && showUpdateAnimation
-    const animationName = theme.palette.type === 'light' ? 'updateLight' : 'updateDark'
-    const animation = shouldStartAnimation
-      ? { willChange: 'auto', translateZ: 0, animation: `${animationName} 0.5s` }
-      : {}
-
     const highlightClass = selected ? classes.selected : ''
     return (
       <div>
         <div
           key={treeNode.hash()}
           className={`${classes.node} ${className} ${highlightClass} ${classes.title}`}
-          style={animation}
           onMouseEnter={mouseOver}
           onFocus={didObtainFocus}
           onClick={didClickTitle}
@@ -172,7 +133,7 @@ function TreeNodeComponent(props: Props) {
         {renderNodes()}
       </div>
     )
-  }, [lastUpdate, treeNode, name, isCollapsed, selected, theme, showUpdateAnimation])
+  }, [lastUpdate, treeNode, name, isCollapsed, selected, theme])
 }
 
 export default withStyles(styles, { withTheme: true })(TreeNodeComponent)

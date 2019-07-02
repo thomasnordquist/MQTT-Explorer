@@ -1,5 +1,5 @@
 import * as q from '../../../../../backend/src/Model'
-import React from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import TreeNode from '.'
 import { SettingsState } from '../../../reducers/Settings'
 import { sortedNodes } from '../../../sortedNodes'
@@ -16,59 +16,54 @@ export interface Props {
   selectTopicAction: (treeNode: q.TreeNode<any>) => void
   settings: SettingsState
   actions: typeof treeActions
+  theme: Theme
 }
 
-interface State {
-  alreadyAdded: number
+function useStagedRendering(treeNode: q.TreeNode<any>) {
+  const [alreadyAdded, setAlreadyAdded] = useState(10)
+  const edges = treeNode.edgeArray
+
+  useEffect(() => {
+    let renderMoreAnimationFrame: any
+
+    if (alreadyAdded < edges.length) {
+      renderMoreAnimationFrame = (window as any).requestIdleCallback(
+        () => {
+          setAlreadyAdded(alreadyAdded * 1.5)
+        },
+        { timeout: 500 }
+      )
+    }
+
+    return function cleanup() {
+      ;(window as any).cancelIdleCallback(renderMoreAnimationFrame)
+    }
+  }, [alreadyAdded, edges.length])
+
+  return alreadyAdded
 }
 
-class TreeNodeSubnodes extends React.Component<Props, State> {
-  private renderMoreAnimationFrame?: any
-  constructor(props: Props) {
-    super(props)
-    this.state = { alreadyAdded: 10 }
-  }
+function TreeNodeSubnodes(props: Props) {
+  const alreadyAdded = useStagedRendering(props.treeNode)
 
-  private renderMore() {
-    this.renderMoreAnimationFrame = (window as any).requestIdleCallback(
-      () => {
-        this.setState({ ...this.state, alreadyAdded: this.state.alreadyAdded * 1.5 })
-      },
-      { timeout: 500 }
-    )
-  }
-
-  public componentWillUnmount() {
-    ;(window as any).cancelIdleCallback(this.renderMoreAnimationFrame)
-  }
-
-  public render() {
-    const edges = this.props.treeNode.edgeArray
-    if (edges.length === 0) {
-      return null
-    }
-
-    if (this.state.alreadyAdded < edges.length) {
-      this.renderMore()
-    }
-
-    const nodes = sortedNodes(this.props.settings, this.props.treeNode).slice(0, this.state.alreadyAdded)
+  return useMemo(() => {
+    const nodes = sortedNodes(props.settings, props.treeNode).slice(0, alreadyAdded)
     const listItems = nodes.map(node => {
       return (
         <TreeNode
-          key={`${node.hash()}-${this.props.filter}`}
+          key={`${node.hash()}-${props.filter}`}
           treeNode={node}
-          className={this.props.classes.listItem}
+          className={props.classes.listItem}
           lastUpdate={node.lastUpdate}
-          selectTopicAction={this.props.selectTopicAction}
-          settings={this.props.settings}
-          actions={this.props.actions}
+          selectTopicAction={props.selectTopicAction}
+          settings={props.settings}
+          actions={props.actions}
         />
       )
     })
 
-    return <span className={this.props.classes.list}>{listItems}</span>
-  }
+    return <span className={props.classes.list}>{listItems}</span>
+  }, [alreadyAdded, props.lastUpdate, props.theme])
 }
 
 const styles = (theme: Theme) => ({
@@ -79,4 +74,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default withStyles(styles)(TreeNodeSubnodes)
+export default withStyles(styles, { withTheme: true })(TreeNodeSubnodes)
