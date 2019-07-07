@@ -1,30 +1,18 @@
-import * as React from 'react'
-import ClearAdornment from '../../helper/ClearAdornment'
 import Editor from './Editor'
 import FormatAlignLeft from '@material-ui/icons/FormatAlignLeft'
-import History from '../HistoryDrawer'
 import Message from './Model/Message'
 import Navigation from '@material-ui/icons/Navigation'
-import QosSelect from './QosSelect'
+import PublishHistory from './PublishHistory'
+import React, { useCallback, useState, useMemo } from 'react'
+import TopicInput from './TopicInput'
 import { AppState } from '../../../reducers'
 import { bindActionCreators } from 'redux'
+import { Button, Fab, Theme, Tooltip, withTheme } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { EditorModeSelect } from './EditorModeSelect'
 import { globalActions, publishActions } from '../../../actions'
 import { KeyCodes } from '../../../utils/KeyCodes'
-import {
-  Button,
-  FormControlLabel,
-  FormControl,
-  InputLabel,
-  Input,
-  Checkbox,
-  Tooltip,
-  Fab,
-  Theme,
-  withTheme,
-} from '@material-ui/core'
-const sha1 = require('sha1')
+import RetainSwitch from './RetainSwitch'
 
 interface Props {
   connectionId?: string
@@ -37,108 +25,73 @@ interface Props {
   theme: Theme
 }
 
-interface State {
-  history: Array<Message>
+function useHistory(): [Array<Message>, (topic: string, payload?: string) => void] {
+  const [history, setHistory] = useState<Array<Message>>([])
+  const amendToHistory = useCallback(
+    (topic: string, payload?: string) => {
+      // Remove duplicates
+      let filteredHistory = history.filter(e => e.payload !== payload || e.topic !== topic)
+      filteredHistory = filteredHistory.slice(-7)
+      setHistory([...filteredHistory, { topic, payload, sent: new Date() }])
+    },
+    [history]
+  )
+
+  return [history, amendToHistory]
 }
 
-class Publish extends React.Component<Props, State> {
-  constructor(props: any) {
-    super(props)
-    this.state = { history: [] }
-  }
+function Publish(props: Props) {
+  console.log(props.connectionId)
+  const updatePayload = props.actions.setPayload
+  const [history, amendToHistory] = useHistory()
 
-  private updatePayload = (payload: string) => {
-    this.props.actions.setPayload(payload)
-  }
+  const updateMode = useCallback((e: React.ChangeEvent<{}>, value: string) => {
+    props.actions.setEditorMode(value)
+  }, [])
 
-  private updateTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.actions.setTopic(e.target.value)
-  }
-
-  private updateMode = (e: React.ChangeEvent<{}>, value: string) => {
-    this.props.actions.setEditorMode(value)
-  }
-
-  private handleClickPublish = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    this.publish()
-  }
-
-  private publish() {
-    if (!this.props.connectionId) {
+  const publish = useCallback(() => {
+    if (!props.connectionId) {
       return
     }
 
-    this.props.actions.publish(this.props.connectionId)
+    props.actions.publish(props.connectionId)
 
-    const topic = this.props.topic || ''
-    const payload = this.props.payload
-    if (this.props.connectionId && topic) {
-      this.addMessageToHistory(topic, payload)
+    const topic = props.topic || ''
+    const payload = props.payload
+    if (props.connectionId && topic) {
+      amendToHistory(topic, payload)
     }
-  }
+  }, [props, props.connectionId, props.topic, props.payload, amendToHistory])
 
-  private addMessageToHistory(topic: string, payload?: string) {
-    // Remove duplicates
-    let filteredHistory = this.state.history.filter(e => e.payload !== payload || e.topic !== topic)
-    filteredHistory = filteredHistory.slice(-7)
-    const history: Array<Message> = [...filteredHistory, { topic, payload, sent: new Date() }]
-    this.setState({ history })
-  }
+  const handleClickPublish = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation()
+      publish()
+    },
+    [publish]
+  )
 
-  private clearTopic = () => {
-    this.props.actions.setTopic('')
-  }
-
-  private topic() {
-    const topicStr = this.props.topic || ''
-
+  const PublishButton = () => {
     return (
-      <div>
-        <FormControl style={{ width: '100%' }}>
-          <InputLabel htmlFor="publish-topic">Topic</InputLabel>
-          <Input
-            id="publish-topic"
-            value={topicStr}
-            startAdornment={<span />}
-            endAdornment={<ClearAdornment action={this.clearTopic} value={topicStr} />}
-            onBlur={this.onTopicBlur}
-            onChange={this.updateTopic}
-            multiline={true}
-            placeholder="example/topic"
-          />
-        </FormControl>
-      </div>
-    )
-  }
-
-  private onTopicBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    if (!e.target.value) {
-      this.props.actions.setTopic(undefined)
-    }
-  }
-
-  private publishButton() {
-    return (
-      <Button variant="contained" size="small" color="primary" onClick={this.handleClickPublish} id="publish-button">
+      <Button variant="contained" size="small" color="primary" onClick={handleClickPublish} id="publish-button">
         <Navigation style={{ marginRight: '8px' }} /> Publish
       </Button>
     )
   }
 
-  private formatJson = () => {
-    if (this.props.payload) {
+  const formatJson = () => {
+    if (props.payload) {
       try {
-        const str = JSON.stringify(JSON.parse(this.props.payload), undefined, '  ')
-        this.updatePayload(str)
+        const str = JSON.stringify(JSON.parse(props.payload), undefined, '  ')
+        updatePayload(str)
       } catch (error) {
-        this.props.globalActions.showError(`Format error: ${error.message}`)
+        props.globalActions.showError(`Format error: ${error.message}`)
       }
     }
   }
 
-  private renderFormatJson() {
-    if (this.props.editorMode !== 'json') {
+  const renderFormatJson = () => {
+    if (props.editorMode !== 'json') {
       return null
     }
 
@@ -146,7 +99,7 @@ class Publish extends React.Component<Props, State> {
       <Tooltip title="Format JSON">
         <Fab
           style={{ width: '36px', height: '36px', marginLeft: '8px' }}
-          onClick={this.formatJson}
+          onClick={formatJson}
           id="sidebar-publish-format-json"
         >
           <FormatAlignLeft style={{ fontSize: '20px' }} />
@@ -155,80 +108,45 @@ class Publish extends React.Component<Props, State> {
     )
   }
 
-  private editorMode() {
+  function EditorMode() {
     return (
       <div style={{ marginTop: '16px' }}>
         <div style={{ width: '100%', lineHeight: '64px' }}>
-          <EditorModeSelect value={this.props.editorMode} onChange={this.updateMode} />
-          {this.renderFormatJson()}
-          <div style={{ float: 'right', marginRight: '16px' }}>{this.publishButton()}</div>
+          <EditorModeSelect value={props.editorMode} onChange={updateMode} />
+          {renderFormatJson()}
+          <div style={{ float: 'right', marginRight: '16px' }}>
+            <PublishButton />
+          </div>
         </div>
       </div>
     )
   }
 
-  private publishMode() {
-    const labelStyle = { margin: '0 8px 0 8px' }
+  const handleSubmit = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.keyCode === KeyCodes.enter && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        e.stopPropagation()
+        publish()
+      }
+    },
+    [publish]
+  )
 
-    return (
-      <div style={{ marginTop: '8px', clear: 'both' }}>
-        <div style={{ width: '100%', textAlign: 'right' }}>
-          <FormControlLabel style={labelStyle} control={<QosSelect />} label="QoS" labelPlacement="start" />
-          <Tooltip
-            title="Retained messages only appear to be retained, when client subscribes after the initial publish."
-            placement="top"
-          >
-            <FormControlLabel
-              value="retain"
-              style={labelStyle}
-              control={
-                <Checkbox color="primary" checked={this.props.retain} onChange={this.props.actions.toggleRetain} />
-              }
-              label="retain"
-              labelPlacement="end"
-            />
-          </Tooltip>
-        </div>
-      </div>
-    )
-  }
-
-  private history() {
-    const items = [...this.state.history].reverse().map(message => ({
-      key: sha1(message.topic + message.payload),
-      title: message.topic,
-      value: message.payload || '',
-    }))
-    return <History items={items} onClick={this.didSelectHistoryEntry} />
-  }
-
-  private didSelectHistoryEntry = (index: number) => {
-    const message = this.state.history[index]
-    this.props.actions.setTopic(message.topic)
-    this.props.actions.setPayload(message.payload)
-  }
-
-  private handleSubmit = (e: React.KeyboardEvent) => {
-    if (e.keyCode === KeyCodes.enter && (e.metaKey || e.ctrlKey)) {
-      e.preventDefault()
-      e.stopPropagation()
-      this.publish()
-    }
-  }
-
-  public render() {
-    return (
-      <div style={{ flexGrow: 1, marginLeft: '8px' }} onKeyDown={this.handleSubmit}>
-        {this.topic()}
+  return useMemo(
+    () => (
+      <div style={{ flexGrow: 1, marginLeft: '8px' }} onKeyDown={handleSubmit}>
+        <TopicInput />
         <div style={{ width: '100%', display: 'block' }}>
-          {this.editorMode()}
-          <Editor value={this.props.payload} editorMode={this.props.editorMode} onChange={this.updatePayload} />
-          {this.publishMode()}
+          <EditorMode />
+          <Editor value={props.payload} editorMode={props.editorMode} onChange={updatePayload} />
+          <RetainSwitch />
         </div>
-        {this.history()}
+        <PublishHistory history={history} />
       </div>
-    )
-  }
+    ),
+    [props.payload, props.editorMode, history, handleSubmit, updatePayload]
+  )
 }
 
 const mapDispatchToProps = (dispatch: any) => {

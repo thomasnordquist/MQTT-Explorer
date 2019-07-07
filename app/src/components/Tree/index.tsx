@@ -99,8 +99,8 @@ class TreeComponent extends React.PureComponent<Props, State> {
           this.updateTimer = undefined
           this.renderTime = performance.now()
 
-          if (!this.props.paused) {
-            this.props.tree && this.props.tree.applyUnmergedChanges()
+          if (!this.props.paused && this.props.tree) {
+            this.props.tree.applyUnmergedChanges()
           }
           window.requestIdleCallback(
             () => {

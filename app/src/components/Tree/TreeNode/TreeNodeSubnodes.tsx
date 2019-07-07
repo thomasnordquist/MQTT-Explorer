@@ -63,7 +63,7 @@ function TreeNodeSubnodes(props: Props) {
     })
 
     return <span className={props.classes.list}>{listItems}</span>
-  }, [alreadyAdded, props.lastUpdate, props.theme])
+  }, [alreadyAdded, props.treeNode.lastUpdate, props.theme])
 }
 
 const styles = (theme: Theme) => ({

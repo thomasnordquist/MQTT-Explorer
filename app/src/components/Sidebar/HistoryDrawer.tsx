@@ -34,6 +34,12 @@ class HistoryDrawer extends React.Component<Props, State> {
     this.setState({ collapsed: !this.state.collapsed })
   }
 
+  private createSelectionHandler = (index: number) => (event: React.MouseEvent) => {
+    this.props.onClick && this.props.onClick(index, event.target)
+    event.preventDefault()
+    event.stopPropagation()
+  }
+
   private handleCtrlA = selectTextWithCtrlA({ targetSelector: 'pre' })
 
   public renderHistory() {
@@ -51,7 +57,7 @@ class HistoryDrawer extends React.Component<Props, State> {
       <div
         key={element.key}
         style={style(element)}
-        onClick={(event: React.MouseEvent) => this.props.onClick && this.props.onClick(index, event.target)}
+        onClick={this.createSelectionHandler(index)}
         tabIndex={0}
         onKeyDown={this.handleCtrlA}
       >

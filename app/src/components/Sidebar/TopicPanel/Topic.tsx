@@ -1,11 +1,11 @@
-import * as React from 'react'
-import * as q from '../../../../backend/src/Model'
+import React from 'react'
+import * as q from '../../../../../backend/src/Model'
 import Button from '@material-ui/core/Button'
 import { withStyles, Theme } from '@material-ui/core/styles'
-import { treeActions } from '../../actions'
+import { treeActions } from '../../../actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { TopicViewModel } from '../../model/TopicViewModel'
+import { TopicViewModel } from '../../../model/TopicViewModel'
 
 interface Props {
   classes: any

@@ -133,7 +133,7 @@ function TreeNodeComponent(props: Props) {
         {renderNodes()}
       </div>
     )
-  }, [lastUpdate, treeNode, name, isCollapsed, selected, theme])
+  }, [treeNode.lastUpdate, treeNode, name, isCollapsed, selected, theme])
 }
 
 export default withStyles(styles, { withTheme: true })(TreeNodeComponent)

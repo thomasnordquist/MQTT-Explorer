@@ -4,7 +4,7 @@ import { TopicViewModel } from '../../model/TopicViewModel'
 import { Typography } from '@material-ui/core'
 
 interface Props {
-  node: q.TreeNode<TopicViewModel>
+  node?: q.TreeNode<TopicViewModel>
 }
 
 class NodeStats extends React.Component<Props, {}> {
@@ -14,6 +14,9 @@ class NodeStats extends React.Component<Props, {}> {
 
   public render() {
     const { node } = this.props
+    if (!node) {
+      return null
+    }
 
     return (
       <div>
