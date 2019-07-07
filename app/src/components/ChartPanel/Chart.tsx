@@ -1,7 +1,6 @@
 import * as q from '../../../../backend/src/Model'
-import * as React from 'react'
+import React, { useState } from 'react'
 import TopicPlot from '../TopicPlot'
-import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { chartActions } from '../../actions'
 import { ChartParameters } from '../../reducers/Charts'
@@ -20,32 +19,48 @@ interface Props {
 }
 
 /**
- * Subscribes to onMessage of treeNode
+ * Subscribes to onMessages keeping track of additional data points
  */
 function useMessageSubscriptionToUpdate(treeNode?: q.TreeNode<any>) {
-  const [lastUpdated, setLastUpdate] = React.useState(0)
+  const [lastUpdated, setLastUpdate] = useState(0)
+  const [messageHistory, setMessageHistory] = useState<q.MessageHistory | undefined>()
+  let amendMessageCallback: any
+
   function subscribeToMessageUpdates() {
-    const onUpdateCallback = throttle(() => setLastUpdate(treeNode ? treeNode.lastUpdate : 0), 300)
-    treeNode && treeNode.onMessage.subscribe(onUpdateCallback)
+    const throttledUpdate = throttle(() => setLastUpdate(treeNode ? treeNode.lastUpdate : 0), 300)
+
+    if (treeNode) {
+      const newMessageHistory = treeNode.messageHistory.clone()
+      newMessageHistory.setCapacity(500, 2 * 500 * 10000)
+
+      amendMessageCallback = (message: q.Message) => {
+        newMessageHistory.add(message)
+        throttledUpdate()
+      }
+      treeNode.onMessage.subscribe(amendMessageCallback)
+      setMessageHistory(newMessageHistory)
+    }
 
     return function cleanup() {
-      treeNode && treeNode.onMessage.unsubscribe(onUpdateCallback)
+      treeNode && treeNode.onMessage.unsubscribe(amendMessageCallback)
     }
   }
   React.useEffect(subscribeToMessageUpdates, [treeNode])
+
+  return messageHistory
 }
 
 function Chart(props: Props) {
   const { parameters, treeNode } = props
-  const [freezedHistory, setHistory] = React.useState<q.MessageHistory | undefined>()
-  useMessageSubscriptionToUpdate(treeNode)
+  const [frozenHistory, setFrozenHistory] = React.useState<q.MessageHistory | undefined>()
+  const messageHistory = useMessageSubscriptionToUpdate(treeNode)
 
   const togglePause = React.useCallback(() => {
     if (!props.treeNode) {
       return
     }
-    setHistory(freezedHistory ? undefined : props.treeNode.messageHistory.clone())
-  }, [props.treeNode, freezedHistory])
+    setFrozenHistory(frozenHistory ? undefined : messageHistory && messageHistory.clone())
+  }, [props.treeNode, frozenHistory])
 
   const onRemove = React.useCallback(() => {
     props.actions.chart.removeChart(props.parameters)
@@ -63,18 +78,18 @@ function Chart(props: Props) {
           <ChartActions
             parameters={parameters}
             onRemove={onRemove}
-            paused={Boolean(freezedHistory)}
+            paused={Boolean(frozenHistory)}
             togglePause={togglePause}
           />
         </div>
       </div>
-      {props.treeNode ? (
+      {messageHistory ? (
         <TopicPlot
           color={props.parameters.color}
           interpolation={props.parameters.interpolation}
           timeInterval={props.parameters.timeRange ? props.parameters.timeRange.until : undefined}
           range={props.parameters.range ? [props.parameters.range.from, props.parameters.range.to] : undefined}
-          history={freezedHistory ? freezedHistory : props.treeNode.messageHistory}
+          history={frozenHistory || messageHistory}
           dotPath={parameters.dotPath}
         />
       ) : (

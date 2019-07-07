@@ -4,7 +4,6 @@ import { Button, Menu, TextField, Typography } from '@material-ui/core'
 import { chartActions } from '../../../actions'
 import { ChartParameters } from '../../../reducers/Charts'
 import { connect } from 'react-redux'
-import { KeyCodes } from '../../../utils/KeyCodes'
 const parseDuration = require('parse-duration')
 
 interface Props {
@@ -22,13 +21,16 @@ function TimeRangeSettings(props: Props) {
   )
   const ranges = ['all', '10s', '30s', '1m', '5m', '15m', '1h', '6h', '1d']
 
-  const manuallySetIntervalHandler = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => setValue(e.currentTarget.value),
-    []
-  )
+  const manuallySetIntervalHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value)
+  }, [])
 
   useEffect(() => {
     if (!value) {
+      props.actions.chart.updateChart({
+        ...props.chart,
+        timeRange: undefined,
+      })
       return
     }
 
@@ -54,8 +56,8 @@ function TimeRangeSettings(props: Props) {
         open={props.open}
         onClose={props.onClose}
       >
-        <Typography>Discard values older then</Typography>
-        <div style={{ padding: '0 16px', width: '300px', textAlign: 'center' }}>
+        <Typography>Chart data within a time interval</Typography>
+        <div style={{ padding: '0 16px', width: '275px', textAlign: 'center' }}>
           {ranges.map(r => {
             return (
               <Button
@@ -69,13 +71,16 @@ function TimeRangeSettings(props: Props) {
             )
           })}
         </div>
+        <Typography style={{ fontSize: '0.75em' }}>
+          <i>Limited to 500 data points</i>
+        </Typography>
         <br />
         <TextField
           style={{ marginLeft: '8px', marginTop: '0' }}
           onClick={dismissClick}
-          label="interval"
+          label="custom interval"
           value={value || ''}
-          onKeyPress={manuallySetIntervalHandler}
+          onChange={manuallySetIntervalHandler}
           margin="normal"
         />
       </Menu>

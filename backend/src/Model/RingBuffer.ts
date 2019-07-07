@@ -54,6 +54,11 @@ export class RingBuffer<T extends Lengthwise> {
     this.usage -= freedSpace
   }
 
+  public setCapacity(items: number, bytes: number) {
+    this.maxItems = items
+    this.capacity = bytes
+  }
+
   public clone(): RingBuffer<T> {
     return new RingBuffer(this.capacity, this.maxItems, this)
   }
