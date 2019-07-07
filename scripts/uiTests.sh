@@ -8,6 +8,7 @@ function finish {
 }
 
 trap finish EXIT
+set -e
 
 DIMENSIONS="1024x720"
 SCR=99
