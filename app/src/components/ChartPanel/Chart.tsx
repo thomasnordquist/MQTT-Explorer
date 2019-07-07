@@ -72,6 +72,7 @@ function Chart(props: Props) {
         <TopicPlot
           color={props.parameters.color}
           interpolation={props.parameters.interpolation}
+          timeInterval={props.parameters.timeRange ? props.parameters.timeRange.until : undefined}
           range={props.parameters.range ? [props.parameters.range.from, props.parameters.range.to] : undefined}
           history={freezedHistory ? freezedHistory : props.treeNode.messageHistory}
           dotPath={parameters.dotPath}

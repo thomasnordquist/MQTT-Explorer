@@ -12,6 +12,7 @@ interface Props {
   theme: Theme
   interpolation?: PlotCurveTypes
   range?: [number?, number?]
+  timeRangeStart?: number
   color?: string
 }
 
@@ -55,9 +56,11 @@ export default withTheme((props: Props) => {
   return React.useMemo(() => {
     const data = props.data
     const calculatedDomain = domainForData(data)
-    let yDomain: [number, number] = props.range
+    const yDomain: [number, number] = props.range
       ? [props.range[0] || calculatedDomain[0], props.range[1] || calculatedDomain[1]]
       : calculatedDomain
+
+    const xDomain = props.timeRangeStart ? [Date.now() - props.timeRangeStart, Date.now()] : undefined
 
     let color: string =
       props.theme.palette.type === 'light' ? props.theme.palette.secondary.dark : props.theme.palette.primary.light
@@ -67,7 +70,7 @@ export default withTheme((props: Props) => {
 
     return (
       <div style={{ height: '150px', overflow: 'hidden' }}>
-        <XYPlot width={width} height={180} yDomain={yDomain}>
+        <XYPlot width={width} height={180} yDomain={yDomain} xDomain={xDomain}>
           <HorizontalGridLines />
           <XAxis />
           <YAxis width={45} tickFormat={(num: number) => abbreviate(num)} />

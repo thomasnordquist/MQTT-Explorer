@@ -1,11 +1,12 @@
 import * as React from 'react'
+import ColorSettings from './ColorSettings'
 import InterpolationSettings from './InterpolationSettings'
-import { ChartParameters } from '../../../reducers/Charts'
-import { Menu, MenuItem } from '@material-ui/core'
+import MoveUp from './MoveUp'
 import RangeSettings from './RangeSettings'
 import Size from './Size'
-import MoveUp from './MoveUp'
-import ColorSettings from './ColorSettings'
+import TimeRangeSettings from './TimeRangeSettings'
+import { ChartParameters } from '../../../reducers/Charts'
+import { Menu, MenuItem } from '@material-ui/core'
 
 function ChartSettings(props: {
   open: boolean
@@ -14,6 +15,7 @@ function ChartSettings(props: {
   anchorEl: React.MutableRefObject<undefined>
 }) {
   const [rangeVisible, setRangeVisible] = React.useState(false)
+  const [timeRangeVisible, setTimeRangeVisible] = React.useState(false)
   const [interpolationVisible, setInterpolationVisible] = React.useState(false)
   const [sizeVisible, setSizeVisible] = React.useState(false)
   const [colorVisible, setColorVisible] = React.useState(false)
@@ -24,6 +26,13 @@ function ChartSettings(props: {
     }
     setRangeVisible(!rangeVisible)
   }, [rangeVisible, open])
+
+  const toggleTimeRange = React.useCallback(() => {
+    if (open) {
+      props.close()
+    }
+    setTimeRangeVisible(!timeRangeVisible)
+  }, [timeRangeVisible, open])
 
   const toggleInterpolation = React.useCallback(() => {
     if (open) {
@@ -52,6 +61,9 @@ function ChartSettings(props: {
         <MenuItem key="range" onClick={toggleRange}>
           Set range
         </MenuItem>
+        <MenuItem key="timeRange" onClick={toggleTimeRange}>
+          Time range
+        </MenuItem>
         <MenuItem key="interpolation" onClick={toggleInterpolation}>
           Curve interpolation
         </MenuItem>
@@ -64,6 +76,12 @@ function ChartSettings(props: {
         <MoveUp chart={props.chart} close={props.close} />
       </Menu>
       <RangeSettings chart={props.chart} anchorEl={props.anchorEl.current} open={rangeVisible} onClose={toggleRange} />
+      <TimeRangeSettings
+        chart={props.chart}
+        anchorEl={props.anchorEl.current}
+        open={timeRangeVisible}
+        onClose={toggleTimeRange}
+      />
       <InterpolationSettings
         chart={props.chart}
         anchorEl={props.anchorEl.current}

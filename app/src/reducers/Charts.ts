@@ -13,6 +13,9 @@ export interface ChartParameters {
     from?: number
     to?: number
   }
+  timeRange?: {
+    until: string
+  }
   width?: 'big' | 'medium' | 'small'
   color?: string
 }
