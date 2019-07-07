@@ -1,15 +1,17 @@
-import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
 import ClearAdornment from '../../helper/ClearAdornment'
+import Editor from './Editor'
 import FormatAlignLeft from '@material-ui/icons/FormatAlignLeft'
 import History from '../HistoryDrawer'
 import Message from './Model/Message'
 import Navigation from '@material-ui/icons/Navigation'
+import QosSelect from './QosSelect'
 import { AppState } from '../../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { EditorModeSelect } from './EditorModeSelect'
 import { globalActions, publishActions } from '../../../actions'
-
+import { KeyCodes } from '../../../utils/KeyCodes'
 import {
   Button,
   FormControlLabel,
@@ -22,10 +24,6 @@ import {
   Theme,
   withTheme,
 } from '@material-ui/core'
-import { EditorModeSelect } from './EditorModeSelect'
-import QosSelect from './QosSelect'
-import Editor from './Editor'
-
 const sha1 = require('sha1')
 
 interface Props {
@@ -61,8 +59,12 @@ class Publish extends React.Component<Props, State> {
     this.props.actions.setEditorMode(value)
   }
 
-  private publish = (e: React.MouseEvent) => {
+  private handleClickPublish = (e: React.MouseEvent) => {
     e.stopPropagation()
+    this.publish()
+  }
+
+  private publish() {
     if (!this.props.connectionId) {
       return
     }
@@ -118,7 +120,7 @@ class Publish extends React.Component<Props, State> {
 
   private publishButton() {
     return (
-      <Button variant="contained" size="small" color="primary" onClick={this.publish} id="publish-button">
+      <Button variant="contained" size="small" color="primary" onClick={this.handleClickPublish} id="publish-button">
         <Navigation style={{ marginRight: '8px' }} /> Publish
       </Button>
     )
@@ -206,9 +208,17 @@ class Publish extends React.Component<Props, State> {
     this.props.actions.setPayload(message.payload)
   }
 
+  private handleSubmit = (e: React.KeyboardEvent) => {
+    if (e.keyCode === KeyCodes.enter && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault()
+      e.stopPropagation()
+      this.publish()
+    }
+  }
+
   public render() {
     return (
-      <div style={{ flexGrow: 1, marginLeft: '8px' }}>
+      <div style={{ flexGrow: 1, marginLeft: '8px' }} onKeyDown={this.handleSubmit}>
         {this.topic()}
         <div style={{ width: '100%', display: 'block' }}>
           {this.editorMode()}
