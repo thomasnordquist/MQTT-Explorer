@@ -81,12 +81,15 @@ function TreeNodeComponent(props: Props) {
     didSelectTopic()
   }, [didSelectTopic])
 
-  const mouseOver = (event: React.MouseEvent) => {
-    event.stopPropagation()
-    if (settings.get('selectTopicWithMouseOver') && treeNode && treeNode.message && treeNode.message.value) {
-      didSelectTopic()
-    }
-  }
+  const mouseOver = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation()
+      if (settings.get('selectTopicWithMouseOver') && treeNode && treeNode.message && treeNode.message.value) {
+        didSelectTopic()
+      }
+    },
+    [didSelectTopic]
+  )
 
   useEffect(() => {
     treeNode.viewModel && treeNode.viewModel.setExpanded(!isCollapsed, false)
