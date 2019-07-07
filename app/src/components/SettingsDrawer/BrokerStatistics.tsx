@@ -1,13 +1,12 @@
 import * as q from '../../../../backend/src/Model'
-import * as React from 'react'
+import React, { useMemo } from 'react'
 import { AppState } from '../../reducers'
+import { Base64Message } from '../../../../backend/src/Model/Base64Message'
 import { connect } from 'react-redux'
-import { StyleRulesCallback, withStyles, Theme } from '@material-ui/core/styles'
+import { Theme, withStyles } from '@material-ui/core/styles'
 import { TopicViewModel } from '../../model/TopicViewModel'
 import { Typography } from '@material-ui/core'
-import { Base64Message } from '../../../../backend/src/Model/Base64Message'
-import teal from '@material-ui/core/colors/teal'
-
+import { usePollingToFetchTreeNode } from '../helper/usePollingToFetchTreeNode'
 const abbreviate = require('number-abbreviate')
 
 interface Stats {
@@ -16,10 +15,6 @@ interface Stats {
 }
 
 const styles = (theme: Theme) => ({
-  flex: {
-    display: 'flex',
-    width: '100%',
-  },
   container: {
     width: '100%',
     height: '224px',
@@ -34,24 +29,12 @@ interface Props {
   tree?: q.Tree<TopicViewModel>
 }
 
-class BrokerStatistics extends React.Component<Props, {}> {
-  constructor(props: any) {
-    super(props)
-    this.state = {}
-  }
+function BrokerStatistics(props: Props) {
+  const { tree, classes } = props
+  const sysTopic = usePollingToFetchTreeNode(props.tree, '$SYS')
 
-  private renderPair(tree: q.Tree<TopicViewModel>, a: Stats, b: Stats) {
-    return (
-      <div className={this.props.classes.flex}>
-        <div style={{ flex: 1 }}>{this.renderStat(tree, a)}</div>
-        <div style={{ flex: 1 }}>{this.renderStat(tree, b)}</div>
-      </div>
-    )
-  }
-
-  public render() {
-    const { tree, classes } = this.props
-    if (!tree || !tree.findNode('$SYS/broker/clients/total')) {
+  return useMemo(() => {
+    if (!Boolean(sysTopic)) {
       return null
     }
 
@@ -94,38 +77,20 @@ class BrokerStatistics extends React.Component<Props, {}> {
       },
     }
 
-    return (
-      <div className={classes.container}>
-        {this.renderStat(tree, stats.broker)}
-        {this.renderPair(tree, stats.sent, stats.received)}
-        {this.renderPair(tree, stats.clients, stats.subscriptions)}
-        {this.renderPair(tree, stats.sent5m, stats.received5m)}
-        {this.renderPair(tree, stats.heap, stats.heapMax)}
-      </div>
-    )
-  }
-
-  public renderStat(tree: q.Tree<TopicViewModel>, stat: Stats) {
-    const node = tree.findNode(stat.topic)
-    if (!node || !node.message) {
+    if (!tree) {
       return null
     }
 
-    const str = node.message.value ? Base64Message.toUnicodeString(node.message.value) : ''
-    let value = node.message && node.message.value ? parseFloat(str) : NaN
-    value = !isNaN(value) ? abbreviate(value) : str
-
     return (
-      <div key={stat.title}>
-        <Typography>
-          <b>{stat.title}</b>
-        </Typography>
-        <Typography style={{ paddingLeft: '8px' }}>
-          <i>{value}</i>
-        </Typography>
+      <div className={classes.container}>
+        {renderStat(tree, stats.broker)}
+        {renderPair(tree, stats.sent, stats.received)}
+        {renderPair(tree, stats.clients, stats.subscriptions)}
+        {renderPair(tree, stats.sent5m, stats.received5m)}
+        {renderPair(tree, stats.heap, stats.heapMax)}
       </div>
     )
-  }
+  }, [sysTopic && sysTopic.lastUpdate])
 }
 
 const mapStateToProps = (state: AppState) => {
@@ -135,3 +100,39 @@ const mapStateToProps = (state: AppState) => {
 }
 
 export default withStyles(styles)(connect(mapStateToProps)(BrokerStatistics))
+
+function renderPair(tree: q.Tree<TopicViewModel>, a: Stats, b: Stats) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        width: '100%',
+      }}
+    >
+      <div style={{ flex: 1 }}>{renderStat(tree, a)}</div>
+      <div style={{ flex: 1 }}>{renderStat(tree, b)}</div>
+    </div>
+  )
+}
+
+function renderStat(tree: q.Tree<TopicViewModel>, stat: Stats) {
+  const node = tree.findNode(stat.topic)
+  if (!node || !node.message) {
+    return null
+  }
+
+  const str = node.message.value ? Base64Message.toUnicodeString(node.message.value) : ''
+  let value = node.message && node.message.value ? parseFloat(str) : NaN
+  value = !isNaN(value) ? abbreviate(value) : str
+
+  return (
+    <div key={stat.title}>
+      <Typography>
+        <b>{stat.title}</b>
+      </Typography>
+      <Typography style={{ paddingLeft: '8px' }}>
+        <i>{value}</i>
+      </Typography>
+    </div>
+  )
+}
