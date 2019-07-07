@@ -6,10 +6,10 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../../actions'
 import { ConnectionOptions } from '../../../model/ConnectionOptions'
+import { KeyCodes } from '../../../utils/KeyCodes'
 import { List, ListSubheader } from '@material-ui/core'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { useGlobalKeyEventHandler } from '../../../effects/useGlobalKeyEventHandler'
-import { KeyCodes } from '../../../utils/KeyCodes'
 
 interface Props {
   classes: any
@@ -39,10 +39,10 @@ function ProfileList(props: Props) {
   useGlobalKeyEventHandler(KeyCodes.arrow_up, selectConnection('previous'))
 
   const createConnectionButton = (
-    <ListSubheader component="div">
+    <div style={{ padding: '8px 16px' }}>
       <AddButton action={actions.createConnection} />
       Connections
-    </ListSubheader>
+    </div>
   )
 
   return (

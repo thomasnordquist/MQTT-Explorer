@@ -95,9 +95,10 @@ const styles = (theme: Theme) => ({
     borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
     paddingTop: theme.spacing(2),
     flex: 3,
-    overflow: 'hidden',
+    overflow: 'hidden' as 'hidden',
     backgroundColor: theme.palette.background.default,
     color: theme.palette.text.primary,
+    overflowY: 'auto' as 'auto',
   },
   right: {
     borderRadius: `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0`,
