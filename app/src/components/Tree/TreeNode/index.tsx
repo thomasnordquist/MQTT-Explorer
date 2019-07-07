@@ -28,11 +28,11 @@ export interface Props {
 
 function TreeNodeComponent(props: Props) {
   const { actions, classes, className, settings, theme, treeNode, lastUpdate, name } = props
-  const deleteTopicCallback = useDeleteKeyCallback(treeNode, actions)
   const [collapsedOverride, setCollapsedOverride] = useState<boolean | undefined>(undefined)
   const [selected, setSelected] = useState(false)
   const nodeRef = useRef<HTMLDivElement>()
   const isAllowedToAutoExpand = useIsAllowedToAutoExpandState(props)
+  const deleteTopicCallback = useDeleteKeyCallback(treeNode, actions)
   useViewModelSubscriptions(treeNode, nodeRef, setSelected, setCollapsedOverride)
   const animationClass =
     props.theme.palette.type === 'light' ? props.classes.animationLight : props.classes.animationDark

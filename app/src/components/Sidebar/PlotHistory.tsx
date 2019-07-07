@@ -88,6 +88,11 @@ export default withTheme((props: Props) => {
 })
 
 function domainForData(data: Array<{ x: number; y: number }>): [number, number] {
+  if (!data[0]) {
+    const defaultDomain: [number, number] = [-1, 1]
+    return defaultDomain
+  }
+
   let max = data[0].y
   let min = data[0].y
   data.forEach(d => {
