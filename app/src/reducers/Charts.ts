@@ -84,8 +84,9 @@ function moveUp(state: ChartsState, action: MoveUp) {
   const previousItem = charts.get(idx - 1)
 
   if (idx === 0 || !item || !previousItem) {
-    return
+    return state // do nothing
   }
+
   const newlyOrderedCharts = charts.set(idx - 1, item).set(idx, previousItem)
   return state.set('charts', newlyOrderedCharts)
 }
