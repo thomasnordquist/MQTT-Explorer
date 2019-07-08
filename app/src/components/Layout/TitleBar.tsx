@@ -46,7 +46,7 @@ interface Props {
   topicFilter?: string
 }
 
-class TitleBar extends React.Component<Props, {}> {
+class TitleBar extends React.PureComponent<Props, {}> {
   constructor(props: any) {
     super(props)
     this.state = {}

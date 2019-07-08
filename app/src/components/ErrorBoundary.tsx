@@ -14,7 +14,7 @@ interface Props {
   classes: any
 }
 
-class ErrorBoundary extends React.Component<Props, State> {
+class ErrorBoundary extends React.PureComponent<Props, State> {
   public static getDerivedStateFromError(error: Error) {
     return { error }
   }

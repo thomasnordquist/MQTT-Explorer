@@ -90,7 +90,7 @@ interface Props {
   theme: 'light' | 'dark'
 }
 
-class Settings extends React.Component<Props, {}> {
+class Settings extends React.PureComponent<Props, {}> {
   constructor(props: any) {
     super(props)
     this.state = {}

@@ -20,7 +20,7 @@ interface Props {
   showCertificateSettings: boolean
 }
 
-class ConnectionSetup extends React.Component<Props, {}> {
+class ConnectionSetup extends React.PureComponent<Props, {}> {
   constructor(props: Props) {
     super(props)
   }

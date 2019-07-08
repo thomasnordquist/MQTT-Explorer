@@ -24,7 +24,7 @@ const styles = (theme: Theme) => ({
   },
 })
 
-class Topic extends React.Component<Props, {}> {
+class Topic extends React.PureComponent<Props, {}> {
   public render() {
     const { node, theme } = this.props
     if (!node) {

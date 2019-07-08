@@ -11,7 +11,7 @@ interface Props {
   classes: any
 }
 
-class Notification extends React.Component<Props, {}> {
+class Notification extends React.PureComponent<Props, {}> {
   constructor(props: Props) {
     super(props)
   }

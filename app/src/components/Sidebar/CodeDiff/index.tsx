@@ -22,7 +22,7 @@ interface Props {
 
 interface State {}
 
-class CodeDiff extends React.Component<Props, State> {
+class CodeDiff extends React.PureComponent<Props, State> {
   private handleCtrlA = selectTextWithCtrlA({ targetSelector: 'pre ~ pre' })
 
   constructor(props: Props) {

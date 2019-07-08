@@ -28,7 +28,7 @@ interface Props {
   tree?: q.Tree<any>
 }
 
-class PauseButton extends React.Component<Props, { changes: number }> {
+class PauseButton extends React.PureComponent<Props, { changes: number }> {
   private timer?: any
   constructor(props: Props) {
     super(props)

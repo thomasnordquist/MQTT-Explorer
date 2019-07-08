@@ -41,7 +41,7 @@ interface Props {
 
 interface State {}
 
-class ValuePanel extends React.Component<Props, State> {
+class ValuePanel extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {}

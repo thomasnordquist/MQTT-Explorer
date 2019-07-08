@@ -10,17 +10,7 @@ import { connectionManagerActions } from '../../actions'
 import { ConnectionOptions } from '../../model/ConnectionOptions'
 import { Theme, withStyles } from '@material-ui/core/styles'
 
-import {
-  Button,
-  Grid,
-  IconButton,
-  TextField,
-  List,
-  ListItem,
-  ListItemText,
-  Tooltip,
-  Typography,
-} from '@material-ui/core'
+import { Button, Grid, IconButton, TextField, List, ListItem, ListItemText, Tooltip } from '@material-ui/core'
 
 interface Props {
   connection: ConnectionOptions

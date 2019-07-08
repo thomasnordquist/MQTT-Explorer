@@ -16,7 +16,7 @@ const unitMapping = {
   h: 'hours',
 }
 
-class DateFormatter extends React.Component<Props, {}> {
+class DateFormatter extends React.PureComponent<Props, {}> {
   private intervalSince(intervalSince: Date) {
     const interval = intervalSince.getTime() - this.props.date.getTime()
     const unit = this.unitForInterval(interval)

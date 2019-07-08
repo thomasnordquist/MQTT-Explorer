@@ -18,7 +18,7 @@ interface State {
   subscription: string
 }
 
-class Certificates extends React.Component<Props, State> {
+class Certificates extends React.PureComponent<Props, State> {
   constructor(props: any) {
     super(props)
     this.state = { subscription: '' }

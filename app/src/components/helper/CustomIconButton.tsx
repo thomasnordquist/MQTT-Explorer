@@ -21,7 +21,7 @@ const styles = (theme: Theme) => ({
   },
 })
 
-class CustomIconButton extends React.Component<Props, {}> {
+class CustomIconButton extends React.PureComponent<Props, {}> {
   constructor(props: Props) {
     super(props)
   }

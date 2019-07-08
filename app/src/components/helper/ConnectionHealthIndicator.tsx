@@ -37,7 +37,7 @@ interface Props {
   withBackground?: boolean
 }
 
-class ConnectionHealthIndicator extends React.Component<Props, {}> {
+class ConnectionHealthIndicator extends React.PureComponent<Props, {}> {
   constructor(props: any) {
     super(props)
   }

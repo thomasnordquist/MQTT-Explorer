@@ -19,7 +19,7 @@ interface State {
   didCopy: boolean
 }
 
-class Copy extends React.Component<Props, State> {
+class Copy extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = { didCopy: false }

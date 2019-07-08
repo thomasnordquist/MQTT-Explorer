@@ -45,7 +45,7 @@ interface State {
   newerVersions: Array<GithubRelease>
 }
 
-class UpdateNotifier extends React.Component<Props, State> {
+class UpdateNotifier extends React.PureComponent<Props, State> {
   constructor(props: any) {
     super(props)
     this.state = { newerVersions: [] }
