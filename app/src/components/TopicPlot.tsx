@@ -51,9 +51,13 @@ function nodeDotPathToHistory(startTime: number | undefined, history: q.MessageH
 
 function TopicPlot(props: Props) {
   const startOffset = props.timeInterval ? parseDuration(props.timeInterval) : undefined
-  const data = props.dotPath
-    ? nodeDotPathToHistory(startOffset, props.history, props.dotPath)
-    : nodeToHistory(startOffset, props.history)
+  const data = React.useMemo(
+    () =>
+      props.dotPath
+        ? nodeDotPathToHistory(startOffset, props.history, props.dotPath)
+        : nodeToHistory(startOffset, props.history),
+    [props.history.last(), startOffset, props.dotPath]
+  )
 
   return (
     <PlotHistory

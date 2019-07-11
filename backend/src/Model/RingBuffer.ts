@@ -35,6 +35,7 @@ export class RingBuffer<T extends Lengthwise> {
 
   private compact() {
     this.items = this.toArray()
+    this.start = 0
     this.end = this.items.length
   }
 

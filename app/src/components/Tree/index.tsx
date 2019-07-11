@@ -1,5 +1,5 @@
 import * as q from '../../../../backend/src/Model'
-import React, { useCallback } from 'react'
+import React from 'react'
 import TreeNode from './TreeNode'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'

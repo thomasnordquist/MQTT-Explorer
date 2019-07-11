@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { Paper } from '@material-ui/core'
 import ChartTitle from './ChartTitle'
 import { ChartActions } from './ChartActions'
+import { RingBuffer } from '../../../../backend/src/Model'
 const throttle = require('lodash.throttle')
 
 interface Props {
@@ -84,18 +85,14 @@ function Chart(props: Props) {
           />
         </div>
       </div>
-      {messageHistory ? (
-        <TopicPlot
-          color={props.parameters.color}
-          interpolation={props.parameters.interpolation}
-          timeInterval={props.parameters.timeRange ? props.parameters.timeRange.until : undefined}
-          range={props.parameters.range ? [props.parameters.range.from, props.parameters.range.to] : undefined}
-          history={frozenHistory || messageHistory}
-          dotPath={parameters.dotPath}
-        />
-      ) : (
-        <span>No data</span>
-      )}
+      <TopicPlot
+        color={props.parameters.color}
+        interpolation={props.parameters.interpolation}
+        timeInterval={props.parameters.timeRange ? props.parameters.timeRange.until : undefined}
+        range={props.parameters.range ? [props.parameters.range.from, props.parameters.range.to] : undefined}
+        history={frozenHistory || messageHistory || new RingBuffer<q.Message>(1)}
+        dotPath={parameters.dotPath}
+      />
     </Paper>
   )
 }

@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 
 interface Props {
   date: Date
+  timeFirst?: boolean
   overrideLocale?: string
   locale?: string
   intervalSince?: Date
@@ -30,7 +31,7 @@ class DateFormatter extends React.PureComponent<Props, {}> {
   private localizedDate(locale: string) {
     return moment(this.props.date)
       .locale(locale)
-      .format('L LTS')
+      .format(this.props.timeFirst ? 'LTS L' : 'L LTS')
   }
 
   private unitForInterval(milliseconds: number) {
