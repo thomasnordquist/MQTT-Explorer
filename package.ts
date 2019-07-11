@@ -71,8 +71,8 @@ async function executeBuild() {
       await buildWithOptions(linuxSnap, { platform: 'linux', package: 'snap' })
       break
     case 'mac':
-      await buildWithOptions(mac, { platform: 'mac', package: 'mas' })
       await buildWithOptions(mac, { platform: 'mac', package: 'dmg' })
+      await buildWithOptions(mac, { platform: 'mac', package: 'mas' })
       await buildWithOptions(mac, { platform: 'mac', package: 'zip' })
       break
     default:
