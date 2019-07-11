@@ -9,10 +9,12 @@ export class RingBuffer<T extends Lengthwise> {
   private items: Array<T> = []
   private start: number = 0
   private end: number = 0
+  private compactationFactor: number
 
-  constructor(capacity: number, maxItems = Infinity, ringBuffer?: RingBuffer<T>) {
+  constructor(capacity: number, maxItems = Infinity, compactationFactor: number = 10, ringBuffer?: RingBuffer<T>) {
     this.capacity = capacity
     this.maxItems = maxItems
+    this.compactationFactor = compactationFactor
 
     if (ringBuffer) {
       this.items = ringBuffer.toArray()
@@ -29,6 +31,11 @@ export class RingBuffer<T extends Lengthwise> {
     while (this.end - this.start >= this.maxItems) {
       this.dropFirst()
     }
+  }
+
+  private compact() {
+    this.items = this.toArray()
+    this.end = this.items.length
   }
 
   private freeSpace(): number {
@@ -60,7 +67,7 @@ export class RingBuffer<T extends Lengthwise> {
   }
 
   public clone(): RingBuffer<T> {
-    return new RingBuffer(this.capacity, this.maxItems, this)
+    return new RingBuffer(this.capacity, this.maxItems, this.compactationFactor, this)
   }
 
   public toArray() {
@@ -71,11 +78,19 @@ export class RingBuffer<T extends Lengthwise> {
     return this.end - this.start
   }
 
+  public last(): T | undefined {
+    return this.items[this.end - 1]
+  }
+
   public add(item: T) {
     const size = item.length
     this.enforceCapacityConstraints(size)
     this.usage += size
     this.items[this.end] = item
     this.end += 1
+
+    if (this.end > 10 * this.maxItems) {
+      this.compact()
+    }
   }
 }

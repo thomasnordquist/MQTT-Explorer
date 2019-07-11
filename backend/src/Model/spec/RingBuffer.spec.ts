@@ -16,6 +16,19 @@ describe('RingBuffer', () => {
     expect(b.toArray()[1]).to.eq('world')
   })
 
+  it('should compact array', () => {
+    const b = new RingBuffer(Infinity, 1, 3)
+    b.add('1')
+    expect((b as any).items[0]).to.eq('1')
+    b.add('2')
+    expect((b as any).items[0]).to.eq(undefined)
+    expect((b as any).items[1]).to.eq('2')
+
+    // Expect the third item to be at index 0
+    b.add('3')
+    expect((b as any).items[2]).to.eq('3')
+  })
+
   it('should remove old values if buffer size is reached', () => {
     const b = new RingBuffer(6)
     b.add('hello')
