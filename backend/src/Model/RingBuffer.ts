@@ -9,12 +9,12 @@ export class RingBuffer<T extends Lengthwise> {
   private items: Array<T> = []
   private start: number = 0
   private end: number = 0
-  private compactationFactor: number
+  private compactionFactor: number
 
-  constructor(capacity: number, maxItems = Infinity, compactationFactor: number = 10, ringBuffer?: RingBuffer<T>) {
+  constructor(capacity: number, maxItems = Infinity, compactionFactor: number = 10, ringBuffer?: RingBuffer<T>) {
     this.capacity = capacity
     this.maxItems = maxItems
-    this.compactationFactor = compactationFactor
+    this.compactionFactor = compactionFactor
 
     if (ringBuffer) {
       this.items = ringBuffer.toArray()
@@ -68,7 +68,7 @@ export class RingBuffer<T extends Lengthwise> {
   }
 
   public clone(): RingBuffer<T> {
-    return new RingBuffer(this.capacity, this.maxItems, this.compactationFactor, this)
+    return new RingBuffer(this.capacity, this.maxItems, this.compactionFactor, this)
   }
 
   public toArray() {
