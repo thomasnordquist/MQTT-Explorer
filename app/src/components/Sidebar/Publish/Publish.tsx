@@ -3,7 +3,8 @@ import FormatAlignLeft from '@material-ui/icons/FormatAlignLeft'
 import Message from './Model/Message'
 import Navigation from '@material-ui/icons/Navigation'
 import PublishHistory from './PublishHistory'
-import React, { useCallback, useState, useMemo } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
+import RetainSwitch from './RetainSwitch'
 import TopicInput from './TopicInput'
 import { AppState } from '../../../reducers'
 import { bindActionCreators } from 'redux'
@@ -12,7 +13,6 @@ import { connect } from 'react-redux'
 import { EditorModeSelect } from './EditorModeSelect'
 import { globalActions, publishActions } from '../../../actions'
 import { KeyCodes } from '../../../utils/KeyCodes'
-import RetainSwitch from './RetainSwitch'
 
 interface Props {
   connectionId?: string
@@ -41,13 +41,7 @@ function useHistory(): [Array<Message>, (topic: string, payload?: string) => voi
 }
 
 function Publish(props: Props) {
-  console.log(props.connectionId)
-  const updatePayload = props.actions.setPayload
   const [history, amendToHistory] = useHistory()
-
-  const updateMode = useCallback((e: React.ChangeEvent<{}>, value: string) => {
-    props.actions.setEditorMode(value)
-  }, [])
 
   const publish = useCallback(() => {
     if (!props.connectionId) {
@@ -62,65 +56,6 @@ function Publish(props: Props) {
       amendToHistory(topic, payload)
     }
   }, [props, props.connectionId, props.topic, props.payload, amendToHistory])
-
-  const handleClickPublish = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation()
-      publish()
-    },
-    [publish]
-  )
-
-  const PublishButton = () => {
-    return (
-      <Button variant="contained" size="small" color="primary" onClick={handleClickPublish} id="publish-button">
-        <Navigation style={{ marginRight: '8px' }} /> Publish
-      </Button>
-    )
-  }
-
-  const formatJson = () => {
-    if (props.payload) {
-      try {
-        const str = JSON.stringify(JSON.parse(props.payload), undefined, '  ')
-        updatePayload(str)
-      } catch (error) {
-        props.globalActions.showError(`Format error: ${error.message}`)
-      }
-    }
-  }
-
-  const renderFormatJson = () => {
-    if (props.editorMode !== 'json') {
-      return null
-    }
-
-    return (
-      <Tooltip title="Format JSON">
-        <Fab
-          style={{ width: '36px', height: '36px', marginLeft: '8px' }}
-          onClick={formatJson}
-          id="sidebar-publish-format-json"
-        >
-          <FormatAlignLeft style={{ fontSize: '20px' }} />
-        </Fab>
-      </Tooltip>
-    )
-  }
-
-  function EditorMode() {
-    return (
-      <div style={{ marginTop: '16px' }}>
-        <div style={{ width: '100%', lineHeight: '64px' }}>
-          <EditorModeSelect value={props.editorMode} onChange={updateMode} />
-          {renderFormatJson()}
-          <div style={{ float: 'right', marginRight: '16px' }}>
-            <PublishButton />
-          </div>
-        </div>
-      </div>
-    )
-  }
 
   const handleSubmit = useCallback(
     (e: React.KeyboardEvent) => {
@@ -138,14 +73,97 @@ function Publish(props: Props) {
       <div style={{ flexGrow: 1, marginLeft: '8px' }} onKeyDown={handleSubmit}>
         <TopicInput />
         <div style={{ width: '100%', display: 'block' }}>
-          <EditorMode />
-          <Editor value={props.payload} editorMode={props.editorMode} onChange={updatePayload} />
+          <EditorMode
+            actions={props.actions}
+            globalActions={props.globalActions}
+            payload={props.payload}
+            editorMode={props.editorMode}
+            publish={publish}
+          />
+          <Editor value={props.payload} editorMode={props.editorMode} onChange={props.actions.setPayload} />
           <RetainSwitch />
         </div>
         <PublishHistory history={history} />
       </div>
     ),
-    [props.payload, props.editorMode, history, handleSubmit, updatePayload]
+    [props.payload, props.editorMode, history, handleSubmit, publish]
+  )
+}
+
+function EditorMode(props: {
+  payload?: string
+  editorMode: string
+  actions: typeof publishActions
+  globalActions: typeof globalActions
+  publish: () => void
+}) {
+  const updatePayload = props.actions.setPayload
+
+  const updateMode = useCallback((e: React.ChangeEvent<{}>, value: string) => {
+    props.actions.setEditorMode(value)
+  }, [])
+
+  const formatJson = useCallback(() => {
+    if (props.payload) {
+      try {
+        const str = JSON.stringify(JSON.parse(props.payload), undefined, '  ')
+        updatePayload(str)
+      } catch (error) {
+        props.globalActions.showError(`Format error: ${error.message}`)
+      }
+    }
+  }, [props.payload])
+
+  const renderFormatJson = useCallback(() => {
+    if (props.editorMode !== 'json') {
+      return null
+    }
+
+    return (
+      <Tooltip title="Format JSON">
+        <Fab
+          style={{ width: '36px', height: '36px', marginLeft: '8px' }}
+          onClick={formatJson}
+          id="sidebar-publish-format-json"
+        >
+          <FormatAlignLeft style={{ fontSize: '20px' }} />
+        </Fab>
+      </Tooltip>
+    )
+  }, [formatJson, props.editorMode, props.publish])
+
+  return useMemo(
+    () => (
+      <div style={{ marginTop: '16px' }}>
+        <div style={{ width: '100%', lineHeight: '64px' }}>
+          <EditorModeSelect value={props.editorMode} onChange={updateMode} />
+          {renderFormatJson()}
+          <div style={{ float: 'right', marginRight: '16px' }}>
+            <PublishButton publish={props.publish} />
+          </div>
+        </div>
+      </div>
+    ),
+    [props.editorMode, renderFormatJson]
+  )
+}
+
+const PublishButton = (props: { publish: () => void }) => {
+  const handleClickPublish = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation()
+      props.publish()
+    },
+    [props.publish]
+  )
+
+  return useMemo(
+    () => (
+      <Button variant="contained" size="small" color="primary" onClick={handleClickPublish} id="publish-button">
+        <Navigation style={{ marginRight: '8px' }} /> Publish
+      </Button>
+    ),
+    [handleClickPublish]
   )
 }
 

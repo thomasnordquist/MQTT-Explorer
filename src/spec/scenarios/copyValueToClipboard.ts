@@ -1,7 +1,7 @@
-import { Browser, Element } from 'webdriverio'
-import { clickOn, expandTopic, sleep, writeText } from '../util'
+import { Browser } from 'webdriverio'
+import { clickOn } from '../util'
 
 export async function copyValueToClipboard(browser: Browser) {
-  const copyButton = await browser.$('//p[contains(text(), "Value")]//button')
+  const copyButton = await browser.$('//span[contains(text(), "Value")]//button')
   await clickOn(copyButton, browser, 1)
 }

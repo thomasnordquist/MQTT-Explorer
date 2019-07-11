@@ -27,16 +27,17 @@ interface Props {
 interface State {
   displayMessage?: q.Message
   anchorEl?: HTMLElement
+  lastUpdate: number
 }
 
-class MessageHistory extends React.Component<Props, State> {
+class MessageHistory extends React.PureComponent<Props, State> {
   private updateNode = throttle(() => {
-    this.setState(this.state)
+    this.setState({ lastUpdate: Date.now() })
   }, 300)
 
   constructor(props: any) {
     super(props)
-    this.state = {}
+    this.state = { lastUpdate: 0 }
   }
 
   private addNodeToCharts = (event: React.MouseEvent) => {

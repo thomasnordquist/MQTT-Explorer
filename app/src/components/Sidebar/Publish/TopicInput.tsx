@@ -1,5 +1,5 @@
 import ClearAdornment from '../../helper/ClearAdornment'
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { FormControl, Input, InputLabel } from '@material-ui/core'
 import { publishActions } from '../../../actions'
 import { bindActionCreators } from 'redux'
@@ -7,7 +7,6 @@ import { AppState } from '../../../reducers'
 import { connect } from 'react-redux'
 
 function TopicInput(props: { actions: typeof publishActions; topic?: string }) {
-  console.log(props.topic)
   const updateTopic = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     props.actions.setTopic(e.target.value)
   }, [])
@@ -23,22 +22,26 @@ function TopicInput(props: { actions: typeof publishActions; topic?: string }) {
   }, [])
 
   const topicStr = props.topic || ''
-  return (
-    <div>
-      <FormControl style={{ width: '100%' }}>
-        <InputLabel htmlFor="publish-topic">Topic</InputLabel>
-        <Input
-          id="publish-topic"
-          value={topicStr}
-          startAdornment={<span />}
-          endAdornment={<ClearAdornment action={clearTopic} value={topicStr} />}
-          onBlur={onTopicBlur}
-          onChange={updateTopic}
-          multiline={true}
-          placeholder="example/topic"
-        />
-      </FormControl>
-    </div>
+
+  return useMemo(
+    () => (
+      <div>
+        <FormControl style={{ width: '100%' }}>
+          <InputLabel htmlFor="publish-topic">Topic</InputLabel>
+          <Input
+            id="publish-topic"
+            value={topicStr}
+            startAdornment={<span />}
+            endAdornment={<ClearAdornment action={clearTopic} value={topicStr} />}
+            onBlur={onTopicBlur}
+            onChange={updateTopic}
+            multiline={false}
+            placeholder="example/topic"
+          />
+        </FormControl>
+      </div>
+    ),
+    [topicStr]
   )
 }
 

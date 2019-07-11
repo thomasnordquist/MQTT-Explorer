@@ -54,9 +54,7 @@ function Sidebar(props: Props) {
         <ValuePanel lastUpdate={node ? node.lastUpdate : 0} />
         <Panel>
           <span>Publish</span>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <Publish connectionId={props.connectionId} />
-          </React.Suspense>
+          <Publish connectionId={props.connectionId} />
         </Panel>
         <Panel detailsHidden={!node}>
           <span>Stats</span>
