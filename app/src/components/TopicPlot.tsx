@@ -49,7 +49,7 @@ function nodeDotPathToHistory(startTime: number | undefined, history: q.MessageH
     .filter(data => !isNaN(data.y as any)) as any
 }
 
-function render(props: Props) {
+function TopicPlot(props: Props) {
   const startOffset = props.timeInterval ? parseDuration(props.timeInterval) : undefined
   const data = props.dotPath
     ? nodeDotPathToHistory(startOffset, props.history, props.dotPath)
@@ -66,4 +66,4 @@ function render(props: Props) {
   )
 }
 
-export default render
+export default TopicPlot

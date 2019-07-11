@@ -19,7 +19,7 @@ interface Props {
 }
 
 /**
- * Subscribes to onMessages keeping track of additional data points
+ * Subscribes to onMessages, stores more data points then the default
  */
 function useMessageSubscriptionToUpdate(treeNode?: q.TreeNode<any>) {
   const [lastUpdated, setLastUpdate] = useState(0)
@@ -56,11 +56,12 @@ function Chart(props: Props) {
   const messageHistory = useMessageSubscriptionToUpdate(treeNode)
 
   const togglePause = React.useCallback(() => {
-    if (!props.treeNode) {
+    if (!treeNode) {
       return
     }
+
     setFrozenHistory(frozenHistory ? undefined : messageHistory && messageHistory.clone())
-  }, [props.treeNode, frozenHistory])
+  }, [props.treeNode, frozenHistory, messageHistory])
 
   const onRemove = React.useCallback(() => {
     props.actions.chart.removeChart(props.parameters)

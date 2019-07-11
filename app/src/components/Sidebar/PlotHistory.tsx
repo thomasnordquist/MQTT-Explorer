@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import DateFormatter from '../helper/DateFormatter'
 import { default as ReactResizeDetector } from 'react-resize-detector'
 import { PlotCurveTypes } from '../../reducers/Charts'
@@ -6,8 +6,10 @@ import { Theme, withTheme } from '@material-ui/core'
 import 'react-vis/dist/style.css'
 const { XYPlot, LineMarkSeries, Hint, XAxis, YAxis, HorizontalGridLines } = require('react-vis')
 const abbreviate = require('number-abbreviate')
+import Portal from '@material-ui/core/Portal'
+import { useCustomXDomain } from './useCustomXDomain'
 
-interface Props {
+export interface Props {
   data: Array<{ x: number; y: number }>
   theme: Theme
   interpolation?: PlotCurveTypes
@@ -53,14 +55,14 @@ export default withTheme((props: Props) => {
     setTooltip({ value })
   }, [])
 
+  const xDomain = useCustomXDomain(props)
+
   return React.useMemo(() => {
     const data = props.data
     const calculatedDomain = domainForData(data)
     const yDomain: [number, number] = props.range
       ? [props.range[0] || calculatedDomain[0], props.range[1] || calculatedDomain[1]]
       : calculatedDomain
-
-    const xDomain = props.timeRangeStart ? [Date.now() - props.timeRangeStart, Date.now()] : undefined
 
     let color: string =
       props.theme.palette.type === 'light' ? props.theme.palette.secondary.dark : props.theme.palette.primary.light
@@ -87,7 +89,7 @@ export default withTheme((props: Props) => {
         <ReactResizeDetector handleWidth={true} onResize={detectResize} />
       </div>
     )
-  }, [width, props.data, tooltip, props.interpolation, props.range, props.color, props.theme])
+  }, [width, props.data, tooltip, props.interpolation, props.range, props.color, props.theme, xDomain])
 })
 
 function domainForData(data: Array<{ x: number; y: number }>): [number, number] {
