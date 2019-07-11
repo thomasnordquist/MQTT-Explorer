@@ -11,6 +11,7 @@ import { useAnimationToIndicateTopicUpdate } from './effects/useAnimationToIndic
 import { useDeleteKeyCallback } from './effects/useDeleteKeyCallback'
 import { useIsAllowedToAutoExpandState } from './effects/useIsAllowedToAutoExpandState'
 import { useViewModelSubscriptions } from './effects/useViewModelSubscriptions'
+import { useSelectionState } from './useSelectionState'
 
 export interface Props {
   isRoot?: boolean
@@ -29,7 +30,7 @@ export interface Props {
 function TreeNodeComponent(props: Props) {
   const { actions, classes, className, settings, theme, treeNode, lastUpdate, name } = props
   const [collapsedOverride, setCollapsedOverride] = useState<boolean | undefined>(undefined)
-  const [selected, setSelected] = useState(false)
+  const [selected, selectionLastUpdate, setSelected] = useSelectionState(false)
   const nodeRef = useRef<HTMLDivElement>()
   const isAllowedToAutoExpand = useIsAllowedToAutoExpandState(props)
   const deleteTopicCallback = useDeleteKeyCallback(treeNode, actions)
@@ -42,6 +43,7 @@ function TreeNodeComponent(props: Props) {
     lastUpdate,
     animationClass,
     selected,
+    selectionLastUpdate,
     settings.get('highlightTopicUpdates')
   )
 

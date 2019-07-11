@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react'
-var inViewport = require('in-viewport')
+const inViewport = require('in-viewport')
 
 export function useAnimationToIndicateTopicUpdate(
   ref: React.MutableRefObject<HTMLDivElement | undefined>,
   lastUpdate: number,
   className: string,
   selected: boolean,
+  selectionLastUpdate: number,
   shouldAnimate: boolean
 ) {
   useEffect(() => {
-    if (ref.current && shouldAnimate && Date.now() - lastUpdate < 3000 && !selected) {
+    const selectionDidChange = Date.now() - selectionLastUpdate < 500
+    if (ref.current && shouldAnimate && Date.now() - lastUpdate < 3000 && !selected && !selectionDidChange) {
       if (!inViewport(ref.current)) {
         return
       }
@@ -32,5 +34,5 @@ export function useAnimationToIndicateTopicUpdate(
         animationFrame && cancelAnimationFrame(animationFrame)
       }
     }
-  }, [lastUpdate, selected, shouldAnimate, className])
+  }, [lastUpdate, selected, selectionLastUpdate, shouldAnimate, className])
 }
