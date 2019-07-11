@@ -135,4 +135,10 @@ function TreeNodeComponent(props: Props) {
   }, [treeNode.lastUpdate, treeNode, name, isCollapsed, selected, theme])
 }
 
-export default withStyles(styles, { withTheme: true })(TreeNodeComponent)
+class TreeNodeComponentFasterReconciliationWrapper extends React.PureComponent<Props, {}> {
+  public render() {
+    return <TreeNodeComponent {...this.props} />
+  }
+}
+
+export default withStyles(styles, { withTheme: true })(TreeNodeComponentFasterReconciliationWrapper)
