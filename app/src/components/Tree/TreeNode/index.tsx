@@ -11,7 +11,7 @@ import { useAnimationToIndicateTopicUpdate } from './effects/useAnimationToIndic
 import { useDeleteKeyCallback } from './effects/useDeleteKeyCallback'
 import { useIsAllowedToAutoExpandState } from './effects/useIsAllowedToAutoExpandState'
 import { useViewModelSubscriptions } from './effects/useViewModelSubscriptions'
-import { useSelectionState } from './useSelectionState'
+import { useSelectionState } from './effects/useSelectionState'
 
 export interface Props {
   isRoot?: boolean
@@ -86,7 +86,7 @@ function TreeNodeComponent(props: Props) {
         didSelectTopic()
       }
     },
-    [didSelectTopic]
+    [didSelectTopic, settings]
   )
 
   useEffect(() => {
@@ -134,7 +134,7 @@ function TreeNodeComponent(props: Props) {
         {renderNodes()}
       </div>
     )
-  }, [treeNode.lastUpdate, treeNode, name, isCollapsed, selected, theme])
+  }, [treeNode.lastUpdate, treeNode, name, isCollapsed, selected, theme, mouseOver, settings])
 }
 
 class TreeNodeComponentFasterReconciliationWrapper extends React.PureComponent<Props, {}> {
