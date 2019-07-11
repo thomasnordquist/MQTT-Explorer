@@ -7,3 +7,5 @@ build
 test.dot
 test.png
 .awcache
+.scannerwork
+screen*.png
