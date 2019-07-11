@@ -11,7 +11,7 @@ import {
 
 export async function publishTopic(browser: Browser) {
   await expandTopic('kitchen/lamp/state', browser)
-  const topicInput = await browser.$('//textarea[contains(text(),"kitchen/lamp/state")][1]')
+  const topicInput = await browser.$('//input[contains(@value,"kitchen/lamp/state")][1]')
   await clickOn(topicInput, browser)
   await deleteTextWithBackspaces(topicInput, browser, 120, 5)
   await writeText('set', browser, 300)
