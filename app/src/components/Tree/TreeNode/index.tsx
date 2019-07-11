@@ -48,10 +48,6 @@ function TreeNodeComponent(props: Props) {
   const isCollapsed =
     Boolean(collapsedOverride) === collapsedOverride ? Boolean(collapsedOverride) : !isAllowedToAutoExpand
 
-  const toggle = useCallback(() => {
-    setCollapsedOverride(!isCollapsed)
-  }, [isCollapsed])
-
   const didSelectTopic = useCallback(
     (event?: React.MouseEvent) => {
       event && event.stopPropagation()
@@ -64,17 +60,17 @@ function TreeNodeComponent(props: Props) {
     (event: React.MouseEvent) => {
       event.stopPropagation()
       didSelectTopic()
-      toggle()
+      setCollapsedOverride(!isCollapsed)
     },
-    [toggle, didSelectTopic]
+    [isCollapsed, didSelectTopic]
   )
 
   const toggleCollapsed = useCallback(
     (event: React.MouseEvent) => {
       event.stopPropagation()
-      toggle()
+      setCollapsedOverride(!isCollapsed)
     },
-    [toggle]
+    [isCollapsed]
   )
 
   const didObtainFocus = useCallback(() => {

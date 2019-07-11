@@ -29,7 +29,7 @@ function useStagedRendering(treeNode: q.TreeNode<any>) {
     if (alreadyAdded < edges.length) {
       renderMoreAnimationFrame = (window as any).requestIdleCallback(
         () => {
-          setAlreadyAdded(alreadyAdded * 1.5)
+          setAlreadyAdded(Math.max(25, alreadyAdded * 1.5))
         },
         { timeout: 500 }
       )

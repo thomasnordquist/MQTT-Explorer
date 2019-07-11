@@ -12,7 +12,11 @@ export class Tree<ViewModel extends Destroyable> extends TreeNode<ViewModel> {
   public isTree = true
   private cachedHash = `${Math.random()}`
   private unmergedMessages: ChangeBuffer = new ChangeBuffer()
-  public didReceive = new EventDispatcher<void>()
+  public didUpdate = new EventDispatcher<void>()
+
+  public updateInterval: any
+  private paused: boolean = false
+  private applyChangesHasCompleted = true
 
   constructor() {
     super(undefined, undefined)
@@ -20,14 +24,27 @@ export class Tree<ViewModel extends Destroyable> extends TreeNode<ViewModel> {
 
   private handleNewData = (msg: MqttMessage) => {
     this.unmergedMessages.push(msg)
-    this.didReceive.dispatch()
+  }
+
+  private runUpdates() {
+    this.updateInterval = setInterval(() => {
+      if (!this.paused && this.applyChangesHasCompleted) {
+        this.applyChangesHasCompleted = false
+        if ((window as any).requestIdleCallback) {
+          ;(window as any).requestIdleCallback(() => this.applyUnmergedChanges(), { timeout: 500 })
+        } else {
+          this.applyUnmergedChanges()
+        }
+      }
+    }, 300)
   }
 
   public destroy() {
     super.destroy()
+    this.updateInterval && clearInterval(this.updateInterval)
     this.updateSource && this.updateSource.unsubscribe(this.subscriptionEvent, this.handleNewData)
     this.updateSource = undefined
-    this.didReceive.removeAllListeners()
+    this.didUpdate.removeAllListeners()
   }
 
   public updateWithConnection(
@@ -41,10 +58,19 @@ export class Tree<ViewModel extends Destroyable> extends TreeNode<ViewModel> {
 
     this.subscriptionEvent = makeConnectionMessageEvent(connectionId)
     this.updateSource.subscribe(this.subscriptionEvent, this.handleNewData)
+    this.runUpdates()
   }
 
   public hash() {
     return this.cachedHash
+  }
+
+  public pause() {
+    this.paused = true
+  }
+
+  public resume() {
+    this.paused = false
   }
 
   public applyUnmergedChanges() {
@@ -61,6 +87,9 @@ export class Tree<ViewModel extends Destroyable> extends TreeNode<ViewModel> {
         this.updateWithNode(node.firstNode())
       }
     })
+
+    this.didUpdate.dispatch()
+    this.applyChangesHasCompleted = true
   }
 
   public unmergedChanges(): ChangeBuffer {

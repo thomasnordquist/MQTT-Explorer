@@ -4,11 +4,10 @@ import TreeNode from './TreeNode'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { KeyCodes } from '../../utils/KeyCodes'
 import { SettingsState } from '../../reducers/Settings'
 import { TopicViewModel } from '../../model/TopicViewModel'
 import { treeActions } from '../../actions'
-import { KeyCodes } from '../../utils/KeyCodes'
-
 const MovingAverage = require('moving-average')
 
 const averagingTimeInterval = 10 * 1000
@@ -70,17 +69,17 @@ class TreeComponent extends React.PureComponent<Props, State> {
   public componentWillReceiveProps(nextProps: Props) {
     if (this.props.tree !== nextProps.tree) {
       if (this.props.tree) {
-        this.props.tree.didReceive.unsubscribe(this.throttledTreeUpdate)
+        this.props.tree.didUpdate.unsubscribe(this.throttledTreeUpdate)
       }
       if (nextProps.tree) {
-        nextProps.tree.didReceive.subscribe(this.throttledTreeUpdate)
+        nextProps.tree.didUpdate.subscribe(this.throttledTreeUpdate)
       }
       this.setState(this.state)
     }
   }
 
   public componentWillUnmount() {
-    this.props.tree && this.props.tree.didReceive.unsubscribe(this.throttledTreeUpdate)
+    this.props.tree && this.props.tree.didUpdate.unsubscribe(this.throttledTreeUpdate)
   }
 
   public throttledTreeUpdate = () => {
@@ -99,9 +98,6 @@ class TreeComponent extends React.PureComponent<Props, State> {
           this.updateTimer = undefined
           this.renderTime = performance.now()
 
-          if (!this.props.paused && this.props.tree) {
-            this.props.tree.applyUnmergedChanges()
-          }
           window.requestIdleCallback(
             () => {
               this.setState({ lastUpdate: this.renderTime })

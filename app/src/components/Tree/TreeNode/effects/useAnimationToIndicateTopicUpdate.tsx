@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+var inViewport = require('in-viewport')
 
 export function useAnimationToIndicateTopicUpdate(
   ref: React.MutableRefObject<HTMLDivElement | undefined>,
@@ -9,6 +10,10 @@ export function useAnimationToIndicateTopicUpdate(
 ) {
   useEffect(() => {
     if (ref.current && shouldAnimate && Date.now() - lastUpdate < 3000 && !selected) {
+      if (!inViewport(ref.current)) {
+        return
+      }
+
       let timeout: any
       let animationFrame = requestAnimationFrame(() => {
         ref.current && ref.current.classList.add(className)
