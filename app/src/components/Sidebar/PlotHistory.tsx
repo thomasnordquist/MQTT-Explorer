@@ -1,16 +1,13 @@
 import DateFormatter from '../helper/DateFormatter'
 import NumberFormatter from '../helper/NumberFormatter'
-import Portal from '@material-ui/core/Portal'
-import React, { useRef, useCallback, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { default as ReactResizeDetector } from 'react-resize-detector'
+import { emphasize, fade } from '@material-ui/core/styles'
+import { Paper, Popper, Theme, Typography, withTheme } from '@material-ui/core'
 import { PlotCurveTypes } from '../../reducers/Charts'
-import { Theme, Typography, withTheme, Popper, Paper } from '@material-ui/core'
 import { useCustomXDomain } from './useCustomXDomain'
 import 'react-vis/dist/style.css'
-import { number } from 'prop-types'
-import { fade } from '@material-ui/core/styles'
-import { toggleAdvancedSettings } from '../../actions/ConnectionManager'
-const { XYPlot, LineMarkSeries, Hint, XAxis, YAxis, HorizontalGridLines, Highlight, MouseEvent } = require('react-vis')
+const { XYPlot, LineMarkSeries, Hint, YAxis, HorizontalGridLines } = require('react-vis')
 const abbreviate = require('number-abbreviate')
 
 export interface Props {
@@ -48,10 +45,15 @@ function useToggle(initialState: boolean): [boolean, () => void, (value: boolean
   return [value, toggle, setValue]
 }
 
+interface Point {
+  x: any
+  y: any
+}
+
 export default withTheme((props: Props) => {
   const [hintStaysOpen, toggleHintStaysOpen, setStaysOpen] = useToggle(false)
   const [width, setWidth] = React.useState(300)
-  const [tooltip, setTooltip] = React.useState<{ value: any; element: any } | undefined>()
+  const [tooltip, setTooltip] = React.useState<{ value: any; point: Point; element: any } | undefined>()
   const detectResize = React.useCallback(newWidth => setWidth(newWidth), [])
 
   const hintFormatter = React.useCallback((point: any) => {
@@ -62,33 +64,31 @@ export default withTheme((props: Props) => {
     ]
   }, [])
 
-  const hideTooltip = React.useCallback(() => {
-    if (!hintStaysOpen) {
-      setTooltip(undefined)
-    }
-  }, [hintStaysOpen])
-
   const onMouseLeave = React.useCallback(() => {
     setStaysOpen(false)
     setTooltip(undefined)
   }, [])
 
-  const showTooltip = React.useCallback((value: any, something: { event: MouseEvent }) => {
+  const showTooltip = React.useCallback((point: Point, something: { event: MouseEvent }) => {
     if (!something) {
       return
     }
-    setTooltip({ value: hintFormatter(value), element: something.event.target })
+    setTooltip({ point, value: hintFormatter(point), element: something.event.target })
   }, [])
 
-  const onValueClick = React.useCallback(
-    (value: any, something: { event: MouseEvent }) => {
-      toggleHintStaysOpen()
-      console.log('onValueClick')
+  const paletteColor =
+    props.theme.palette.type === 'light' ? props.theme.palette.secondary.dark : props.theme.palette.primary.light
+  const color = props.color ? props.color : paletteColor
 
-      showTooltip(value, something)
+  const highlightSelectedPoint = useCallback(
+    (point: Point) => {
+      const highlight = tooltip && tooltip.point.x === point.x && tooltip.point.y === point.y
+      return highlight ? emphasize(color, 0.8) : color
     },
-    [toggleHintStaysOpen]
+    [tooltip, color]
   )
+
+  const getAnchorElement = useCallback(() => tooltip && tooltip.element, [tooltip])
 
   const xDomain = useCustomXDomain(props)
 
@@ -98,12 +98,6 @@ export default withTheme((props: Props) => {
     const yDomain: [number, number] = props.range
       ? [props.range[0] || calculatedDomain[0], props.range[1] || calculatedDomain[1]]
       : calculatedDomain
-
-    let color: string =
-      props.theme.palette.type === 'light' ? props.theme.palette.secondary.dark : props.theme.palette.primary.light
-    if (props.color) {
-      color = props.color
-    }
 
     const hasData = data.length > 0
     const dummyDomain = [-1, 1]
@@ -122,16 +116,20 @@ export default withTheme((props: Props) => {
             <HorizontalGridLines />
             <YAxis width={45} tickFormat={(num: number) => abbreviate(num)} />
             <LineMarkSeries
-              color={color}
+              colorType="literal"
+              getColor={highlightSelectedPoint}
               onValueMouseOver={showTooltip}
-              onValueMouseOut={hideTooltip}
-              onValueClick={onValueClick}
               size={3}
               data={hasData ? data : dummyData}
               curve={mapCurveType(props.interpolation)}
             />
-            <Hint value={{}}>
-              <Popper open={Boolean(tooltip)} placement="top" anchorEl={tooltip && tooltip.element}>
+            <Hint
+              value={{}}
+              style={{
+                pointerEvents: 'none',
+              }}
+            >
+              <Popper open={Boolean(tooltip)} placement="top" anchorEl={getAnchorElement}>
                 <div
                   style={{
                     paddingBottom: '8px',
