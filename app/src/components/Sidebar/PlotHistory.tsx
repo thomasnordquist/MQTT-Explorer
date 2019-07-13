@@ -89,6 +89,7 @@ export default withTheme((props: Props) => {
   )
 
   const getAnchorElement = useCallback(() => tooltip && tooltip.element, [tooltip])
+  const formatYAxis = useCallback((num: number) => abbreviate(num), [])
 
   const xDomain = useCustomXDomain(props)
 
@@ -114,8 +115,9 @@ export default withTheme((props: Props) => {
             onMouseLeave={onMouseLeave}
           >
             <HorizontalGridLines />
-            <YAxis width={45} tickFormat={(num: number) => abbreviate(num)} />
+            <YAxis width={45} tickFormat={formatYAxis} />
             <LineMarkSeries
+              color={color}
               colorType="literal"
               getColor={highlightSelectedPoint}
               onValueMouseOver={showTooltip}
@@ -129,7 +131,7 @@ export default withTheme((props: Props) => {
                 pointerEvents: 'none',
               }}
             >
-              <Popper open={Boolean(tooltip)} placement="top" anchorEl={getAnchorElement}>
+              <Popper open={Boolean(tooltip)} placement="top" anchorEl={getAnchorElement()}>
                 <div
                   style={{
                     paddingBottom: '8px',
