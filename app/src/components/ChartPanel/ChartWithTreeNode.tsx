@@ -1,6 +1,6 @@
 import * as q from '../../../../backend/src/Model'
 import React from 'react'
-import Chart from './Chart'
+import TopicChart from './TopicChart'
 import { ChartParameters } from '../../reducers/Charts'
 import { usePollingToFetchTreeNode } from '../helper/usePollingToFetchTreeNode'
 
@@ -16,5 +16,5 @@ export function ChartWithTreeNode(props: Props) {
   }
 
   const treeNode = usePollingToFetchTreeNode(tree, parameters.topic)
-  return <Chart treeNode={treeNode} parameters={parameters} />
+  return <TopicChart treeNode={treeNode} parameters={parameters} />
 }

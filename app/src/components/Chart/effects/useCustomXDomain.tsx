@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Props } from './PlotHistory'
+import { Props } from '../Chart'
 
 export function useCustomXDomain(props: Props): [number, number] | undefined {
   return useMemo(() => {

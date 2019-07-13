@@ -46,8 +46,8 @@ export const styles = (theme: Theme) => {
       display: 'inline-block' as 'inline-block',
       whiteSpace: 'nowrap' as 'nowrap',
       height: '14px',
-      padding: '0 4px',
-      margin: '1px 0px 2px 0px',
+      padding: '1px 4px 0 4px',
+      margin: '1px 0px',
       '&:hover': {
         backgroundColor: theme.palette.type === 'light' ? blueGrey[100] : theme.palette.primary.light,
       },

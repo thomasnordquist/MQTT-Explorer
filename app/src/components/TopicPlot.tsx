@@ -1,7 +1,7 @@
 import * as dotProp from 'dot-prop'
 import * as q from '../../../backend/src/Model'
 import * as React from 'react'
-import PlotHistory from './Sidebar/PlotHistory'
+import PlotHistory from './Chart/Chart'
 import { Base64Message } from '../../../backend/src/Model/Base64Message'
 import { toPlottableValue } from './Sidebar/CodeDiff/util'
 import { PlotCurveTypes } from '../reducers/Charts'

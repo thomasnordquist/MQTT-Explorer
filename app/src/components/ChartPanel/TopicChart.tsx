@@ -51,7 +51,7 @@ function useMessageSubscriptionToUpdate(treeNode?: q.TreeNode<any>) {
   return messageHistory
 }
 
-function Chart(props: Props) {
+function TopicChart(props: Props) {
   const { parameters, treeNode } = props
   const [frozenHistory, setFrozenHistory] = React.useState<q.MessageHistory | undefined>()
   const messageHistory = useMessageSubscriptionToUpdate(treeNode)
@@ -108,4 +108,4 @@ const mapDispatchToProps = (dispatch: any) => {
 export default connect(
   undefined,
   mapDispatchToProps
-)(Chart)
+)(TopicChart)

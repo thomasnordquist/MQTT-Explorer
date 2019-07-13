@@ -23,6 +23,8 @@ interface State {
 }
 
 class HistoryDrawer extends React.Component<Props, State> {
+  private handleCtrlA = selectTextWithCtrlA({ targetSelector: 'pre' })
+
   constructor(props: any) {
     super(props)
     this.state = {
@@ -39,8 +41,6 @@ class HistoryDrawer extends React.Component<Props, State> {
     event.preventDefault()
     event.stopPropagation()
   }
-
-  private handleCtrlA = selectTextWithCtrlA({ targetSelector: 'pre' })
 
   public renderHistory() {
     const style = (element: HistoryItem) => ({
