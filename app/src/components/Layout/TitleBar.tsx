@@ -32,6 +32,8 @@ const styles = (theme: Theme) => ({
   },
   disconnect: {
     margin: 'auto 8px auto auto',
+  },
+  disconnectLabel: {
     color: theme.palette.primary.contrastText,
   },
 })
@@ -71,7 +73,11 @@ class TitleBar extends React.PureComponent<Props, {}> {
           </Typography>
           <SearchBar />
           <PauseButton />
-          <Button className={classes.disconnect} onClick={actions.connection.disconnect}>
+          <Button
+            className={classes.disconnect}
+            classes={{ label: classes.disconnectLabel }}
+            onClick={actions.connection.disconnect}
+          >
             Disconnect <CloudOff className={classes.disconnectIcon} />
           </Button>
           <ConnectionHealthIndicator withBackground={true} />
