@@ -1,11 +1,12 @@
-import * as React from 'react'
 import * as q from '../../../../../backend/src/Model'
-import { withStyles, Theme } from '@material-ui/core'
-import { TopicViewModel } from '../../../model/TopicViewModel'
+import React from 'react'
 import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
+import { Theme, withStyles } from '@material-ui/core'
+import { TopicViewModel } from '../../../model/TopicViewModel'
 
 export interface TreeNodeProps extends React.HTMLAttributes<HTMLElement> {
   treeNode: q.TreeNode<TopicViewModel>
+  lastUpdate: number
   name?: string | undefined
   collapsed?: boolean | undefined
   didSelectNode: any
@@ -13,7 +14,7 @@ export interface TreeNodeProps extends React.HTMLAttributes<HTMLElement> {
   classes: any
 }
 
-class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
+class TreeNodeTitle extends React.PureComponent<TreeNodeProps, {}> {
   private renderSourceEdge() {
     const name = this.props.name || (this.props.treeNode.sourceEdge && this.props.treeNode.sourceEdge.name)
 
@@ -24,13 +25,23 @@ class TreeNodeTitle extends React.Component<TreeNodeProps, {}> {
     )
   }
 
+  private truncatedMessage() {
+    const limit = 350
+    if (!this.props.treeNode.message || !this.props.treeNode.message.value) {
+      return ''
+    }
+
+    const str = Base64Message.toUnicodeString(this.props.treeNode.message.value)
+    return str.length > limit ? `${str.slice(0, limit)}…` : str
+  }
+
   private renderValue() {
     return this.props.treeNode.message &&
       this.props.treeNode.message.value &&
       this.props.treeNode.message.length > 0 ? (
       <span key="value" className={this.props.classes.value}>
         {' '}
-        = {Base64Message.toUnicodeString(this.props.treeNode.message.value).slice(0, 120)}
+        = {this.truncatedMessage()}
       </span>
     ) : null
   }

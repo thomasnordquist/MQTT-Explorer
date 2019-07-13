@@ -17,14 +17,15 @@ export const styles = (theme: Theme) => {
       color: theme.palette.text.secondary,
     },
     displayBlock: {
-      display: 'block',
+      display: 'block' as 'block',
     },
     node: {
-      display: 'block',
-      marginLeft: '10px',
-      '&:hover': {
-        backgroundColor: theme.palette.type === 'light' ? blueGrey[100] : theme.palette.primary.light,
-      },
+      display: 'block' as 'block',
+      width: '100%',
+      overflow: 'hidden' as 'hidden',
+      textOverflow: 'ellipsis' as 'ellipsis',
+      whiteSpace: 'nowrap' as 'nowrap',
+      padding: '1px 0px 0px 0px',
     },
     topicSelect: {
       float: 'right' as 'right',
@@ -44,9 +45,12 @@ export const styles = (theme: Theme) => {
       lineHeight: '1em',
       display: 'inline-block' as 'inline-block',
       whiteSpace: 'nowrap' as 'nowrap',
-      padding: '1px 4px 0px 4px',
       height: '14px',
+      padding: '0 4px',
       margin: '1px 0px 2px 0px',
+      '&:hover': {
+        backgroundColor: theme.palette.type === 'light' ? blueGrey[100] : theme.palette.primary.light,
+      },
     },
   }
 }

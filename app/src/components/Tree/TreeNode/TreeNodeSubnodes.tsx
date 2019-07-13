@@ -53,7 +53,6 @@ function TreeNodeSubnodes(props: Props) {
         <TreeNode
           key={`${node.hash()}-${props.filter}`}
           treeNode={node}
-          className={props.classes.listItem}
           lastUpdate={node.lastUpdate}
           selectTopicAction={props.selectTopicAction}
           settings={props.settings}

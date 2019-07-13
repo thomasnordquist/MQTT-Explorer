@@ -19,7 +19,6 @@ export interface Props {
   name?: string | undefined
   collapsed?: boolean | undefined
   classes: any
-  className?: string
   lastUpdate: number
   actions: typeof treeActions
   selectTopicAction: (treeNode: q.TreeNode<any>) => void
@@ -28,7 +27,7 @@ export interface Props {
 }
 
 function TreeNodeComponent(props: Props) {
-  const { actions, classes, className, settings, theme, treeNode, lastUpdate, name } = props
+  const { actions, classes, settings, theme, treeNode, lastUpdate, name } = props
   const [collapsedOverride, setCollapsedOverride] = useState<boolean | undefined>(undefined)
   const [selected, selectionLastUpdate, setSelected] = useSelectionState(false)
   const nodeRef = useRef<HTMLDivElement>()
@@ -112,25 +111,26 @@ function TreeNodeComponent(props: Props) {
 
     const highlightClass = selected ? classes.selected : ''
     return (
-      <div>
-        <div
+      <div className={classes.node}>
+        <span
+          ref={nodeRef as any}
           key={treeNode.hash()}
-          className={`${classes.node} ${className} ${highlightClass} ${classes.title}`}
+          className={`${classes.title} ${highlightClass}`}
           onMouseEnter={mouseOver}
           onFocus={didObtainFocus}
           onClick={didClickTitle}
-          ref={nodeRef as any}
           tabIndex={-1}
           onKeyDown={deleteTopicCallback}
         >
           <TreeNodeTitle
+            lastUpdate={treeNode.lastUpdate}
             toggleCollapsed={toggleCollapsed}
             didSelectNode={didSelectTopic}
             collapsed={isCollapsed}
             treeNode={treeNode}
             name={name}
           />
-        </div>
+        </span>
         {renderNodes()}
       </div>
     )
