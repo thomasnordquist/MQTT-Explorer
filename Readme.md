@@ -3,7 +3,7 @@
 [![Build_Status](https://travis-ci.org/thomasnordquist/MQTT-Explorer.svg?branch=master)](https://travis-ci.org/thomasnordquist/MQTT-Explorer)
 [![Build status](https://ci.appveyor.com/api/projects/status/c35tkm29rm4m5364/branch/master?svg=true)](https://ci.appveyor.com/project/thomasnordquist/mqtt-explorer/branch/master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/47b26e03fce543ceac7914214482334a)](https://app.codacy.com/app/thomasnordquist/MQTT-Explorer?utm_source=github.com&utm_medium=referral&utm_content=thomasnordquist/MQTT-Explorer&utm_campaign=Badge_Grade_Dashboard)
-
+<a href="#" onClick="a=window;a.location='ht'+'tps:'+'/'+'/pay'+'pal.me/'+'ThomasNordquist'"><img src="https://img.shields.io/badge/Sponsor-PayPal-Flat.svg?color=0070ba&logo=data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgICB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIKICAgIHZlcnNpb249IjEuMSIgYmFzZVByb2ZpbGU9ImZ1bGwiIHZpZXdCb3g9IjAgMCAyNCAzMiIgd2lkdGg9IjI0IiBoZWlnaHQ9IjMyIiA+CiAgICA8cGF0aCB0cmFuc2Zvcm09InNjYWxlKDIpIiBmaWxsPSIjZWE0YWFhIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik05IDJjLS45NyAwLTEuNjkuNDItMi4yIDEtLjUxLjU4LS43OC45Mi0uOCAxLS4wMi0uMDgtLjI4LS40Mi0uOC0xLS41Mi0uNTgtMS4xNy0xLTIuMi0xLTEuNjMyLjA4Ni0yLjk1NCAxLjMzMy0zIDMgMCAuNTIuMDkgMS41Mi42NyAyLjY3QzEuMjUgOC44MiAzLjAxIDEwLjYxIDYgMTNjMi45OC0yLjM5IDQuNzctNC4xNyA1LjM0LTUuMzNDMTEuOTEgNi41MSAxMiA1LjUgMTIgNWMtLjA0Ny0xLjY5LTEuMzQyLTIuOTEzLTMtM3oiPjwvcGF0aD4KPC9zdmc+Cgo=" /></a>
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="2500">
 <ol class="carousel-indicators">
 <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
