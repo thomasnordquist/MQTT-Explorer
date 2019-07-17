@@ -7,6 +7,7 @@ import { Theme, withStyles } from '@material-ui/core/styles'
 import { TopicViewModel } from '../../model/TopicViewModel'
 import { Typography } from '@material-ui/core'
 import { usePollingToFetchTreeNode } from '../helper/usePollingToFetchTreeNode'
+import { useUpdateComponentWhenNodeUpdates } from '../helper/useUpdateComponentWhenNodeUpdates'
 const abbreviate = require('number-abbreviate')
 
 interface Stats {
@@ -32,6 +33,7 @@ interface Props {
 function BrokerStatistics(props: Props) {
   const { tree, classes } = props
   const sysTopic = usePollingToFetchTreeNode(props.tree, '$SYS')
+  useUpdateComponentWhenNodeUpdates(sysTopic)
 
   return useMemo(() => {
     if (!Boolean(sysTopic)) {
