@@ -6,12 +6,12 @@ export const styles = (theme: Theme) => {
     animationLight: {
       willChange: 'auto',
       translateZ: 0,
-      animation: `updateLight 0.5s`,
+      animation: 'updateLight 0.5s',
     },
     animationDark: {
       willChange: 'auto',
       translateZ: 0,
-      animation: `updateLight 0.5s`,
+      animation: 'updateDark 0.5s',
     },
     collapsedSubnodes: {
       color: theme.palette.text.secondary,
