@@ -52,10 +52,6 @@ export class TreeNode<ViewModel extends Destroyable> {
     return this.sourceEdge ? this.sourceEdge.source || undefined : undefined
   }
 
-  public hasMessage() {
-    return this.message && this.message.value && this.message.value.length !== 0
-  }
-
   private isTopicEmptyLeaf() {
     return !this.hasMessage() && this.isLeaf()
   }
@@ -106,6 +102,10 @@ export class TreeNode<ViewModel extends Destroyable> {
     if (edgesDidUpdate) {
       this.onEdgesChange.dispatch()
     }
+  }
+
+  public hasMessage() {
+    return this.message && this.message.value && this.message.value.length !== 0
   }
 
   public destroy() {

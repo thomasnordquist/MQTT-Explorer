@@ -1,9 +1,10 @@
 import * as React from 'react'
-import { ChartParameters } from '../../../reducers/Charts'
-import { Menu, MenuItem, TextField, Typography } from '@material-ui/core'
-import { connect } from 'react-redux'
+import ArrowUpward from '@material-ui/icons/ArrowUpward'
 import { bindActionCreators } from 'redux'
 import { chartActions } from '../../../actions'
+import { ChartParameters } from '../../../reducers/Charts'
+import { connect } from 'react-redux'
+import { MenuItem, Typography, ListItemIcon } from '@material-ui/core'
 
 function MoveUp(props: { actions: { chart: typeof chartActions }; chart: ChartParameters; close: () => void }) {
   const moveUp = React.useCallback(() => {
@@ -16,7 +17,10 @@ function MoveUp(props: { actions: { chart: typeof chartActions }; chart: ChartPa
 
   return (
     <MenuItem key="size" onClick={moveUp}>
-      Move up
+      <ListItemIcon>
+        <ArrowUpward />
+      </ListItemIcon>
+      <Typography variant="inherit">Move up</Typography>
     </MenuItem>
   )
 }

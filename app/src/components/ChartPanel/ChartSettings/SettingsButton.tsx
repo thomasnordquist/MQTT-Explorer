@@ -4,9 +4,12 @@ import CustomIconButton from '../../helper/CustomIconButton'
 import MoreVertIcon from '@material-ui/icons/Settings'
 import { ChartParameters } from '../../../reducers/Charts'
 
-export function SettingsButton(props: { parameters: ChartParameters }) {
+export function SettingsButton(props: {
+  parameters: ChartParameters
+  resetDataAction: () => void
+  menuAnchor: React.MutableRefObject<undefined>
+}) {
   const [visible, setVisible] = React.useState(false)
-  const settingsRef = React.useRef()
   const toggleSettings = React.useCallback(() => {
     setVisible(!visible)
   }, [visible])
@@ -17,10 +20,15 @@ export function SettingsButton(props: { parameters: ChartParameters }) {
 
   return (
     <span>
-      <ChartSettings open={visible} close={close} anchorEl={settingsRef} chart={props.parameters} />
+      <ChartSettings
+        open={visible}
+        close={close}
+        anchorEl={props.menuAnchor}
+        chart={props.parameters}
+        resetDataAction={props.resetDataAction}
+      />
       <CustomIconButton tooltip="Chart settings" onClick={toggleSettings}>
         <MoreVertIcon
-          ref={settingsRef as any}
           data-test-type="ChartSettings"
           data-test={`${props.parameters.topic}-${props.parameters.dotPath || ''}`}
         />

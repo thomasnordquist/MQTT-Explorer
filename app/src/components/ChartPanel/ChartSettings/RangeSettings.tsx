@@ -56,8 +56,8 @@ function RangeSettings(props: Props) {
         onClose={props.onClose}
         onKeyDownCapture={handleKeyEvents}
       >
-        <Typography>Define custom ranges for the Y-Axis</Typography>
-        <div style={{ padding: '0 16px' }}>
+        <div style={{ padding: '0 16px', width: '275px' }}>
+          <Typography>Define custom ranges for the Y-Axis</Typography>
           <TextField
             inputProps={{
               ref: rangeFromRef,

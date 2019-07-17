@@ -24,16 +24,16 @@ function Size(props: {
   return (
     <Menu anchorEl={props.anchorEl} open={props.open} onClose={props.close}>
       <MenuItem selected={props.chart.width === undefined} onClick={setChartWidth()}>
-        auto
+        <Typography variant="inherit">auto</Typography>
       </MenuItem>
       <MenuItem selected={props.chart.width === 'big'} onClick={setChartWidth('big')}>
-        100% width
+        <Typography variant="inherit">100% width</Typography>
       </MenuItem>
       <MenuItem selected={props.chart.width === 'medium'} onClick={setChartWidth('medium')}>
-        50% width
+        <Typography variant="inherit">50% width</Typography>
       </MenuItem>
       <MenuItem selected={props.chart.width === 'small'} onClick={setChartWidth('small')}>
-        33% width
+        <Typography variant="inherit">33% width</Typography>
       </MenuItem>
     </Menu>
   )

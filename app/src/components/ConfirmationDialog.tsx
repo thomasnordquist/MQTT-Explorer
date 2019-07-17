@@ -7,7 +7,7 @@ function ConfirmationDialog(props: { confirmationRequests: Array<ConfirmationReq
   const request = props.confirmationRequests[0]
   const yesRef = useRef<HTMLButtonElement>()
   const noRef = useRef<HTMLButtonElement>()
-  const arrowKeyHandler = useCallback((event: KeyboardEvent) => {
+  const arrowKeyHandler = useCallback((event: React.KeyboardEvent) => {
     const isArrowKey = event.keyCode === KeyCodes.arrow_left || event.keyCode === KeyCodes.arrow_right
     if (!isArrowKey) {
       return
@@ -45,10 +45,10 @@ function ConfirmationDialog(props: { confirmationRequests: Array<ConfirmationReq
         <DialogContentText id="alert-dialog-description">{request.inquiry}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button ref={yesRef} variant="contained" onClick={confirm} color="primary" autoFocus>
+        <Button ref={yesRef as any} variant="contained" onClick={confirm} color="primary" autoFocus>
           Yes
         </Button>
-        <Button ref={noRef} variant="contained" onClick={reject} color="secondary">
+        <Button ref={noRef as any} variant="contained" onClick={reject} color="secondary">
           No
         </Button>
       </DialogActions>

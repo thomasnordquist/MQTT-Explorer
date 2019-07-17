@@ -1,16 +1,22 @@
-import * as React from 'react'
+import BarChart from '@material-ui/icons/BarChart'
+import Clear from '@material-ui/icons/Refresh'
+import ColorLens from '@material-ui/icons/ColorLens'
 import ColorSettings from './ColorSettings'
 import InterpolationSettings from './InterpolationSettings'
 import MoveUp from './MoveUp'
+import MultiLineChart from '@material-ui/icons/MultiLineChart'
 import RangeSettings from './RangeSettings'
+import React, { memo } from 'react'
 import Size from './Size'
+import Sort from '@material-ui/icons/Sort'
 import TimeRangeSettings from './TimeRangeSettings'
 import { ChartParameters } from '../../../reducers/Charts'
-import { Menu, MenuItem } from '@material-ui/core'
+import { Menu, MenuItem, ListItemIcon, Typography } from '@material-ui/core'
 
 function ChartSettings(props: {
   open: boolean
   close: () => void
+  resetDataAction: () => void
   chart: ChartParameters
   anchorEl: React.MutableRefObject<undefined>
 }) {
@@ -59,19 +65,40 @@ function ChartSettings(props: {
     <span>
       <Menu id="long-menu" anchorEl={props.anchorEl.current} open={props.open} onClose={props.close}>
         <MenuItem key="range" onClick={toggleRange}>
-          Set range
+          <ListItemIcon>
+            <BarChart />
+          </ListItemIcon>
+          <Typography variant="inherit">Y-Axis range (Values)</Typography>
         </MenuItem>
         <MenuItem key="timeRange" onClick={toggleTimeRange}>
-          Time range
+          <ListItemIcon>
+            <BarChart />
+          </ListItemIcon>
+          <Typography variant="inherit">X-Axis range (Time)</Typography>
         </MenuItem>
         <MenuItem key="interpolation" onClick={toggleInterpolation}>
+          <ListItemIcon>
+            <MultiLineChart />
+          </ListItemIcon>{' '}
           Curve interpolation
         </MenuItem>
         <MenuItem key="size" onClick={toggleSize}>
-          Size
+          <ListItemIcon>
+            <Sort />
+          </ListItemIcon>
+          <Typography variant="inherit">Size</Typography>
         </MenuItem>
         <MenuItem key="color" onClick={toggleColor}>
-          Color
+          <ListItemIcon>
+            <ColorLens />
+          </ListItemIcon>
+          <Typography variant="inherit">Color</Typography>
+        </MenuItem>
+        <MenuItem key="clear" onClick={props.resetDataAction}>
+          <ListItemIcon>
+            <Clear />
+          </ListItemIcon>
+          <Typography variant="inherit">Clear data</Typography>
         </MenuItem>
         <MoveUp chart={props.chart} close={props.close} />
       </Menu>
@@ -94,4 +121,4 @@ function ChartSettings(props: {
   )
 }
 
-export default ChartSettings
+export default memo(ChartSettings)
