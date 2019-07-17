@@ -64,11 +64,11 @@ class TreeNodeTitle extends React.PureComponent<TreeNodeProps, {}> {
     }
 
     const messages = this.props.treeNode.leafMessageCount()
+    const topicCount = this.props.treeNode.childTopicCount()
     return (
-      <span
-        key="metadata"
-        className={this.props.classes.collapsedSubnodes}
-      >{`(${this.props.treeNode.childTopicCount()} topics, ${messages} messages)`}</span>
+      <span key="metadata" className={this.props.classes.collapsedSubnodes}>{` (${topicCount} ${
+        topicCount === 1 ? 'topic' : 'topics'
+      }, ${messages} ${messages === 1 ? 'message' : 'messages'})`}</span>
     )
   }
 

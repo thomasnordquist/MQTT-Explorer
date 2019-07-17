@@ -90,7 +90,7 @@ function BrokerStatistics(props: Props) {
         {renderPair(tree, stats.heap, stats.heapMax)}
       </div>
     )
-  }, [sysTopic && sysTopic.lastUpdate])
+  }, [sysTopic && sysTopic.lastUpdate, props.classes])
 }
 
 const mapStateToProps = (state: AppState) => {

@@ -44,6 +44,7 @@ function useMessageSubscriptionToUpdate(treeNode?: q.TreeNode<any>) {
 
     return function cleanup() {
       treeNode && treeNode.onMessage.unsubscribe(amendMessageCallback)
+      setMessageHistory(undefined)
     }
   }
   React.useEffect(subscribeToMessageUpdates, [treeNode])
