@@ -6,7 +6,7 @@ import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
 import { connect } from 'react-redux'
 import { default as ReactResizeDetector } from 'react-resize-detector'
 import { ValueRendererDisplayMode } from '../../../reducers/Settings'
-import { Typography } from '@material-ui/core'
+import { Typography, Fade, Grow } from '@material-ui/core'
 
 interface Props {
   message: q.Message
@@ -67,19 +67,14 @@ class ValueRenderer extends React.Component<Props, State> {
       return
     }
     const value = this.convertMessage(message.value)
-    if (!compare) {
-      return this.renderDiff(value, value)
-    }
-
-    if (!compare.value) {
-      return
-    }
-    const compareStr = this.convertMessage(compare.value)
+    const compareStr = compare && compare.value ? this.convertMessage(compare.value) : undefined
 
     return (
       <div>
         {this.renderDiff(value, value)}
-        {this.renderDiff(compareStr, compareStr, 'selected')}
+        <Fade in={Boolean(compareStr)} timeout={400}>
+          <div>{Boolean(compareStr) ? this.renderDiff(compareStr, compareStr, 'selected') : null}</div>
+        </Fade>
       </div>
     )
   }

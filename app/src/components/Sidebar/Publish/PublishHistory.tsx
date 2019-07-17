@@ -24,7 +24,7 @@ function PublishHistory(props: { history: Array<Message>; actions: typeof publis
       value: message.payload || '',
     }))
 
-    return <History items={items} onClick={didSelectHistoryEntry} />
+    return <History autoOpen={true} items={items} onClick={didSelectHistoryEntry} />
   }, [props.history])
 }
 

@@ -70,7 +70,7 @@ function Publish(props: Props) {
 
   return useMemo(
     () => (
-      <div style={{ flexGrow: 1, marginLeft: '8px' }} onKeyDown={handleSubmit}>
+      <div style={{ flexGrow: 1 }} onKeyDown={handleSubmit}>
         <TopicInput />
         <div style={{ width: '100%', display: 'block' }}>
           <EditorMode
