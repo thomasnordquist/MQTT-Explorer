@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Badge, Typography } from '@material-ui/core'
 import { selectTextWithCtrlA } from '../../utils/handleTextSelectWithCtrlA'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { Theme, withStyles, emphasize } from '@material-ui/core/styles'
 
 interface HistoryItem {
   key: string
@@ -45,8 +45,8 @@ class HistoryDrawer extends React.Component<Props, State> {
   public renderHistory() {
     const style = (element: HistoryItem) => ({
       backgroundColor: element.selected
-        ? this.props.theme.palette.action.selected
-        : this.props.theme.palette.action.hover,
+        ? emphasize(this.props.theme.palette.background.default, 0.2)
+        : emphasize(this.props.theme.palette.background.default, 0.07),
       margin: '8px',
       padding: '8px 8px 0 8px',
       cursor: this.props.onClick ? 'pointer' : 'inherit',
@@ -76,17 +76,19 @@ class HistoryDrawer extends React.Component<Props, State> {
 
     return (
       <div className={this.props.classes.main}>
-        <Typography component={'span'} onClick={this.toggle} style={{ cursor: 'pointer' }}>
-          <Badge
-            classes={{ badge: this.props.classes.badge }}
-            invisible={!visible}
-            badgeContent={this.props.items.length}
-            color="primary"
-          >
-            {this.state.collapsed ? '▶ History' : '▼ History'}
-          </Badge>
-          <div style={{ float: 'right' }}>{this.state.collapsed ? this.props.contentTypeIndicator : null}</div>
-        </Typography>
+        <div style={{ backgroundColor: emphasize(this.props.theme.palette.background.default, 0.07) }}>
+          <Typography component={'span'} onClick={this.toggle} style={{ cursor: 'pointer' }}>
+            <Badge
+              classes={{ badge: this.props.classes.badge }}
+              invisible={!visible}
+              badgeContent={this.props.items.length}
+              color="primary"
+            >
+              {this.state.collapsed ? '▶ History' : '▼ History'}
+            </Badge>
+            <div style={{ float: 'right' }}>{this.state.collapsed ? this.props.contentTypeIndicator : null}</div>
+          </Typography>
+        </div>
         <div style={{ maxHeight: '230px', overflowY: 'scroll' }}>
           {this.state.collapsed ? null : this.props.children}
           {this.state.collapsed ? null : elements}
@@ -102,7 +104,7 @@ class HistoryDrawer extends React.Component<Props, State> {
 
 const styles = (theme: Theme) => ({
   main: {
-    backgroundColor: 'rgba(170, 170, 170, 0.2)',
+    backgroundColor: theme.palette.background.default,
     marginTop: '16px',
   },
   badge: { right: '-25px' },

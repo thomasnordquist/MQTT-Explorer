@@ -41,7 +41,7 @@ function ValuePanel(props: Props) {
     }
 
     return (
-      <div style={{ width: '100%', display: 'flex', paddingLeft: '8px', flexWrap: 'wrap' }}>
+      <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap' }}>
         <span style={{ marginTop: '2px', flexGrow: 1 }}>
           <ActionButtons />
         </span>

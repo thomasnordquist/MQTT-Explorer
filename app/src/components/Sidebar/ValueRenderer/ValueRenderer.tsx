@@ -6,6 +6,7 @@ import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
 import { connect } from 'react-redux'
 import { default as ReactResizeDetector } from 'react-resize-detector'
 import { ValueRendererDisplayMode } from '../../../reducers/Settings'
+import { Typography } from '@material-ui/core'
 
 interface Props {
   message: q.Message
@@ -55,8 +56,32 @@ class ValueRenderer extends React.Component<Props, State> {
     return this.renderDiff(value, compare)
   }
 
+  private renderRawMode(message: q.Message, compare?: q.Message) {
+    if (!message.value) {
+      return
+    }
+    const value = Base64Message.toUnicodeString(message.value)
+    if (!compare) {
+      return this.renderDiff(value, value)
+    }
+
+    if (!compare.value) {
+      return
+    }
+    const compareStr = Base64Message.toUnicodeString(compare.value)
+
+    return (
+      <div>
+        <Typography>selected</Typography>
+        {this.renderDiff(compareStr, compareStr)}
+        <Typography>current</Typography>
+        {this.renderDiff(value, value)}
+      </div>
+    )
+  }
+
   public render() {
-    return <div style={{ padding: '0px 0px 8px 8px', width: '100%' }}>{this.renderValue()}</div>
+    return <div style={{ padding: '0px 0px 8px 0px', width: '100%' }}>{this.renderValue()}</div>
   }
 
   public renderValue() {
@@ -65,6 +90,7 @@ class ValueRenderer extends React.Component<Props, State> {
     const previousMessage = previousMessages[previousMessages.length - 2]
     let compareMessage = compareWith || previousMessage || message
     if (renderMode === 'raw') {
+      return this.renderRawMode(message, compareWith)
       compareMessage = message
     }
     if (!message.value) {
