@@ -77,16 +77,18 @@ class HistoryDrawer extends React.Component<Props, State> {
     return (
       <div className={this.props.classes.main}>
         <div style={{ backgroundColor: emphasize(this.props.theme.palette.background.default, 0.07) }}>
-          <Typography component={'span'} onClick={this.toggle} style={{ cursor: 'pointer' }}>
-            <Badge
-              classes={{ badge: this.props.classes.badge }}
-              invisible={!visible}
-              badgeContent={this.props.items.length}
-              color="primary"
-            >
-              {this.state.collapsed ? '▶ History' : '▼ History'}
-            </Badge>
-            <div style={{ float: 'right' }}>{this.state.collapsed ? this.props.contentTypeIndicator : null}</div>
+          <Typography component={'span'} onClick={this.toggle} style={{ cursor: 'pointer', display: 'flex' }}>
+            <span style={{ flexGrow: 1 }}>
+              <Badge
+                classes={{ badge: this.props.classes.badge }}
+                invisible={!visible}
+                badgeContent={this.props.items.length}
+                color="primary"
+              >
+                {this.state.collapsed ? '▶ History' : '▼ History'}
+              </Badge>
+            </span>
+            <span>{this.props.contentTypeIndicator}</span>
           </Typography>
         </div>
         <div style={{ maxHeight: '230px', overflowY: 'scroll' }}>
