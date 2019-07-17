@@ -109,7 +109,7 @@ List of useful IoT applications using MQTT to integrate devices / services
 - [Tasmota](https://github.com/arendst/Sonoff-Tasmota) - ESP8266 firmware with MQTT support
 
 ## Feedback
-<form action="https://docs.google.com/forms/d/e/1FAIpQLSePeIHoZxpbB_-ku4H97go8JPhfdrlxNc-nHPGQuWB6g-U3HQ/formResponse?embedded=true">
+<form onsubmit="if(!this.elements.noshow.value){ this.action='https://docs.google.com/forms/d/e/1FAIpQLSePeIHoZxpbB_-ku4H97go8JPhfdrlxNc-nHPGQuWB6g-U3HQ/formResponse?embedded=true' }">
 
 ### What do you like?
 <textarea style="width: 100%; border-radius: 5px; box-shadow: 5px 5px;" name="entry.1944371594"></textarea>
@@ -121,7 +121,10 @@ List of useful IoT applications using MQTT to integrate devices / services
 
 <span style="display: flex"><input style="padding: 8px; flex: 2; border-radius: 5px; box-shadow: 5px 5px; border: 1px solid" type="email" name="entry.2055444782" /><button type="submit" style="padding: 8px; margin-left: 16px; border: 1px solid #2879d0; border-radius: 5px; background-color: #eee; box-shadow: 5px 5px #ccc; text-align: right; color: #2879d0;">Submit</button></span>
 
+<input class="noshow" name="noshow" value="">
+
 </form>
+
 
 <div style="text-align: center; width: 100%">
 Ideas and bugs can also be reported on [github](https://github.com/thomasnordquist/MQTT-Explorer/issues).
