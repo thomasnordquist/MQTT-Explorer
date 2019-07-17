@@ -122,7 +122,7 @@ function EditorMode(props: {
     return (
       <Tooltip title="Format JSON">
         <Fab
-          style={{ width: '36px', height: '36px', marginLeft: '8px' }}
+          style={{ width: '36px', height: '36px', margin: '0 8px' }}
           onClick={formatJson}
           id="sidebar-publish-format-json"
         >
@@ -135,10 +135,10 @@ function EditorMode(props: {
   return useMemo(
     () => (
       <div style={{ marginTop: '16px' }}>
-        <div style={{ width: '100%', lineHeight: '64px' }}>
+        <div style={{ width: '100%', lineHeight: '64px', textAlign: 'center' }}>
           <EditorModeSelect value={props.editorMode} onChange={updateMode} />
           {renderFormatJson()}
-          <div style={{ float: 'right', marginRight: '16px' }}>
+          <div style={{ float: 'right' }}>
             <PublishButton publish={props.publish} />
           </div>
         </div>
