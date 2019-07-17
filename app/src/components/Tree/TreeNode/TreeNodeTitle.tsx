@@ -26,7 +26,7 @@ class TreeNodeTitle extends React.PureComponent<TreeNodeProps, {}> {
   }
 
   private truncatedMessage() {
-    const limit = 350
+    const limit = 400
     if (!this.props.treeNode.message || !this.props.treeNode.message.value) {
       return ''
     }
