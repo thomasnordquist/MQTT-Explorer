@@ -8,11 +8,16 @@ export const RecursiveTopicDeleteButton = (props: {
   node?: q.TreeNode<any>
   deleteTopicAction: (node: q.TreeNode<any>, a: boolean, limit: number) => void
 }) => {
-  const onClick = useCallback(() => {
-    if (props.node) {
-      props.deleteTopicAction(props.node, true, deleteLimit)
-    }
-  }, [props.node])
+  const onClick = useCallback(
+    (event: React.MouseEvent) => {
+      if (props.node) {
+        event.stopPropagation()
+        event.preventDefault()
+        props.deleteTopicAction(props.node, true, deleteLimit)
+      }
+    },
+    [props.node]
+  )
   if (!props.node) {
     return null
   }

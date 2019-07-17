@@ -1,12 +1,14 @@
-import * as React from 'react'
+import ConfirmationDialog from './ConfirmationDialog'
 import ConnectionSetup from './ConnectionSetup/ConnectionSetup'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import ErrorBoundary from './ErrorBoundary'
 import Notification from './Layout/Notification'
+import React from 'react'
 import TitleBar from './Layout/TitleBar'
 import UpdateNotifier from './UpdateNotifier'
 import { AppState } from '../reducers'
 import { bindActionCreators } from 'redux'
+import { ConfirmationRequest } from '../reducers/Global'
 import { connect } from 'react-redux'
 import { globalActions, settingsActions } from '../actions'
 import { Theme, withStyles } from '@material-ui/core/styles'
@@ -23,6 +25,7 @@ interface Props {
   actions: typeof globalActions
   settingsActions: typeof settingsActions
   launching: boolean
+  confirmationRequests: Array<ConfirmationRequest>
 }
 
 class App extends React.PureComponent<Props, {}> {
@@ -67,6 +70,7 @@ class App extends React.PureComponent<Props, {}> {
       <div className={centerContent}>
         <CssBaseline />
         <ErrorBoundary>
+          <ConfirmationDialog confirmationRequests={this.props.confirmationRequests} />
           {this.renderNotification()}
           <React.Suspense fallback={<div></div>}>
             <Settings />
@@ -149,6 +153,7 @@ const mapStateToProps = (state: AppState) => {
     notification: state.globalState.get('notification'),
     highlightTopicUpdates: state.settings.get('highlightTopicUpdates'),
     launching: state.globalState.get('launching'),
+    confirmationRequests: state.globalState.get('confirmationRequests'),
   }
 }
 

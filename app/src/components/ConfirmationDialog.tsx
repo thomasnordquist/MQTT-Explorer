@@ -1,0 +1,59 @@
+import React, { useRef, useCallback, memo } from 'react'
+import { ConfirmationRequest } from '../reducers/Global'
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@material-ui/core'
+import { KeyCodes } from '../utils/KeyCodes'
+
+function ConfirmationDialog(props: { confirmationRequests: Array<ConfirmationRequest> }) {
+  const request = props.confirmationRequests[0]
+  const yesRef = useRef<HTMLButtonElement>()
+  const noRef = useRef<HTMLButtonElement>()
+  const arrowKeyHandler = useCallback((event: KeyboardEvent) => {
+    const isArrowKey = event.keyCode === KeyCodes.arrow_left || event.keyCode === KeyCodes.arrow_right
+    if (!isArrowKey) {
+      return
+    }
+
+    event.stopPropagation()
+    if (document.activeElement === noRef.current) {
+      yesRef.current && yesRef.current.focus()
+    } else {
+      noRef.current && noRef.current.focus()
+    }
+  }, [])
+
+  const confirm = React.useCallback(() => {
+    request && request.callback(true)
+  }, [request])
+  const reject = React.useCallback(() => {
+    request && request.callback(false)
+  }, [request])
+
+  if (!request) {
+    return null
+  }
+
+  return (
+    <Dialog
+      open={true}
+      onClose={reject}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+      onKeyDown={arrowKeyHandler}
+    >
+      <DialogTitle id="alert-dialog-title">{request.title}</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">{request.inquiry}</DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button ref={yesRef} variant="contained" onClick={confirm} color="primary" autoFocus>
+          Yes
+        </Button>
+        <Button ref={noRef} variant="contained" onClick={reject} color="secondary">
+          No
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
+
+export default memo(ConfirmationDialog)

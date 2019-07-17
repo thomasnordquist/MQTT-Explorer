@@ -9,6 +9,14 @@ export enum ActionTypes {
   showNotification = 'SHOW_NOTIFICATION',
   didLaunch = 'DID_LAUNCH',
   toggleSettingsVisibility = 'TOGGLE_SETTINGS_VISIBILITY',
+  requestConfirmation = 'REQUEST_CONFIRMATION',
+  removeConfirmationRequest = 'REMOVE_CONFIRMATION_REQUEST',
+}
+
+export interface ConfirmationRequest {
+  inquiry: string
+  title: string
+  callback: (confirmed: boolean) => void
 }
 
 export interface GlobalAction extends Action {
@@ -17,6 +25,7 @@ export interface GlobalAction extends Action {
   showUpdateDetails?: boolean
   error?: string
   notification?: string
+  confirmationRequest?: ConfirmationRequest
 }
 
 interface GlobalStateInterface {
@@ -26,6 +35,7 @@ interface GlobalStateInterface {
   notification?: string
   launching: boolean
   settingsVisible: boolean
+  confirmationRequests: Array<ConfirmationRequest>
 }
 
 export type GlobalState = Record<GlobalStateInterface>
@@ -37,6 +47,7 @@ const initialStateFactory = Record<GlobalStateInterface>({
   notification: undefined,
   launching: true,
   settingsVisible: false,
+  confirmationRequests: [],
 })
 
 export const globalState: Reducer<Record<GlobalStateInterface>, GlobalAction> = (
@@ -66,6 +77,21 @@ export const globalState: Reducer<Record<GlobalStateInterface>, GlobalAction> = 
         return state
       }
       return state.set('showUpdateDetails', action.showUpdateDetails)
+
+    case ActionTypes.requestConfirmation:
+      if (action.confirmationRequest === undefined) {
+        return state
+      }
+      return state.set('confirmationRequests', [...state.get('confirmationRequests'), action.confirmationRequest])
+
+    case ActionTypes.removeConfirmationRequest:
+      if (action.confirmationRequest === undefined) {
+        return state
+      }
+      return state.set(
+        'confirmationRequests',
+        state.get('confirmationRequests').filter(a => a !== action.confirmationRequest)
+      )
 
     default:
       return state

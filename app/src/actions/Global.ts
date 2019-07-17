@@ -1,4 +1,4 @@
-import { ActionTypes } from '../reducers/Global'
+import { ActionTypes, ConfirmationRequest } from '../reducers/Global'
 import { Dispatch } from 'redux'
 
 export const showError = (error?: string) => ({
@@ -18,5 +18,32 @@ export const didLaunch = () => ({
 export const toggleSettingsVisibility = () => (dispatch: Dispatch<any>) => {
   dispatch({
     type: ActionTypes.toggleSettingsVisibility,
+  })
+}
+
+export const requestConfirmation = (title: string, inquiry: string) => (dispatch: Dispatch<any>) => {
+  return new Promise(resolve => {
+    const confirmationRequest = {
+      title,
+      inquiry,
+      callback: (confirmed: boolean) => {
+        resolve(confirmed)
+        dispatch(removeConfirmationRequest(confirmationRequest))
+      },
+    }
+
+    dispatch({
+      confirmationRequest,
+      type: ActionTypes.requestConfirmation,
+    })
+  })
+}
+
+export const removeConfirmationRequest = (confirmationRequest: ConfirmationRequest) => (dispatch: Dispatch<any>) => {
+  return new Promise((resolve, reject) => {
+    dispatch({
+      confirmationRequest,
+      type: ActionTypes.removeConfirmationRequest,
+    })
   })
 }
