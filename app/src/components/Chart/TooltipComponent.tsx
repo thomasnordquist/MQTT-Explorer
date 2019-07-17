@@ -2,7 +2,6 @@ import React, { memo } from 'react'
 import { fade } from '@material-ui/core/styles'
 import { Fade, Grow, Paper, Popper, Theme, Typography, withTheme } from '@material-ui/core'
 import { Tooltip } from './Model'
-const { Hint } = require('react-vis')
 
 function TooltipComponent(props: { tooltip?: Tooltip; theme: Theme }) {
   const { tooltip } = props
@@ -11,7 +10,6 @@ function TooltipComponent(props: { tooltip?: Tooltip; theme: Theme }) {
       style={Boolean(tooltip) ? { transition: 'all 0.1s ease-out' } : undefined}
       open={Boolean(tooltip)}
       transition={true}
-      keepMounted={true}
       placement="top"
       anchorEl={tooltip && tooltip.element}
     >
