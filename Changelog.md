@@ -1,5 +1,24 @@
 [back](./)
 
+# 0.3.3
+  - Add keyboard support
+    - Navigate with arrow keys and tab return and escape
+    - Delete topic topics with delete key
+  - Add time range options to chart panel
+  - Add "Clear Data" option to charts
+  - Add support for client certificates
+  - Add support for SNI (encryption related)
+  - Make connection profile list scrollable
+  - Improve browsability of previous messages
+  - various small fixes
+
+# 0.3.2
+  - Ubuntu performance fix
+
+# 0.3.1
+  - Ubuntu bugfix release
+  - Add wayland support (for snap builds)
+
 # 0.3.0
 
   - Add functionality to plot JSON data
