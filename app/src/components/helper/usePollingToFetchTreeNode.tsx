@@ -19,12 +19,12 @@ export function usePollingToFetchTreeNode(tree: q.Tree<any> | undefined, path: s
   }, [treeNode])
 
   function pollUntilTreeNodeHasBeenFound() {
-    if (!tree || treeNode) {
+    if (!tree) {
       return
     }
 
     const initialTreeNode = tree.findNode(path)
-    if (initialTreeNode) {
+    if (initialTreeNode && initialTreeNode !== treeNode) {
       setTreeNode(initialTreeNode)
       return
     }
@@ -44,6 +44,6 @@ export function usePollingToFetchTreeNode(tree: q.Tree<any> | undefined, path: s
     }
   }
 
-  useEffect(pollUntilTreeNodeHasBeenFound, [tree, treeNode])
+  useEffect(pollUntilTreeNodeHasBeenFound, [tree, treeNode, path])
   return treeNode
 }

@@ -13,7 +13,6 @@ interface Props {
   node?: q.TreeNode<TopicViewModel>
   selected?: q.TreeNode<TopicViewModel>
   actions: typeof treeActions
-  didSelectNode: (node: q.TreeNode<TopicViewModel>) => void
 }
 
 const styles = (theme: Theme) => ({

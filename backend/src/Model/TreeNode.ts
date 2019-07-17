@@ -52,7 +52,7 @@ export class TreeNode<ViewModel extends Destroyable> {
     return this.sourceEdge ? this.sourceEdge.source || undefined : undefined
   }
 
-  private hasMessage() {
+  public hasMessage() {
     return this.message && this.message.value && this.message.value.length !== 0
   }
 
