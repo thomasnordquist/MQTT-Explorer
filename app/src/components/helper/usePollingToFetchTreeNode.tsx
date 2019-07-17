@@ -6,9 +6,20 @@ import { useState, useEffect } from 'react'
  */
 export function usePollingToFetchTreeNode(tree: q.Tree<any> | undefined, path: string) {
   const [treeNode, setTreeNode] = useState<q.TreeNode<any> | undefined>()
+  useEffect(() => {
+    // If treeNode has been destroyed set treeNode to undefined
+    if (treeNode) {
+      const resetTreeNodeCallback = () => setTreeNode(undefined)
+      treeNode.onDestroy.subscribe(resetTreeNodeCallback)
+
+      return function cleanup() {
+        treeNode.onDestroy.unsubscribe(resetTreeNodeCallback)
+      }
+    }
+  }, [treeNode])
 
   function pollUntilTreeNodeHasBeenFound() {
-    if (!tree) {
+    if (!tree || treeNode) {
       return
     }
 
@@ -33,6 +44,6 @@ export function usePollingToFetchTreeNode(tree: q.Tree<any> | undefined, path: s
     }
   }
 
-  useEffect(pollUntilTreeNodeHasBeenFound, [tree])
+  useEffect(pollUntilTreeNodeHasBeenFound, [tree, treeNode])
   return treeNode
 }
