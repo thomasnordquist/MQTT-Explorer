@@ -40,7 +40,7 @@ function ActionButtons(props: {
         </Tooltip>
       </ToggleButton>
       <ToggleButton className={props.classes.toggleButton} value="raw" id="valueRendererDisplayMode-raw">
-        <Tooltip title="Raw value">
+        <Tooltip title="Raw / formatted JSON">
           <span>
             <Reorder className={props.classes.toggleButtonIcon} />
           </span>

@@ -38,19 +38,19 @@ class ValueRenderer extends React.Component<Props, State> {
     )
   }
 
-  private convertMessage(msg?: Base64Message): string | undefined {
+  private convertMessage(msg?: Base64Message): [string | undefined, 'json' | undefined] {
     if (!msg) {
-      return
+      return [undefined, undefined]
     }
 
     const str = Base64Message.toUnicodeString(msg)
     try {
       JSON.parse(str)
     } catch (error) {
-      return str
+      return [str, undefined]
     }
 
-    return this.messageToPrettyJson(str)
+    return [this.messageToPrettyJson(str), 'json']
   }
 
   private messageToPrettyJson(str: string): string | undefined {
@@ -66,14 +66,17 @@ class ValueRenderer extends React.Component<Props, State> {
     if (!message.value) {
       return
     }
-    const value = this.convertMessage(message.value)
-    const compareStr = compare && compare.value ? this.convertMessage(compare.value) : undefined
+    const [value, valueLanguage] = this.convertMessage(message.value)
+    const [compareStr, compareStrLanguage] =
+      compare && compare.value ? this.convertMessage(compare.value) : [undefined, undefined]
 
     return (
       <div>
-        {this.renderDiff(value, value)}
+        {this.renderDiff(value, value, undefined, valueLanguage)}
         <Fade in={Boolean(compareStr)} timeout={400}>
-          <div>{Boolean(compareStr) ? this.renderDiff(compareStr, compareStr, 'selected') : null}</div>
+          <div>
+            {Boolean(compareStr) ? this.renderDiff(compareStr, compareStr, 'selected', compareStrLanguage) : null}
+          </div>
         </Fade>
       </div>
     )
@@ -97,10 +100,10 @@ class ValueRenderer extends React.Component<Props, State> {
     }
 
     const compareValue = compareMessage.value || message.value
-    const current = this.convertMessage(message.value)
-    const compare = this.convertMessage(compareValue)
+    const [current, currentLanguage] = this.convertMessage(message.value)
+    const [compare, compareLanguage] = this.convertMessage(compareValue)
 
-    const language = current && compare ? 'json' : undefined
+    const language = currentLanguage === compareLanguage && compareLanguage === 'json' ? 'json' : undefined
 
     return this.renderDiff(current, compare, undefined, language)
   }
