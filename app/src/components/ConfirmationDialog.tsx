@@ -48,7 +48,7 @@ function ConfirmationDialog(props: { confirmationRequests: Array<ConfirmationReq
         <Button ref={yesRef as any} variant="contained" onClick={confirm} color="primary" autoFocus>
           Yes
         </Button>
-        <Button ref={noRef as any} variant="contained" onClick={reject} color="secondary">
+        <Button ref={noRef as any} variant="contained" onClick={reject} color="secondary" style={{ marginLeft: '8px' }}>
           No
         </Button>
       </DialogActions>
