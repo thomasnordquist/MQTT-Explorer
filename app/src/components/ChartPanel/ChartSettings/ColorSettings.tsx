@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { memo } from 'react'
 import { bindActionCreators } from 'redux'
 import { chartActions } from '../../../actions'
 import { ChartParameters } from '../../../reducers/Charts'
@@ -68,4 +68,4 @@ const mapDispatchToProps = (dispatch: any) => {
 export default connect(
   undefined,
   mapDispatchToProps
-)(ColorSettings)
+)(memo(ColorSettings))

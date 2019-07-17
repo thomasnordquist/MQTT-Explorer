@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { memo } from 'react'
 import { ChartParameters } from '../../../reducers/Charts'
 import { Menu, MenuItem, TextField, Typography } from '@material-ui/core'
 import { connect } from 'react-redux'
@@ -50,4 +50,4 @@ const mapDispatchToProps = (dispatch: any) => {
 export default connect(
   undefined,
   mapDispatchToProps
-)(Size)
+)(memo(Size))

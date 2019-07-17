@@ -1,5 +1,5 @@
 import * as q from '../../../../../backend/src/Model'
-import React from 'react'
+import React, { memo } from 'react'
 import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
 import { Theme, withStyles } from '@material-ui/core'
 import { TopicViewModel } from '../../../model/TopicViewModel'
@@ -100,4 +100,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default withStyles(styles)(TreeNodeTitle)
+export default withStyles(styles)(memo(TreeNodeTitle))
