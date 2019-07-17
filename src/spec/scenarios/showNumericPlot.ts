@@ -6,13 +6,15 @@ export async function showNumericPlot(browser: Browser) {
   let heater = await valuePreviewGuttersShowChartIcon('heater', browser)
   await moveToCenterOfElement(heater, browser)
   await sleep(1000)
-  // Refocus
+  // Refocus and click
   heater = await valuePreviewGuttersShowChartIcon('heater', browser)
   await heater.click()
 
   await sleep(1000)
   let temperature = await valuePreviewGuttersShowChartIcon('temperature', browser)
   await moveToCenterOfElement(temperature, browser)
+  await sleep(1000)
+  // Refocus and click
   temperature = await valuePreviewGuttersShowChartIcon('temperature', browser)
   await temperature.click()
 
@@ -38,9 +40,6 @@ export async function showNumericPlot(browser: Browser) {
   await expandTopic('livingroom/temperature', browser)
 
   await clickOnHistory(browser)
-  await browser.saveScreenshot('screen2.png')
-  await sleep(1000)
-  await expandTopic('livingroom/humidity', browser)
 }
 
 async function valuePreviewGuttersShowChartIcon(name: string, browser: Browser) {
