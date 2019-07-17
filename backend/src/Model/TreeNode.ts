@@ -52,9 +52,12 @@ export class TreeNode<ViewModel extends Destroyable> {
     return this.sourceEdge ? this.sourceEdge.source || undefined : undefined
   }
 
+  private hasMessage() {
+    return this.message && this.message.value && this.message.value.length !== 0
+  }
+
   private isTopicEmptyLeaf() {
-    const hasNoMessage = !this.message || !this.message.value || this.message.value.length === 0
-    return hasNoMessage && this.isLeaf()
+    return !this.hasMessage() && this.isLeaf()
   }
 
   private isLeaf() {
@@ -221,7 +224,7 @@ export class TreeNode<ViewModel extends Destroyable> {
     if (this.cachedChildTopicCount === undefined) {
       this.cachedChildTopicCount = this.edgeArray
         .map(e => e.target.childTopicCount())
-        .reduce((a, b) => a + b, this.edgeArray.length === 0 ? 1 : 0)
+        .reduce((a, b) => a + b, this.hasMessage() ? 1 : 0)
     }
 
     return this.cachedChildTopicCount as number
