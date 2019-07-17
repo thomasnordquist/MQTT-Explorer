@@ -35,4 +35,4 @@ script:
   - if [[ "$TRAVIS_TAG" != "" ]]; then yarn run prepare-release; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package linux; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package -- mac; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ "$TRAVIS_TAG" != "" ]]; then CSC_LINK="" yarn run package -- win; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ "$TRAVIS_TAG" != "" ]]; unset CSC_LINK; yarn run package -- win; fi
