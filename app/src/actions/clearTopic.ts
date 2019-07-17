@@ -13,7 +13,13 @@ export const clearTopic = (topic: q.TreeNode<any>, recursive: boolean, subtopicC
     const topicCount = topic.childTopicCount()
     const deleteLimitMessage =
       topicCount > subtopicClearLimit ? ` You can only delete ${subtopicClearLimit} child topics at once.` : ''
-    const childTopicsMessage = topicCount > 0 ? ` and ${topicCount} child ${topicCount === 1 ? 'topic' : 'topics'}` : ''
+
+    const topicDelta = topic.hasMessage() ? -1 : 0
+    const childTopicsMessage =
+      topicCount + topicDelta > 0
+        ? ` and ${topicCount + topicDelta} child ${topicCount + topicDelta === 1 ? 'topic' : 'topics'}`
+        : ''
+
     const confirmed = await dispatch(
       globalActions.requestConfirmation(
         'Confirm delete',
