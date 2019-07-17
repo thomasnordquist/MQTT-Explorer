@@ -71,6 +71,6 @@ async function removeChart(name: string, browser: Browser) {
 }
 
 async function clickOnMenuPoint(name: string, browser: Browser) {
-  const item = await browser.$(`//li[contains(text(), "${name}")]`)
+  const item = await browser.$(`//li/span[contains(text(), "${name}")]`)
   return clickOn(item, browser)
 }

@@ -79,8 +79,8 @@ function ChartSettings(props: {
         <MenuItem key="interpolation" onClick={toggleInterpolation}>
           <ListItemIcon>
             <MultiLineChart />
-          </ListItemIcon>{' '}
-          Curve interpolation
+          </ListItemIcon>
+          <Typography variant="inherit">Curve interpolation</Typography>
         </MenuItem>
         <MenuItem key="size" onClick={toggleSize}>
           <ListItemIcon>
