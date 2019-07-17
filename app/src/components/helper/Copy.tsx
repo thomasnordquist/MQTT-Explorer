@@ -44,13 +44,9 @@ class Copy extends React.PureComponent<Props, State> {
     )
 
     return (
-      <span>
-        <span style={{ fontSize: '16px' }}>
-          <CustomIconButton onClick={this.handleClick} tooltip="Copy to clipboard">
-            {icon}
-          </CustomIconButton>
-        </span>
-      </span>
+      <CustomIconButton onClick={this.handleClick} tooltip="Copy to clipboard">
+        <div style={{ marginTop: '2px' }}>{icon}</div>
+      </CustomIconButton>
     )
   }
 }

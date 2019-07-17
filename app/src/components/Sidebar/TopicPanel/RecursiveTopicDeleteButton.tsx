@@ -28,15 +28,11 @@ export const RecursiveTopicDeleteButton = (props: {
   }
   return (
     <Badge
-      style={{
-        top: '3px',
-        right: '3px',
-      }}
       badgeContent={<span style={{ whiteSpace: 'nowrap' }}>{topicCount >= deleteLimit ? '50+' : topicCount}</span>}
       color="secondary"
     >
       <CustomIconButton onClick={onClick} tooltip={`Deletes up to ${deleteLimit} sub-topics with a single click`}>
-        <Delete style={{ marginTop: '-3px' }} color="action" />
+        <Delete color="action" />
       </CustomIconButton>
     </Badge>
   )

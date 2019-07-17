@@ -16,6 +16,9 @@ const styles = (theme: Theme) => ({
     width: '32px',
     height: '32px',
   },
+  tooltip: {
+    marginTop: '-16px',
+  },
   label: {
     marginTop: '-2px',
   },
@@ -34,8 +37,8 @@ class CustomIconButton extends React.PureComponent<Props, {}> {
   public render() {
     return (
       <IconButton className={this.props.classes.button} style={this.props.style} onClick={this.onClick}>
-        <Tooltip title={this.props.tooltip} className={this.props.classes.label}>
-          <span>{this.props.children}</span>
+        <Tooltip title={this.props.tooltip} classes={{ popper: this.props.classes.tooltip }}>
+          <span className={this.props.classes.label}>{this.props.children}</span>
         </Tooltip>
       </IconButton>
     )

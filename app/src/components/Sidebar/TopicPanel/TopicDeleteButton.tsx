@@ -13,7 +13,7 @@ export const TopicDeleteButton = (props: {
   }
   return (
     <CustomIconButton onClick={() => props.deleteTopicAction(node)} tooltip="Clear this topic">
-      <Delete style={{ marginTop: '-3px' }} />
+      <Delete />
     </CustomIconButton>
   )
 }
