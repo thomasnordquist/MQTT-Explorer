@@ -4,6 +4,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/c35tkm29rm4m5364/branch/master?svg=true)](https://ci.appveyor.com/project/thomasnordquist/mqtt-explorer/branch/master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/47b26e03fce543ceac7914214482334a)](https://app.codacy.com/app/thomasnordquist/MQTT-Explorer?utm_source=github.com&utm_medium=referral&utm_content=thomasnordquist/MQTT-Explorer&utm_campaign=Badge_Grade_Dashboard)
 <a href="#" onClick="a=window;a.location='ht'+'tps:'+'/'+'/pay'+'pal.me/'+'ThomasNordquist'"><img src="https://img.shields.io/badge/Sponsor-PayPal-Flat.svg?color=0070ba&logo=data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgICB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIKICAgIHZlcnNpb249IjEuMSIgYmFzZVByb2ZpbGU9ImZ1bGwiIHZpZXdCb3g9IjAgMCAyNCAzMiIgd2lkdGg9IjI0IiBoZWlnaHQ9IjMyIiA+CiAgICA8cGF0aCB0cmFuc2Zvcm09InNjYWxlKDIpIiBmaWxsPSIjZWE0YWFhIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik05IDJjLS45NyAwLTEuNjkuNDItMi4yIDEtLjUxLjU4LS43OC45Mi0uOCAxLS4wMi0uMDgtLjI4LS40Mi0uOC0xLS41Mi0uNTgtMS4xNy0xLTIuMi0xLTEuNjMyLjA4Ni0yLjk1NCAxLjMzMy0zIDMgMCAuNTIuMDkgMS41Mi42NyAyLjY3QzEuMjUgOC44MiAzLjAxIDEwLjYxIDYgMTNjMi45OC0yLjM5IDQuNzctNC4xNyA1LjM0LTUuMzNDMTEuOTEgNi41MSAxMiA1LjUgMTIgNWMtLjA0Ny0xLjY5LTEuMzQyLTIuOTEzLTMtM3oiPjwvcGF0aD4KPC9zdmc+Cgo=" /></a>
+
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="2500">
 <ol class="carousel-indicators">
 <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -37,7 +38,7 @@
   <a href="./img/screen-composite.png"><img src="./img/screen-composite_small.png" /></a>
 </span>
 
-## Version 0.3.0
+## Version v0.3.3
 
 MQTT Explorer is a comprehensive MQTT client that provides a structured overview of your MQTT topics and makes working with devices/services on your broker dead-simple.
 
@@ -64,10 +65,10 @@ If you feel like a feature is missing or you found a bug, please leave me a [com
 
 | Platform | | Downloads |
 |:----------:|:-------------:|:------:|
-| ![windows](https://user-images.githubusercontent.com/7721625/51445407-b4172080-1d04-11e9-8c70-d8413d1d6d8b.png) | **Windows** | <a href="https://www.microsoft.com/store/apps/9PP8SFM082WD?ocid=badge"><img src="https://assets.windowsphone.com/85864462-9c82-451e-9355-a3d5f874397a/English_get-it-from-MS_InvariantCulture_Default.png" width="165" /></a><br />**[portable](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.3.0&#x2F;MQTT-Explorer-0.3.0.exe), [installer](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.3.0&#x2F;MQTT-Explorer-Setup-0.3.0.exe)** |
-| ![mac](https://user-images.githubusercontent.com/7721625/51445390-921d9e00-1d04-11e9-8339-351469ef20ae.png) | **Mac** | <a href="https://itunes.apple.com/app/apple-store/id1455214828?pt=118225860&ct=mqtt-explorer.com&mt=8"><img src="https://linkmaker.itunes.apple.com/en-us/badge-lrg.svg?releaseDate=2019-03-07T00:00:00Z&kind=desktopapp&bubble=macos_apps" width="165" height="40"/></a><br />**[dmg](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.3.0&#x2F;MQTT-Explorer-0.3.0.dmg)** |
+| ![windows](https://user-images.githubusercontent.com/7721625/51445407-b4172080-1d04-11e9-8c70-d8413d1d6d8b.png) | **Windows** | <a href="https://www.microsoft.com/store/apps/9PP8SFM082WD?ocid=badge"><img src="https://assets.windowsphone.com/85864462-9c82-451e-9355-a3d5f874397a/English_get-it-from-MS_InvariantCulture_Default.png" width="165" /></a><br />**[portable](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.0.0-0.3.3&#x2F;MQTT-Explorer-0.3.3.exe), [installer](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.0.0-0.3.3&#x2F;MQTT-Explorer-Setup-0.3.3.exe)** |
+| ![mac](https://user-images.githubusercontent.com/7721625/51445390-921d9e00-1d04-11e9-8339-351469ef20ae.png) | **Mac** | <a href="https://itunes.apple.com/app/apple-store/id1455214828?pt=118225860&ct=mqtt-explorer.com&mt=8"><img src="https://linkmaker.itunes.apple.com/en-us/badge-lrg.svg?releaseDate=2019-03-07T00:00:00Z&kind=desktopapp&bubble=macos_apps" width="165" height="40"/></a><br />**[dmg](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.0.0-0.3.3&#x2F;MQTT-Explorer-0.3.3.dmg)** |
 | ![ubuntu](https://user-images.githubusercontent.com/7721625/51445401-a5306e00-1d04-11e9-9b9b-20e196b82142.png) | **Ubuntu**<br />*debian, mint, neon, fedora, etc...* | <a href="https://snapcraft.io/mqtt-explorer" title="Get it from the Snap Store"><img src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg" width="165" /></a><br />`snap install mqtt-explorer`<br />[Ubuntu Store](snap://mqtt-explorer) |
-| ![linux](https://user-images.githubusercontent.com/7721625/51445392-947ff800-1d04-11e9-8c7f-a30efb755651.png) | **Linux**<br />*almost every linux* | **[AppImage](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.3.0&#x2F;MQTT-Explorer-0.3.0-x86_64.AppImage)**<br />*Run AppImage:<br />Make it executable and double-click it.* |
+| ![linux](https://user-images.githubusercontent.com/7721625/51445392-947ff800-1d04-11e9-8c7f-a30efb755651.png) | **Linux**<br />*almost every linux* | **[AppImage](https:&#x2F;&#x2F;github.com&#x2F;thomasnordquist&#x2F;MQTT-Explorer&#x2F;releases&#x2F;download&#x2F;v0.0.0-0.3.3&#x2F;MQTT-Explorer-0.3.3.AppImage)**<br />*Run AppImage:<br />Make it executable and double-click it.* |
 
 [More Downloads](https://github.com/thomasnordquist/MQTT-Explorer/releases)
 
@@ -123,6 +124,7 @@ List of useful IoT applications using MQTT to integrate devices / services
 <input class="noshow" name="noshow" value="">
 
 </form>
+
 
 <div style="text-align: center; width: 100%">
 Ideas and bugs can also be reported on [github](https://github.com/thomasnordquist/MQTT-Explorer/issues).
