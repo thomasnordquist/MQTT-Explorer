@@ -11,6 +11,11 @@ export const style = (theme: Theme) => {
   }
 
   return {
+    title: {
+      font: codeBaseStyle.font,
+      paddingLeft: '4px',
+      backgroundColor: codeBlockColors.gutters,
+    },
     line: {
       lineHeight: 'normal' as 'normal',
       paddingLeft: '4px',
@@ -22,7 +27,6 @@ export const style = (theme: Theme) => {
       maxHeight: '15em',
       overflow: 'auto',
       backgroundColor: `${codeBlockColors.background}`,
-      margin: '8px 0 0 0',
     },
     gutters: {
       ...codeBaseStyle,

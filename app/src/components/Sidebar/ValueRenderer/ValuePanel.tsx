@@ -91,7 +91,7 @@ function ValuePanel(props: Props) {
       <span>Value {copyValue}</span>
       <span style={{ width: '100%' }}>
         {renderViewOptions()}
-        <div style={{ marginBottom: '-8px' }}>
+        <div style={{ marginBottom: '-8px', marginTop: '8px' }}>
           <React.Suspense fallback={<div>Loading...</div>}>
             <RenderedValue node={node} compareMessage={compareMessage} />
           </React.Suspense>

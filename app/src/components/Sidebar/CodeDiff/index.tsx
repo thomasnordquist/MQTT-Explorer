@@ -8,7 +8,7 @@ import { isPlottable, lineChangeStyle, trimNewlineRight } from './util'
 import { JsonPropertyLocation, literalsMappedByLines } from '../../../../../backend/src/JsonAstParser'
 import { selectTextWithCtrlA } from '../../../utils/handleTextSelectWithCtrlA'
 import { style } from './style'
-import { withStyles } from '@material-ui/core'
+import { withStyles, Typography } from '@material-ui/core'
 import 'prismjs/components/prism-json'
 
 interface Props {
@@ -17,6 +17,7 @@ interface Props {
   current: string
   nameOfCompareMessage: string
   language?: 'json'
+  title?: string
   classes: any
 }
 
@@ -88,7 +89,8 @@ class CodeDiff extends React.PureComponent<Props, State> {
     const code = this.renderStyledCodeLines(changes)
 
     return (
-      <div>
+      <div style={{ marginTop: '8px' }}>
+        {this.props.title ? <Typography className={this.props.classes.title}>{this.props.title}</Typography> : null}
         <div tabIndex={0} onKeyDown={this.handleCtrlA} className={this.props.classes.codeWrapper}>
           <Gutters
             className={this.props.classes.gutters}

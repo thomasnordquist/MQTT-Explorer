@@ -25,16 +25,32 @@ class ValueRenderer extends React.Component<Props, State> {
     this.state = { width: 0 }
   }
 
-  private renderDiff(current: string = '', previous: string = '', language?: 'json') {
+  private renderDiff(current: string = '', previous: string = '', title?: string, language?: 'json') {
     return (
       <CodeDiff
         treeNode={this.props.treeNode}
         previous={previous}
         current={current}
+        title={title}
         language={language}
         nameOfCompareMessage={this.props.compareWith ? 'selected' : 'previous'}
       />
     )
+  }
+
+  private convertMessage(msg?: Base64Message): string | undefined {
+    if (!msg) {
+      return
+    }
+
+    const str = Base64Message.toUnicodeString(msg)
+    try {
+      JSON.parse(str)
+    } catch (error) {
+      return str
+    }
+
+    return this.messageToPrettyJson(str)
   }
 
   private messageToPrettyJson(str: string): string | undefined {
@@ -46,21 +62,11 @@ class ValueRenderer extends React.Component<Props, State> {
     }
   }
 
-  private updateWidth = (width: number) => {
-    if (width !== this.state.width) {
-      this.setState({ width })
-    }
-  }
-
-  private renderRawValue(value: string, compare: string) {
-    return this.renderDiff(value, compare)
-  }
-
   private renderRawMode(message: q.Message, compare?: q.Message) {
     if (!message.value) {
       return
     }
-    const value = Base64Message.toUnicodeString(message.value)
+    const value = this.convertMessage(message.value)
     if (!compare) {
       return this.renderDiff(value, value)
     }
@@ -68,14 +74,12 @@ class ValueRenderer extends React.Component<Props, State> {
     if (!compare.value) {
       return
     }
-    const compareStr = Base64Message.toUnicodeString(compare.value)
+    const compareStr = this.convertMessage(compare.value)
 
     return (
       <div>
-        <Typography>selected</Typography>
-        {this.renderDiff(compareStr, compareStr)}
-        <Typography>current</Typography>
         {this.renderDiff(value, value)}
+        {this.renderDiff(compareStr, compareStr, 'selected')}
       </div>
     )
   }
@@ -88,39 +92,22 @@ class ValueRenderer extends React.Component<Props, State> {
     const { message, treeNode, compareWith, renderMode } = this.props
     const previousMessages = treeNode.messageHistory.toArray()
     const previousMessage = previousMessages[previousMessages.length - 2]
-    let compareMessage = compareWith || previousMessage || message
+    const compareMessage = compareWith || previousMessage || message
+
     if (renderMode === 'raw') {
       return this.renderRawMode(message, compareWith)
-      compareMessage = message
     }
     if (!message.value) {
       return null
     }
 
     const compareValue = compareMessage.value || message.value
-    const str = Base64Message.toUnicodeString(message.value)
-    const compareStr = Base64Message.toUnicodeString(compareValue)
+    const current = this.convertMessage(message.value)
+    const compare = this.convertMessage(compareValue)
 
-    let json
-    try {
-      json = JSON.parse(str)
-    } catch (error) {
-      return this.renderRawValue(str, compareStr)
-    }
+    const language = current && compare ? 'json' : undefined
 
-    if (typeof json === 'string') {
-      return this.renderRawValue(str, compareStr)
-    } else if (typeof json === 'number') {
-      return this.renderRawValue(str, compareStr)
-    } else if (typeof json === 'boolean') {
-      return this.renderRawValue(str, compareStr)
-    } else {
-      const current = this.messageToPrettyJson(str) || str
-      const compare = this.messageToPrettyJson(compareStr) || compareStr
-      const language = current && compare ? 'json' : undefined
-
-      return this.renderDiff(current, compare, language)
-    }
+    return this.renderDiff(current, compare, undefined, language)
   }
 }
 
