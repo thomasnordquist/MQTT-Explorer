@@ -4,7 +4,7 @@ import ColorLens from '@material-ui/icons/ColorLens'
 import ColorSettings from './ColorSettings'
 import InterpolationSettings from './InterpolationSettings'
 import MoveUp from './MoveUp'
-import MultiLineChart from '@material-ui/icons/MultiLineChart'
+import MultilineChart from '@material-ui/icons/MultilineChart'
 import RangeSettings from './RangeSettings'
 import React, { memo } from 'react'
 import Size from './Size'
@@ -78,7 +78,7 @@ function ChartSettings(props: {
         </MenuItem>
         <MenuItem key="interpolation" onClick={toggleInterpolation}>
           <ListItemIcon>
-            <MultiLineChart />
+            <MultilineChart />
           </ListItemIcon>
           <Typography variant="inherit">Curve interpolation</Typography>
         </MenuItem>
