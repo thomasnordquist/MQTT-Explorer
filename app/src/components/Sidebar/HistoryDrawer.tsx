@@ -17,7 +17,7 @@ interface Props {
   contentTypeIndicator?: JSX.Element
   autoOpen?: boolean
   theme: Theme
-  children: any
+  children?: any
 }
 
 function HistoryDrawer(props: Props) {
