@@ -1,6 +1,6 @@
 [back](./)
 
-# 0.3.3
+# 0.3.5
   - Add keyboard support
     - Navigate with arrow keys and tab return and escape
     - Delete topic topics with the delete key
