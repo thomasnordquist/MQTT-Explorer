@@ -4,7 +4,7 @@ export function registerCrashReporter() {
   crashReporter.start({
     productName: 'MQTT Explorer',
     companyName: 'thomasnordquist',
-    submitURL: 'http://localhost:3000/app/crash/mqttexplorer',
+    submitURL: 'http://app-telemetry.t7n.de/app/crash/mqttexplorer',
     uploadToServer: true,
   })
 }
