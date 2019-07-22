@@ -42,7 +42,9 @@ function ConfirmationDialog(props: { confirmationRequests: Array<ConfirmationReq
     >
       <DialogTitle id="alert-dialog-title">{request.title}</DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">{request.inquiry}</DialogContentText>
+        <DialogContentText id="alert-dialog-description" style={{ whiteSpace: 'pre-wrap' }}>
+          {request.inquiry}
+        </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button ref={yesRef as any} variant="contained" onClick={confirm} color="primary" autoFocus>
