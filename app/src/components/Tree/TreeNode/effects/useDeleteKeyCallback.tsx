@@ -9,7 +9,7 @@ export function useDeleteKeyCallback(topic: q.TreeNode<any>, actions: typeof tre
       if (event.keyCode === KeyCodes.delete || event.keyCode === KeyCodes.backspace) {
         event.stopPropagation()
         event.preventDefault()
-        actions.clearTopic(topic, true, 50)
+        actions.clearTopic(topic, true)
       }
     },
     [topic]

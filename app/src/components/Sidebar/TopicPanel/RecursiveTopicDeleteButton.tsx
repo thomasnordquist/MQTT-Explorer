@@ -13,25 +13,23 @@ export const RecursiveTopicDeleteButton = (props: {
       if (props.node) {
         event.stopPropagation()
         event.preventDefault()
-        props.deleteTopicAction(props.node, true, deleteLimit)
+        props.deleteTopicAction(props.node, true, Infinity)
       }
     },
     [props.node]
   )
+
   if (!props.node) {
     return null
   }
-  const deleteLimit = 50
+
   const topicCount = props.node ? props.node.childTopicCount() : 0
   if (topicCount === 0 || (props.node.message && topicCount === 1)) {
     return null
   }
   return (
-    <Badge
-      badgeContent={<span style={{ whiteSpace: 'nowrap' }}>{topicCount >= deleteLimit ? '50+' : topicCount}</span>}
-      color="secondary"
-    >
-      <CustomIconButton onClick={onClick} tooltip={`Deletes up to ${deleteLimit} sub-topics with a single click`}>
+    <Badge badgeContent={<span style={{ whiteSpace: 'nowrap' }}>{topicCount}</span>} color="secondary">
+      <CustomIconButton onClick={onClick} tooltip={`Deletes ${topicCount} sub-topics with a single click`}>
         <Delete color="action" />
       </CustomIconButton>
     </Badge>

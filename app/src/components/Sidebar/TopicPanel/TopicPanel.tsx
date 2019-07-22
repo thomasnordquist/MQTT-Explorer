@@ -14,12 +14,12 @@ const TopicPanel = (props: { node?: q.TreeNode<any>; actions: typeof sidebarActi
   console.log(node && node.path())
   const copyTopic = node ? <Copy value={node.path()} /> : null
 
-  const deleteTopic = useCallback((topic?: q.TreeNode<any>, recursive: boolean = false, maxCount = 50) => {
+  const deleteTopic = useCallback((topic?: q.TreeNode<any>, recursive: boolean = false) => {
     if (!topic) {
       return
     }
 
-    props.actions.clearTopic(topic, recursive, maxCount)
+    props.actions.clearTopic(topic, recursive)
   }, [])
 
   return useMemo(
