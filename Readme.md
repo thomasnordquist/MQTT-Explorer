@@ -138,26 +138,5 @@ The app sends telemetry and error reports, this enables me to quickly react on b
 
 It basically sends: app version, processor architecture, operating system, used memory, user interactions and error stacks.
 
-<details>
-<summary>Example telemetry
-</summary>
-
-```javascript
-{ system: { arch: 'x64', platform: 'darwin' },
-  appVersion: '0.0.7',
-  events: { HELLO_EVENT: [ 1547714886134 ] },
-  now: 1547714886135,
-  transactionId: '1767d251-f492-4f2c-aa62-88add3acc26b' }
-{ errors:
-   [ { time: 1547714887921,
-       message: 'He\'s dead Jim!',
-       stack:
-        'Error: He\'s dead Jim!\n    at ./src/tracking.ts.exports.default (./mqtt-explorer/app/build/bundle.js:142765:11)\n    at new Promise (<anonymous>)\n    at Object../src/tracking.ts (./mqtt-explorer/app/build/bundle.js:142764:1)\n    at __webpack_require__ (./mqtt-explorer/app/build/bundle.js:20:30)\n    at Object../src/index.tsx (./mqtt-explorer/app/build/bundle.js:142618:1)\n    at __webpack_require__ (./mqtt-explorer/app/build/bundle.js:20:30)\n    at ../backend/node_modules/charenc/charenc.js.charenc.utf8.stringToBytes (./mqtt-explorer/app/build/bundle.js:84:18)\n    at ./mqtt-explorer/app/build/bundle.js:87:10' } ],
-  now: 1547714887921,
-  transactionId: '53bf9aac-e695-40cc-9a81-b1cf3398843d' }
-```
-
-</details>
-
 Even though the data is purely technical, an option to disable telemetry is planned. [#52](https://github.com/thomasnordquist/MQTT-Explorer/issues/52)
 
