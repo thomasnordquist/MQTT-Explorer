@@ -81,7 +81,7 @@
     "cspell": "^4.0.23",
     "electron": "5.0.7",
     "electron-builder": "21.0.6",
-    "mime": "^2.4.0",
+    "mime": "^2.4.4",
     "mocha": "^6.2.0",
     "mustache": "^3.0.1",
     "npm-run-all": "^4.1.5",
