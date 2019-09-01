@@ -223,10 +223,10 @@
   dependencies:
     "@wdio/config" "^5.9.4"
 
-about-window@^1.12.1:
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/about-window/-/about-window-1.13.0.tgz#8652f31a9631f38941bd4f92e31c1d62658ee95f"
-  integrity sha512-/AdIW/g1zre3d2OKQJTbZqfJWoVQvJ5ABmxU8IhwbxpA34wVNlHXIXlrCJphs4dxb+qpzmoMjCCf64dq5aXA0w==
+about-window@^1.13.1:
+  version "1.13.1"
+  resolved "https://registry.yarnpkg.com/about-window/-/about-window-1.13.1.tgz#a81401aa8c27155c9541aaa16408104cdaeb0a25"
+  integrity sha512-1gkTfnpGWh3xmPqrkJoe2Ya7lbIFGXG+/UZ8XAYQiEsnDLjF9nWSZXw5ApBpFRd3hUx0koN5uFd6hhbEB8InJQ==
 
 ajv-keywords@^3.4.0, ajv-keywords@^3.4.1:
   version "3.4.1"
