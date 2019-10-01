@@ -44,7 +44,7 @@
     "react-redux": "^7.0.3",
     "react-resize-detector": "^4.1.4",
     "react-split-pane": "^0.1.85",
-    "react-transition-group": "^4.1.1",
+    "react-transition-group": "^4.3.0",
     "react-vis": "^1.11.6",
     "redux": "^4.0.1",
     "redux-batched-actions": "^0.4.1",
