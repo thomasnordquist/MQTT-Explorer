@@ -11,7 +11,7 @@ export class DataSourceStateMachine {
   private state: DataSourceState = {
     error: undefined,
     connected: false,
-    connecting: false,
+    connecting: false
   }
 
   public setConnected(connected: boolean) {

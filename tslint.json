@@ -1,21 +1,54 @@
 {
-  "extends": ["tslint-config-airbnb", "tslint-react", "tslint-react-recommended"],
+  "extends": [
+    "tslint-config-airbnb",
+    "tslint-react",
+    "tslint-react-recommended"
+  ],
   "rules": {
-    "semicolon": [true, "never"],
-    "max-line-length": [true, 200],
+    "semicolon": [
+      true,
+      "never"
+    ],
+    "max-line-length": [
+      true,
+      200
+    ],
+    "no-sparse-arrays": true,
     "member-access": true,
-    "no-else-after-return": false,
+    "member-ordering": false,
+    "no-else-after-return": true,
+    "no-void-expression": true,
     "align": false,
     "jsx-no-lambda": false,
-    "indent": [true, "spaces", 2],
+    "no-unused-variable": true,
+    "indent": [
+      true,
+      "spaces",
+      2
+    ],
     "import-name": false,
     "no-submodule-imports": false,
-    "array-type": [true, "generic"],
+    "array-type": [
+      true,
+      "generic"
+    ],
     "prefer-array-literal": false,
     "function-name": false,
-    "ter-arrow-parens": [true, "as-needed"],
-    "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"],
-    "no-implicit-dependencies": [true, "dev", "optional"],
+    "ter-arrow-parens": [
+      true,
+      "as-needed"
+    ],
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-pascal-case"
+    ],
+    "no-implicit-dependencies": [
+      true,
+      "dev",
+      "optional"
+    ],
     "trailing-comma": [
       true,
       {

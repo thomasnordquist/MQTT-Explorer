@@ -1,8 +1,8 @@
 const { Base64 } = require('js-base64')
 
 export class Base64Message {
-  private base64Message: string
-  private unicodeValue: string
+  private base64Message: string;
+  private unicodeValue: string;
 
   public length: number
 
@@ -26,5 +26,9 @@ export class Base64Message {
 
   public static toDataUri(message: Base64Message, mimeType: string) {
     return `data:${mimeType};base64,${message.base64Message}`
+  }
+
+  public static doStuff() {
+
   }
 }

@@ -4,13 +4,15 @@ const sha1 = require('sha1')
 
 export class Edge<ViewModel extends Destroyable> implements Hashable {
   public name: string
-
+  public color?: Color
   public target!: TreeNode<ViewModel>
   public source?: TreeNode<ViewModel> | undefined
   private cachedHash?: string
 
   constructor(name: string) {
     this.name = name
+    const hash = this.updateCache()
+    console.log(hash)
   }
 
   public edges(): Array<Edge<ViewModel>> {
@@ -39,5 +41,21 @@ export class Edge<ViewModel extends Destroyable> implements Hashable {
     }
 
     return this
+  }
+
+  public updateCache(): void {
+    if (this.cachedHash = "") {
+      this.cachedHash = sha1(this.name)
+    }
+  }
+}
+
+class Color implements Hashable {
+  public red: number = 0
+  public green: number = 0
+  public blue: number = 0
+
+  hash(): string {
+    return `${this.red}${this.green}${this.blue}`
   }
 }

@@ -32,6 +32,17 @@ export class ChangeBuffer {
     return this.size / this.maxSize
   }
 
+  public updateSize() {
+    let size
+    if (this.isFull()) {
+      size = this.maxSize
+    } else {
+      size = 0
+    }
+
+    this.size = size
+  }
+
   public popAll(): Array<BufferedMessage> {
     const tmpBuffer = this.buffer
     this.buffer = []
