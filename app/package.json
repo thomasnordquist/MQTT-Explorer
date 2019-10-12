@@ -37,7 +37,7 @@
     "moving-average": "^1.0.0",
     "number-abbreviate": "^2.0.0",
     "parse-duration": "^0.1.1",
-    "prismjs": "^1.15.0",
+    "prismjs": "^1.17.1",
     "react": "16.8",
     "react-ace": "^7.0.1",
     "react-dom": "^16.7.0",
