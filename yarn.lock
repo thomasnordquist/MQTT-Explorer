@@ -614,22 +614,12 @@ buffer@^5.1.0:
     base64-js "^1.0.2"
     ieee754 "^1.1.4"
 
-builder-util-runtime@8.3.0:
+builder-util-runtime@8.3.0, builder-util-runtime@^8.3.0:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/builder-util-runtime/-/builder-util-runtime-8.3.0.tgz#f5fac9139af6facf42a21fbe4d3aebed88fda33e"
   integrity sha512-CSOdsYqf4RXIHh1HANPbrZHlZ9JQJXSuDDloblZPcWQVN62inyYoTQuSmY3KrgefME2Sv3Kn2MxHvbGQHRf8Iw==
   dependencies:
     debug "^4.1.1"
-    sax "^1.2.4"
-
-builder-util-runtime@^8.2.5:
-  version "8.2.5"
-  resolved "https://registry.yarnpkg.com/builder-util-runtime/-/builder-util-runtime-8.2.5.tgz#6f19330178345f8ce2c65842b0a9cf6a187d5946"
-  integrity sha512-YILT+YUlxrE3yNB6mDC1tF+Q24mr1LSYdjP5U861jbBeDZfvy1/VPDzW3boMVrDtzYnDnvkYrzLJnoh6TXA75w==
-  dependencies:
-    bluebird-lst "^1.0.9"
-    debug "^4.1.1"
-    fs-extra-p "^8.0.2"
     sax "^1.2.4"
 
 builder-util@10.3.1:
@@ -1910,7 +1900,7 @@ fs-constants@^1.0.0:
   resolved "https://registry.yarnpkg.com/fs-constants/-/fs-constants-1.0.0.tgz#6be0de9be998ce16af8afc24497b9ee9b7ccd9ad"
   integrity sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==
 
-fs-extra-p@^8.0.2, fs-extra-p@^8.1.0:
+fs-extra-p@^8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/fs-extra-p/-/fs-extra-p-8.1.0.tgz#781b7105e96cf3c1d3c8a88a83215c8a31c52bae"
   integrity sha512-sCLpU5kk5CvrWZvFM9dUlqPgHrE02AEt6XYzF7kDscr5COc7DHfhNfODTXt0bkVNmt5DkvU2uJSYjorxY3bRKA==
