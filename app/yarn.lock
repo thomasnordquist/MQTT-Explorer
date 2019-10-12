@@ -2159,7 +2159,8 @@ ejs@^2.6.1:
 
 "electron-telemetry@git+https://github.com/thomasnordquist/electron-telemetry.git#dist":
   version "1.0.0"
-  resolved "git+https://github.com/thomasnordquist/electron-telemetry.git#78b140426a31fe6fec75c7fe36daa130445af191"
+  uid "2d67a18cfe6f5caf2fd0fe35eb35272a4b24439f"
+  resolved "git+https://github.com/thomasnordquist/electron-telemetry.git#2d67a18cfe6f5caf2fd0fe35eb35272a4b24439f"
   dependencies:
     axios "^0.18.0"
     pako "^1.0.8"
