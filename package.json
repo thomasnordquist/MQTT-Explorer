@@ -93,7 +93,7 @@
     "ts-node": "^8.2.0",
     "tslint": "^5.18.0",
     "tslint-config-airbnb": "^5.11.1",
-    "tslint-react": "^4.0.0",
+    "tslint-react": "^4.1.0",
     "tslint-react-recommended": "^1.0.15",
     "tslint-strict-null-checks": "^1.0.1",
     "typescript": "^3.2.2",
