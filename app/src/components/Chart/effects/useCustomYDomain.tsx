@@ -7,7 +7,7 @@ export function useCustomYDomain(props: Props) {
     const data = props.data
     const calculatedDomain = domainForData(data)
     const yDomain: [number, number] = props.range
-      ? [props.range[0] || calculatedDomain[0], props.range[1] || calculatedDomain[1]]
+      ? [(props.range[0] === undefined ? calculatedDomain[0] : props.range[0]), (props.range[1] === undefined ? calculatedDomain[1] : props.range[1])]
       : calculatedDomain
 
     return yDomain
