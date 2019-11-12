@@ -2,12 +2,16 @@ import { Props } from '../Chart'
 import { useMemo } from 'react'
 import { Point } from '../Model'
 
+function defaultFor(a: number | undefined, b: number) {
+  return a === undefined ? b : a
+}
+
 export function useCustomYDomain(props: Props) {
   return useMemo(() => {
     const data = props.data
     const calculatedDomain = domainForData(data)
     const yDomain: [number, number] = props.range
-      ? [(props.range[0] === undefined ? calculatedDomain[0] : props.range[0]), (props.range[1] === undefined ? calculatedDomain[1] : props.range[1])]
+      ? [defaultFor(props.range[0], calculatedDomain[0]), defaultFor(props.range[1], calculatedDomain[1])]
       : calculatedDomain
 
     return yDomain
@@ -19,8 +23,10 @@ function domainForData(data: Array<Point>): [number, number] {
     const defaultDomain: [number, number] = [-1, 1]
     return defaultDomain
   }
+
   let max = data[0].y
   let min = data[0].y
+
   data.forEach(d => {
     if (max < d.y) {
       max = d.y
