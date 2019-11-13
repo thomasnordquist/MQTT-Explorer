@@ -187,10 +187,29 @@ function deleteConnection(state: ConnectionManagerState, action: DeleteConnectio
 
 function updateConnection(state: ConnectionManagerState, action: UpdateConnection): ConnectionManagerState {
   let connection = state.connections[action.connectionId]
+  let changeSet = action.changeSet
+
+  // Reset empty username to undefined
+  if (changeSet.username !== undefined) {
+    changeSet = {
+      changeSet,
+      username: changeSet.username === '' ? undefined : changeSet.username,
+    }
+  }
+
+  // Reset empty password to undefined
+  if (changeSet.password !== undefined) {
+    changeSet = {
+      changeSet,
+      username: changeSet.password === '' ? undefined : changeSet.password,
+    }
+  }
+
   connection = {
     ...connection,
-    ...action.changeSet,
+    ...changeSet,
   }
+
   return {
     ...state,
     connections: {
