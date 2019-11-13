@@ -181,7 +181,7 @@ async function ensureConnectionsHaveBeenInitialized() {
   // Migrate connections, rewrite dictionary to "keep" it "ordered" (dictionaries do not have a guaranteed order)
   const mayNeedMigrations = connections && connections['iot.eclipse.org']
   if (connections && mayNeedMigrations) {
-    let newConnections = {}
+    const newConnections = {}
     for (const connection of Object.values(connections)) {
       addMigratedConnection(newConnections, connection)
     }
