@@ -10,7 +10,7 @@ import { default as persistentStorage, StorageIdentifier } from '../utils/Persis
 import { Dispatch } from 'redux'
 import { showError } from './Global'
 import { remote } from 'electron'
-import * as fs from 'fs'
+import { promises as fsPromise } from 'fs'
 import * as path from 'path'
 
 import { ActionTypes, Action } from '../reducers/ConnectionManager'
@@ -65,35 +65,28 @@ async function openCertificate(): Promise<CertificateParameters> {
     certificateSizeDoesNotMatch: 'Certificate size larger/smaller then expected.',
   }
 
-  return new Promise((resolve, reject) => {
-    remote.dialog.showOpenDialog(
-      { properties: ['openFile'], securityScopedBookmarks: true },
-      (filePaths?: Array<string>) => {
-        const selectedFile = filePaths && filePaths[0]
-        if (!selectedFile) {
-          reject(rejectReasons.noCertificateSelected)
-          return
-        }
+  const openDialogReturnValue = await remote.dialog.showOpenDialog(
+    remote.getCurrentWindow(),
+    {
+      properties: ['openFile'],
+      securityScopedBookmarks: true,
+    }
+  )
 
-        fs.readFile(selectedFile, (error, data) => {
-          if (error) {
-            reject(error)
-            return
-          }
+  const selectedFile = openDialogReturnValue.filePaths && openDialogReturnValue.filePaths[0]
+  if (!selectedFile) {
+    throw rejectReasons.noCertificateSelected
+  }
 
-          if (data.length > 16_384 || data.length < 128) {
-            reject(rejectReasons.certificateSizeDoesNotMatch)
-            return
-          }
+  const data = await fsPromise.readFile(selectedFile)
+  if (data.length > 16_384 || data.length < 128) {
+    throw rejectReasons.certificateSizeDoesNotMatch
+  }
 
-          resolve({
-            data: data.toString('base64'),
-            name: path.basename(selectedFile),
-          })
-        })
-      }
-    )
-  })
+  return {
+    data: data.toString('base64'),
+    name: path.basename(selectedFile),
+  }
 }
 
 export const saveConnectionSettings = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {

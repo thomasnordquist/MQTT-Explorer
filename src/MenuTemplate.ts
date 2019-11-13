@@ -23,7 +23,7 @@ const applicationMenu: MenuItemConstructorOptions = {
     {
       label: 'Dev Tools',
       accelerator: 'CmdOrCtrl+Alt+I',
-      role: 'toggledevtools' as 'toggledevtools',
+      role: 'toggleDevTools',
     },
     {
       label: 'Quit',
@@ -69,7 +69,7 @@ const editMenu: MenuItemConstructorOptions = {
     {
       label: 'Select All',
       accelerator: 'CmdOrCtrl+A',
-      role: 'selectall',
+      role: 'selectAll',
     },
   ],
 }
