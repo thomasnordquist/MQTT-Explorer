@@ -1,4 +1,3 @@
-import { Action } from 'redux'
 import { createReducer } from './lib'
 import { Record, List } from 'immutable'
 import MoveUp from '../components/ChartPanel/ChartSettings/MoveUp'

@@ -1,5 +1,5 @@
 import * as q from '../../../backend/src/Model'
-import { Action } from 'redux'
+import { Action as ReduxAction } from 'redux'
 import { createReducer } from './lib'
 import { Record } from 'immutable'
 import { TopicViewModel } from '../model/TopicViewModel'
@@ -50,7 +50,7 @@ const setPaused = (pause: boolean) => (state: TreeState, action: ShowTree): Tree
 }
 
 const actions: {
-  [s: string]: (state: TreeState, action: Action) => TreeState
+  [s: string]: (state: TreeState, action: ReduxAction) => TreeState
 } = {
   TREE_SHOW_TREE: showTree,
   TREE_SELECT_TOPIC: selectTopic,

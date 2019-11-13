@@ -1,4 +1,3 @@
-import { Action } from 'redux'
 import { ConnectionOptions } from '../model/ConnectionOptions'
 import { createReducer } from './lib'
 

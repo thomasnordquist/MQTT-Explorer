@@ -1,5 +1,5 @@
 import * as q from '../../../backend/src/Model'
-import { Action } from 'redux'
+import { Action as ReduxAction } from 'redux'
 import { createReducer } from './lib'
 import { Record } from 'immutable'
 
@@ -11,7 +11,8 @@ const initialStateFactory = Record<SidebarModel>({
   compareMessage: undefined,
 })
 
-export type Action = SetCompareMessage
+export type Action = SetCompareMessage | ResetStore
+
 export enum ActionTypes {
   SIDEBAR_SET_COMPARE_MESSAGE = 'SIDEBAR_SET_COMPARE_MESSAGE',
   SIDEBAR_RESET_STORE = 'SIDEBAR_RESET_STORE',
@@ -20,7 +21,7 @@ export enum ActionTypes {
 export type SidebarState = Record<SidebarModel>
 
 const actions: {
-  [s: string]: (state: SidebarState, action: Action) => SidebarState
+  [s: string]: (state: SidebarState, action: ReduxAction) => SidebarState
 } = {
   SIDEBAR_SET_COMPARE_MESSAGE: setCompareMessage,
   SIDEBAR_RESET_STORE: resetStore,

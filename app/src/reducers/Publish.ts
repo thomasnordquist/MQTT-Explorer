@@ -1,4 +1,3 @@
-import { Action } from 'redux'
 import { createReducer } from './lib'
 
 export interface PublishState {

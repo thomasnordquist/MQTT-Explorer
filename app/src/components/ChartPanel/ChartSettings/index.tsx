@@ -25,6 +25,7 @@ function ChartSettings(props: {
   const [interpolationVisible, setInterpolationVisible] = React.useState(false)
   const [sizeVisible, setSizeVisible] = React.useState(false)
   const [colorVisible, setColorVisible] = React.useState(false)
+  const open = props.open
 
   const toggleRange = React.useCallback(() => {
     if (open) {
