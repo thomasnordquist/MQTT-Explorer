@@ -15,7 +15,7 @@ export function useCustomYDomain(props: Props) {
       : calculatedDomain
 
     return yDomain
-  }, [props.data])
+  }, [props.data, props.range])
 }
 
 function domainForData(data: Array<Point>): [number, number] {
