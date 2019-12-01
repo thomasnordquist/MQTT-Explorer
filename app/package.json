@@ -13,7 +13,7 @@
   "dependencies": {
     "@material-ui/core": "^4",
     "@material-ui/icons": "^4",
-    "@material-ui/lab": "^4.0.0-alpha",
+    "@material-ui/lab": "^4.0.0-alpha.32",
     "@material-ui/styles": "^4",
     "@types/react-transition-group": "^2.9.2",
     "axios": "^0.19.0",
