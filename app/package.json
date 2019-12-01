@@ -74,7 +74,7 @@
     "html-webpack-plugin": "^4.0.0-beta.5",
     "node-loader": "^0.6.0",
     "source-map-loader": "^0.2.4",
-    "style-loader": "^0.23.1",
+    "style-loader": "^1.0.1",
     "typescript": "^3.6.3",
     "webpack": "^4.28.2",
     "webpack-bundle-analyzer": "^3.0.3",
