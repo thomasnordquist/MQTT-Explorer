@@ -1600,10 +1600,10 @@ electron-updater@^4.0.6:
     pako "^1.0.10"
     semver "^6.3.0"
 
-electron@5.0.7:
-  version "5.0.7"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-5.0.7.tgz#a48fcbd13d30f16f7d7887908b68e52156e90259"
-  integrity sha512-OMMz8DhatxLuBFbnW7KYcAUjflGYFn0IQEtKR0iZhMAm89FgNOd9SVbxXWAGNxvRR6C0gORXwhTh6BCqqqcR6Q==
+electron@5.0.13:
+  version "5.0.13"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-5.0.13.tgz#81d44f2078fb13d306279cf3854d3734f2c390b4"
+  integrity sha512-AM73AMZpb/5zm8eIXsIcp2eMdniD5WO+FqMtlIzhhtSjixflDm0pLtgudz0fHtiT/w6V+6YcpDVb4TtHtrJbHQ==
   dependencies:
     "@types/node" "^10.12.18"
     electron-download "^4.1.0"
