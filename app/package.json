@@ -25,7 +25,7 @@
     "diff": "^4.0.1",
     "dot-prop": "^5.0.0",
     "electron-telemetry": "git+https://github.com/thomasnordquist/electron-telemetry.git#dist",
-    "file-loader": "^4.2.0",
+    "file-loader": "^5.0.2",
     "get-value": "^3.0.1",
     "immutable": "^4.0.0-rc.12",
     "in-viewport": "^3.6.0",
