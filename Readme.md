@@ -41,24 +41,51 @@ The `app` directory contains all the rendering logic, the `backend` directory cu
 
 To achieve a reliable product automated tests run regularly on travis.
 
-  - Data model
-  - MQTT integration
-  - UI-Tests (The demo is a recorded ui test)
+- Data model
+- MQTT integration
+- UI-Tests (The demo is a recorded ui test)
 
 ## Run UI-tests
+
 A [mosquitto](https://mosquitto.org/) MQTT broker is required to run the ui-tests.
 
 Run tests with
+
 ```bash
 # Run chromedriver in a separate terminal session
 ./node_modules/.bin/chromedriver --url-base=wd/hub --port=9515 --verbose
 ```
 
 Compile and execute tests
+
 ```bash
 npm run build
 node dist/src/spec/webdriverio.js
 ```
+
+## Write docs
+
+```
+git clone https://github.com/thomasnordquist/MQTT-Explorer.git mqtt-explorer-pages
+cd mqtt-explorer-pages
+git checkout gh-pages
+bundle install
+bundle exec jekyll serve --incremental
+```
+
+Readme file: `Readme.tpl.md`
+
+Preview is available at
+http://localhost:4000/Readme.tpl
+
+## Update docs
+
+```
+npm install
+./updateReadme.ts
+```
+
+The readme will be generated from the docs.
 
 ## License
 
