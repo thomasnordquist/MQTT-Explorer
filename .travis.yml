@@ -19,7 +19,7 @@ os:
 
 osx_image: xcode10.2
 
-dist: xenial
+dist: bionic
 
 services:
   - docker
