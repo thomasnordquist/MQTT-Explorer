@@ -20,6 +20,7 @@ Pull-Requests and error reports are welcome.
 ## Run from sources
 
 ```bash
+npm install -g yarn
 yarn
 yarn build
 yarn start
@@ -29,6 +30,7 @@ yarn start
 
 Launch Application
 ```bash
+npm install -g yarn
 yarn
 yarn dev
 ```

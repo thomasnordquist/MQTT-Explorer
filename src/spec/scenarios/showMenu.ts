@@ -1,5 +1,5 @@
-import { Browser, Element } from 'webdriverio'
-import { clickOn, expandTopic, moveToCenterOfElement, showText, sleep, writeText } from '../util'
+import { Browser } from 'webdriverio'
+import { clickOn, showText, sleep } from '../util'
 
 export async function showMenu(browser: Browser) {
   const menuButton = await browser.$('//button[contains(@aria-label, "Menu")]')
@@ -11,7 +11,7 @@ export async function showMenu(browser: Browser) {
 
   await browser.saveScreenshot('screen4.png')
 
-  const topicOrder = await browser.$('#select-node-order')
+  const topicOrder = await browser.$('//input[@name="node-order"]/../div')
   await clickOn(topicOrder, browser)
   await sleep(1000)
 

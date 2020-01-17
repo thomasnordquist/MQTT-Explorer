@@ -65,13 +65,10 @@ async function openCertificate(): Promise<CertificateParameters> {
     certificateSizeDoesNotMatch: 'Certificate size larger/smaller then expected.',
   }
 
-  const openDialogReturnValue = await remote.dialog.showOpenDialog(
-    remote.getCurrentWindow(),
-    {
-      properties: ['openFile'],
-      securityScopedBookmarks: true,
-    }
-  )
+  const openDialogReturnValue = await remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
+    properties: ['openFile'],
+    securityScopedBookmarks: true,
+  })
 
   const selectedFile = openDialogReturnValue.filePaths && openDialogReturnValue.filePaths[0]
   if (!selectedFile) {

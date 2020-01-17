@@ -81,14 +81,14 @@
     "cspell": "^4.0.28",
     "electron": "^7",
     "electron-builder": "^22.1",
-    "mocha": "^6.2.2",
+    "mocha": "7.0.0",
     "mustache": "^3.0.1",
     "npm-run-all": "^4.1.5",
     "nyc": "^14.1.1",
     "prettier": "1.18.2",
     "redux-thunk": "^2.3.0",
     "source-map-support": "^0.5.9",
-    "spectron": "^6.0.0",
+    "spectron": "9",
     "ts-node": "^8.2.0",
     "tslint": "^5.18.0",
     "tslint-config-airbnb": "^5.11.1",
@@ -96,7 +96,7 @@
     "tslint-react-recommended": "^1.0.15",
     "tslint-strict-null-checks": "^1.0.1",
     "typescript": "^3.2.2",
-    "webdriverio": "5.5"
+    "webdriverio": "5.18"
   },
   "dependencies": {
     "about-window": "^1.12.1",

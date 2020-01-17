@@ -103,6 +103,7 @@ function generateData(client: mqtt.MqttClient) {
   intervals.push(
     setInterval(() => client.publish('kitchen/temperature', temperature(), { retain: true, qos: 0 }), 1500)
   )
+
   intervals.push(
     setInterval(() => client.publish('kitchen/humidity', temperature(60, -5, 0), { retain: true, qos: 0 }), 1800)
   )

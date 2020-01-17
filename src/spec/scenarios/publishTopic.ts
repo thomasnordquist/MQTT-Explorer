@@ -35,9 +35,5 @@ export async function publishTopic(browser: Browser) {
 }
 
 async function writeTextPayload(payloadInput: any, text: string) {
-  const chars = text.split('')
-  for (const char of chars) {
-    await payloadInput.setValue(char)
-    await sleep(10)
-  }
+  await payloadInput.setValue(text)
 }

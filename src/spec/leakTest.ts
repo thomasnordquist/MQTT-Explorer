@@ -1,4 +1,5 @@
 import * as os from 'os'
+import * as webdriverio from 'webdriverio'
 import mockMqtt, { stopUpdates as stopMqttUpdates } from './mock-mqtt'
 import { ClassNameMapping, countInstancesOf, createFakeMousePointer, getHeapDump, setFast, sleep } from './util'
 import { clearSearch, searchTree } from './scenarios/searchTree'
@@ -12,13 +13,12 @@ process.on('unhandledRejection', (error: Error | any) => {
 
 const runningUiTestOnCi = os.platform() === 'darwin' ? [] : ['--runningUiTestOnCi']
 
-console.log(`${__dirname}/../../../node_modules/.bin/electron`)
 const options = {
   host: '127.0.0.1', // Use localhost as chrome driver server
   port: 9515, // "9515" is the port opened by chrome driver.
   capabilities: {
-    browserName: 'electron',
-    chromeOptions: {
+    browserName: 'chrome',
+    'goog:chromeOptions': {
       binary: `${__dirname}/../../../node_modules/.bin/electron`,
       args: [
         `--app=${__dirname}/../../..`,
@@ -27,8 +27,8 @@ const options = {
         '--disable-dev-shm-usage',
         '--disable-extensions',
       ].concat(runningUiTestOnCi),
+      windowTypes: ['app', 'webview'],
     },
-    windowTypes: ['app', 'webview'],
   },
 }
 
@@ -37,7 +37,7 @@ async function doStuff() {
   await mockMqtt()
   console.log('start webdriver')
 
-  const browser = await WebdriverIO.remote(options)
+  const browser = await webdriverio.remote(options)
   setFast()
   await createFakeMousePointer(browser)
 
