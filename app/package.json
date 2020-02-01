@@ -36,7 +36,7 @@
     "moment": "^2.24.0",
     "moving-average": "^1.0.0",
     "number-abbreviate": "^2.0.0",
-    "parse-duration": "^0.1.1",
+    "parse-duration": "^0.1.2",
     "prismjs": "^1.15.0",
     "react": "^16.11",
     "react-ace": "^8",
