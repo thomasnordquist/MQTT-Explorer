@@ -65,7 +65,7 @@
     "@types/react-resize-detector": "^4.0.1",
     "@types/sha1": "^1.1.1",
     "@types/socket.io-client": "^1.4.32",
-    "@types/uuid": "^3.4.4",
+    "@types/uuid": "^7.0.0",
     "@types/vis": "^4.21.9",
     "awesome-typescript-loader": "^5.2.1",
     "css-loader": "^3.0.0",
