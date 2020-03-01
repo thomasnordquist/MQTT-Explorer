@@ -95,7 +95,7 @@
     "tslint-react": "^4.0.0",
     "tslint-react-recommended": "^1.0.15",
     "tslint-strict-null-checks": "^1.0.1",
-    "typescript": "^3.2.2",
+    "typescript": "^3.8.3",
     "webdriverio": "5.18"
   },
   "dependencies": {
