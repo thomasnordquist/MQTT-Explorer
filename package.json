@@ -76,7 +76,7 @@
     "@types/node": "^12.6.8",
     "@types/semver": "^6.0.0",
     "@types/sha1": "^1.1.1",
-    "builder-util-runtime": "^8.2.5",
+    "builder-util-runtime": "^8.6.1",
     "chai": "^4.2.0",
     "cspell": "^4.0.28",
     "electron": "^7",
