@@ -59,7 +59,7 @@
     "@types/get-value": "^3.0.1",
     "@types/node": "^12.7.8",
     "@types/prismjs": "^1.9.1",
-    "@types/react": "^16.9.4",
+    "@types/react": "^16.9.31",
     "@types/react-dom": "^16.0.11",
     "@types/react-redux": "^7.0.9",
     "@types/react-resize-detector": "^4.0.1",
