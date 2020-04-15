@@ -35,6 +35,7 @@ function SearchBar(props: {
 
   useGlobalKeyEventHandler(undefined, event => {
     const isCharacter = event.key.length === 1
+    const isModifierKey = event.metaKey || event.ctrlKey
     const isAllowedControlCharacter = event.keyCode === KeyCodes.backspace || event.keyCode === KeyCodes.delete
     const tagNameBlacklist = ['INPUT', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'OPTION', 'FORM']
 
@@ -43,6 +44,7 @@ function SearchBar(props: {
 
     if (
       (isCharacter || isAllowedControlCharacter) &&
+      !isModifierKey &&
       !event.defaultPrevented &&
       !hasFocus &&
       tagElementIsNotBlacklisted &&
