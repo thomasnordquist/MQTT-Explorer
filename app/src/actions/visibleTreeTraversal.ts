@@ -82,7 +82,7 @@ function findNextNodeUpward(
   }
 
   const neighborNodes = sortedNodes(settings, parent)
-  const nodeIdx = neighborNodes.findIndex(n => n.path() === treeNode.path())
+  const nodeIdx = neighborNodes.findIndex((n) => n.path() === treeNode.path())
   if (nodeIdx === 0) {
     return parent
   }
@@ -125,7 +125,7 @@ function findNextNodeDownwardNeighbor(
   }
 
   const neighborNodes = sortedNodes(settings, parent).filter(isTreeNodeVisible)
-  const nodeIdx = neighborNodes.findIndex(n => n.path() === treeNode.path())
+  const nodeIdx = neighborNodes.findIndex((n) => n.path() === treeNode.path())
   const downwardNeighbor = neighborNodes[nodeIdx + 1]
   if (downwardNeighbor) {
     return downwardNeighbor

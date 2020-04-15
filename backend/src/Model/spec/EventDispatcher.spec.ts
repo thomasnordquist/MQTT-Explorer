@@ -3,13 +3,13 @@ import { expect } from 'chai'
 import 'mocha'
 
 describe('EventDispatcher', async () => {
-  it('should dispatch', async function() {
+  it('should dispatch', async function () {
     const dispatcher = new EventDispatcher<string>()
     this.timeout(300)
 
     setTimeout(() => dispatcher.dispatch('hello'), 5)
-    const response = await new Promise(resolve => {
-      dispatcher.subscribe(msg => {
+    const response = await new Promise((resolve) => {
+      dispatcher.subscribe((msg) => {
         resolve(msg)
       })
     })
@@ -17,7 +17,7 @@ describe('EventDispatcher', async () => {
     expect(response).to.eq('hello')
   })
 
-  it('should unsubscribe', async function() {
+  it('should unsubscribe', async function () {
     const dispatcher = new EventDispatcher<string>()
     this.timeout(300)
     let callbackCounter = 0

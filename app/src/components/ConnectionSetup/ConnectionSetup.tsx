@@ -134,7 +134,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(ConnectionSetup))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ConnectionSetup))

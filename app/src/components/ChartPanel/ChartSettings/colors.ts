@@ -39,7 +39,7 @@ export function colors() {
     indigo,
     yellow,
   ]
-    .map(color => [color[200], color[500], color[700]])
+    .map((color) => [color[200], color[500], color[700]])
     .reduce((a, b) => a.concat(b), [])
     .sort((a, b) => colorCompare(a, b))
   return colors

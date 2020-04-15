@@ -45,9 +45,7 @@ export const saveCharts = () => async (dispatch: Dispatch<any>, getState: () => 
     return
   }
 
-  const charts = getState()
-    .charts.get('charts')
-    .toArray()
+  const charts = getState().charts.get('charts').toArray()
 
   let viewStates: ConnectionViewStateDictionary | undefined
   try {
@@ -69,7 +67,7 @@ export const addChart = (chartParameters: ChartParameters) => async (
   const chartExists = Boolean(
     getState()
       .charts.get('charts')
-      .find(chart => chart.topic === chartParameters.topic && chart.dotPath === chartParameters.dotPath)
+      .find((chart) => chart.topic === chartParameters.topic && chart.dotPath === chartParameters.dotPath)
   )
   if (chartExists) {
     dispatch(showNotification('Already added'))

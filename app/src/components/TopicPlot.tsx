@@ -19,7 +19,7 @@ interface Props {
 function filterUsingTimeRange(startTime: number | undefined, data: Array<q.Message>) {
   if (startTime) {
     const threshold = new Date(Date.now() - startTime)
-    return data.filter(d => d.received >= threshold)
+    return data.filter((d) => d.received >= threshold)
   }
 
   return data
@@ -31,7 +31,7 @@ function nodeToHistory(startTime: number | undefined, history: q.MessageHistory)
       const value = message.value ? toPlottableValue(Base64Message.toUnicodeString(message.value)) : NaN
       return { x: message.received.getTime(), y: toPlottableValue(value) }
     })
-    .filter(data => !isNaN(data.y as any)) as any
+    .filter((data) => !isNaN(data.y as any)) as any
 }
 
 function nodeDotPathToHistory(startTime: number | undefined, history: q.MessageHistory, dotPath: string) {
@@ -46,7 +46,7 @@ function nodeDotPathToHistory(startTime: number | undefined, history: q.MessageH
 
       return { x: message.received.getTime(), y: toPlottableValue(value) }
     })
-    .filter(data => !isNaN(data.y as any)) as any
+    .filter((data) => !isNaN(data.y as any)) as any
 }
 
 function TopicPlot(props: Props) {

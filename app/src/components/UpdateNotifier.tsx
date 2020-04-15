@@ -51,10 +51,10 @@ class UpdateNotifier extends React.PureComponent<Props, State> {
     this.state = { newerVersions: [] }
 
     const ownVersion = electron.remote.app.getVersion()
-    this.fetchReleases().then(releases => {
+    this.fetchReleases().then((releases) => {
       const newerVersions = releases
-        .filter(release => this.allowPrereleaseIfOwnVersionIsBeta(release, ownVersion))
-        .filter(release => compareVersions(release.tag_name, ownVersion) > 0)
+        .filter((release) => this.allowPrereleaseIfOwnVersionIsBeta(release, ownVersion))
+        .filter((release) => compareVersions(release.tag_name, ownVersion) > 0)
         .sort((a, b) => compareVersions(b.tag_name, a.tag_name))
 
       if (newerVersions.length > 0) {
@@ -145,7 +145,7 @@ class UpdateNotifier extends React.PureComponent<Props, State> {
       return null
     }
     const releaseNotes = this.state.newerVersions
-      .map(release => `<p><h3>${release.tag_name}</h3><p/><p>${release.body_html}</p>`)
+      .map((release) => `<p><h3>${release.tag_name}</h3><p/><p>${release.body_html}</p>`)
       .join('<hr />')
 
     return (
@@ -195,7 +195,7 @@ class UpdateNotifier extends React.PureComponent<Props, State> {
       return null
     }
 
-    return latestUpdate.assets.filter(this.assetForCurrentPlatform).map(asset => (
+    return latestUpdate.assets.filter(this.assetForCurrentPlatform).map((asset) => (
       <div>
         <Button className={this.props.classes.download} onClick={() => this.openUrl(asset.browser_download_url)}>
           <CloudDownload />
@@ -266,9 +266,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default withStyles(styles)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(UpdateNotifier)
-)
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(UpdateNotifier))

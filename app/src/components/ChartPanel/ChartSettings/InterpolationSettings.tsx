@@ -38,7 +38,7 @@ function InterpolationSettings(props: {
   }, [curves])
 
   const menuItems = React.useMemo(() => {
-    return curves.map(curve => (
+    return curves.map((curve) => (
       <MenuItem key={curve} onClick={callbacks[curve]} selected={props.chart.interpolation === curve}>
         <Typography variant="inherit">{curve.replace(/_/g, ' ')}</Typography>
       </MenuItem>
@@ -60,7 +60,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(
-  undefined,
-  mapDispatchToProps
-)(InterpolationSettings)
+export default connect(undefined, mapDispatchToProps)(InterpolationSettings)

@@ -120,9 +120,7 @@ class MessageHistory extends React.PureComponent<Props, State> {
               >
                 <ShowChart style={{ marginTop: '-5px' }} />
               </CustomIconButton>
-            ) : (
-              undefined
-            )
+            ) : undefined
           }
           onClick={this.displayMessage}
         >
@@ -139,7 +137,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(MessageHistory)
+export default connect(null, mapDispatchToProps)(MessageHistory)

@@ -104,7 +104,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(
-  undefined,
-  mapDispatchToProps
-)(withStyles(styles)(Certificates))
+export default connect(undefined, mapDispatchToProps)(withStyles(styles)(Certificates))

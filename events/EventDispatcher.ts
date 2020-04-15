@@ -26,13 +26,13 @@ export class EventDispatcher<Message> {
   }
 
   public unsubscribe(callback: (msg: Message) => void) {
-    const item = this.callbacks.find(store => store.callback === callback)
+    const item = this.callbacks.find((store) => store.callback === callback)
     if (!item) {
       return
     }
 
     this.emitter.removeListener('event', item.wrappedCallback)
-    this.callbacks = this.callbacks.filter(a => a !== item)
+    this.callbacks = this.callbacks.filter((a) => a !== item)
   }
 
   public removeAllListeners() {

@@ -160,7 +160,7 @@ function addSubscription(state: ConnectionManagerState, action: AddSubscription)
 
 function deleteSubscription(state: ConnectionManagerState, action: AddSubscription): ConnectionManagerState {
   const connection = state.connections[action.connectionId]
-  const newSubscriptions = connection.subscriptions.filter(s => s !== action.subscription)
+  const newSubscriptions = connection.subscriptions.filter((s) => s !== action.subscription)
 
   return {
     ...state,

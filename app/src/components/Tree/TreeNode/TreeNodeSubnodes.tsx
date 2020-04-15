@@ -48,7 +48,7 @@ function TreeNodeSubnodes(props: Props) {
 
   return useMemo(() => {
     const nodes = sortedNodes(props.settings, props.treeNode).slice(0, alreadyAdded)
-    const listItems = nodes.map(node => {
+    const listItems = nodes.map((node) => {
       return (
         <TreeNode
           key={`${node.hash()}-${props.filter}`}

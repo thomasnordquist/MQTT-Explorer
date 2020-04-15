@@ -25,7 +25,7 @@ function ContentView(props: Props) {
     setDetectedHeight(newHeight)
   }, [])
 
-  const detectSidebarSize = React.useCallback(width => {
+  const detectSidebarSize = React.useCallback((width) => {
     setDetectedSidebarWidth(width)
   }, [])
 

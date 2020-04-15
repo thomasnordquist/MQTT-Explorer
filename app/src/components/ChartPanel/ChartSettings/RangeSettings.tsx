@@ -95,10 +95,7 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(
-  undefined,
-  mapDispatchToProps
-)(RangeSettings)
+export default connect(undefined, mapDispatchToProps)(RangeSettings)
 
 function useRangeStateToFireUpdateAction(
   rangeFrom: string | number | undefined,

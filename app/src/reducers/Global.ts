@@ -90,7 +90,7 @@ export const globalState: Reducer<Record<GlobalStateInterface>, GlobalAction> = 
       }
       return state.set(
         'confirmationRequests',
-        state.get('confirmationRequests').filter(a => a !== action.confirmationRequest)
+        state.get('confirmationRequests').filter((a) => a !== action.confirmationRequest)
       )
 
     default:

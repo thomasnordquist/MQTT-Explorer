@@ -28,7 +28,7 @@ export default withTheme(
   memo((props: Props) => {
     const [width, setWidth] = React.useState(300)
     const [tooltip, setTooltip] = React.useState<Tooltip | undefined>()
-    const detectResize = React.useCallback(newWidth => setWidth(newWidth), [])
+    const detectResize = React.useCallback((newWidth) => setWidth(newWidth), [])
 
     const hintFormatter = React.useCallback(
       (point: any) => [

@@ -9,9 +9,11 @@ interface Props {
 }
 
 function changeAmount(props: Props) {
-  const additions = props.changes.map(change => (change.added === true ? change.count || 0 : 0)).reduce((a, b) => a + b)
+  const additions = props.changes
+    .map((change) => (change.added === true ? change.count || 0 : 0))
+    .reduce((a, b) => a + b)
   const deletions = props.changes
-    .map(change => (change.removed === true ? change.count || 0 : 0))
+    .map((change) => (change.removed === true ? change.count || 0 : 0))
     .reduce((a, b) => a + b)
   if (additions === 0 && deletions === 0) {
     return null

@@ -20,7 +20,7 @@ const styles = (theme: Theme) => ({
   icon: {
     boxShadow: theme.shadows[2]
       .split('),')
-      .map(s => `inset ${s}`)
+      .map((s) => `inset ${s}`)
       .join('),'),
     padding: '6px',
     borderRadius: '50%',

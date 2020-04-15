@@ -62,7 +62,4 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TopicInput)
+export default connect(mapStateToProps, mapDispatchToProps)(TopicInput)

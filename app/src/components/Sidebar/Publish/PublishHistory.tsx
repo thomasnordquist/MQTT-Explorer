@@ -18,7 +18,7 @@ function PublishHistory(props: { history: Array<Message>; actions: typeof publis
   )
 
   return useMemo(() => {
-    const items = [...props.history].reverse().map(message => ({
+    const items = [...props.history].reverse().map((message) => ({
       key: sha1(message.topic + message.payload),
       title: message.topic,
       value: message.payload || '',
@@ -34,7 +34,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(
-  undefined,
-  mapDispatchToProps
-)(PublishHistory)
+export default connect(undefined, mapDispatchToProps)(PublishHistory)

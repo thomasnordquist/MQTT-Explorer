@@ -85,7 +85,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(
-  undefined,
-  mapDispatchToProps
-)(ChartPreview)
+export default connect(undefined, mapDispatchToProps)(ChartPreview)

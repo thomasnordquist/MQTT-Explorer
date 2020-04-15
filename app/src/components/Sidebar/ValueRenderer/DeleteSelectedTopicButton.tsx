@@ -33,7 +33,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(
-  undefined,
-  mapDispatchToProps
-)(DeleteSelectedTopicButton)
+export default connect(undefined, mapDispatchToProps)(DeleteSelectedTopicButton)

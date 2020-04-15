@@ -41,7 +41,4 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RetainSwitch)
+export default connect(mapStateToProps, mapDispatchToProps)(RetainSwitch)

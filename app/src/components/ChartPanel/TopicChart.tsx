@@ -133,7 +133,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(
-  undefined,
-  mapDispatchToProps
-)(memo(TopicChart))
+export default connect(undefined, mapDispatchToProps)(memo(TopicChart))

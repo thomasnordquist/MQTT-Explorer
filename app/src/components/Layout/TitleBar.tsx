@@ -103,7 +103,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(TitleBar))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(TitleBar))

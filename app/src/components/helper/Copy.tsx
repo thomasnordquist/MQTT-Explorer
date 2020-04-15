@@ -59,7 +59,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(
-  undefined,
-  mapDispatchToProps
-)(Copy)
+export default connect(undefined, mapDispatchToProps)(Copy)

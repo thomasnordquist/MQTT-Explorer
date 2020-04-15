@@ -30,7 +30,7 @@ function useHistory(): [Array<Message>, (topic: string, payload?: string) => voi
   const amendToHistory = useCallback(
     (topic: string, payload?: string) => {
       // Remove duplicates
-      let filteredHistory = history.filter(e => e.payload !== payload || e.topic !== topic)
+      let filteredHistory = history.filter((e) => e.payload !== payload || e.topic !== topic)
       filteredHistory = filteredHistory.slice(-7)
       setHistory([...filteredHistory, { topic, payload, sent: new Date() }])
     },
@@ -183,7 +183,4 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withTheme(Publish))
+export default connect(mapStateToProps, mapDispatchToProps)(withTheme(Publish))

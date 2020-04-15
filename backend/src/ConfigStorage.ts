@@ -32,7 +32,7 @@ export default class ConfigStorage {
   }
 
   public async init() {
-    backendEvents.subscribe(storageStoreEvent, async event => {
+    backendEvents.subscribe(storageStoreEvent, async (event) => {
       const ack = makeStorageAcknowledgementEvent(event.transactionId)
       try {
         const db = await this.getDb()
@@ -48,7 +48,7 @@ export default class ConfigStorage {
       }
     })
 
-    backendEvents.subscribe(storageLoadEvent, async event => {
+    backendEvents.subscribe(storageLoadEvent, async (event) => {
       const responseEvent = makeStorageResponseEvent(event.transactionId)
       try {
         const db = await this.getDb()
@@ -68,7 +68,7 @@ export default class ConfigStorage {
       }
     })
 
-    backendEvents.subscribe(storageClearEvent, async event => {
+    backendEvents.subscribe(storageClearEvent, async (event) => {
       try {
         const db = await this.getDb()
         const keys = await db.keys().value()

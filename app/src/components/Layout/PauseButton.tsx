@@ -102,7 +102,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(PauseButton))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(PauseButton))

@@ -105,11 +105,7 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
   const topicFilter = filterStr.toLowerCase()
 
   const nodeFilter = (node: q.TreeNode<TopicViewModel>): boolean => {
-    const topicMatches =
-      node
-        .path()
-        .toLowerCase()
-        .indexOf(topicFilter) !== -1
+    const topicMatches = node.path().toLowerCase().indexOf(topicFilter) !== -1
     if (topicMatches) {
       return true
     }
@@ -117,9 +113,7 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
     const messageMatches =
       node.message &&
       node.message.value &&
-      Base64Message.toUnicodeString(node.message.value)
-        .toLowerCase()
-        .indexOf(filterStr) !== -1
+      Base64Message.toUnicodeString(node.message.value).toLowerCase().indexOf(filterStr) !== -1
 
     return Boolean(messageMatches)
   }

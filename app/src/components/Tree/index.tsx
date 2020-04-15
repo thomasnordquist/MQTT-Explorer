@@ -169,7 +169,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TreeComponent)
+export default connect(mapStateToProps, mapDispatchToProps)(TreeComponent)

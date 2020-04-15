@@ -22,7 +22,7 @@ export const toggleSettingsVisibility = () => (dispatch: Dispatch<any>) => {
 }
 
 export const requestConfirmation = (title: string, inquiry: string) => (dispatch: Dispatch<any>) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const confirmationRequest = {
       title,
       inquiry,

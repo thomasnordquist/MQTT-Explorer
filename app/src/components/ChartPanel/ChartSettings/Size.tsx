@@ -47,7 +47,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(
-  undefined,
-  mapDispatchToProps
-)(memo(Size))
+export default connect(undefined, mapDispatchToProps)(memo(Size))

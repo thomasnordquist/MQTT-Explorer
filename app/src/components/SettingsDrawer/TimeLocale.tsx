@@ -47,7 +47,7 @@ function TimeLocaleSettings(props: Props) {
         input={<Input name="time-locale" id="time-locale-label-placeholder" />}
         name="time-locale"
         className={classes.input}
-        renderValue={v => <span>{String(v)}</span>}
+        renderValue={(v) => <span>{String(v)}</span>}
         style={{ flex: '1' }}
       >
         {localeMenuItems}
@@ -82,9 +82,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default withStyles(styles)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(TimeLocaleSettings)
-)
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(TimeLocaleSettings))

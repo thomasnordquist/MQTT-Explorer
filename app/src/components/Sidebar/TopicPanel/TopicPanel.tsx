@@ -43,7 +43,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(
-  undefined,
-  mapDispatchToProps
-)(TopicPanel)
+export default connect(undefined, mapDispatchToProps)(TopicPanel)

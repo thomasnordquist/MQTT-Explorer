@@ -33,7 +33,7 @@ function SearchBar(props: {
     actions.settings.filterTopics(event.target.value)
   }, [])
 
-  useGlobalKeyEventHandler(undefined, event => {
+  useGlobalKeyEventHandler(undefined, (event) => {
     const isCharacter = event.key.length === 1
     const isModifierKey = event.metaKey || event.ctrlKey
     const isAllowedControlCharacter = event.keyCode === KeyCodes.backspace || event.keyCode === KeyCodes.delete
@@ -142,7 +142,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(SearchBar))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SearchBar))

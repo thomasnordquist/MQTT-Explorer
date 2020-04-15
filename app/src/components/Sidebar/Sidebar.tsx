@@ -99,9 +99,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default withStyles(styles)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Sidebar)
-)
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Sidebar))

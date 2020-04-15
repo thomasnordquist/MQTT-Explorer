@@ -69,7 +69,4 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(QosSelect)
+export default connect(mapStateToProps, mapDispatchToProps)(QosSelect)

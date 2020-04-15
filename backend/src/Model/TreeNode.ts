@@ -156,8 +156,8 @@ export class TreeNode<ViewModel extends Destroyable> {
   public path(): string {
     if (!this.cachedPath) {
       return this.branch()
-        .map(node => node.sourceEdge && node.sourceEdge.name)
-        .filter(name => name !== undefined)
+        .map((node) => node.sourceEdge && node.sourceEdge.name)
+        .filter((name) => name !== undefined)
         .join('/')
     }
 
@@ -214,7 +214,7 @@ export class TreeNode<ViewModel extends Destroyable> {
   public leafMessageCount(): number {
     if (this.cachedLeafMessageCount === undefined) {
       this.cachedLeafMessageCount =
-        this.edgeArray.map(edge => edge.target.leafMessageCount()).reduce((a, b) => a + b, 0) + this.messages
+        this.edgeArray.map((edge) => edge.target.leafMessageCount()).reduce((a, b) => a + b, 0) + this.messages
     }
 
     return this.cachedLeafMessageCount as number
@@ -223,7 +223,7 @@ export class TreeNode<ViewModel extends Destroyable> {
   public childTopicCount(): number {
     if (this.cachedChildTopicCount === undefined) {
       this.cachedChildTopicCount = this.edgeArray
-        .map(e => e.target.childTopicCount())
+        .map((e) => e.target.childTopicCount())
         .reduce((a, b) => a + b, this.hasMessage() ? 1 : 0)
     }
 
@@ -239,7 +239,7 @@ export class TreeNode<ViewModel extends Destroyable> {
       const initialValue = this.message && this.message.value ? [this] : []
 
       this.cachedChildTopics = this.edgeArray
-        .map(e => e.target.childTopics())
+        .map((e) => e.target.childTopics())
         .reduce((a, b) => a.concat(b), initialValue)
     }
 
