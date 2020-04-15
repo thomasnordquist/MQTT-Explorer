@@ -157,9 +157,23 @@ const PublishButton = (props: { publish: () => void }) => {
     [props.publish]
   )
 
+  const onFocus = useCallback(
+    (e: React.FocusEvent<HTMLElement>) => {
+      (e.relatedTarget as HTMLElement|null)?.focus()
+    },
+    []
+  )
+
   return useMemo(
     () => (
-      <Button variant="contained" size="small" color="primary" onClick={handleClickPublish} id="publish-button">
+      <Button
+        variant="contained"
+        size="small"
+        color="primary"
+        onClick={handleClickPublish}
+        onFocusCapture={onFocus}
+        id="publish-button"
+      >
         <Navigation style={{ marginRight: '8px' }} /> Publish
       </Button>
     ),
