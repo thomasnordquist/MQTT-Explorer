@@ -34,7 +34,7 @@ export const setEditorMode = (editorMode: string): Action => {
 
 export const publish = (connectionId: string) => (dispatch: Dispatch<Action>, getState: () => AppState) => {
   const state = getState()
-  const topic = state.publish.topic
+  const topic = state.publish.manualTopic ?? state.tree.get('selectedTopic')?.path()
 
   if (!topic) {
     return

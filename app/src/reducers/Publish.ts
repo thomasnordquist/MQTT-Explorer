@@ -1,7 +1,7 @@
 import { createReducer } from './lib'
 
 export interface PublishState {
-  topic?: string
+  manualTopic?: string
   payload?: string
   retain: boolean
   editorMode: string
@@ -59,7 +59,7 @@ export const publishReducer = createReducer(initialState, {
 function setTopic(state: PublishState, action: SetTopic) {
   return {
     ...state,
-    topic: action.topic,
+    manualTopic: action.topic,
   }
 }
 

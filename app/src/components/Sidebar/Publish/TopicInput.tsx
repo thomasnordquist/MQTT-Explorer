@@ -1,18 +1,21 @@
 import ClearAdornment from '../../helper/ClearAdornment'
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useRef } from 'react'
 import { FormControl, Input, InputLabel } from '@material-ui/core'
 import { publishActions } from '../../../actions'
 import { bindActionCreators } from 'redux'
 import { AppState } from '../../../reducers'
 import { connect } from 'react-redux'
 
-function TopicInput(props: { actions: typeof publishActions; topic?: string }) {
+function TopicInput(props: { actions: typeof publishActions; manualTopic?: string; selectedTopic?: string }) {
+  const inputElement = useRef<HTMLInputElement>(null)
+
   const updateTopic = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     props.actions.setTopic(e.target.value)
   }, [])
 
   const clearTopic = useCallback(() => {
     props.actions.setTopic('')
+    inputElement.current?.focus()
   }, [])
 
   const onTopicBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
@@ -21,7 +24,7 @@ function TopicInput(props: { actions: typeof publishActions; topic?: string }) {
     }
   }, [])
 
-  const topicStr = props.topic || ''
+  const topicStr = props.manualTopic || ''
 
   return useMemo(
     () => (
@@ -29,6 +32,7 @@ function TopicInput(props: { actions: typeof publishActions; topic?: string }) {
         <FormControl style={{ width: '100%' }}>
           <InputLabel htmlFor="publish-topic">Topic</InputLabel>
           <Input
+            inputRef={inputElement}
             id="publish-topic"
             value={topicStr}
             startAdornment={<span />}
@@ -36,7 +40,7 @@ function TopicInput(props: { actions: typeof publishActions; topic?: string }) {
             onBlur={onTopicBlur}
             onChange={updateTopic}
             multiline={false}
-            placeholder="example/topic"
+            placeholder={props.selectedTopic ?? 'example/topic'}
           />
         </FormControl>
       </div>
@@ -53,7 +57,8 @@ const mapDispatchToProps = (dispatch: any) => {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    topic: state.publish.topic,
+    manualTopic: state.publish.manualTopic,
+    selectedTopic: state.tree.get('selectedTopic')?.path(),
   }
 }
 
