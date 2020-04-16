@@ -190,7 +190,7 @@ const mapDispatchToProps = (dispatch: any) => {
 
 const mapStateToProps = (state: AppState) => {
   return {
-    topic: state.publish.topic,
+    topic: state.publish.manualTopic,
     payload: state.publish.payload,
     editorMode: state.publish.editorMode,
     retain: state.publish.retain,

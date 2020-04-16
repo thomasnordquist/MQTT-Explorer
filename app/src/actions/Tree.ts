@@ -29,9 +29,9 @@ const debouncedSelectTopic = debounce(
 
     // Update publish topic
     let setTopicDispatch: any | undefined
-    if (!getState().publish.topic) {
+    if (!getState().publish.manualTopic) {
       setTopicDispatch = setTopic(topic.path())
-    } else if (previouslySelectedTopic && previouslySelectedTopic.path() === getState().publish.topic) {
+    } else if (previouslySelectedTopic && previouslySelectedTopic.path() === getState().publish.manualTopic) {
       setTopicDispatch = setTopic(topic.path())
     }
 
