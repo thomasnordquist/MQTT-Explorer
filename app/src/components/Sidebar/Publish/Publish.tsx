@@ -143,7 +143,11 @@ function EditorMode(props: {
   )
 }
 
-const FormatJsonButton = React.memo(function FormatJsonButton(props: { editorMode: string, focusEditor: () => void, formatJson: () => void }) {
+const FormatJsonButton = React.memo(function FormatJsonButton(props: {
+  editorMode: string
+  focusEditor: () => void
+  formatJson: () => void
+}) {
   if (props.editorMode !== 'json') {
     return null
   }
@@ -162,7 +166,7 @@ const FormatJsonButton = React.memo(function FormatJsonButton(props: { editorMod
   )
 })
 
-const PublishButton = (props: { publish: () => void, focusEditor: () => void }) => {
+const PublishButton = (props: { publish: () => void; focusEditor: () => void }) => {
   const handleClickPublish = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation()
