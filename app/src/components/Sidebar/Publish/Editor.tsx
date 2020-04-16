@@ -16,6 +16,7 @@ function Editor(props: {
   theme: Theme
   value: string | undefined
   onChange: (value: string) => void
+  editorRef: React.Ref<AceEditor>
 }) {
   const editorOptions = {
     showLineNumbers: false,
@@ -24,6 +25,7 @@ function Editor(props: {
 
   return (
     <AceEditor
+      ref={props.editorRef}
       style={{}}
       mode={props.editorMode}
       theme={props.theme.palette.type === 'dark' ? 'monokai' : 'dawn'}

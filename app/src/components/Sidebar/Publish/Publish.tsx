@@ -3,7 +3,7 @@ import FormatAlignLeft from '@material-ui/icons/FormatAlignLeft'
 import Message from './Model/Message'
 import Navigation from '@material-ui/icons/Navigation'
 import PublishHistory from './PublishHistory'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState, useRef, memo } from 'react'
 import RetainSwitch from './RetainSwitch'
 import TopicInput from './TopicInput'
 import { AppState } from '../../../reducers'
@@ -13,6 +13,7 @@ import { connect } from 'react-redux'
 import { EditorModeSelect } from './EditorModeSelect'
 import { globalActions, publishActions } from '../../../actions'
 import { KeyCodes } from '../../../utils/KeyCodes'
+import { default as AceEditor } from 'react-ace'
 
 interface Props {
   connectionId?: string
@@ -41,7 +42,12 @@ function useHistory(): [Array<Message>, (topic: string, payload?: string) => voi
 }
 
 function Publish(props: Props) {
+  const editorRef = useRef<AceEditor>()
   const [history, amendToHistory] = useHistory()
+
+  const focusEditor = useCallback(() => {
+    editorRef.current?.editor.focus()
+  }, [editorRef])
 
   const publish = useCallback(() => {
     if (!props.connectionId) {
@@ -74,13 +80,19 @@ function Publish(props: Props) {
         <TopicInput />
         <div style={{ width: '100%', display: 'block' }}>
           <EditorMode
+            focusEditor={focusEditor}
             actions={props.actions}
             globalActions={props.globalActions}
             payload={props.payload}
             editorMode={props.editorMode}
             publish={publish}
           />
-          <Editor value={props.payload} editorMode={props.editorMode} onChange={props.actions.setPayload} />
+          <Editor
+            value={props.payload}
+            editorMode={props.editorMode}
+            onChange={props.actions.setPayload}
+            editorRef={editorRef as any}
+          />
           <RetainSwitch />
         </div>
         <PublishHistory history={history} />
@@ -93,6 +105,7 @@ function Publish(props: Props) {
 function EditorMode(props: {
   payload?: string
   editorMode: string
+  focusEditor: () => void
   actions: typeof publishActions
   globalActions: typeof globalActions
   publish: () => void
@@ -114,41 +127,42 @@ function EditorMode(props: {
     }
   }, [props.payload])
 
-  const renderFormatJson = useCallback(() => {
-    if (props.editorMode !== 'json') {
-      return null
-    }
-
-    return (
-      <Tooltip title="Format JSON">
-        <Fab
-          style={{ width: '36px', height: '36px', margin: '0 8px' }}
-          onClick={formatJson}
-          id="sidebar-publish-format-json"
-        >
-          <FormatAlignLeft style={{ fontSize: '20px' }} />
-        </Fab>
-      </Tooltip>
-    )
-  }, [formatJson, props.editorMode, props.publish])
-
   return useMemo(
     () => (
       <div style={{ marginTop: '16px' }}>
         <div style={{ width: '100%', lineHeight: '64px', textAlign: 'center' }}>
-          <EditorModeSelect value={props.editorMode} onChange={updateMode} />
-          {renderFormatJson()}
+          <EditorModeSelect value={props.editorMode} onChange={updateMode} focusEditor={props.focusEditor} />
+          <FormatJsonButton editorMode={props.editorMode} focusEditor={props.focusEditor} formatJson={formatJson} />
           <div style={{ float: 'right' }}>
-            <PublishButton publish={props.publish} />
+            <PublishButton publish={props.publish} focusEditor={props.focusEditor} />
           </div>
         </div>
       </div>
     ),
-    [props.editorMode, renderFormatJson]
+    [props.editorMode]
   )
 }
 
-const PublishButton = (props: { publish: () => void }) => {
+const FormatJsonButton = React.memo(function FormatJsonButton(props: { editorMode: string, focusEditor: () => void, formatJson: () => void }) {
+  if (props.editorMode !== 'json') {
+    return null
+  }
+
+  return (
+    <Tooltip title="Format JSON">
+      <Fab
+        style={{ width: '36px', height: '36px', margin: '0 8px' }}
+        onClick={props.formatJson}
+        onFocus={props.focusEditor}
+        id="sidebar-publish-format-json"
+      >
+        <FormatAlignLeft style={{ fontSize: '20px' }} />
+      </Fab>
+    </Tooltip>
+  )
+})
+
+const PublishButton = (props: { publish: () => void, focusEditor: () => void }) => {
   const handleClickPublish = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation()
@@ -157,10 +171,6 @@ const PublishButton = (props: { publish: () => void }) => {
     [props.publish]
   )
 
-  const onFocus = useCallback((e: React.FocusEvent<HTMLElement>) => {
-    ;(e.relatedTarget as HTMLElement | null)?.focus()
-  }, [])
-
   return useMemo(
     () => (
       <Button
@@ -168,7 +178,7 @@ const PublishButton = (props: { publish: () => void }) => {
         size="small"
         color="primary"
         onClick={handleClickPublish}
-        onFocusCapture={onFocus}
+        onFocus={props.focusEditor}
         id="publish-button"
       >
         <Navigation style={{ marginRight: '8px' }} /> Publish

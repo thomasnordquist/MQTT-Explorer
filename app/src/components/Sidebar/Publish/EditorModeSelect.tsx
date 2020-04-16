@@ -4,6 +4,7 @@ import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core'
 interface Props {
   value: string
   onChange: (event: React.ChangeEvent<{}>, value: string) => void
+  focusEditor: () => void
 }
 export function EditorModeSelect(props: Props) {
   const labelStyle = { margin: '0 8px 0 8px' }
@@ -11,6 +12,7 @@ export function EditorModeSelect(props: Props) {
     <RadioGroup
       style={{ display: 'inline-block', float: 'left' }}
       value={props.value}
+      onFocus={props.focusEditor}
       onChange={props.onChange}
       row={true}
     >
