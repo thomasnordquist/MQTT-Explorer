@@ -28,6 +28,7 @@ const runningUiTestOnCi = os.platform() === 'darwin' ? [] : ['--runningUiTestOnC
 const options = {
   host: '127.0.0.1', // Use localhost as chrome driver server
   port: 9515, // "9515" is the port opened by chrome driver.
+  path: '/wd/hub',
   capabilities: {
     browserName: 'chrome',
     'goog:chromeOptions': {
