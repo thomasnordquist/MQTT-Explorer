@@ -24,6 +24,6 @@ async function topicMatches(topics: Array<string>, browser: Browser) {
 }
 
 function topicSelector(topics: Array<string>) {
-  const suffix = topics.map((topic) => `*[contains(text(), "${topic}")]`).join('/../..//')
+  const suffix = topics.map(topic => `*[contains(text(), "${topic}")]`).join('/../..//')
   return `//${suffix}`
 }

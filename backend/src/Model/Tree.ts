@@ -74,7 +74,7 @@ export class Tree<ViewModel extends Destroyable> extends TreeNode<ViewModel> {
   }
 
   public applyUnmergedChanges() {
-    this.unmergedMessages.popAll().forEach((bufferedItem) => {
+    this.unmergedMessages.popAll().forEach(bufferedItem => {
       const edges = bufferedItem.message.topic.split('/')
       const node = TreeNodeFactory.fromEdgesAndValue<ViewModel>(
         edges,

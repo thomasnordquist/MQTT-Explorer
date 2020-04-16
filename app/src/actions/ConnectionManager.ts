@@ -146,7 +146,7 @@ export const deleteConnection = (connectionId: string) => (dispatch: Dispatch<an
   const connectionIds = Object.keys(getState().connectionManager.connections)
   const connectionIdLocation = connectionIds.indexOf(connectionId)
 
-  const remainingIds = connectionIds.filter((id) => id !== connectionId)
+  const remainingIds = connectionIds.filter(id => id !== connectionId)
   const nextSelectedConnectionIndex = Math.min(remainingIds.length - 1, connectionIdLocation)
   const nextSelectedConnection = remainingIds[nextSelectedConnectionIndex]
 

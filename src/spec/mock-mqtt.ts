@@ -2,7 +2,7 @@ import * as mqtt from 'mqtt'
 
 let mqttClient: mqtt.MqttClient
 function startServer(): Promise<mqtt.MqttClient> {
-  return new Promise(async (resolve) => {
+  return new Promise(async resolve => {
     mqttClient = await connectMqtt()
     generateData(mqttClient)
     resolve(mqttClient)
@@ -10,7 +10,7 @@ function startServer(): Promise<mqtt.MqttClient> {
 }
 
 function connectMqtt(): Promise<mqtt.MqttClient> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const client = mqtt.connect('mqtt://127.0.0.1:1883', {
       username: '',
       password: '',

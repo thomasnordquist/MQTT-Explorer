@@ -9,7 +9,7 @@ export function setFast() {
 }
 
 export function sleep(ms: number, required = false) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     if (required) {
       setTimeout(resolve, ms)
     } else {

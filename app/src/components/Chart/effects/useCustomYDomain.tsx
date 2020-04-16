@@ -27,7 +27,7 @@ function domainForData(data: Array<Point>): [number, number] {
   let max = data[0].y
   let min = data[0].y
 
-  data.forEach((d) => {
+  data.forEach(d => {
     if (max < d.y) {
       max = d.y
     }

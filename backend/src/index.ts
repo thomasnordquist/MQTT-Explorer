@@ -27,7 +27,7 @@ export class ConnectionManager {
     this.connections[connectionId] = connection
 
     const connectionStateEvent = makeConnectionStateEvent(connectionId)
-    connection.stateMachine.onUpdate.subscribe((state) => {
+    connection.stateMachine.onUpdate.subscribe(state => {
       backendEvents.emit(connectionStateEvent, state)
     })
 
@@ -72,6 +72,6 @@ export class ConnectionManager {
   }
 
   public closeAllConnections() {
-    Object.keys(this.connections).forEach((connectionId) => this.removeConnection(connectionId))
+    Object.keys(this.connections).forEach(connectionId => this.removeConnection(connectionId))
   }
 }

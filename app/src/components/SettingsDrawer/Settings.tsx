@@ -143,7 +143,7 @@ class Settings extends React.PureComponent<Props, {}> {
   private renderAutoExpand() {
     const { classes, autoExpandLimit } = this.props
 
-    const limits = autoExpandLimitSet.map((limit) => (
+    const limits = autoExpandLimitSet.map(limit => (
       <MenuItem key={limit.limit} value={limit.limit}>
         {limit.limit < 10000 && limit.limit > 0 ? `≤ ${limit.limit} topics` : limit.name}
       </MenuItem>

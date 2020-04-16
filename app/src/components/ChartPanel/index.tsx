@@ -63,7 +63,7 @@ function ChartPanel(props: Props) {
     }
   }, [chartsInView])
 
-  const charts = props.charts.map((chartParameters) => (
+  const charts = props.charts.map(chartParameters => (
     <CSSTransition
       key={`${chartParameters.topic}-${chartParameters.dotPath || ''}`}
       timeout={{ enter: 500, exit: 500 }}

@@ -27,7 +27,7 @@ function ProfileList(props: Props) {
     }
     const indexDirection = dir === 'next' ? 1 : -1
     const connectionArray = Object.values(connections)
-    const selectedIndex = connectionArray.map((connection) => connection.id).indexOf(selected)
+    const selectedIndex = connectionArray.map(connection => connection.id).indexOf(selected)
     const nextConnection = connectionArray[selectedIndex + indexDirection]
     if (nextConnection) {
       actions.selectConnection(nextConnection.id)
@@ -48,7 +48,7 @@ function ProfileList(props: Props) {
   return (
     <List style={{ height: '100%' }} component="nav" subheader={createConnectionButton}>
       <div className={classes.list}>
-        {Object.values(connections).map((connection) => (
+        {Object.values(connections).map(connection => (
           <ConnectionItem connection={connection} key={connection.id} selected={selected === connection.id} />
         ))}
       </div>

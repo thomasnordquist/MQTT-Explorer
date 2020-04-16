@@ -40,8 +40,8 @@ class TransitionBuilder {
   public buildOptions(outputFile: string) {
     return {
       output: outputFile,
-      videos: this.scenes.map((s) => `${s}.mp4`),
-      transitions: this.transitions.map((name) => ({
+      videos: this.scenes.map(s => `${s}.mp4`),
+      transitions: this.transitions.map(name => ({
         name: name !== 'none' ? name : 'fade',
         duration: name !== 'none' ? 1000 : 10,
       })),

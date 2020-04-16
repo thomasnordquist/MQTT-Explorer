@@ -58,7 +58,7 @@ function TimeRangeSettings(props: Props) {
       >
         <Typography>Chart data within a time interval</Typography>
         <div style={{ padding: '0 16px', width: '275px', textAlign: 'center' }}>
-          {ranges.map((r) => {
+          {ranges.map(r => {
             return (
               <Button
                 style={{ margin: '4px', textTransform: 'none' }}

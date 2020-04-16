@@ -33,9 +33,9 @@ class Topic extends React.PureComponent<Props, {}> {
     let key = 0
     const breadCrumps = node
       .branch()
-      .map((node) => node.sourceEdge)
-      .filter((edge) => Boolean(edge))
-      .map((edge) => [
+      .map(node => node.sourceEdge)
+      .filter(edge => Boolean(edge))
+      .map(edge => [
         <Button
           onClick={() => this.props.actions.selectTopic(edge!.target)}
           size="small"

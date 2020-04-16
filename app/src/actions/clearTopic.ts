@@ -40,8 +40,8 @@ export const clearTopic = (topic: q.TreeNode<any>, recursive: boolean) => async 
   const publishEvent = makePublishEvent(connectionId)
 
   topicsForPurging
-    .filter((t) => t.path() !== '' && t.hasMessage())
-    .map((t) => t.path())
+    .filter(t => t.path() !== '' && t.hasMessage())
+    .map(t => t.path())
     .forEach((path, idx) => {
       const mqttMessage = {
         topic: path,

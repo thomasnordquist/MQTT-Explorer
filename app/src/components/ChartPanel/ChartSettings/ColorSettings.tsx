@@ -31,7 +31,7 @@ function ColorSettings(props: {
   )
 
   const menuItems = React.useMemo(() => {
-    return colors.map((color) => (
+    return colors.map(color => (
       <MenuItem
         style={{ minWidth: '8em', minHeight: '36px', backgroundColor: color, textAlign: 'center' }}
         key={color}

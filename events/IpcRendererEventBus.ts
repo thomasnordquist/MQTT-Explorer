@@ -22,12 +22,12 @@ export class IpcRendererEventBus implements EventBusInterface {
     this.ipc.removeAllListeners(event.topic)
   }
   public unsubscribe<MessageType>(event: Event<MessageType>, callback: any) {
-    const item = this.callbacks.find((store) => store.callback === callback)
+    const item = this.callbacks.find(store => store.callback === callback)
     if (!item) {
       return
     }
     this.ipc.removeListener(event.topic, item.wrappedCallback)
-    this.callbacks = this.callbacks.filter((a) => a !== item)
+    this.callbacks = this.callbacks.filter(a => a !== item)
   }
   public emit<MessageType>(event: Event<MessageType>, msg: MessageType) {
     this.ipc.send(event.topic, msg)

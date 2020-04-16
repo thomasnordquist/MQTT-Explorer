@@ -16,7 +16,7 @@ export function handleAutoUpdate() {
     console.log('There is an update available')
   })
 
-  autoUpdater.on('error', (error) => {
+  autoUpdater.on('error', error => {
     console.error('could not update due to error', error)
   })
 

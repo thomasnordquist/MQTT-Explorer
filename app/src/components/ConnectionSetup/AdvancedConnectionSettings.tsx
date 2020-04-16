@@ -36,7 +36,7 @@ class ConnectionSettings extends React.Component<Props, State> {
 
   private renderSubscriptions() {
     const connection = this.props.connection
-    return connection.subscriptions.map((subscription) => (
+    return connection.subscriptions.map(subscription => (
       <Subscription
         deleteAction={() => this.props.managerActions.deleteSubscription(subscription, connection.id)}
         subscription={subscription}

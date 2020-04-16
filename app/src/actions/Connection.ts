@@ -20,7 +20,7 @@ export const connect = (options: MqttOptions, connectionId: string) => (
   const event = makeConnectionStateEvent(connectionId)
   const host = url.parse(options.url).hostname
 
-  rendererEvents.subscribe(event, (dataSourceState) => {
+  rendererEvents.subscribe(event, dataSourceState => {
     if (dataSourceState.connected) {
       const didReconnect = Boolean(getState().connection.tree)
       if (!didReconnect) {

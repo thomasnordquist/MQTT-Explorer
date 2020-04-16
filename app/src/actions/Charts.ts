@@ -67,7 +67,7 @@ export const addChart = (chartParameters: ChartParameters) => async (
   const chartExists = Boolean(
     getState()
       .charts.get('charts')
-      .find((chart) => chart.topic === chartParameters.topic && chart.dotPath === chartParameters.dotPath)
+      .find(chart => chart.topic === chartParameters.topic && chart.dotPath === chartParameters.dotPath)
   )
   if (chartExists) {
     dispatch(showNotification('Already added'))

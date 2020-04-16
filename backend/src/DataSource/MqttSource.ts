@@ -73,7 +73,7 @@ export class MqttSource implements DataSource<MqttOptions> {
 
     client.on('connect', () => {
       this.stateMachine.setConnected(true)
-      options.subscriptions.forEach((subscription) => {
+      options.subscriptions.forEach(subscription => {
         client.subscribe(subscription, (err: Error) => {
           if (err) {
             this.stateMachine.setError(err)

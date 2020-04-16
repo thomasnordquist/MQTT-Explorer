@@ -65,7 +65,7 @@ class Demo extends React.Component<{ classes: any }, State> {
     let keys: Array<any> = []
     if (this.state.keys.length > 0) {
       keys = this.state.keys
-        .map((key) => [<Key key={key} keyboardKey={key} />])
+        .map(key => [<Key key={key} keyboardKey={key} />])
         .reduce((prev, current) => {
           return [prev, '+' as any, current]
         })

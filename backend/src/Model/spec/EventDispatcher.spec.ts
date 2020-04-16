@@ -8,8 +8,8 @@ describe('EventDispatcher', async () => {
     this.timeout(300)
 
     setTimeout(() => dispatcher.dispatch('hello'), 5)
-    const response = await new Promise((resolve) => {
-      dispatcher.subscribe((msg) => {
+    const response = await new Promise(resolve => {
+      dispatcher.subscribe(msg => {
         resolve(msg)
       })
     })

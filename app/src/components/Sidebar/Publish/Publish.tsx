@@ -30,7 +30,7 @@ function useHistory(): [Array<Message>, (topic: string, payload?: string) => voi
   const amendToHistory = useCallback(
     (topic: string, payload?: string) => {
       // Remove duplicates
-      let filteredHistory = history.filter((e) => e.payload !== payload || e.topic !== topic)
+      let filteredHistory = history.filter(e => e.payload !== payload || e.topic !== topic)
       filteredHistory = filteredHistory.slice(-7)
       setHistory([...filteredHistory, { topic, payload, sent: new Date() }])
     },
@@ -157,12 +157,9 @@ const PublishButton = (props: { publish: () => void }) => {
     [props.publish]
   )
 
-  const onFocus = useCallback(
-    (e: React.FocusEvent<HTMLElement>) => {
-      (e.relatedTarget as HTMLElement|null)?.focus()
-    },
-    []
-  )
+  const onFocus = useCallback((e: React.FocusEvent<HTMLElement>) => {
+    ;(e.relatedTarget as HTMLElement | null)?.focus()
+  }, [])
 
   return useMemo(
     () => (
