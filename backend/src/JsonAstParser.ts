@@ -70,9 +70,11 @@ function jsonToPropertyPaths(ast: JsonAst, previousPath: Array<string> = []): Ar
   } else if (ast.type === 'Array') {
     children = ast.children.map((value, idx) => jsonToPropertyPaths(value, previousPath.slice().concat([String(idx)])))
   } else if (ast.type === 'Object') {
-    children = ast.children.map((property) =>
-      jsonToPropertyPaths(property.value, previousPath.slice().concat([property.key.value]))
-    )
+    children = ast.children.map((property) => {
+      const path = property.key.value.replace('.', '\\.')
+
+      return jsonToPropertyPaths(property.value, previousPath.slice().concat([path]))
+    })
   }
 
   return children.reduce((a, b) => a.concat(b), [])
