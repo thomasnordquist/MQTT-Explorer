@@ -200,7 +200,7 @@ function updateConnection(state: ConnectionManagerState, action: UpdateConnectio
   if (changeSet.password !== undefined) {
     changeSet = {
       changeSet,
-      username: changeSet.password === '' ? undefined : changeSet.password,
+      password: changeSet.password === '' ? undefined : changeSet.password,
     }
   }
 
