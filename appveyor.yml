@@ -21,5 +21,4 @@ test_script:
 
 artifacts:
   - path: 'build\clean\build\*.appx'
-    on:
-      appveyor_repo_tag: true
+
