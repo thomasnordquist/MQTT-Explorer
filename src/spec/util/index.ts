@@ -37,6 +37,12 @@ export async function deleteTextWithBackspaces(element: Element, browser: Browse
   }
 }
 
+export async function setInputText(input: Element, text: string, browser: Browser) {
+  await clickOn(input, browser, 1)
+  await deleteTextWithBackspaces(input, browser)
+  await input.setValue(text)
+}
+
 export async function setTextInInput(name: string, text: string, browser: Browser) {
   const input = await browser.$(`//label[contains(text(), "${name}")]/..//input`)
   await clickOn(input, browser, 1)

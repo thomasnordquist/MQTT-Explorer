@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Theme, withStyles } from '@material-ui/core'
-const cursor = require('./cursor.png')
+import cursor from './cursor.png'
 
 interface State {
   enabled: boolean

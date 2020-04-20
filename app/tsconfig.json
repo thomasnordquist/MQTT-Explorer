@@ -15,7 +15,7 @@
     "allowSyntheticDefaultImports": true
   },
   "include": ["./src/**/*"],
-  "exclude": ["**/*.d.ts"],
+  "exclude": ["**/*.d.ts", ".src/**/*.png"],
   "awesomeTypescriptLoaderOptions": {
     "useCache": true,
     "transpileModule": true,

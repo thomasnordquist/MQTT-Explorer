@@ -44,7 +44,7 @@ const ConnectionSettings = memo(function ConnectionSettings(props: Props) {
         <Grid container={true} spacing={3}>
           <Grid item={true} xs={8} className={classes.gridPadding}>
             <TextField
-              className={classes.fullWidth}
+              className={`${classes.fullWidth} advanced-connection-settings-topic-input`}
               label="Topic"
               placeholder="example/topic"
               margin="normal"
