@@ -7,7 +7,7 @@
     "build": "yarn rebuild && webpack --mode production",
     "dev": "node_modules/.bin/webpack-dev-server --mode development --progress",
     "rebuild": "cd node_modules/heapdump && node-gyp rebuild --target=7.1.1 --arch=x64 --dist-url=https://atom.io/download/electron || echo Could not build heapdump; cd -",
-    "test": "TS_NODE_PROJECT=test/tsconfig.json yarn mochatest",
+    "test": "cross-env TS_NODE_PROJECT=test/tsconfig.json yarn mochatest",
     "mochatest": "mocha --require ts-node/register src/**/*.spec.ts"
   },
   "author": "",
@@ -71,6 +71,7 @@
     "@types/vis": "^4.21.9",
     "awesome-typescript-loader": "^5.2.1",
     "chai": "^4.2.0",
+    "cross-env": "^7.0.2",
     "css-loader": "^3.0.0",
     "hard-source-webpack-plugin": "^0.13.1",
     "heapdump": "^0.3.12",
