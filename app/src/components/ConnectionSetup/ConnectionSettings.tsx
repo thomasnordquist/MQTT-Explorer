@@ -1,7 +1,7 @@
 import ConnectButton from './ConnectButton'
-import Delete from '@material-ui/icons/Delete'
 import React, { useCallback, useState } from 'react'
 import Save from '@material-ui/icons/Save'
+import Delete from '@material-ui/icons/Delete'
 import Settings from '@material-ui/icons/Settings'
 import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'

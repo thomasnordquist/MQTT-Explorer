@@ -12,11 +12,18 @@ export interface MqttOptions {
   tls: boolean
   certValidation: boolean
   clientId?: string
-  subscriptions: Array<string>
+  subscriptions: Array<Subscription>
   certificateAuthority?: string
   clientCertificate?: string
   clientKey?: string
 }
+
+export interface Subscription {
+  topic: string
+  qos: QoS
+}
+
+export type QoS = 0 | 1 | 2
 
 export class MqttSource implements DataSource<MqttOptions> {
   public stateMachine: DataSourceStateMachine = new DataSourceStateMachine()
@@ -74,7 +81,7 @@ export class MqttSource implements DataSource<MqttOptions> {
     client.on('connect', () => {
       this.stateMachine.setConnected(true)
       options.subscriptions.forEach(subscription => {
-        client.subscribe(subscription, (err: Error) => {
+        client.subscribe(subscription.topic, { qos: subscription.qos }, (err: Error) => {
           if (err) {
             this.stateMachine.setError(err)
           }

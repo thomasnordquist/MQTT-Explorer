@@ -12,10 +12,11 @@ import { showError } from './Global'
 import { remote } from 'electron'
 import { promises as fsPromise } from 'fs'
 import * as path from 'path'
-
 import { ActionTypes, Action } from '../reducers/ConnectionManager'
+import { Subscription } from '../../../backend/src/DataSource/MqttSource'
+import { connectionsMigrator } from './migrations/Connection'
 
-interface ConnectionDictionary {
+export interface ConnectionDictionary {
   [s: string]: ConnectionOptions
 }
 const storedConnectionsIdentifier: StorageIdentifier<ConnectionDictionary> = {
@@ -27,6 +28,12 @@ export const loadConnectionSettings = () => async (dispatch: Dispatch<any>, getS
   try {
     await ensureConnectionsHaveBeenInitialized()
     connections = await persistentStorage.load(storedConnectionsIdentifier)
+
+    // Apply migrations
+    if (connections && connectionsMigrator.isMigrationNecessary(connections)) {
+      connections = connectionsMigrator.applyMigrations(connections)
+      await persistentStorage.store(storedConnectionsIdentifier, connections)
+    }
   } catch (error) {
     dispatch(showError(error))
   }
@@ -101,13 +108,13 @@ export const updateConnection = (connectionId: string, changeSet: Partial<Connec
   type: ActionTypes.CONNECTION_MANAGER_UPDATE_CONNECTION,
 })
 
-export const addSubscription = (subscription: string, connectionId: string): Action => ({
+export const addSubscription = (subscription: Subscription, connectionId: string): Action => ({
   connectionId,
   subscription,
   type: ActionTypes.CONNECTION_MANAGER_ADD_SUBSCRIPTION,
 })
 
-export const deleteSubscription = (subscription: string, connectionId: string): Action => ({
+export const deleteSubscription = (subscription: Subscription, connectionId: string): Action => ({
   connectionId,
   subscription,
   type: ActionTypes.CONNECTION_MANAGER_DELETE_SUBSCRIPTION,
@@ -174,31 +181,4 @@ async function ensureConnectionsHaveBeenInitialized() {
 
     clearLegacyConnectionOptions()
   }
-
-  // Migrate connections, rewrite dictionary to "keep" it "ordered" (dictionaries do not have a guaranteed order)
-  const mayNeedMigrations = connections && connections['iot.eclipse.org']
-  if (connections && mayNeedMigrations) {
-    const newConnections = {}
-    for (const connection of Object.values(connections)) {
-      addMigratedConnection(newConnections, connection)
-    }
-
-    await persistentStorage.store(storedConnectionsIdentifier, newConnections)
-  }
-}
-
-function addMigratedConnection(newConnections: { [key: string]: ConnectionOptions }, connection: ConnectionOptions) {
-  // The host has been renamed, only change the host if it has not been changed
-  // Also check for ssl since SSL is not yet working
-  if (
-    connection.id === 'iot.eclipse.org' &&
-    connection.host === 'iot.eclipse.org' &&
-    connection.port === 1883 &&
-    !connection.encryption
-  ) {
-    connection.id = 'mqtt.eclipse.org'
-    connection.host = 'mqtt.eclipse.org'
-    connection.name = 'mqtt.eclipse.org'
-  }
-  newConnections[connection.id] = connection
 }

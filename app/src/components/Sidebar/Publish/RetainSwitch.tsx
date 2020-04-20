@@ -1,4 +1,4 @@
-import QosSelect from './QosSelect'
+import QosSelect from './QosPublishOption'
 import React from 'react'
 import { Checkbox, FormControlLabel, Tooltip } from '@material-ui/core'
 import { publishActions } from '../../../actions'

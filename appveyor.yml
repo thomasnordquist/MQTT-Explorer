@@ -21,4 +21,3 @@ test_script:
 
 artifacts:
   - path: 'build\clean\build\*.appx'
-

@@ -1,5 +1,6 @@
 import { ConnectionOptions } from '../model/ConnectionOptions'
 import { createReducer } from './lib'
+import { Subscription } from '../../../backend/src/DataSource/MqttSource'
 
 export interface ConnectionManagerState {
   connections: { [s: string]: ConnectionOptions }
@@ -50,13 +51,13 @@ export interface SelectConnection {
 
 export interface AddSubscription {
   type: ActionTypes.CONNECTION_MANAGER_ADD_SUBSCRIPTION
-  subscription: string
+  subscription: Subscription
   connectionId: string
 }
 
 export interface DeleteSubscription {
   type: ActionTypes.CONNECTION_MANAGER_DELETE_SUBSCRIPTION
-  subscription: string
+  subscription: Subscription
   connectionId: string
 }
 
@@ -159,8 +160,12 @@ function addSubscription(state: ConnectionManagerState, action: AddSubscription)
 }
 
 function deleteSubscription(state: ConnectionManagerState, action: AddSubscription): ConnectionManagerState {
+  function subscriptionsEqual(v1: Subscription, v2: Subscription): boolean {
+    return v1.topic == v2.topic && v1.qos == v2.qos
+  }
+
   const connection = state.connections[action.connectionId]
-  const newSubscriptions = connection.subscriptions.filter(s => s !== action.subscription)
+  const newSubscriptions = connection.subscriptions.filter(s => !subscriptionsEqual(s, action.subscription))
 
   return {
     ...state,

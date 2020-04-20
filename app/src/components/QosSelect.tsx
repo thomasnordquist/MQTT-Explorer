@@ -1,18 +1,8 @@
 import * as React from 'react'
 import { TextField, MenuItem, Tooltip } from '@material-ui/core'
-import { connect } from 'react-redux'
-import { AppState } from '../../../reducers'
-import { bindActionCreators } from 'redux'
-import { publishActions } from '../../../actions'
+import { QoS } from '../../../backend/src/DataSource/MqttSource'
 
-interface Props {
-  qos: 0 | 1 | 2
-  actions: {
-    publish: typeof publishActions
-  }
-}
-
-function QosSelect(props: Props) {
+export function QosSelect(props: { selected: QoS; onChange: (value: QoS) => void; label?: string }) {
   const tooltipStyle = { textAlign: 'center' as 'center', width: '100%' }
   const itemStyle = { padding: '0' }
 
@@ -22,16 +12,16 @@ function QosSelect(props: Props) {
       if (value !== 0 && value !== 1 && value !== 2) {
         return
       }
-
-      props.actions.publish.setQoS(value)
+      props.onChange(value)
     },
-    [props.actions.publish]
+    [props.onChange]
   )
 
   return (
     <TextField
       select={true}
-      value={props.qos}
+      label={props.label}
+      value={props.selected}
       margin="normal"
       style={{ margin: '8px 0 8px 8px' }}
       onChange={onChangeQos}
@@ -55,18 +45,4 @@ function QosSelect(props: Props) {
   )
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: {
-      publish: bindActionCreators(publishActions, dispatch),
-    },
-  }
-}
-
-const mapStateToProps = (state: AppState) => {
-  return {
-    qos: state.publish.qos,
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(QosSelect)
+export default React.memo(QosSelect)

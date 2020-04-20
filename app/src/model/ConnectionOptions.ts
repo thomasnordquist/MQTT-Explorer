@@ -1,5 +1,6 @@
 import { MqttOptions } from '../../../backend/src/DataSource'
 import { v4 } from 'uuid'
+import { Subscription } from '../../../backend/src/DataSource/MqttSource'
 const sha1 = require('sha1')
 
 export interface CertificateParameters {
@@ -7,7 +8,9 @@ export interface CertificateParameters {
   /** @property data base64 encoded data */
   data: string
 }
+
 export interface ConnectionOptions {
+  configVersion: 1
   type: 'mqtt'
   id: string
   host: string
@@ -23,7 +26,7 @@ export interface ConnectionOptions {
   clientCertificate?: CertificateParameters
   clientKey?: CertificateParameters
   clientId?: string
-  subscriptions: Array<string>
+  subscriptions: Array<Subscription>
 }
 
 export function toMqttConnection(options: ConnectionOptions): MqttOptions | undefined {
@@ -52,6 +55,7 @@ function generateClientId() {
 
 export function createEmptyConnection(): ConnectionOptions {
   return {
+    configVersion: 1,
     certValidation: true,
     clientId: generateClientId(),
     id: v4() as string,
@@ -59,7 +63,10 @@ export function createEmptyConnection(): ConnectionOptions {
     encryption: false,
     password: undefined,
     username: undefined,
-    subscriptions: ['#', '$SYS/#'],
+    subscriptions: [
+      { topic: '#', qos: 0 },
+      { topic: '$SYS/#', qos: 0 },
+    ],
     type: 'mqtt',
     host: '',
     port: 1883,
