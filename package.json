@@ -5,7 +5,9 @@
   "main": "dist/src/electron.js",
   "scripts": {
     "start": "electron .",
-    "test": "yarn run test-backend",
+    "test": "yarn test:app && yarn test:backend",
+    "test:app": "cd app && yarn test",
+    "test:backend": "cd backend && yarn test",
     "install": "cd app && yarn && cd ..",
     "dev": "npm-run-all --parallel dev:*",
     "dev:app": "cd app && npm run dev",
@@ -15,7 +17,6 @@
     "lint:tslint": "tslint -p ./",
     "lint:spellcheck": "cspell -e ./build -e \"node_modules\" \"**/*.ts{x,}\"",
     "build": "tsc && cd app && yarn run build && cd ..",
-    "test-backend": "cd backend && yarn run test && cd ..",
     "prepare-release": "ts-node scripts/prepare-release.ts",
     "package": "ts-node package.ts",
     "ui-test": "./scripts/uiTests.sh",

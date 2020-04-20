@@ -16,7 +16,7 @@ export class ConfigMigrator {
 
   public applyMigrations(subject: MigrationSubject): Partial<MigrationSubject> {
     while (this.isMigrationNecessary(subject)) {
-      subject = this.applyableMigrations(subject)
+      subject = this.applicableMigrations(subject)
         .filter(migration => migration.from === subject.configVersion)
         .reduce((currentSubject, migration) => migration.apply(currentSubject as any), subject)
     }
@@ -25,10 +25,10 @@ export class ConfigMigrator {
   }
 
   public isMigrationNecessary(subject: MigrationSubject): boolean {
-    return this.applyableMigrations(subject).length > 0
+    return this.applicableMigrations(subject).length > 0
   }
 
-  private applyableMigrations(subject: MigrationSubject): Migration[] {
+  private applicableMigrations(subject: MigrationSubject): Migration[] {
     return this.migrations.filter(migration => migration.from === subject.configVersion)
   }
 }
