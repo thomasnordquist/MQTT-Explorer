@@ -27,17 +27,17 @@ class TreeNodeTitle extends React.PureComponent<TreeNodeProps, {}> {
 
   private truncatedMessage() {
     const limit = 400
-    if (!this.props.treeNode.message || !this.props.treeNode.message.value) {
+    if (!this.props.treeNode.message || !this.props.treeNode.message.payload) {
       return ''
     }
 
-    const str = Base64Message.toUnicodeString(this.props.treeNode.message.value)
+    const str = Base64Message.toUnicodeString(this.props.treeNode.message.payload)
     return str.length > limit ? `${str.slice(0, limit)}…` : str
   }
 
   private renderValue() {
     return this.props.treeNode.message &&
-      this.props.treeNode.message.value &&
+      this.props.treeNode.message.payload &&
       this.props.treeNode.message.length > 0 ? (
       <span key="value" className={this.props.classes.value}>
         {' '}

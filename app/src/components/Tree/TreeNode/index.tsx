@@ -81,7 +81,7 @@ function TreeNodeComponent(props: Props) {
   const mouseOver = useCallback(
     (event: React.MouseEvent) => {
       event.stopPropagation()
-      if (settings.get('selectTopicWithMouseOver') && treeNode && treeNode.message && treeNode.message.value) {
+      if (settings.get('selectTopicWithMouseOver') && treeNode && treeNode.message && treeNode.message.payload) {
         didSelectTopic()
       }
     },

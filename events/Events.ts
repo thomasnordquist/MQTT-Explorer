@@ -34,6 +34,8 @@ export interface MqttMessage {
   payload: Base64Message | null
   qos: 0 | 1 | 2
   retain: boolean
+  // Set if QoS is > 0 on received messages
+  messageId: number | undefined
 }
 
 export function makePublishEvent(connectionId: string): Event<MqttMessage> {

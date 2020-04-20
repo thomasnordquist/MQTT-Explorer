@@ -2,11 +2,11 @@ import 'mocha'
 
 import { TreeNodeFactory } from '../'
 import { expect } from 'chai'
+import { makeTreeNode } from './makeTreeNode'
 
 describe('TreeNode.findNode', () => {
   it('findNode should retrieve node', () => {
-    const topics = 'foo/bar/baz'.split('/')
-    const leaf = TreeNodeFactory.fromEdgesAndValue(topics, undefined)
+    const leaf = makeTreeNode('foo/bar/baz')
 
     const root = leaf.firstNode()
     expect(root.sourceEdge).to.eq(undefined)

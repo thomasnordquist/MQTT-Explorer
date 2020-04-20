@@ -8,7 +8,7 @@ export const TopicDeleteButton = (props: {
   deleteTopicAction: (node: q.TreeNode<any>) => void
 }) => {
   const { node } = props
-  if (!node || !node.message || !node.message.value) {
+  if (!node || !node.message || !node.message.payload) {
     return null
   }
   return (

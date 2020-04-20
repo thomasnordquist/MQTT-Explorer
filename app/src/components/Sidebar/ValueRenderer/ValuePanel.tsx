@@ -13,6 +13,7 @@ import { Theme, Typography, withStyles } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { sidebarActions } from '../../../actions'
 import DeleteSelectedTopicButton from './DeleteSelectedTopicButton'
+import { MessageId } from '../MessageId'
 
 interface Props {
   node?: q.TreeNode<any>
@@ -36,7 +37,7 @@ function ValuePanel(props: Props) {
   const { node, compareMessage } = props
 
   function renderViewOptions() {
-    if (!props.node || !props.node.message || !props.node.mqttMessage) {
+    if (!props.node || !props.node.message) {
       return null
     }
 
@@ -46,7 +47,7 @@ function ValuePanel(props: Props) {
           <ActionButtons />
         </span>
         <span style={{ flex: 6, textAlign: 'right' }}>
-          {props.node.mqttMessage.retain ? <DeleteSelectedTopicButton /> : null}
+          {props.node.message.retain ? <DeleteSelectedTopicButton /> : null}
         </span>
         {messageMetaInfo()}
       </div>
@@ -54,13 +55,16 @@ function ValuePanel(props: Props) {
   }
 
   function messageMetaInfo() {
-    if (!props.node || !props.node.message || !props.node.mqttMessage) {
+    if (!props.node || !props.node.message) {
       return null
     }
 
     return (
       <span style={{ width: '100%', paddingLeft: '8px', flex: 6 }}>
-        <Typography style={{ textAlign: 'right' }}>QoS: {props.node.mqttMessage.qos}</Typography>
+        <Typography style={{ textAlign: 'right' }}>
+          <MessageId message={props.node.message} addComma={true} />
+          {`QoS: ${props.node.message.qos}`}
+        </Typography>
         <Typography style={{ textAlign: 'right' }}>
           <i>
             <DateFormatter date={props.node.message.received} />
@@ -82,8 +86,8 @@ function ValuePanel(props: Props) {
   )
 
   const copyValue =
-    node && node.message && node.message.value ? (
-      <Copy value={Base64Message.toUnicodeString(node.message.value)} />
+    node && node.message && node.message.payload ? (
+      <Copy value={Base64Message.toUnicodeString(node.message.payload)} />
     ) : null
 
   return (

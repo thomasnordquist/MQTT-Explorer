@@ -48,6 +48,7 @@ export const clearTopic = (topic: q.TreeNode<any>, recursive: boolean) => async 
         payload: null,
         retain: true,
         qos: 0 as 0,
+        messageId: undefined,
       }
       // Rate limit deletion
       setTimeout(() => rendererEvents.emit(publishEvent, mqttMessage), 20 * idx)

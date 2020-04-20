@@ -1,6 +1,7 @@
-import { Edge, TreeNodeFactory } from '../'
-import { expect } from 'chai'
 import 'mocha'
+import { expect } from 'chai'
+import { Edge } from '../'
+import { makeTreeNode } from './makeTreeNode'
 
 describe('Edge', () => {
   it('should contain a name', () => {
@@ -9,8 +10,7 @@ describe('Edge', () => {
   })
 
   it('firstEdge should retrieve the first edge', () => {
-    const topics = 'foo/bar/baz'.split('/')
-    const leaf = TreeNodeFactory.fromEdgesAndValue(topics, undefined)
+    const leaf = makeTreeNode('foo/bar/baz')
     const bazEdge = leaf.sourceEdge
 
     if (!bazEdge) {
@@ -34,11 +34,8 @@ describe('Edge', () => {
   })
 
   it('hash should include change if parents are different', () => {
-    const topics1 = 'foo/bar/baz'.split('/')
-    const bazEdge1 = TreeNodeFactory.fromEdgesAndValue(topics1, undefined).sourceEdge
-
-    const topics2 = 'foo/foo/baz'.split('/')
-    const bazEdge2 = TreeNodeFactory.fromEdgesAndValue(topics2, undefined).sourceEdge
+    const bazEdge1 = makeTreeNode('foo/bar/baz').sourceEdge
+    const bazEdge2 = makeTreeNode('foo/foo/baz').sourceEdge
 
     if (!bazEdge1 || !bazEdge2) {
       throw Error('should not happen')

@@ -63,12 +63,12 @@ class ValueRenderer extends React.Component<Props, State> {
   }
 
   private renderRawMode(message: q.Message, compare?: q.Message) {
-    if (!message.value) {
+    if (!message.payload) {
       return
     }
-    const [value, valueLanguage] = this.convertMessage(message.value)
+    const [value, valueLanguage] = this.convertMessage(message.payload)
     const [compareStr, compareStrLanguage] =
-      compare && compare.value ? this.convertMessage(compare.value) : [undefined, undefined]
+      compare && compare.payload ? this.convertMessage(compare.payload) : [undefined, undefined]
 
     return (
       <div>
@@ -95,12 +95,12 @@ class ValueRenderer extends React.Component<Props, State> {
     if (renderMode === 'raw') {
       return this.renderRawMode(message, compareWith)
     }
-    if (!message.value) {
+    if (!message.payload) {
       return null
     }
 
-    const compareValue = compareMessage.value || message.value
-    const [current, currentLanguage] = this.convertMessage(message.value)
+    const compareValue = compareMessage.payload || message.payload
+    const [current, currentLanguage] = this.convertMessage(message.payload)
     const [compare, compareLanguage] = this.convertMessage(compareValue)
 
     const language = currentLanguage === compareLanguage && compareLanguage === 'json' ? 'json' : undefined

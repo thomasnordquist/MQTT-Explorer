@@ -1,11 +1,10 @@
 import { Destroyable } from './Destroyable'
 import { Edge, Message, RingBuffer, MessageHistory } from './'
-import { EventDispatcher, MqttMessage } from '../../../events'
+import { EventDispatcher } from '../../../events'
 
 export class TreeNode<ViewModel extends Destroyable> {
   public sourceEdge?: Edge<ViewModel>
   public message?: Message
-  public mqttMessage?: MqttMessage
   public messageHistory: MessageHistory = new RingBuffer<Message>(20000, 100)
   public viewModel?: ViewModel
   public edges: { [s: string]: Edge<ViewModel> } = {}
@@ -105,7 +104,7 @@ export class TreeNode<ViewModel extends Destroyable> {
   }
 
   public hasMessage() {
-    return this.message && this.message.value && this.message.value.length !== 0
+    return this.message && this.message.payload && this.message.length !== 0
   }
 
   public destroy() {
@@ -131,7 +130,6 @@ export class TreeNode<ViewModel extends Destroyable> {
   public unconnectedClone() {
     const node = new TreeNode<ViewModel>()
     node.message = this.message
-    node.mqttMessage = this.mqttMessage
     node.messageHistory = this.messageHistory.clone()
     node.messages = this.messages
     node.lastUpdate = this.lastUpdate
@@ -203,7 +201,6 @@ export class TreeNode<ViewModel extends Destroyable> {
     if (node.message) {
       this.setMessage(node.message)
       this.onMessage.dispatch(node.message)
-      this.mqttMessage = node.mqttMessage
     }
 
     this.removeFromTreeIfEmpty()
@@ -236,7 +233,7 @@ export class TreeNode<ViewModel extends Destroyable> {
 
   public childTopics(): Array<TreeNode<ViewModel>> {
     if (this.cachedChildTopics === undefined) {
-      const initialValue = this.message && this.message.value ? [this] : []
+      const initialValue = this.message && this.message.payload ? [this] : []
 
       this.cachedChildTopics = this.edgeArray
         .map(e => e.target.childTopics())

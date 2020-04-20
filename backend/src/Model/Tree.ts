@@ -75,13 +75,7 @@ export class Tree<ViewModel extends Destroyable> extends TreeNode<ViewModel> {
 
   public applyUnmergedChanges() {
     this.unmergedMessages.popAll().forEach(bufferedItem => {
-      const edges = bufferedItem.message.topic.split('/')
-      const node = TreeNodeFactory.fromEdgesAndValue<ViewModel>(
-        edges,
-        bufferedItem.message.payload,
-        bufferedItem.received
-      )
-      node.mqttMessage = bufferedItem.message
+      const node = TreeNodeFactory.fromMessage<ViewModel>(bufferedItem.message, bufferedItem.received)
 
       if (!this.nodeFilter || this.nodeFilter(node)) {
         this.updateWithNode(node.firstNode())

@@ -1,22 +1,17 @@
 import 'mocha'
-
-import { TreeNodeFactory } from '../'
 import { expect } from 'chai'
 import { Base64Message } from '../Base64Message'
+import { makeTreeNode } from './makeTreeNode'
 
 describe('TreeNodeFactory', () => {
   it('root node must not have a sourceEdge', () => {
-    const topic = 'foo/bar'
-    const edges = topic.split('/')
-    const leaf = TreeNodeFactory.fromEdgesAndValue(edges, undefined)
+    const leaf = makeTreeNode('foo/bar')
 
     expect(leaf.firstNode().sourceEdge).to.eq(undefined)
   })
 
   it('should create node', () => {
-    const topic = 'foo/bar'
-    const edges = topic.split('/')
-    const node = TreeNodeFactory.fromEdgesAndValue(edges, Base64Message.fromString('5'))
+    const node = makeTreeNode('foo/bar', '5')
 
     if (!node.sourceEdge || !node.sourceEdge.source || !node.message) {
       expect.fail('should not happen')
@@ -25,23 +20,21 @@ describe('TreeNodeFactory', () => {
 
     expect(node).to.not.eq(undefined)
     expect(node.sourceEdge.name).to.eq('bar')
-    expect(Base64Message.toUnicodeString(node.message.value!)).to.eq('5')
+    expect(Base64Message.toUnicodeString(node.message.payload!)).to.eq('5')
 
     const foo = node.firstNode().findNode('foo')
     expect(foo && foo.sourceEdge && foo.sourceEdge.name).to.eq('foo')
   })
 
   it('node should contain edges in order', () => {
-    const topic = 'foo/bar/baz'
-    const edges = topic.split('/')
-    const node = TreeNodeFactory.fromEdgesAndValue(edges, Base64Message.fromString('5'))
+    const node = makeTreeNode('foo/bar/baz', '5')
 
     if (!node.sourceEdge || !node.sourceEdge.source || !node.message) {
       expect.fail('should not happen')
       return
     }
 
-    expect(Base64Message.toUnicodeString(node.message.value!)).to.eq('5')
+    expect(Base64Message.toUnicodeString(node.message.payload!)).to.eq('5')
     expect(node.sourceEdge.name).to.eq('baz')
 
     const barNode = node.sourceEdge.source

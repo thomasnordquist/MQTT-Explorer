@@ -12,6 +12,7 @@ import { bindActionCreators } from 'redux'
 import { chartActions } from '../../../actions'
 import { connect } from 'react-redux'
 import CustomIconButton from '../../helper/CustomIconButton'
+import { MessageId } from '../MessageId'
 
 const throttle = require('lodash.throttle')
 
@@ -81,19 +82,25 @@ class MessageHistory extends React.PureComponent<Props, State> {
     const history = node.messageHistory.toArray()
     let previousMessage: q.Message | undefined = node.message
     const historyElements = [...history].reverse().map((message, idx) => {
-      const value = message.value ? Base64Message.toUnicodeString(message.value) : ''
+      const value = message.payload ? Base64Message.toUnicodeString(message.payload) : ''
       const element = {
         value,
         key: `${message.messageNumber}-${message.received}`,
         title: (
           <span>
-            <DateFormatter date={message.received} />
-            {previousMessage && previousMessage !== message ? (
-              <i>
-                (-
-                <DateFormatter date={message.received} intervalSince={previousMessage.received} />)
-              </i>
-            ) : null}
+            <div style={{ float: 'left' }}>
+              <DateFormatter date={message.received} />
+              {previousMessage && previousMessage !== message ? (
+                <i>
+                  (-
+                  <DateFormatter date={message.received} intervalSince={previousMessage.received} />)
+                </i>
+              ) : null}
+            </div>
+            <span>
+              &nbsp;
+              <MessageId message={message} />
+            </span>
             <div style={{ float: 'right' }}>
               <Copy value={value} />
             </div>
@@ -106,7 +113,7 @@ class MessageHistory extends React.PureComponent<Props, State> {
     })
 
     const isMessagePlottable =
-      node.message && node.message.value && isPlottable(Base64Message.toUnicodeString(node.message.value))
+      node.message && node.message.payload && isPlottable(Base64Message.toUnicodeString(node.message.payload))
     return (
       <div>
         <History

@@ -1,7 +1,7 @@
 import { DataSourceStateMachine } from './'
 import { MqttMessage } from '../../../events'
 
-type MessageCallback = (topic: string, payload: Buffer) => void
+type MessageCallback = (topic: string, payload: Buffer, packet: any) => void
 
 // A DataSource should automatically reconnect if connection was broken
 interface DataSource<DataSourceOptions> {

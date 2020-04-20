@@ -160,7 +160,7 @@
     </style>
   </head>
   <body>
-    <div id="app" style="font:-webkit-control"></div>
+    <div id="app" style="font: -webkit-control;"></div>
     <script>
       function loadScript(path) {
         var script = document.createElement('script')
@@ -174,7 +174,8 @@
         // loadScript("<%= JSON.stringify(htmlWebpackPlugin) %>")
       }
     </script>
-    <% _.forEach(htmlWebpackPlugin.files.js, function(file) { %><script src="<%- file %>"></script
-    ><% }); %>
+    <% _.forEach(htmlWebpackPlugin.files.js, function(file) { %>
+    <script src="<%- file %>"></script>
+    <% }); %>
   </body>
 </html>

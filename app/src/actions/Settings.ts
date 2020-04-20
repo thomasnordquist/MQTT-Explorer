@@ -112,8 +112,8 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
 
     const messageMatches =
       node.message &&
-      node.message.value &&
-      Base64Message.toUnicodeString(node.message.value).toLowerCase().indexOf(filterStr) !== -1
+      node.message.payload &&
+      Base64Message.toUnicodeString(node.message.payload).toLowerCase().indexOf(filterStr) !== -1
 
     return Boolean(messageMatches)
   }
