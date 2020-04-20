@@ -102,7 +102,7 @@ function Publish(props: Props) {
   )
 }
 
-function EditorMode(props: {
+const EditorMode = memo(function EditorMode(props: {
   payload?: string
   editorMode: string
   focusEditor: () => void
@@ -127,21 +127,18 @@ function EditorMode(props: {
     }
   }, [props.payload])
 
-  return useMemo(
-    () => (
-      <div style={{ marginTop: '16px' }}>
-        <div style={{ width: '100%', lineHeight: '64px', textAlign: 'center' }}>
-          <EditorModeSelect value={props.editorMode} onChange={updateMode} focusEditor={props.focusEditor} />
-          <FormatJsonButton editorMode={props.editorMode} focusEditor={props.focusEditor} formatJson={formatJson} />
-          <div style={{ float: 'right' }}>
-            <PublishButton publish={props.publish} focusEditor={props.focusEditor} />
-          </div>
+  return (
+    <div style={{ marginTop: '16px' }}>
+      <div style={{ width: '100%', lineHeight: '64px', textAlign: 'center' }}>
+        <EditorModeSelect value={props.editorMode} onChange={updateMode} focusEditor={props.focusEditor} />
+        <FormatJsonButton editorMode={props.editorMode} focusEditor={props.focusEditor} formatJson={formatJson} />
+        <div style={{ float: 'right' }}>
+          <PublishButton publish={props.publish} focusEditor={props.focusEditor} />
         </div>
       </div>
-    ),
-    [props.editorMode]
+    </div>
   )
-}
+})
 
 const FormatJsonButton = React.memo(function FormatJsonButton(props: {
   editorMode: string
@@ -166,7 +163,7 @@ const FormatJsonButton = React.memo(function FormatJsonButton(props: {
   )
 })
 
-const PublishButton = (props: { publish: () => void; focusEditor: () => void }) => {
+const PublishButton = memo(function PublishButton(props: { publish: () => void; focusEditor: () => void }) {
   const handleClickPublish = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation()
@@ -175,22 +172,19 @@ const PublishButton = (props: { publish: () => void; focusEditor: () => void }) 
     [props.publish]
   )
 
-  return useMemo(
-    () => (
-      <Button
-        variant="contained"
-        size="small"
-        color="primary"
-        onClick={handleClickPublish}
-        onFocus={props.focusEditor}
-        id="publish-button"
-      >
-        <Navigation style={{ marginRight: '8px' }} /> Publish
-      </Button>
-    ),
-    [handleClickPublish]
+  return (
+    <Button
+      variant="contained"
+      size="small"
+      color="primary"
+      onClick={handleClickPublish}
+      onFocus={props.focusEditor}
+      id="publish-button"
+    >
+      <Navigation style={{ marginRight: '8px' }} /> Publish
+    </Button>
   )
-}
+})
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
