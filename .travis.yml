@@ -35,6 +35,12 @@ script:
   - export TRAVIS_BUILD_NUMBER="" # Override travis build number since it is uses for tagging the binary version https://github.com/electron-userland/electron-builder/issues/3730
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then docker run -e GH_TOKEN=$GH_TOKEN -e GIT_TAG=$TRAVIS_TAG --rm -v `pwd`:/app thomasnordquist/ui-test-recording-env sh -c "cd app && docker/testMounted.sh"; fi
   - if [[ "$TRAVIS_TAG" != "" ]]; then yarn run prepare-release; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package linux; fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TRAVIS_TAG" != "" ]]; then
+      openssl aes-256-cbc -d -in res/snapstore-credentials.enc -out credentials -k $SNAPSTORE_CREDENTIALS_DECRYPTION_KEY;
+      snapcraft login --with credentials;
+      rm credentials;
+      yarn run package linux;
+    fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ "$TRAVIS_TAG" != "" ]]; then yarn run package -- mac; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] && [[ "$TRAVIS_TAG" != "" ]]; then unset CSC_LINK; yarn run package -- win; fi
