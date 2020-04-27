@@ -1,5 +1,24 @@
 [back](./)
 
+# 0.4.0-beta1
+
+  - Fix Copy & Paste
+  - Allow setting QoS for subscriptions
+  - Show Meassge ID (for QoS > 0)
+  - Improve JSON editor
+  - Allow multiple connections to the same broker from MQTT Explorer (random client ids)
+  - Remove recursive topic removal limit
+  - Retain focus on publish input fields when publishing
+  - Fix editor layout issue
+  - Fix password input
+  - Fix charts where json properties contain periods
+  - Fix publish sidebar width
+  - Fix plot range selection
+  - Update Electron
+
+A downgrade to a version prior to 0.4.0 is due to a new configuration format not possible.
+
+
 # 0.3.5
   - Add keyboard support
     - Navigate with arrow keys and tab return and escape
