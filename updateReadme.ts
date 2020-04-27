@@ -1,3 +1,4 @@
+#!./node_modules/.bin/ts-node
 import * as mustache from 'mustache'
 
 import { readFileSync, writeFileSync } from 'fs'
@@ -6,6 +7,7 @@ import axios from 'axios'
 
 interface Release {
   name: string
+  tag_name: string
   assets: Asset[]
 }
 
@@ -25,9 +27,10 @@ function fileExtension(file: string): string {
 }
 
 async function createReadme(): Promise<void> {
-  const release: Release = (await axios.get('https://api.github.com/repos/thomasnordquist/mqtt-explorer/releases/latest')).data
+  const release: Release = (await axios.get('https://api.github.com/repos/thomasnordquist/mqtt-explorer/releases')).data
+    .find((r: Release) => r.tag_name === 'v0.3.5')
 
-  const linux64 = release.assets.filter(asset => /(x86_64|amd64)\.(AppImage|deb|rpm)$/.test(asset.name))
+  const linux64 = release.assets.filter(asset => /^(?:(?!(armv7l|arm64|i386)).)*\.(AppImage|deb|rpm)$/.test(asset.name))
   const windowsInstaller = release.assets.find(asset => /Setup-.+\.exe$/.test(asset.name))
   const windowsPortable = release.assets.find(asset => /-(?!Setup).+\.exe$/.test(asset.name))
   const macDmg = release.assets.find(asset => /\.dmg$/.test(asset.name))

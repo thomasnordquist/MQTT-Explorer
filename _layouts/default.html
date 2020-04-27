@@ -4,23 +4,112 @@
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+    crossorigin="anonymous"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}" media="screen" type="text/css">
     <link rel="stylesheet" href="{{ '/assets/css/print.css' | relative_url }}" media="print" type="text/css">
+    <link rel="stylesheet" href="./osx-frame.css">
 
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <![endif]-->
 
     <style>
+      .noshow {display: none}
+
+      @media (min-width: 768px) { 
+        .slider {
+          display: flex;
+        }
+        .carousel {
+          display: none;
+        }
+      }
+
+      @media (max-width: 768px) { 
+        .slider {
+          display: none;
+        }
+        .carousel {
+          display: block;
+        }
+      }
+
+      form>h3::before {
+        content: '' !important;
+        margin-left: 0 !important;
+      }
+
+      .carousel-control-next-icon, .carousel-control-prev-icon {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        background-size: 70%;
+        background-repeat: no-repeat;
+        background-color: grey;
+        border-radius: 5px;
+      }
+
       .inner img {
         border-radius: 8px;
+      }
+
+      .slider a {
+        padding: 4px;
+      }
+      .carousel-item, .slider img {
+        box-shadow: 0px 0px 5px #6b6b6b;
       }
     </style>
 
     {% seo %}
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TRN5K6H');</script>
+    <!-- End Google Tag Manager -->
+    <script>
+      function trackConversion(url) {
+        const conversions = {
+          'snap://mqtt-explorer': 'snap',
+          'https://snapcraft.io/mqtt-explorer': 'snap',
+          'https://geo.itunes.apple.com/us/app/mqtt-explorer/id1455214828?mt=12&app=apps': 'Mac App Store',
+          'https://www.microsoft.com/store/apps/9PP8SFM082WD?ocid=badge': 'Microsoft Store',
+          'https://github.com/thomasnordquist/MQTT-Explorer/releases/download/': 'binary download'
+        }
+        const conversion = Object.keys(conversions).find(function(conversionUrlPrefix) { return url.startsWith(conversionUrlPrefix) })
+        if (conversion) {
+          ga('send', 'event', 'outbound', 'download', conversions[conversion], {
+            'transport': 'beacon',
+            'hitCallback': function(){ document.location = url; }
+          });
+        } else {
+          ga('send', 'event', 'outbound', 'click', url, {
+            'transport': 'beacon',
+            'hitCallback': function(){ document.location = url; }
+          });
+        }
+      }
+
+    function didLoad() {
+      if (!Array.prototype.filter || !Array.prototype.find || !String.prototype.startsWith) {
+        return
+      }
+
+      Object.values(document.getElementsByTagName('a'))
+        .filter(function(a) { return !a.href.startsWith(a.baseURI)})
+        .forEach(function(a) { a.onclick = function() { trackConversion(a.href) }})
+    }
+    </script>
   </head>
 
-  <body>
+  <body onload="didLoad()">
     <header>
       <div class="inner">
         <a href="{{ '/' | absolute_url }}">
@@ -36,7 +125,7 @@
         </a>
         <h2>{{ site.description | default: site.github.project_tagline }}</h2>
         {% if site.github.is_project_page %}
-          <a href="{{ site.github.repository_url }}" class="button"><small>View project on</small> GitHub</a>
+          <a href="{{ site.github.repository_url }}" style="box-sizing: initial" class="button"><small>View project on</small> GitHub</a>
         {% endif %}
         {% if site.github.is_user_page %}
           <a href="{{ site.github.owner_url }}" class="button"><small>Follow me on</small> GitHub</a>
@@ -68,6 +157,23 @@
             <h3>{{ site.author.name }}</h3>
             <p class="repo-owner"><a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
           {% endif %}
+
+          <br />
+          <h3>In the media</h3>
+          <blockquote class="twitter-tweet" data-width="200">
+          <p lang="en" dir="ltr">If you’re seeking a comprehensive and easy to use 
+          <a href="https://twitter.com/hashtag/MQTT?src=hash&amp;ref_src=twsrc%5Etfw">#MQTT</a> client for 
+          <a href="https://twitter.com/hashtag/Ubuntu?src=hash&amp;ref_src=twsrc%5Etfw">#Ubuntu</a> then look no further than MQTT Explorer.
+          <br>
+          <br>snap install mqtt-explorer
+          <a href="https://t.co/1nd0Z8VQeR">https://t.co/1nd0Z8VQeR</a> 
+          <a href="https://t.co/8XKenpQu0p">pic.twitter.com/8XKenpQu0p</a>
+          </p>
+          &mdash; Ubuntu (@ubuntu) 
+          <a href="https://twitter.com/ubuntu/status/1125747632910077953?ref_src=twsrc%5Etfw">May 7, 2019</a>
+          </blockquote>
+          <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            
         </aside>
       </div>
     </div>

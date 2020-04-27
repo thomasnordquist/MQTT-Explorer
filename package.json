@@ -22,5 +22,8 @@
     "mustache": "^3.0.1",
     "ts-node": "^8.0.3",
     "typescript": "^3.4.2"
+  },
+  "dependencies": {
+    "@types/node": "^13.1.7"
   }
 }

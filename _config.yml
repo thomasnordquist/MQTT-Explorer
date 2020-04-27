@@ -1,6 +1,6 @@
 theme: jekyll-theme-architect
 title: MQTT Explorer
-description: A all-round MQTT client that provides a structured topic overview
+description: An all-round MQTT client that provides a structured topic overview
 author:
   name: Thomas Nordquist
   picture: https://avatars1.githubusercontent.com/u/7721625?s=460&v=4 

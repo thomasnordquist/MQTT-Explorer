@@ -1,27 +1,53 @@
 [back](./)
 
+# 0.3.5
+  - Add keyboard support
+    - Navigate with arrow keys and tab return and escape
+    - Delete topic topics with the delete key
+  - Add time range options to chart panel
+  - Add "Clear Data" option to charts
+  - Add support for client certificates
+  - Add support for SNI (encryption-related)
+  - Make connection profile list scrollable
+  - Improve the browsability of previous messages
+  - various small fixes
+
+# 0.3.2
+  - Ubuntu performance fix
+
+# 0.3.1
+  - Ubuntu bugfix release
+  - Add wayland support (for snap builds)
+
 # 0.3.0
 
   - Add functionality to plot JSON data
   - Add chart panel, containing multiple plots (bottom panel)
   - Chart panel and settings will be restored on restart
   - Charts can be paused
-  - Panels can be hidden / overlap others completely
+  - Panels can be hidden/overlap others completely
   - Plot range can be customized
   - Plot interpolation can be customized
   - Migrated public broker from iot.eclipse.org to mqtt.eclipse.org
-  - Fix unrounded time intervals in message history
+  - Fix unrounded time intervals in the message history
   - Fix weird plot curve interpolations
 
 # 0.2.6
 
   - Add a pause function
-  - Buffer changes while in pause mode
   - Add light / dark themes
-  - Allow pinning self-signed-certificates
   - Add localized date formatting
-  - Fix issues with the plot
+  - Allow pinning self-signed-certificates
+  - Allow copying values from the message history
+  - Buffer changes while in pause mode
   - Improve layout
+  - Improve numeric plot layout and smooth curves
+  - Improve scroll behavior message history
+  - Improve performance and memory footprint by ~30%
+  - Improve text selection behavior (Ctrl+A) for value preview and history
+  - Immediately apply changed settings
+  - Fix memory leak on search and disconnect - Deactivate auto-update for Windows portable releases.
+  - Fix OSX code-signing and auto-update
 
 # 0.2.3
 
