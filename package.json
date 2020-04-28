@@ -34,6 +34,7 @@
     "mac": {
       "appId": "de.t7n.apps.mqtt-explorer",
       "category": "public.app-category.developer-tools",
+      "hardenedRuntime": true,
       "publish": [
         "github"
       ],
@@ -61,7 +62,8 @@
       "buildResources": "res",
       "output": "build"
     },
-    "afterPack": "./dist/scripts/afterPack.js"
+    "afterPack": "./dist/scripts/afterPack.js",
+    "afterSign": "./scripts/afterSign.js"
   },
   "author": "Thomas Nordquist",
   "email": "xxnerowingerxx@gmail.com",
@@ -82,6 +84,7 @@
     "cspell": "^4.0.28",
     "electron": "8.2.3",
     "electron-builder": "22.5.1",
+    "electron-notarize": "^0.3.0",
     "mocha": "7.1",
     "mustache": "4",
     "npm-run-all": "^4.1.5",
