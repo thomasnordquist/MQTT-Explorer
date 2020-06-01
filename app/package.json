@@ -15,7 +15,7 @@
   "dependencies": {
     "@material-ui/core": "^4",
     "@material-ui/icons": "^4",
-    "@material-ui/lab": "^4.0.0-alpha",
+    "@material-ui/lab": "^4.0.0-alpha.54",
     "@material-ui/styles": "^4",
     "@types/react-transition-group": "^4",
     "ace-builds": "^1.4.11",
