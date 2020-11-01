@@ -81,7 +81,7 @@
     "@types/sha1": "^1.1.1",
     "builder-util-runtime": "^8.2.5",
     "chai": "^4.2.0",
-    "cspell": "^4.0.28",
+    "cspell": "^4.1.2",
     "electron": "8.2.3",
     "electron-builder": "22.5.1",
     "electron-notarize": "^0.3.0",
