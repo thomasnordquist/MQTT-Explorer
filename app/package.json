@@ -53,7 +53,7 @@
     "redux-thunk": "^2.3.0",
     "sha1": "^1.1.1",
     "socket.io-client": "^2.2.0",
-    "uuid": "7"
+    "uuid": "8"
   },
   "devDependencies": {
     "@types/d3": "^5.7.2",
