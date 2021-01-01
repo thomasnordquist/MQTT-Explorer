@@ -93,7 +93,7 @@
     "redux-thunk": "^2.3.0",
     "source-map-support": "^0.5.9",
     "spectron": "10",
-    "ts-node": "^8.2.0",
+    "ts-node": "^9.1.1",
     "tslint": "6",
     "tslint-config-airbnb": "^5.11.1",
     "tslint-react": "^4.0.0",
