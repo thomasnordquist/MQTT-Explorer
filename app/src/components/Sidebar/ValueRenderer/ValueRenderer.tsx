@@ -4,9 +4,8 @@ import CodeDiff from '../CodeDiff'
 import { AppState } from '../../../reducers'
 import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
 import { connect } from 'react-redux'
-import { default as ReactResizeDetector } from 'react-resize-detector'
 import { ValueRendererDisplayMode } from '../../../reducers/Settings'
-import { Typography, Fade, Grow } from '@material-ui/core'
+import { Fade } from '@material-ui/core'
 
 interface Props {
   message: q.Message
@@ -38,44 +37,42 @@ class ValueRenderer extends React.Component<Props, State> {
     )
   }
 
-  private convertMessage(msg?: Base64Message): [string | undefined, 'json' | undefined] {
-    if (!msg) {
-      return [undefined, undefined]
-    }
-
-    const str = Base64Message.toUnicodeString(msg)
-    try {
-      JSON.parse(str)
-    } catch (error) {
-      return [str, undefined]
-    }
-
-    return [this.messageToPrettyJson(str), 'json']
-  }
-
-  private messageToPrettyJson(str: string): string | undefined {
-    try {
-      const json = JSON.parse(str)
-      return JSON.stringify(json, undefined, '  ')
-    } catch {
-      return undefined
-    }
-  }
-
-  private renderRawMode(message: q.Message, compare?: q.Message) {
+  private renderDiffMode(message: q.Message, treeNode: q.TreeNode<any>, compare?: q.Message) {
     if (!message.payload) {
       return
     }
-    const [value, valueLanguage] = this.convertMessage(message.payload)
-    const [compareStr, compareStrLanguage] =
-      compare && compare.payload ? this.convertMessage(compare.payload) : [undefined, undefined]
+
+    const previousMessages = treeNode.messageHistory.toArray()
+    const previousMessage = previousMessages[previousMessages.length - 2]
+    const compareMessage = compare || previousMessage || message
+
+    const compareValue = compareMessage.payload || message.payload
+    const [currentStr, currentType] = Base64Message.format(message.payload, treeNode.type)
+    const [compareStr, compareType] = Base64Message.format(compareValue, treeNode.type)
+
+    const language = currentType === compareType && compareType === 'json' ? 'json' : undefined
 
     return (
       <div>
-        {this.renderDiff(value, value, undefined, valueLanguage)}
+        {this.renderDiff(currentStr, compareStr, undefined, language)}
+      </div>
+    )
+  }
+
+  private renderRawMode(message: q.Message, treeNode: q.TreeNode<any>, compare?: q.Message) {
+    if (!message.payload) {
+      return
+    }
+
+    const [currentStr, currentType] = Base64Message.format(message.payload, treeNode.type)
+    const [compareStr, compareType] = compare && compare.payload ? Base64Message.format(compare.payload, treeNode.type) : [undefined, undefined]
+
+    return (
+      <div>
+        {this.renderDiff(currentStr, currentStr, undefined, currentType)}
         <Fade in={Boolean(compareStr)} timeout={400}>
           <div>
-            {Boolean(compareStr) ? this.renderDiff(compareStr, compareStr, 'selected', compareStrLanguage) : null}
+            {Boolean(compareStr) ? this.renderDiff(compareStr, compareStr, 'selected', compareType) : null}
           </div>
         </Fade>
       </div>
@@ -88,24 +85,16 @@ class ValueRenderer extends React.Component<Props, State> {
 
   public renderValue() {
     const { message, treeNode, compareWith, renderMode } = this.props
-    const previousMessages = treeNode.messageHistory.toArray()
-    const previousMessage = previousMessages[previousMessages.length - 2]
-    const compareMessage = compareWith || previousMessage || message
-
-    if (renderMode === 'raw') {
-      return this.renderRawMode(message, compareWith)
-    }
     if (!message.payload) {
       return null
     }
 
-    const compareValue = compareMessage.payload || message.payload
-    const [current, currentLanguage] = this.convertMessage(message.payload)
-    const [compare, compareLanguage] = this.convertMessage(compareValue)
-
-    const language = currentLanguage === compareLanguage && compareLanguage === 'json' ? 'json' : undefined
-
-    return this.renderDiff(current, compare, undefined, language)
+    switch (renderMode) {
+      case 'diff':
+        return this.renderDiffMode(message, treeNode, compareWith)
+      default:
+        return this.renderRawMode(message, treeNode, compareWith)
+    }
   }
 }
 

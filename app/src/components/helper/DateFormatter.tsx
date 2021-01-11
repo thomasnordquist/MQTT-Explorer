@@ -12,6 +12,7 @@ interface Props {
 }
 
 const unitMapping = {
+  ms: 'milliseconds',
   s: 'seconds',
   m: 'minutes',
   h: 'hours',
@@ -21,7 +22,7 @@ class DateFormatter extends React.PureComponent<Props, {}> {
   private intervalSince(intervalSince: Date) {
     const interval = intervalSince.getTime() - this.props.date.getTime()
     const unit = this.unitForInterval(interval)
-    return `${Math.round(moment.duration(interval).as(unit) * 100) / 100} ${unitMapping[unit]}`
+    return `${moment.duration(interval).as(unit).toFixed(3)} ${unitMapping[unit]}`
   }
 
   private legacyDate() {
@@ -31,10 +32,11 @@ class DateFormatter extends React.PureComponent<Props, {}> {
   private localizedDate(locale: string) {
     return moment(this.props.date)
       .locale(locale)
-      .format(this.props.timeFirst ? 'LTS L' : 'L LTS')
+      .format(this.props.timeFirst ? 'LTS.SSS L' : 'L LTS.SSS')
   }
 
   private unitForInterval(milliseconds: number) {
+    const oneSecond = 1000 * 1
     const oneMinute = 1000 * 60
     const oneHour = oneMinute * 60
 
@@ -46,7 +48,11 @@ class DateFormatter extends React.PureComponent<Props, {}> {
       return 'm'
     }
 
-    return 's'
+    if (milliseconds > oneSecond * 0.5) {
+      return 's'
+    }
+
+    return 'ms'
   }
 
   public render() {
