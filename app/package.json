@@ -75,7 +75,7 @@
     "css-loader": "^3.0.0",
     "hard-source-webpack-plugin": "^0.13.1",
     "heapdump": "^0.3.12",
-    "html-webpack-plugin": "^4.0.0-beta.5",
+    "html-webpack-plugin": "^4.5.1",
     "mocha": "^7.1.1",
     "node-loader": "^0.6.0",
     "source-map-loader": "^0.2.4",
