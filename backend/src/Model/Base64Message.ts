@@ -12,8 +12,16 @@ export class Base64Message {
     this.length = base64Str.length
   }
 
+  public static toBase64(message: Base64Message) {
+    return message.base64Message || ''
+  }
+
   public static toUnicodeString(message: Base64Message) {
     return message.unicodeValue || ''
+  }
+
+  public static ToByteArray(message: Base64Message): Uint8Array {
+    return Base64.toUint8Array(message.base64Message)
   }
 
   public static fromBuffer(buffer: Buffer) {

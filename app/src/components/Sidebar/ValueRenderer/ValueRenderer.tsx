@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { default as ReactResizeDetector } from 'react-resize-detector'
 import { ValueRendererDisplayMode } from '../../../reducers/Settings'
 import { Typography, Fade, Grow } from '@material-ui/core'
+import Protobuf from './Protobuf'
 
 interface Props {
   message: q.Message
@@ -41,6 +42,18 @@ class ValueRenderer extends React.Component<Props, State> {
   private convertMessage(msg?: Base64Message): [string | undefined, 'json' | undefined] {
     if (!msg) {
       return [undefined, undefined]
+    }
+
+    let obj = {}
+    try {
+      const byteArray = Base64Message.ToByteArray(msg)
+      obj = Protobuf.decode(byteArray)
+    } catch (e) {
+      console.log('Caught exception while decoding protobuf: ', e)
+    }
+
+    if (obj) {
+      return [JSON.stringify(obj, undefined, '  '), 'json']
     }
 
     const str = Base64Message.toUnicodeString(msg)
