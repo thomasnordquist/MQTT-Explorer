@@ -108,7 +108,7 @@
     "dot-prop": "^5.0.0",
     "electron-log": "4.1.1",
     "electron-telemetry": "git+https://github.com/thomasnordquist/electron-telemetry.git#dist",
-    "electron-updater": "^4.0.6",
+    "electron-updater": "^4.3.9",
     "fs-extra": "9",
     "js-base64": "^2.5.1",
     "json-to-ast": "^2.1.0",
