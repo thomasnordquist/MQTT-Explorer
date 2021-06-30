@@ -83,7 +83,7 @@ async function openCertificate(): Promise<CertificateParameters> {
   }
 
   const data = await fsPromise.readFile(selectedFile)
-  if (data.length > 16_384 || data.length < 128) {
+  if (data.length > 16_384 || data.length < 64) {
     throw rejectReasons.certificateSizeDoesNotMatch
   }
 
