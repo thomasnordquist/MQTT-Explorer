@@ -83,7 +83,7 @@
     "chai": "^4.2.0",
     "cspell": "^4.0.28",
     "electron": "8.2.3",
-    "electron-builder": "22.5.1",
+    "electron-builder": "22.11.7",
     "electron-notarize": "^0.3.0",
     "mocha": "7.1",
     "mustache": "4",
