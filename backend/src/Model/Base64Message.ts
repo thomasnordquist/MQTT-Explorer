@@ -27,4 +27,14 @@ export class Base64Message {
   public static toDataUri(message: Base64Message, mimeType: string) {
     return `data:${mimeType};base64,${message.base64Message}`
   }
+
+  public static toUint8Array(message: Base64Message) {
+    var binary_string = window.atob(message.base64Message);
+    var len = binary_string.length;
+    var bytes = new Uint8Array(len);
+    for (var i = 0; i < len; i++) {
+      bytes[i] = binary_string.charCodeAt(i);
+    }
+    return bytes
+  }
 }

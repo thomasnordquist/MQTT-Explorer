@@ -52,7 +52,8 @@ class ValueRenderer extends React.Component<Props, State> {
       JSON.parse(str)
     } catch (error) {
       try {
-        let payload = Payload.decode(this.base64MessageToUint8Array(msg))
+        //Sparkplugb
+        let payload = Payload.decode(Base64Message.toUint8Array(msg))
         const json = Payload.toJSON(payload)
         return [JSON.stringify(json, undefined, '  '), 'json']
       } catch (error) {
@@ -61,21 +62,6 @@ class ValueRenderer extends React.Component<Props, State> {
     }
 
     return [this.messageToPrettyJson(str), 'json']
-  }
-
-  private base64MessageToUint8Array(msg: Base64Message): Uint8Array {
-    let dataUri = Base64Message.toDataUri(msg, "")
-    let parts = dataUri.split(',')
-    let b64 = parts[1]
-
-    var binary_string = window.atob(b64);
-    var len = binary_string.length;
-    var bytes = new Uint8Array(len);
-    for (var i = 0; i < len; i++) {
-      bytes[i] = binary_string.charCodeAt(i);
-    }
-
-    return bytes
   }
 
   private messageToPrettyJson(str: string): string | undefined {

@@ -5,6 +5,7 @@ import PlotHistory from './Chart/Chart'
 import { Base64Message } from '../../../backend/src/Model/Base64Message'
 import { toPlottableValue } from './Sidebar/CodeDiff/util'
 import { PlotCurveTypes } from '../reducers/Charts'
+import { Payload } from '../../../backend/src/Model/sparkplug'
 const parseDuration = require('parse-duration')
 
 interface Props {
@@ -37,10 +38,15 @@ function nodeToHistory(startTime: number | undefined, history: q.MessageHistory)
 function nodeDotPathToHistory(startTime: number | undefined, history: q.MessageHistory, dotPath: string) {
   return filterUsingTimeRange(startTime, history.toArray())
     .map((message: q.Message) => {
-      let json = {}
+      let json: any = {}
       try {
         json = message.payload ? JSON.parse(Base64Message.toUnicodeString(message.payload)) : {}
-      } catch (ignore) {}
+      } catch (ignore) { }
+
+      // sparkplugb
+      try {
+        json = message.payload ? Payload.toJSON(Payload.decode(Base64Message.toUint8Array(message.payload))) : {}
+      } catch (ignore) { }
 
       const value = dotProp.get(json, dotPath)
 
