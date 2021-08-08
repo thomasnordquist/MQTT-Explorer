@@ -35,6 +35,10 @@
     "sourceMap": true,
     "instrument": true
   },
+  "dependencies": {
+    "protobufjs": "^6.11.2",
+    "long": "^4.0.0"
+  },
   "peerDependencies": {
     "fs-extra": "^8.0.1",
     "js-base64": "^2.5.1",

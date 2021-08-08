@@ -1,12 +1,15 @@
+import * as log from 'electron-log'
 import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
 import CodeDiff from '../CodeDiff'
 import { AppState } from '../../../reducers'
 import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
+import { Payload } from '../../../../../backend/src/Model/sparkplug'
 import { connect } from 'react-redux'
 import { default as ReactResizeDetector } from 'react-resize-detector'
 import { ValueRendererDisplayMode } from '../../../reducers/Settings'
 import { Typography, Fade, Grow } from '@material-ui/core'
+import { Buffer } from 'buffer';
 
 interface Props {
   message: q.Message
@@ -44,13 +47,35 @@ class ValueRenderer extends React.Component<Props, State> {
     }
 
     const str = Base64Message.toUnicodeString(msg)
+
     try {
       JSON.parse(str)
     } catch (error) {
-      return [str, undefined]
+      try {
+        let payload = Payload.decode(this.base64MessageToUint8Array(msg))
+        const json = Payload.toJSON(payload)
+        return [JSON.stringify(json, undefined, '  '), 'json']
+      } catch (error) {
+        return [str, undefined]
+      }
     }
 
     return [this.messageToPrettyJson(str), 'json']
+  }
+
+  private base64MessageToUint8Array(msg: Base64Message): Uint8Array {
+    let dataUri = Base64Message.toDataUri(msg, "")
+    let parts = dataUri.split(',')
+    let b64 = parts[1]
+
+    var binary_string = window.atob(b64);
+    var len = binary_string.length;
+    var bytes = new Uint8Array(len);
+    for (var i = 0; i < len; i++) {
+      bytes[i] = binary_string.charCodeAt(i);
+    }
+
+    return bytes
   }
 
   private messageToPrettyJson(str: string): string | undefined {
