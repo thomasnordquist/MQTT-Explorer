@@ -1,4 +1,3 @@
-import * as log from 'electron-log'
 import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
 import CodeDiff from '../CodeDiff'
