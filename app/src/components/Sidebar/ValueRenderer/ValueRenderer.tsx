@@ -5,10 +5,8 @@ import { AppState } from '../../../reducers'
 import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
 import { Payload } from '../../../../../backend/src/Model/sparkplug'
 import { connect } from 'react-redux'
-import { default as ReactResizeDetector } from 'react-resize-detector'
 import { ValueRendererDisplayMode } from '../../../reducers/Settings'
-import { Typography, Fade, Grow } from '@material-ui/core'
-import { Buffer } from 'buffer';
+import { Fade } from '@material-ui/core'
 
 interface Props {
   message: q.Message
