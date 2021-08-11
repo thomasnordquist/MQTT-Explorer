@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { Input, InputLabel, MenuItem, Select, StyleRulesCallback, Theme } from '@material-ui/core'
 import { settingsActions } from '../../actions'
 import { withStyles } from '@material-ui/styles'
-const moment = require('moment/min/moment-with-locales')
+import * as moment from 'moment'
 
 interface Props {
   actions: {
