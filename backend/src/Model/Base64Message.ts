@@ -29,12 +29,13 @@ export class Base64Message {
   }
 
   public static toUint8Array(message: Base64Message) {
-    var binary_string = window.atob(message.base64Message);
-    var len = binary_string.length;
-    var bytes = new Uint8Array(len);
-    for (var i = 0; i < len; i++) {
-      bytes[i] = binary_string.charCodeAt(i);
+    const binaryString = window.atob(message.base64Message)
+    const len = binaryString.length
+    const bytes = new Uint8Array(len)
+    for (const i of Array.from(Array(len).keys())) {
+      bytes[i] = binaryString.charCodeAt(i)
     }
+
     return bytes
   }
 }

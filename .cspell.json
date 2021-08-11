@@ -47,6 +47,16 @@
     "mixins",
     "Explorerdmg",
     "heapsnapshot",
-    "noconflict"
+    "noconflict",
+    "sparkplugb",
+    "protojson",
+    "protobuf",
+    "tahu",
+    "Protobufs",
+    "propertyset",
+    "datatypes",
+    "ldelim",
+    "propertysets",
+    "protoc"
   ]
 }
