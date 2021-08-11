@@ -42,10 +42,10 @@ function nodeDotPathToHistory(startTime: number | undefined, history: q.MessageH
       try {
         json = message.payload ? JSON.parse(Base64Message.toUnicodeString(message.payload)) : {}
       } catch (ignore) {
-          // sparkplugb
-          try {
-            json = message.payload ? Payload.toJSON(Payload.decode(Base64Message.toUint8Array(message.payload))) : {}
-          } catch (ignore) {}
+        // sparkplugb
+        try {
+          json = message.payload ? Payload.toJSON(Payload.decode(Base64Message.toUint8Array(message.payload))) : {}
+        } catch (ignore) {}
       }
 
       const value = dotProp.get(json, dotPath)
