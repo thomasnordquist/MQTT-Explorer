@@ -87,6 +87,17 @@ module.exports = {
           }
         }
       },
+      {
+        test: /\.proto$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              esModule: false,
+            },
+          },
+        ]
+      },
     ],
   },
 

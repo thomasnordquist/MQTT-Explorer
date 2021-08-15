@@ -5,7 +5,7 @@ import PlotHistory from './Chart/Chart'
 import { Base64Message } from '../../../backend/src/Model/Base64Message'
 import { toPlottableValue } from './Sidebar/CodeDiff/util'
 import { PlotCurveTypes } from '../reducers/Charts'
-import { Payload } from '../../../backend/src/Model/sparkplug'
+import { Payload } from '../../../backend/src/Model/sparkplugb'
 const parseDuration = require('parse-duration')
 
 interface Props {
@@ -41,12 +41,7 @@ function nodeDotPathToHistory(startTime: number | undefined, history: q.MessageH
       let json: any = {}
       try {
         json = message.payload ? JSON.parse(Base64Message.toUnicodeString(message.payload)) : {}
-      } catch (ignore) {
-        // sparkplugb
-        try {
-          json = message.payload ? Payload.toJSON(Payload.decode(Base64Message.toUint8Array(message.payload))) : {}
-        } catch (ignore) {}
-      }
+      } catch (ignore) {}
 
       const value = dotProp.get(json, dotPath)
 

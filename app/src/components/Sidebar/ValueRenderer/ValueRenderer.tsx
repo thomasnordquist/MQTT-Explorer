@@ -1,9 +1,10 @@
 import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
+import * as fs from 'fs'
 import CodeDiff from '../CodeDiff'
 import { AppState } from '../../../reducers'
 import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
-import { Payload } from '../../../../../backend/src/Model/sparkplug'
+import { Payload } from '../../../../../backend/src/Model/sparkplugb'
 import { connect } from 'react-redux'
 import { ValueRendererDisplayMode } from '../../../reducers/Settings'
 import { Fade } from '@material-ui/core'
@@ -50,8 +51,14 @@ class ValueRenderer extends React.Component<Props, State> {
     } catch (error) {
       try {
         //Sparkplugb
-        let payload = Payload.decode(Base64Message.toUint8Array(msg))
-        const json = Payload.toJSON(payload)
+        if (Payload === undefined) {
+          throw Error('sparkplugb.Payload is not loaded yet')
+        }
+        let json = Payload.toObject(Payload.decode(Base64Message.toUint8Array(msg)), {
+          longs: String,
+          enums: String,
+          bytes: String,
+        })
         return [JSON.stringify(json, undefined, '  '), 'json']
       } catch (error) {
         return [str, undefined]
