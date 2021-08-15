@@ -57,6 +57,7 @@
     "datatypes",
     "ldelim",
     "propertysets",
-    "protoc"
+    "protoc",
+    "cirruslink"
   ]
 }
