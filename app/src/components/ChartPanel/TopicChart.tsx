@@ -114,6 +114,7 @@ function TopicChart(props: Props) {
         </div>
       </div>
       <TopicPlot
+        node={props.treeNode ? props.treeNode : undefined}
         color={props.parameters.color}
         interpolation={props.parameters.interpolation}
         timeInterval={props.parameters.timeRange ? props.parameters.timeRange.until : undefined}
