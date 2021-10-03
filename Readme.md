@@ -66,9 +66,8 @@ node dist/src/spec/webdriverio.js
 ## Write docs
 
 ```
-git clone https://github.com/thomasnordquist/MQTT-Explorer.git mqtt-explorer-pages
+git clone --single-branch -b gh-pages https://github.com/thomasnordquist/MQTT-Explorer.git mqtt-explorer-pages
 cd mqtt-explorer-pages
-git checkout gh-pages
 bundle install
 bundle exec jekyll serve --incremental
 ```
