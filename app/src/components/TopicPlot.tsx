@@ -37,10 +37,10 @@ function nodeToHistory(startTime: number | undefined, history: q.MessageHistory)
 function nodeDotPathToHistory(startTime: number | undefined, history: q.MessageHistory, dotPath: string) {
   return filterUsingTimeRange(startTime, history.toArray())
     .map((message: q.Message) => {
-      let json = {}
+      let json: any = {}
       try {
         json = message.payload ? JSON.parse(Base64Message.toUnicodeString(message.payload)) : {}
-      } catch (ignore) {}
+      } catch (ignore) { }
 
       const value = dotProp.get(json, dotPath)
 

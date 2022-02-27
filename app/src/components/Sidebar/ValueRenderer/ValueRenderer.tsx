@@ -4,9 +4,9 @@ import CodeDiff from '../CodeDiff'
 import { AppState } from '../../../reducers'
 import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
 import { connect } from 'react-redux'
-import { default as ReactResizeDetector } from 'react-resize-detector'
 import { ValueRendererDisplayMode } from '../../../reducers/Settings'
-import { Typography, Fade, Grow } from '@material-ui/core'
+import { Fade } from '@material-ui/core'
+import { Decoder } from '../../../../../backend/src/Model/Decoder'
 
 interface Props {
   message: q.Message
@@ -83,7 +83,10 @@ class ValueRenderer extends React.Component<Props, State> {
   }
 
   public render() {
-    return <div style={{ padding: '0px 0px 8px 0px', width: '100%' }}>{this.renderValue()}</div>
+    return <div style={{ padding: '0px 0px 8px 0px', width: '100%' }}>
+      {this.props.message?.payload?.decoder === Decoder.SPARKPLUG && "Decoded SparkplugB"}
+      {this.renderValue()}
+    </div>
   }
 
   public renderValue() {

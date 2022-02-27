@@ -1,15 +1,17 @@
-const { Base64 } = require('js-base64')
+import { Base64 } from 'js-base64'
+import { Decoder } from './Decoder'
 
 export class Base64Message {
   private base64Message: string
   private unicodeValue: string
-
+  public decoder: Decoder
   public length: number
 
   private constructor(base64Str: string) {
     this.base64Message = base64Str
     this.unicodeValue = Base64.decode(base64Str)
     this.length = base64Str.length
+    this.decoder = Decoder.NONE
   }
 
   public static toUnicodeString(message: Base64Message) {
