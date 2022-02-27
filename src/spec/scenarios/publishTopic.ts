@@ -17,8 +17,7 @@ export async function publishTopic(browser: Browser<'async'>) {
   await writeText('set', browser, 300)
 
   const payloadInput = await browser.$('//*[contains(@class, "ace_text-input")]')
-  await writeTextPayload(payloadInput, '{"action": "setState", "state": "on" }')
-
+  await writeTextPayload(payloadInput, 'off')
   await sleep(500)
   const formatJsonButton = await browser.$('#sidebar-publish-format-json')
   await clickOn(formatJsonButton, browser)

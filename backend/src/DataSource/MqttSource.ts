@@ -1,4 +1,4 @@
-import * as Url from 'url'
+import { URL } from 'url'
 
 import { Client, connect as mqttConnect } from 'mqtt'
 import { DataSource, DataSourceStateMachine } from './'
@@ -41,13 +41,14 @@ export class MqttSource implements DataSource<MqttOptions> {
     const urlStr = options.tls ? options.url.replace(/^(mqtt|ws):/, '$1s:') : options.url
     let url
     try {
-      url = Url.parse(urlStr)
+      url = new URL(urlStr)
     } catch (error) {
       this.stateMachine.setError(error as Error)
       throw error
     }
 
-    const client = mqttConnect(url, {
+
+    const client = mqttConnect(url.toString(), {
       resubscribe: false,
       rejectUnauthorized: options.certValidation,
       username: options.username,

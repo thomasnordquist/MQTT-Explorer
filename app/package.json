@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "yarn rebuild && webpack --mode production",
+    "build": "webpack --mode production",
     "dev": "node_modules/.bin/webpack-dev-server --mode development --progress",
-    "rebuild": "cd node_modules/heapdump && node-gyp rebuild --target=7.1.1 --arch=x64 --dist-url=https://atom.io/download/electron || echo Could not build heapdump; cd -",
     "test": "cross-env TS_NODE_PROJECT=test/tsconfig.json yarn mochatest",
     "mochatest": "mocha --require ts-node/register src/**/*.spec.ts"
   },
@@ -74,7 +73,6 @@
     "chai": "^4.2.0",
     "cross-env": "^7.0.2",
     "css-loader": "^3.0.0",
-    "heapdump": "^0.3.12",
     "html-webpack-plugin": "^5.5.0",
     "lodash": "^4.17.21",
     "mocha": "^9.2.1",
