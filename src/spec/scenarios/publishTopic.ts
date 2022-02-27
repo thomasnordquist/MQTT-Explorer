@@ -9,7 +9,7 @@ import {
   showText,
 } from '../util'
 
-export async function publishTopic(browser: Browser) {
+export async function publishTopic(browser: Browser<'async'>) {
   await expandTopic('kitchen/lamp/state', browser)
   const topicInput = await browser.$('//input[contains(@value,"kitchen/lamp/state")][1]')
   await clickOn(topicInput, browser)
@@ -17,8 +17,7 @@ export async function publishTopic(browser: Browser) {
   await writeText('set', browser, 300)
 
   const payloadInput = await browser.$('//*[contains(@class, "ace_text-input")]')
-  await writeTextPayload(payloadInput, '{"action": "setState", "state": "on" }')
-
+  await writeTextPayload(payloadInput, 'off')
   await sleep(500)
   const formatJsonButton = await browser.$('#sidebar-publish-format-json')
   await clickOn(formatJsonButton, browser)

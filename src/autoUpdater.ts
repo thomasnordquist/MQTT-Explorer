@@ -1,7 +1,7 @@
 import { autoUpdater, UpdateInfo } from 'electron-updater'
-import { BuildInfo } from 'electron-telemetry/build/Model'
+// import { BuildInfo } from 'electron-telemetry/build/Model'
 
-export function shouldAutoUpdate(build: BuildInfo) {
+export function shouldAutoUpdate(build: any) {
   return (
     build.package !== 'portable' &&
     build.package !== 'appx' &&

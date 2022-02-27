@@ -122,7 +122,7 @@ const EditorMode = memo(function EditorMode(props: {
         const str = JSON.stringify(JSON.parse(props.payload), undefined, '  ')
         updatePayload(str)
       } catch (error) {
-        props.globalActions.showError(`Format error: ${error.message}`)
+        props.globalActions.showError(`Format error: ${(error as Error)?.message}`)
       }
     }
   }, [props.payload])

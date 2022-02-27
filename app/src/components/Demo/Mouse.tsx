@@ -43,15 +43,15 @@ class Demo extends React.Component<{ classes: any }, State> {
   }
 
   public componentDidMount() {
-    ;(window as any).demo.enableMouse = () => {
+    ; (window as any).demo.enableMouse = () => {
       this.setState({ enabled: true })
     }
-    ;(window as any).demo.moveMouse = (x: number, y: number, animationTime: number) => {
-      const stepSizeX = Math.abs(this.state.position.x - x) / (animationTime / this.frameInterval)
-      const stepSizeY = Math.abs(this.state.position.y - y) / (animationTime / this.frameInterval)
-      this.setState({ stepSizeX, stepSizeY, enabled: true, target: { x, y } })
-      this.moveCloser()
-    }
+      ; (window as any).demo.moveMouse = (x: number, y: number, animationTime: number) => {
+        const stepSizeX = Math.abs(this.state.position.x - x) / (animationTime / this.frameInterval)
+        const stepSizeY = Math.abs(this.state.position.y - y) / (animationTime / this.frameInterval)
+        this.setState({ stepSizeX, stepSizeY, enabled: true, target: { x, y } })
+        this.moveCloser()
+      }
   }
 
   public render() {

@@ -1,23 +1,31 @@
 import * as log from 'electron-log'
 import * as path from 'path'
 import ConfigStorage from '../backend/src/ConfigStorage'
-import { app, BrowserWindow, Menu } from 'electron'
+import { app, BrowserWindow, Menu, dialog } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import { ConnectionManager } from '../backend/src/index'
-import { electronTelemetryFactory } from 'electron-telemetry'
+// import { electronTelemetryFactory } from 'electron-telemetry'
 import { menuTemplate } from './MenuTemplate'
 import buildOptions from './buildOptions'
 import { waitForDevServer, isDev, runningUiTestOnCi, loadDevTools } from './development'
 import { shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
 import { registerCrashReporter } from './registerCrashReporter'
+import { makeOpenDialogRpc } from '../events/OpenDialogRequest'
+import { backendRpc, getAppVersion } from '../events'
 
 registerCrashReporter()
 
-if (!isDev() && !runningUiTestOnCi()) {
-  const electronTelemetry = electronTelemetryFactory('9b0c8ca04a361eb8160d98c5', buildOptions)
-}
+// if (!isDev() && !runningUiTestOnCi()) {
+//   const electronTelemetry = electronTelemetryFactory('9b0c8ca04a361eb8160d98c5', buildOptions)
+// }
 
 app.commandLine.appendSwitch('--no-sandbox')
+app.whenReady().then(() => {
+  backendRpc.on(makeOpenDialogRpc(), async (request) => {
+    return dialog.showOpenDialog(BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0], request)
+  })
+  backendRpc.on(getAppVersion, async () => app.getVersion())
+})
 
 autoUpdater.logger = log
 log.info('App starting...')
@@ -45,6 +53,8 @@ async function createWindow() {
     height: 720,
     show: false,
     webPreferences: {
+      ...({ enableRemoteModule: true } as any),
+      contextIsolation: false,
       nodeIntegration: true,
       devTools: true,
       sandbox: false,

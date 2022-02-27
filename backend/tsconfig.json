@@ -1,11 +1,15 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
+    "skipLibCheck": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "outDir": "./build",
     "strict": true,
-    "lib": ["es2017", "dom"],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
     "sourceMap": true
   },
   "includes": [

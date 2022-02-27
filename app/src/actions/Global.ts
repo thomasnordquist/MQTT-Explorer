@@ -1,7 +1,7 @@
 import { ActionTypes, ConfirmationRequest } from '../reducers/Global'
 import { Dispatch } from 'redux'
 
-export const showError = (error?: string) => ({
+export const showError = (error?: string | unknown) => ({
   error,
   type: ActionTypes.showError,
 })

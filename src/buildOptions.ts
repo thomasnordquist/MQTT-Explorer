@@ -1,8 +1,8 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { BuildInfo } from 'electron-telemetry/build/Model'
+// import { BuildInfo } from 'electron-telemetry/build/Model'
 
-let buildOptions: BuildInfo = {
+let buildOptions: any = {
   platform: process.platform,
   package: 'unpacked',
 } as any

@@ -1,7 +1,7 @@
 import { clickOn } from './'
 import { Browser, Element } from 'webdriverio'
 
-export async function expandTopic(path: string, browser: Browser) {
+export async function expandTopic(path: string, browser: Browser<'async'>) {
   const originalTopics = path.split('/')
   let topics = path.split('/')
   while (topics.length > 0 && !(await topicMatches(topics, browser))) {
@@ -18,7 +18,7 @@ export async function expandTopic(path: string, browser: Browser) {
   }
 }
 
-async function topicMatches(topics: Array<string>, browser: Browser) {
+async function topicMatches(topics: Array<string>, browser: Browser<'async'>) {
   const result = await browser.$(topicSelector(topics))
   return result.isExisting()
 }

@@ -1,7 +1,6 @@
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -18,12 +17,11 @@ module.exports = {
     splitChunks: {
       chunks: 'all',
       minSize: 30000,
-      maxSize: 0,
       minChunks: 1,
       maxAsyncRequests: 5,
       maxInitialRequests: 3,
       automaticNameDelimiter: '~',
-      name: true,
+      // name: true,
       cacheGroups: {
         vendors: {
           test: /[\\/]node_modules[\\/](react|react-dom|@material-ui|popper\.js|react|react-redux|prop-types|jss|redux|scheduler|react-transition-group)[\\/]/,
@@ -32,6 +30,7 @@ module.exports = {
           priority: -10,
         },
         default: {
+          name: 'default',
           minChunks: 2,
           priority: -20,
           reuseExistingChunk: true,
@@ -55,13 +54,7 @@ module.exports = {
       // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
       {
         test: /\.tsx?$/,
-        loader: 'awesome-typescript-loader',
-        options: {
-          reportFiles: [
-            "src/**/*.{ts,tsx}",
-            "../backend/src/**/*.{ts,tsx}"
-          ]
-        }
+        loader: 'ts-loader',
       },
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
       { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
@@ -79,15 +72,6 @@ module.exports = {
         ],
       },
       {
-        test: /\.node$/,
-        use: {
-          loader: 'node-loader',
-          options: {
-            modules: true,
-          }
-        }
-      },
-      {
         test: /\.proto$/,
         use: [
           {
@@ -98,18 +82,26 @@ module.exports = {
           },
         ]
       },
+      // {
+      //   test: /\.node$/,
+      //   use: {
+      //     loader: 'node-loader',
+      //     options: {
+      //       modules: true,
+      //     }
+      //   }
+      // },
     ],
   },
-
+  // node: { global: true },
   plugins: [
     new HtmlWebpackPlugin({ template: './index.html', file: './build/index.html', inject: false }),
     // new BundleAnalyzerPlugin(),
-    new HardSourceWebpackPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.IgnorePlugin({
-      resourceRegExp: /\.\/build\/Debug\/addon/,
-      contextRegExp: /heapdump$/
-    }),
+    // new webpack.IgnorePlugin({
+    //   resourceRegExp: /\.\/build\/Debug\/addon/,
+    //   contextRegExp: /heapdump$/
+    // }),
   ],
 
   // When importing a module whose path matches one of the following, just
