@@ -1,39 +1,22 @@
-import { Event } from './'
+import { RpcEvent } from './EventSystem/Rpc'
 
-interface StorageEvent {
-  transactionId: string
+export interface StoreCommand {
+  store: string
+  data: any
 }
 
-export interface StoreCommand extends StorageEvent {
-  store?: string
-  data?: any
-  error?: any
-}
-
-export interface LoadCommand extends StorageEvent {
+export interface LoadCommand {
   store: string
 }
 
-export const storageStoreEvent: Event<StoreCommand> = {
+export const storageStoreEvent: RpcEvent<StoreCommand, void> = {
   topic: 'storage/store',
 }
 
-export const storageLoadEvent: Event<LoadCommand> = {
+export const storageLoadEvent: RpcEvent<LoadCommand, StoreCommand> = {
   topic: 'storage/load',
 }
 
-export function makeStorageAcknowledgementEvent(transactionId: string): Event<StoreCommand> {
-  return {
-    topic: `storage/ack/${transactionId}`,
-  }
-}
-
-export function makeStorageResponseEvent(transactionId: string): Event<StoreCommand> {
-  return {
-    topic: `storage/response/${transactionId}`,
-  }
-}
-
-export const storageClearEvent: Event<StorageEvent> = {
+export const storageClearEvent: RpcEvent<void, void> = {
   topic: 'storage/clear',
 }

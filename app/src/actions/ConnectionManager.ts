@@ -9,14 +9,13 @@ import {
 import { default as persistentStorage, StorageIdentifier } from '../utils/PersistentStorage'
 import { Dispatch } from 'redux'
 import { showError } from './Global'
-import * as electron from 'electron'
 import { promises as fsPromise } from 'fs'
 import * as path from 'path'
 import { ActionTypes, Action } from '../reducers/ConnectionManager'
 import { Subscription } from '../../../backend/src/DataSource/MqttSource'
 import { connectionsMigrator } from './migrations/Connection'
-import { EventDispatcher, openDialogResponse, OpenDialogResponse, rendererEvents, requestOpenDialog } from '../../../events'
-import { v4 } from 'uuid'
+import { rendererRpc } from '../../../events'
+import { makeOpenDialogRpc } from '../../../events/OpenDialogRequest'
 
 export interface ConnectionDictionary {
   [s: string]: ConnectionOptions
@@ -74,28 +73,10 @@ async function openCertificate(): Promise<CertificateParameters> {
     certificateSizeDoesNotMatch: 'Certificate size larger/smaller then expected.',
   }
 
-  let requestId = v4();
-
-  const response = new Promise<OpenDialogResponse>((resolve, reject) => {
-    let callback = (result: OpenDialogResponse) => {
-      rendererEvents.unsubscribe(openDialogResponse(), callback)
-      if (result.identifier == requestId) {
-        resolve(result)
-      } else {
-        reject(new Error("Unexpected file select"))
-      }
-    }
-    rendererEvents.subscribe(openDialogResponse(), callback)
+  const openDialogReturnValue = await rendererRpc.call(makeOpenDialogRpc(), {
+    properties: ['openFile'],
+    securityScopedBookmarks: true,
   })
-
-  rendererEvents.emit(requestOpenDialog(), {
-    identifier: requestId,
-    options: {
-      properties: ['openFile'],
-      securityScopedBookmarks: true,
-    }
-  })
-  const openDialogReturnValue = (await response).result;
 
   const selectedFile = openDialogReturnValue.filePaths && openDialogReturnValue.filePaths[0]
   if (!selectedFile) {

@@ -1,7 +1,5 @@
 import * as React from 'react'
-import Add from '@material-ui/icons/Add'
 import ClearAdornment from '../helper/ClearAdornment'
-import Delete from '@material-ui/icons/Delete'
 import Lock from '@material-ui/icons/Lock'
 import { bindActionCreators } from 'redux'
 import { Button, Theme, Tooltip, Typography } from '@material-ui/core'

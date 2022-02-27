@@ -5,7 +5,7 @@ let heapdump: any
 
 function writeHeapdump(path?: string) {
   if (!heapdump) {
-    //heapdump = require('heapdump')
+    //<heapdump = require('heapdump')
   }
 
   heapdump.writeSnapshot(path || `${Date.now()}.heapsnapshot`)

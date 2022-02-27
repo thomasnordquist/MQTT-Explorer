@@ -13,6 +13,7 @@ import { Theme, withStyles } from '@material-ui/core/styles'
 import { updateNotifierActions } from '../actions'
 
 import { Button, IconButton, Modal, Paper, Snackbar, SnackbarContent, Typography } from '@material-ui/core'
+import { rendererRpc, getAppVersion } from '../../../events'
 
 interface Props {
   showUpdateNotification: boolean
@@ -50,18 +51,21 @@ class UpdateNotifier extends React.PureComponent<Props, State> {
     super(props)
     this.state = { newerVersions: [] }
 
-    const ownVersion = electron.app.getVersion()
-    this.fetchReleases().then(releases => {
-      const newerVersions = releases
-        .filter(release => this.allowPrereleaseIfOwnVersionIsBeta(release, ownVersion))
-        .filter(release => compareVersions(release.tag_name, ownVersion) > 0)
-        .sort((a, b) => compareVersions(b.tag_name, a.tag_name))
+    this.checkForUpdates()
+  }
 
-      if (newerVersions.length > 0) {
-        this.setState({ newerVersions })
-        this.props.actions.showUpdateNotification(true)
-      }
-    })
+  private async checkForUpdates() {
+    const ownVersion = await rendererRpc.call(getAppVersion, undefined, 10000);
+    const releases = await this.fetchReleases();
+    const newerVersions = releases
+      .filter(release => this.allowPrereleaseIfOwnVersionIsBeta(release, ownVersion))
+      .filter(release => compareVersions(release.tag_name, ownVersion) > 0)
+      .sort((a, b) => compareVersions(b.tag_name, a.tag_name))
+
+    if (newerVersions.length > 0) {
+      this.setState({ newerVersions })
+      this.props.actions.showUpdateNotification(true)
+    }
   }
 
   private allowPrereleaseIfOwnVersionIsBeta(release: GithubRelease, ownVersion: string) {

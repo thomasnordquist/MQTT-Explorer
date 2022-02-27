@@ -1,3 +1,4 @@
 export * from './Events'
-export * from './EventDispatcher'
-export * from './EventBus'
+export * from './EventSystem/EventDispatcher'
+export * from './EventSystem/EventBus'
+export * from './EventSystem/EventBusInterface'

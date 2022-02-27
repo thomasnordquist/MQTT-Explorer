@@ -4,7 +4,7 @@
   "description": "Explore your message queues",
   "main": "dist/src/electron.js",
   "engines": {
-    "npm": "16"
+    "node": "16"
   },
   "scripts": {
     "start": "electron .",
@@ -83,6 +83,7 @@
     "@types/node": "^12.6.8",
     "@types/semver": "7",
     "@types/sha1": "^1.1.1",
+    "@types/uuid": "^8.3.4",
     "builder-util-runtime": "^9",
     "chai": "^4.2.0",
     "cspell": "^4.0.28",
@@ -114,6 +115,7 @@
     "mime": "^2.4.4",
     "mqtt": "^3.0.0",
     "sha1": "^1.1.1",
+    "uuid": "^8.3.2",
     "yarn-run-all": "^3.1.1"
   }
 }

@@ -30,6 +30,7 @@ module.exports = {
           priority: -10,
         },
         default: {
+          name: 'default',
           minChunks: 2,
           priority: -20,
           reuseExistingChunk: true,

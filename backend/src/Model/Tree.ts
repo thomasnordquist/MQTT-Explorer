@@ -1,6 +1,6 @@
 import { ChangeBuffer } from './ChangeBuffer'
 import { Destroyable } from './Destroyable'
-import { EventBusInterface, EventDispatcher, makeConnectionMessageEvent, MqttMessage } from '../../../events'
+import { EventDispatcher, makeConnectionMessageEvent, MqttMessage, EventBusInterface } from '../../../events'
 import { TreeNode } from './'
 import { TreeNodeFactory } from './TreeNodeFactory'
 
@@ -31,7 +31,7 @@ export class Tree<ViewModel extends Destroyable> extends TreeNode<ViewModel> {
       if (!this.paused && this.applyChangesHasCompleted) {
         this.applyChangesHasCompleted = false
         if ((window as any).requestIdleCallback) {
-          ;(window as any).requestIdleCallback(() => this.applyUnmergedChanges(), { timeout: 500 })
+          ; (window as any).requestIdleCallback(() => this.applyUnmergedChanges(), { timeout: 500 })
         } else {
           this.applyUnmergedChanges()
         }

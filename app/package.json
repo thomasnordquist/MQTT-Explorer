@@ -11,7 +11,7 @@
     "mochatest": "mocha --require ts-node/register src/**/*.spec.ts"
   },
   "engines": {
-    "npm": "16"
+    "node": "16"
   },
   "author": "",
   "license": "CC-BY-ND-4.0",

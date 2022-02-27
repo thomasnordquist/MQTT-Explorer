@@ -1,7 +1,7 @@
 import * as log from 'electron-log'
 import * as path from 'path'
 import ConfigStorage from '../backend/src/ConfigStorage'
-import { ipcMain, app, BrowserWindow, Menu, dialog } from 'electron'
+import { app, BrowserWindow, Menu, dialog } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import { ConnectionManager } from '../backend/src/index'
 // import { electronTelemetryFactory } from 'electron-telemetry'
@@ -10,7 +10,8 @@ import buildOptions from './buildOptions'
 import { waitForDevServer, isDev, runningUiTestOnCi, loadDevTools } from './development'
 import { shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
 import { registerCrashReporter } from './registerCrashReporter'
-import { backendEvents, EventDispatcher, OpenDialogRequest, openDialogResponse, OpenDialogResponse, requestOpenDialog } from '../events'
+import { makeOpenDialogRpc } from '../events/OpenDialogRequest'
+import { backendRpc, getAppVersion } from '../events'
 
 registerCrashReporter()
 
@@ -20,14 +21,10 @@ registerCrashReporter()
 
 app.commandLine.appendSwitch('--no-sandbox')
 app.whenReady().then(() => {
-  backendEvents.subscribe(requestOpenDialog(), async (request) => {
-    let result = await dialog.showOpenDialog(BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0], request.options)
-
-    backendEvents.emit(openDialogResponse(), {
-      identifier: request.identifier,
-      result: result
-    })
+  backendRpc.on(makeOpenDialogRpc(), async (request) => {
+    return dialog.showOpenDialog(BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0], request)
   })
+  backendRpc.on(getAppVersion, async () => app.getVersion())
 })
 
 autoUpdater.logger = log

@@ -1,12 +1,9 @@
-import { rendererEvents } from '../../../events'
-import { v4 } from 'uuid'
+import { rendererRpc } from '../../../events'
 
 import {
   storageStoreEvent,
-  makeStorageResponseEvent,
   storageLoadEvent,
   storageClearEvent,
-  makeStorageAcknowledgementEvent,
 } from '../../../events/StorageEvents'
 
 export interface StorageIdentifier<Model> {
@@ -20,71 +17,23 @@ export interface PersistentStorage {
 }
 
 class RemoteStorage implements PersistentStorage {
-  private timeoutCallback(event: any, callback: any, reject: any) {
-    setTimeout(() => {
-      reject('remote storage timeout')
-      rendererEvents.unsubscribe(event, callback)
-    }, 10000)
-  }
-
-  private expectAck(transactionId: string): Promise<void> {
-    const ack = makeStorageAcknowledgementEvent(transactionId)
-    return new Promise<void>((resolve, reject) => {
-      const callback = (msg: any) => {
-        if (msg && msg.error) {
-          reject(msg.error)
-        } else {
-          resolve()
-        }
-        rendererEvents.unsubscribe(ack, callback)
-      }
-      rendererEvents.subscribe(ack, callback)
-      this.timeoutCallback(ack, callback, reject)
-    })
-  }
-
   public store<Model>(identifier: StorageIdentifier<Model>, data: Model): Promise<void> {
-    const transactionId = v4()
-    const expectation = this.expectAck(transactionId)
-    rendererEvents.emit(storageStoreEvent, {
+    return rendererRpc.call(storageStoreEvent, {
       data,
-      transactionId,
       store: identifier.id,
     })
-    return expectation
   }
 
-  public load<Model>(identifier: StorageIdentifier<Model>): Promise<Model | undefined> {
-    const transactionId = v4()
-    const responseEvent = makeStorageResponseEvent(transactionId)
-
-    const promise = new Promise<Model>((resolve, reject) => {
-      const callback = (msg: any) => {
-        if (msg.error) {
-          reject(msg.error)
-        } else {
-          resolve(msg.data)
-        }
-        rendererEvents.unsubscribe(responseEvent, callback)
-      }
-      rendererEvents.subscribe(responseEvent, callback)
-      this.timeoutCallback(responseEvent, callback, reject)
-    })
-
-    rendererEvents.emit(storageLoadEvent, {
-      transactionId,
+  public async load<Model>(identifier: StorageIdentifier<Model>): Promise<Model | undefined> {
+    const result = await rendererRpc.call(storageLoadEvent, {
       store: identifier.id,
-    })
+    }, 10000)
 
-    return promise
+    return (result as any).data
   }
 
   public clear(): Promise<void> {
-    const transactionId = v4()
-    const expectation = this.expectAck(transactionId)
-
-    rendererEvents.emit(storageClearEvent, { transactionId })
-    return expectation
+    return rendererRpc.call(storageClearEvent, undefined, 10000)
   }
 }
 
