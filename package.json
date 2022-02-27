@@ -65,8 +65,7 @@
       "buildResources": "res",
       "output": "build"
     },
-    "afterPack": "./dist/scripts/afterPack.js",
-    "afterSign": "./scripts/afterSign.js"
+    "afterPack": "./dist/scripts/afterPack.js"
   },
   "author": "Thomas Nordquist",
   "email": "xxnerowingerxx@gmail.com",
