@@ -17,12 +17,11 @@ module.exports = {
     splitChunks: {
       chunks: 'all',
       minSize: 30000,
-      maxSize: 0,
       minChunks: 1,
       maxAsyncRequests: 5,
       maxInitialRequests: 3,
       automaticNameDelimiter: '~',
-      name: true,
+      // name: true,
       cacheGroups: {
         vendors: {
           test: /[\\/]node_modules[\\/](react|react-dom|@material-ui|popper\.js|react|react-redux|prop-types|jss|redux|scheduler|react-transition-group)[\\/]/,
@@ -48,7 +47,6 @@ module.exports = {
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
     extensions: ['.ts', '.mjs', '.m.js', '.tsx', '.js', '.json', '.node'],
-    // alias: { url: false }
   },
   module: {
     rules: [
@@ -56,15 +54,9 @@ module.exports = {
       {
         test: /\.tsx?$/,
         loader: 'ts-loader',
-        // options: {
-        //   reportFiles: [
-        //     "src/**/*.{ts,tsx}",
-        //     "../backend/src/**/*.{ts,tsx}"
-        //   ]
-        // }
       },
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-      // { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
+      { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],

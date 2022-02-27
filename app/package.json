@@ -10,6 +10,9 @@
     "test": "cross-env TS_NODE_PROJECT=test/tsconfig.json yarn mochatest",
     "mochatest": "mocha --require ts-node/register src/**/*.spec.ts"
   },
+  "engines": {
+    "npm": "16"
+  },
   "author": "",
   "license": "CC-BY-ND-4.0",
   "dependencies": {

@@ -11,6 +11,9 @@
     "debug": "ts-node --inspect ./src/index.ts",
     "postinstall": "yarn build"
   },
+  "engines": {
+    "npm": "16"
+  },
   "author": "",
   "license": "CC-BY-ND-4.0",
   "nyc": {
