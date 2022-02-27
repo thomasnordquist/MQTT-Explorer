@@ -13,16 +13,14 @@ export class Rpc {
         return new Promise((resolve, reject) => {
             let id = v4();
 
-            let responseEvent: Event<any> = { topic: `${event.topic}/response` };
+            let responseEvent: Event<any> = { topic: `${event.topic}/response/${id}` };
             let requestEvent: Event<any> = { topic: `${event.topic}/request` };
             let callback = (result: { id: string; payload: RpcResponse; error: unknown }) => {
                 this.participant.unsubscribe(responseEvent as any, callback);
-                if (result.id === id) {
-                    if (result.error) {
-                        reject(result.error)
-                    } else {
-                        resolve(result.payload);
-                    }
+                if (result.error) {
+                    reject(result.error)
+                } else {
+                    resolve(result.payload);
                 }
                 console.log("received", result)
             };
@@ -47,8 +45,9 @@ export class Rpc {
             } catch (e) {
                 error = e
             }
-            console.log("Responding with", payload, error)
-            this.participant.emit({ topic: `${event.topic}/response` }, { id: (request as any).id, payload, error });
+            const id = (request as any).id
+            console.log(`${event.topic}/response/${id}`, payload, error)
+            this.participant.emit({ topic: `${event.topic}/response/${id}` }, { id, payload, error });
         });
     }
 }
