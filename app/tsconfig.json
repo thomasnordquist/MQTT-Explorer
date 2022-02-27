@@ -25,7 +25,8 @@
   ],
   "exclude": [
     "**/*.d.ts",
-    ".src/**/*.png"
+    ".src/**/*.png",
+    "./node_modules"
   ],
   "awesomeTypescriptLoaderOptions": {
     "useCache": true,

@@ -56,6 +56,8 @@ async function createWindow() {
     height: 720,
     show: false,
     webPreferences: {
+      ...({ enableRemoteModule: true } as any),
+      contextIsolation: false,
       nodeIntegration: true,
       devTools: true,
       sandbox: false,

@@ -70,6 +70,7 @@
   "homepage": "https://github.com",
   "license": "CC-BY-ND-4.0",
   "devDependencies": {
+    "@babel/runtime": "^7.17.2",
     "@types/chai": "^4.1.7",
     "@types/fs-extra": "8",
     "@types/lowdb": "^1.0.6",
