@@ -9,7 +9,7 @@ import {
   showText,
 } from '../util'
 
-export async function publishTopic(browser: Browser) {
+export async function publishTopic(browser: Browser<'async'>) {
   await expandTopic('kitchen/lamp/state', browser)
   const topicInput = await browser.$('//input[contains(@value,"kitchen/lamp/state")][1]')
   await clickOn(topicInput, browser)

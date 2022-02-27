@@ -3,10 +3,10 @@ import DateFormatter from '../helper/DateFormatter'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Input, InputLabel, MenuItem, Select, StyleRulesCallback, Theme } from '@material-ui/core'
+import { Input, InputLabel, MenuItem, Select, Theme } from '@material-ui/core'
 import { settingsActions } from '../../actions'
 import { withStyles } from '@material-ui/styles'
-const moment = require('moment/min/moment-with-locales')
+const moment = require('moment')
 
 interface Props {
   actions: {

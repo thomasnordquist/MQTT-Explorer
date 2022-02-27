@@ -1,4 +1,4 @@
-import { electronRendererTelemetry } from 'electron-telemetry'
+// import { electronRendererTelemetry } from 'electron-telemetry'
 
 // Used to determine long-time-stability and memory leaks
 function trackProcessStatistics() {
@@ -30,6 +30,6 @@ export function trackEvent(name: string) {
   }
   const blacklist = ['CONNECTION_SET_HEALTH']
   if (blacklist.indexOf(name) === -1) {
-    electronRendererTelemetry.trackEvent(name)
+    // electronRendererTelemetry.trackEvent(name)
   }
 }

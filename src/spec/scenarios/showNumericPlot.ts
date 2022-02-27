@@ -1,7 +1,7 @@
 import { Browser, Element } from 'webdriverio'
 import { moveToCenterOfElement, clickOn, clickOnHistory, expandTopic, sleep, writeText } from '../util'
 
-export async function showNumericPlot(browser: Browser) {
+export async function showNumericPlot(browser: Browser<'async'>) {
   await expandTopic('kitchen/coffee_maker', browser)
   let heater = await valuePreviewGuttersShowChartIcon('heater', browser)
   await moveToCenterOfElement(heater, browser)
@@ -42,7 +42,7 @@ export async function showNumericPlot(browser: Browser) {
   await clickOnHistory(browser)
 }
 
-async function valuePreviewGuttersShowChartIcon(name: string, browser: Browser) {
+async function valuePreviewGuttersShowChartIcon(name: string, browser: Browser<'async'>) {
   for (let retries = 0; retries < 2; retries += 1) {
     try {
       return await browser.$(`//*[contains(@data-test-type, "ShowChart")][contains(@data-test, "${name}")]`)
@@ -53,23 +53,23 @@ async function valuePreviewGuttersShowChartIcon(name: string, browser: Browser) 
   return browser.$(`//*[contains(@data-test-type, "ShowChart")][contains(@data-test, "${name}")]`)
 }
 
-async function chartSettings(name: string, browser: Browser) {
+async function chartSettings(name: string, browser: Browser<'async'>) {
   const settings = await browser.$(`//*[contains(@data-test-type, "ChartSettings")][contains(@data-test, "${name}")]`)
   return clickOn(settings, browser)
 }
 
-async function clickAway(name: string, browser: Browser) {
+async function clickAway(name: string, browser: Browser<'async'>) {
   const settings = await browser.$(`//*[contains(@data-test-type, "ChartPaper")][contains(@data-test, "${name}")]`)
   await moveToCenterOfElement(settings, browser)
   await browser.keys(['Escape'])
 }
 
-async function removeChart(name: string, browser: Browser) {
+async function removeChart(name: string, browser: Browser<'async'>) {
   const remove = await browser.$(`//*[contains(@data-test-type, "RemoveChart")][contains(@data-test, "${name}")]`)
   return clickOn(remove, browser)
 }
 
-async function clickOnMenuPoint(name: string, browser: Browser) {
+async function clickOnMenuPoint(name: string, browser: Browser<'async'>) {
   const item = await browser.$(`//li/span[contains(text(), "${name}")]`)
   return clickOn(item, browser)
 }

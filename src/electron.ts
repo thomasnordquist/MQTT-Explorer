@@ -1,23 +1,34 @@
 import * as log from 'electron-log'
 import * as path from 'path'
 import ConfigStorage from '../backend/src/ConfigStorage'
-import { app, BrowserWindow, Menu } from 'electron'
+import { ipcMain, app, BrowserWindow, Menu, dialog } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import { ConnectionManager } from '../backend/src/index'
-import { electronTelemetryFactory } from 'electron-telemetry'
+// import { electronTelemetryFactory } from 'electron-telemetry'
 import { menuTemplate } from './MenuTemplate'
 import buildOptions from './buildOptions'
 import { waitForDevServer, isDev, runningUiTestOnCi, loadDevTools } from './development'
 import { shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
 import { registerCrashReporter } from './registerCrashReporter'
+import { backendEvents, EventDispatcher, OpenDialogRequest, openDialogResponse, OpenDialogResponse, requestOpenDialog } from '../events'
 
 registerCrashReporter()
 
-if (!isDev() && !runningUiTestOnCi()) {
-  const electronTelemetry = electronTelemetryFactory('9b0c8ca04a361eb8160d98c5', buildOptions)
-}
+// if (!isDev() && !runningUiTestOnCi()) {
+//   const electronTelemetry = electronTelemetryFactory('9b0c8ca04a361eb8160d98c5', buildOptions)
+// }
 
 app.commandLine.appendSwitch('--no-sandbox')
+app.whenReady().then(() => {
+  backendEvents.subscribe(requestOpenDialog(), async (request) => {
+    let result = await dialog.showOpenDialog(BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0], request.options)
+
+    backendEvents.emit(openDialogResponse(), {
+      identifier: request.identifier,
+      result: result
+    })
+  })
+})
 
 autoUpdater.logger = log
 log.info('App starting...')

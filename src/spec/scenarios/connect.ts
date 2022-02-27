@@ -1,7 +1,7 @@
 import { Browser, Element } from 'webdriverio'
 import { clickOn, setTextInInput } from '../util'
 
-export async function connectTo(host: string, browser: Browser) {
+export async function connectTo(host: string, browser: Browser<'async'>) {
   await setTextInInput('Host', host, browser)
 
   await browser.saveScreenshot('screen1.png')

@@ -1,8 +1,9 @@
 import { Base64Message } from '../backend/src/Model/Base64Message'
 import { DataSourceState, MqttOptions } from '../backend/src/DataSource'
 import { UpdateInfo } from 'builder-util-runtime'
+import { OpenDialogOptions, OpenDialogReturnValue } from 'electron'
 
-export interface Event<MessageType> {
+export type Event<MessageType> = {
   topic: string
 }
 
@@ -49,3 +50,26 @@ export function makeConnectionMessageEvent(connectionId: string): Event<MqttMess
     topic: `conn/${connectionId}`,
   }
 }
+
+export interface OpenDialogRequest {
+  identifier: string
+  options: OpenDialogOptions
+}
+
+export function requestOpenDialog(): Event<OpenDialogRequest> {
+  return {
+    topic: `requestOpenDialog`,
+  }
+}
+
+export interface OpenDialogResponse {
+  identifier: string
+  result: OpenDialogReturnValue
+}
+
+export function openDialogResponse(): Event<OpenDialogResponse> {
+  return {
+    topic: `openDialogResponse`,
+  }
+}
+

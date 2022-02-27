@@ -43,7 +43,7 @@ export class MqttSource implements DataSource<MqttOptions> {
     try {
       url = Url.parse(urlStr)
     } catch (error) {
-      this.stateMachine.setError(error)
+      this.stateMachine.setError(error as Error)
       throw error
     }
 

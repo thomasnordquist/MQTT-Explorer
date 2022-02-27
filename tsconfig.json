@@ -8,9 +8,15 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceRoot": "src/",
-    "lib": ["es2017", "dom"],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
     "sourceMap": true,
-    "types": ["node"]
+    "types": [
+      "node"
+    ],
+    "skipLibCheck": true
   },
   "include": [
     "src/electron.ts",
@@ -18,5 +24,8 @@
     "src/spec/demoVideo.ts",
     "src/spec/leakTest.ts",
     "scripts/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

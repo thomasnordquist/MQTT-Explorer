@@ -2,7 +2,6 @@ import * as React from 'react'
 import PersistentStorage from '../utils/PersistentStorage'
 import SentimentDissatisfied from '@material-ui/icons/SentimentDissatisfied'
 import Warning from '@material-ui/icons/Warning'
-import { electronRendererTelemetry } from 'electron-telemetry'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { Button, Modal, Paper, Toolbar, Typography } from '@material-ui/core'
 
@@ -33,7 +32,7 @@ class ErrorBoundary extends React.PureComponent<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: any) {
-    electronRendererTelemetry.trackError(error)
+    // electronRendererTelemetry.trackError(error)
     console.log('did catch', error)
   }
 

@@ -4,18 +4,29 @@
     "noImplicitAny": true,
     "strictNullChecks": true,
     "strict": true,
-    "lib": ["es2017", "dom"],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
     "moduleResolution": "node",
     "outDir": "./build/",
     "sourceMap": true,
     "module": "esnext",
     "target": "es2017",
     "jsx": "react",
-    "types": ["react"],
-    "allowSyntheticDefaultImports": true
+    "types": [
+      "react"
+    ],
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true
   },
-  "include": ["./src/**/*"],
-  "exclude": ["**/*.d.ts", ".src/**/*.png"],
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": [
+    "**/*.d.ts",
+    ".src/**/*.png"
+  ],
   "awesomeTypescriptLoaderOptions": {
     "useCache": true,
     "transpileModule": true,

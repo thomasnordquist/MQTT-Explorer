@@ -53,12 +53,12 @@ async function uploadAsset() {
       try {
         uploadUrl = await createDraft(tag)
       } catch (error) {
-        console.error('failed to create draft', error.stack)
+        console.error('failed to create draft', (error as Error).stack)
         process.exit(1)
       }
     }
   } catch (error) {
-    console.error('failed to find tag release', error.stack)
+    console.error('failed to find tag release', (error as Error).stack)
     process.exit(1)
   }
 
