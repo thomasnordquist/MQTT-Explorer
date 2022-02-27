@@ -1,10 +1,24 @@
-const protobuf = require('protobufjs')
-const sparkplugBProto = require('../../../res/sparkplug_b.proto')
+import { readFileSync } from 'fs'
+import * as protobuf from 'protobufjs'
+import { Base64Message } from './Base64Message';
+import { Decoder } from './Decoder';
 
-export let Payload = undefined
+const buffer = readFileSync(require.resolve('../../../../res/sparkplug_b.proto'));
+const root = protobuf.parse(buffer.toString()).root
+export let SparkplugPayload = root.lookupType('com.cirruslink.sparkplug.protobuf.Payload')
 
-export function loadSparkplugBPayload() {
-  protobuf.load(sparkplugBProto).then((root: any) => {
-    Payload = root.lookupType('com.cirruslink.sparkplug.protobuf.Payload')
-  })
+export const SparkplugDecoder = {
+  decode(input: Buffer): Base64Message | undefined {
+    try {
+      let message = Base64Message.fromString(
+        JSON.stringify(
+          SparkplugPayload.toObject(SparkplugPayload.decode(new Uint8Array(input)))
+        )
+      )
+      message.decoder = Decoder.SPARKPLUG
+      return message
+    } catch {
+      // ignore
+    }
+  }
 }

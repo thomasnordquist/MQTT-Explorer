@@ -108,7 +108,7 @@
     "electron-log": "4.4.6",
     "electron-updater": "^4.6",
     "fs-extra": "9",
-    "js-base64": "^2.5.1",
+    "js-base64": "^3.7.2",
     "json-to-ast": "^2.1.0",
     "lowdb": "^1.0.0",
     "mime": "^2.4.4",

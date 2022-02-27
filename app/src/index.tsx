@@ -10,11 +10,9 @@ import { connect, Provider } from 'react-redux'
 import { ThemeProvider } from '@material-ui/styles'
 import './utils/tracking'
 import { themes } from './theme'
-import { loadSparkplugBPayload } from '../../backend/src/Model/sparkplugb'
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const store = createStore(reducers, composeEnhancers(applyMiddleware(reduxThunk, batchDispatchMiddleware)))
-loadSparkplugBPayload()
 
 function ApplicationRenderer(props: { theme: 'light' | 'dark' }) {
   return (

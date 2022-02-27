@@ -1,13 +1,13 @@
 import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
-import * as fs from 'fs'
 import CodeDiff from '../CodeDiff'
 import { AppState } from '../../../reducers'
 import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
-import { Payload } from '../../../../../backend/src/Model/sparkplugb'
+import { SparkplugPayload } from '../../../../../backend/src/Model/SparkplugB'
 import { connect } from 'react-redux'
 import { ValueRendererDisplayMode } from '../../../reducers/Settings'
 import { Fade } from '@material-ui/core'
+import { Decoder } from '../../../../../backend/src/Model/Decoder'
 
 interface Props {
   message: q.Message
@@ -49,20 +49,7 @@ class ValueRenderer extends React.Component<Props, State> {
     try {
       JSON.parse(str)
     } catch (error) {
-      try {
-        //Sparkplugb
-        if (Payload === undefined) {
-          throw Error('sparkplugb.Payload is not loaded yet')
-        }
-        let json = Payload.toObject(Payload.decode(Base64Message.toUint8Array(msg)), {
-          longs: String,
-          enums: String,
-          bytes: String,
-        })
-        return [JSON.stringify(json, undefined, '  '), 'json']
-      } catch (error) {
-        return [str, undefined]
-      }
+      return [str, undefined]
     }
 
     return [this.messageToPrettyJson(str), 'json']
@@ -98,7 +85,10 @@ class ValueRenderer extends React.Component<Props, State> {
   }
 
   public render() {
-    return <div style={{ padding: '0px 0px 8px 0px', width: '100%' }}>{this.renderValue()}</div>
+    return <div style={{ padding: '0px 0px 8px 0px', width: '100%' }}>
+      {this.props.message?.payload?.decoder === Decoder.SPARKPLUG && "Decoded SparkplugB"}
+      {this.renderValue()}
+    </div>
   }
 
   public renderValue() {

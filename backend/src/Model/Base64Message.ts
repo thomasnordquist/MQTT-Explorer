@@ -1,15 +1,18 @@
-const { Base64 } = require('js-base64')
+
+import { Base64 } from 'js-base64'
+import { Decoder } from './Decoder'
 
 export class Base64Message {
   private base64Message: string
   private unicodeValue: string
-
+  public decoder: Decoder
   public length: number
 
   private constructor(base64Str: string) {
     this.base64Message = base64Str
     this.unicodeValue = Base64.decode(base64Str)
     this.length = base64Str.length
+    this.decoder = Decoder.NONE
   }
 
   public static toUnicodeString(message: Base64Message) {
@@ -26,16 +29,5 @@ export class Base64Message {
 
   public static toDataUri(message: Base64Message, mimeType: string) {
     return `data:${mimeType};base64,${message.base64Message}`
-  }
-
-  public static toUint8Array(message: Base64Message) {
-    const binaryString = window.atob(message.base64Message)
-    const len = binaryString.length
-    const bytes = new Uint8Array(len)
-    for (const i of Array.from(Array(len).keys())) {
-      bytes[i] = binaryString.charCodeAt(i)
-    }
-
-    return bytes
   }
 }
