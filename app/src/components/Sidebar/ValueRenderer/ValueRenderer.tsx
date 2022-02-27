@@ -45,7 +45,6 @@ class ValueRenderer extends React.Component<Props, State> {
     }
 
     const str = Base64Message.toUnicodeString(msg)
-
     try {
       JSON.parse(str)
     } catch (error) {
