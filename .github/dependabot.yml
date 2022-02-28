@@ -1,0 +1,50 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: monthly
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: "@types/node"
+    versions:
+    - 14.14.17
+    - 14.14.22
+  - dependency-name: cspell
+    versions:
+    - 5.1.2
+    - 5.2.4
+  - dependency-name: mocha
+    versions:
+    - 8.2.1
+  - dependency-name: lodash
+    versions:
+    - 4.17.20
+- package-ecosystem: npm
+  directory: "/app"
+  schedule:
+    interval: monthly
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: html-webpack-plugin
+    versions:
+    - 4.5.0
+    - 4.5.1
+  - dependency-name: "@types/node"
+    versions:
+    - 14.14.17
+    - 14.14.22
+  - dependency-name: "@material-ui/core"
+    versions:
+    - 4.11.2
+  - dependency-name: "@types/react-dom"
+    versions:
+    - 17.0.0
+  - dependency-name: lodash
+    versions:
+    - 4.17.20
+  - dependency-name: elliptic
+    versions:
+    - 6.5.3
