@@ -76,7 +76,7 @@
     "html-webpack-plugin": "^5.5.0",
     "lodash": "^4.17.21",
     "mocha": "^9.2.1",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "node-loader": "^0.6.0",
     "source-map-loader": "^0.2.4",
     "style-loader": "^1",
