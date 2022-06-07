@@ -22,3 +22,22 @@ export const SparkplugDecoder = {
     }
   }
 }
+
+export const SparkplugEncoder = {
+  encode(input: string): Buffer | undefined {
+    try {
+      console.log(input)
+      const payload = JSON.parse(input)
+      return Buffer.from(
+        SparkplugPayload.encode(
+          SparkplugPayload.create({
+            timestamp: Date.now(),
+            ...payload,
+          })
+        ).finish()
+      )
+    } catch (err) {
+      // todo ?
+    }
+  },
+}

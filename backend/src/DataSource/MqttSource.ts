@@ -4,6 +4,8 @@ import { Client, connect as mqttConnect } from 'mqtt'
 import { DataSource, DataSourceStateMachine } from './'
 import { MqttMessage } from '../../../events'
 import { Base64Message } from '../Model/Base64Message'
+import { Decoder } from '../Model/Decoder'
+import { SparkplugEncoder } from '../Model/sparkplugb'
 
 export interface MqttOptions {
   url: string
@@ -46,7 +48,6 @@ export class MqttSource implements DataSource<MqttOptions> {
       this.stateMachine.setError(error as Error)
       throw error
     }
-
 
     const client = mqttConnect(url.toString(), {
       resubscribe: false,
@@ -99,7 +100,12 @@ export class MqttSource implements DataSource<MqttOptions> {
 
   public publish(msg: MqttMessage) {
     if (this.client) {
-      this.client.publish(msg.topic, msg.payload ? Base64Message.toUnicodeString(msg.payload) : '', {
+      let payload: string | Buffer = msg.payload ? Base64Message.toUnicodeString(msg.payload) : ''
+      if (msg.payload?.decoder === Decoder.SPARKPLUG) {
+        payload = SparkplugEncoder.encode(payload) || payload
+      }
+
+      this.client.publish(msg.topic, payload, {
         qos: msg.qos,
         retain: msg.retain,
       })
