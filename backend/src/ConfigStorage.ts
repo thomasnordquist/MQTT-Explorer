@@ -3,11 +3,7 @@ import * as fs from 'fs-extra'
 import * as lowdb from 'lowdb'
 import * as path from 'path'
 import { backendRpc } from '../../events'
-import {
-  storageClearEvent,
-  storageLoadEvent,
-  storageStoreEvent,
-} from '../../events/StorageEvents'
+import { storageClearEvent, storageLoadEvent, storageStoreEvent } from '../../events/StorageEvents'
 
 export default class ConfigStorage {
   private file: string

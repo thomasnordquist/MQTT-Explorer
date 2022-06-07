@@ -12,8 +12,7 @@ import { ConfirmationRequest } from '../reducers/Global'
 import { connect } from 'react-redux'
 import { globalActions, settingsActions } from '../actions'
 import { Theme, withStyles } from '@material-ui/core/styles'
-
-(window as any).global = window
+;(window as any).global = window
 
 const Settings = React.lazy(() => import('./SettingsDrawer/Settings'))
 const ContentView = React.lazy(() => import('./Layout/ContentView'))
@@ -68,7 +67,7 @@ class App extends React.PureComponent<Props, {}> {
       return null
     }
 
-    const anyProps: any = {};
+    const anyProps: any = {}
 
     return (
       <div className={centerContent}>

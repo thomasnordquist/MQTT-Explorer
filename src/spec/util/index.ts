@@ -29,7 +29,12 @@ export async function writeText(text: string, browser: Browser<'async'>, delay =
   }
 }
 
-export async function deleteTextWithBackspaces(element: Element<'async'>, browser: Browser<'async'>, delay = 0, count = 0) {
+export async function deleteTextWithBackspaces(
+  element: Element<'async'>,
+  browser: Browser<'async'>,
+  delay = 0,
+  count = 0
+) {
   const length = count > 0 ? count : (await element.getValue()).length
   for (let i = 0; i < length; i += 1) {
     await browser.keys(['Backspace'])

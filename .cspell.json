@@ -47,6 +47,19 @@
     "mixins",
     "Explorerdmg",
     "heapsnapshot",
-    "noconflict"
+    "noconflict",
+    "DDATA",
+    "NDATA",
+    "NCMD",
+    "DCMD",
+    "NBIRTH",
+    "DBIRTH",
+    "NDEATH",
+    "DDEATH",
+    "sparkplugb",
+    "protojson",
+    "protobuf",
+    "cirruslink",
+    "typesafe"
   ]
 }

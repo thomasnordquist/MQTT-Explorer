@@ -1,5 +1,5 @@
-import { CallbackStore } from "./CallbackStore"
-import { EventBusInterface } from "./EventBusInterface"
+import { CallbackStore } from './CallbackStore'
+import { EventBusInterface } from './EventBusInterface'
 import { Event } from '../Events'
 import { IpcRenderer } from 'electron'
 
@@ -15,7 +15,7 @@ export class IpcRendererEventBus implements EventBusInterface {
     const wrappedCallback = (_: any, arg: any) => {
       callback(arg)
     }
-    console.log("subscribing", event.topic)
+    console.log('subscribing', event.topic)
     this.ipc.on(event.topic, wrappedCallback)
     this.callbacks.push({
       callback,
