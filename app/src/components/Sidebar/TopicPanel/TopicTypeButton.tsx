@@ -9,7 +9,8 @@ import Popper from '@material-ui/core/Popper'
 import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
 
-const options: q.TopicDataType[] = ['string', 'json', 'hex', 'integer', 'unsigned int', 'floating point'];
+// const options: q.TopicDataType[] = ['json', 'string', 'hex', 'integer', 'unsigned int', 'floating point']
+const options: q.TopicDataType[] = ['json', 'string', 'hex', 'uint8', 'uint16', 'uint32', 'uint64', 'int8', 'int16', 'int32', 'int64', 'float', 'double']
 
 export const TopicTypeButton = (props: {
   node?: q.TreeNode<any>

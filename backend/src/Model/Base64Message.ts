@@ -26,7 +26,7 @@ export class Base64Message {
     return new Base64Message(Base64.encode(str))
   }
 
-  /* Raw message conversions (hex, uint, int, float) */
+  /* Raw message conversions ('uint8' | 'uint16' | 'uint32' | 'uint64' | 'int8' | 'int16' | 'int32' | 'int64' | 'float' | 'double') */
   public static format(message: Base64Message | null, type: TopicDataType = 'string'): [string, 'json' | undefined] {
     if (!message) {
       return ['', undefined]
@@ -44,19 +44,54 @@ export class Base64Message {
             const hex = Base64Message.toHex(message)
             return [hex, undefined]
           }
-        case 'integer':
+        case 'uint8':
           {
-            const int = Base64Message.toInt(message)
-            return [int ? int : '', undefined]
-          }
-        case 'unsigned int':
-          {
-            const uint = Base64Message.toUInt(message)
+            const uint = Base64Message.toUInt(message, 1)
             return [uint ? uint : '', undefined]
           }
-        case 'floating point':
+        case 'uint16':
           {
-            const float = Base64Message.toFloat(message)
+            const uint = Base64Message.toUInt(message, 2)
+            return [uint ? uint : '', undefined]
+          }
+        case 'uint32':
+          {
+            const uint = Base64Message.toUInt(message, 4)
+            return [uint ? uint : '', undefined]
+          }
+        case 'uint64':
+          {
+            const uint = Base64Message.toUInt(message, 8)
+            return [uint ? uint : '', undefined]
+          }
+        case 'int8':
+          {
+            const int = Base64Message.toInt(message, 1)
+            return [int ? int : '', undefined]
+          }
+        case 'int16':
+          {
+            const int = Base64Message.toInt(message, 2)
+            return [int ? int : '', undefined]
+          }
+        case 'int32':
+          {
+            const int = Base64Message.toInt(message, 4)
+            return [int ? int : '', undefined]
+          }
+        case 'int64':
+          {
+            const int = Base64Message.toInt(message, 8)
+            return [int ? int : '', undefined]
+          }
+        case 'float':
+          {
+            const float = Base64Message.toFloat(message, 4)
+            return [float ? float : '', undefined]
+          }
+        case 'double':
+          {
+            const float = Base64Message.toFloat(message, 8)
             return [float ? float : '', undefined]
           }
         default:
@@ -76,72 +111,93 @@ export class Base64Message {
 
     let str: string = '';
     buf.forEach(element => {
-      str += `0x${element.toString(16)} `
+      let hex = element.toString(16).toUpperCase();
+      str += `0x${hex.length < 2 ? "0" + hex : hex} `
     })
     return str.trimRight()
   }
 
-  public static toUInt(message: Base64Message) {
+  public static toUInt(message: Base64Message, bytes: number) {
     const buf = Buffer.from(message.base64Message, 'base64')
 
-    let num: Number = 0;
-    switch (buf.length) {
+    let str: String[] = [];
+    switch (bytes) {
       case 1:
-        num = buf.readUInt8(0)
+        for (let index = 0; index < buf.length; index += bytes) {
+          str.push(buf.readUInt8(index).toString())
+        }
         break
       case 2:
-        num = buf.readUInt16LE(0)
+        for (let index = 0; index < buf.length; index += bytes) {
+          str.push(buf.readUInt16LE(index).toString())
+        }
         break
       case 4:
-        num = buf.readUInt32LE(0)
+        for (let index = 0; index < buf.length; index += bytes) {
+          str.push(buf.readUInt32LE(index).toString())
+        }
         break
       case 8:
-        num = Number(buf.readBigUInt64LE(0))
+        for (let index = 0; index < buf.length; index += bytes) {
+          str.push(buf.readBigUInt64LE(index).toString())
+        }
         break
       default:
         return undefined
     }
-    return num.toString()
+    return str.join(', ')
   }
 
-  public static toInt(message: Base64Message) {
+  public static toInt(message: Base64Message, bytes: number) {
     const buf = Buffer.from(message.base64Message, 'base64')
 
-    let num: Number = 0;
-    switch (buf.length) {
+    let str: String[] = [];
+    switch (bytes) {
       case 1:
-        num = buf.readInt8(0)
+        for (let index = 0; index < buf.length; index += bytes) {
+          str.push(buf.readInt8(index).toString())
+        }
         break
       case 2:
-        num = buf.readInt16LE(0)
+        for (let index = 0; index < buf.length; index += bytes) {
+          str.push(buf.readInt16LE(index).toString())
+        }
         break
       case 4:
-        num = buf.readInt32LE(0)
+        for (let index = 0; index < buf.length; index += bytes) {
+          str.push(buf.readInt32LE(index).toString())
+        }
         break
       case 8:
-        num = Number(buf.readBigInt64LE(0))
+        for (let index = 0; index < buf.length; index += bytes) {
+          str.push(buf.readBigInt64LE(index).toString())
+        }
         break
       default:
         return undefined
     }
-    return num.toString()
+    return str.join(', ')
   }
 
-  public static toFloat(message: Base64Message) {
+  public static toFloat(message: Base64Message, bytes: number) {
     const buf = Buffer.from(message.base64Message, 'base64')
 
-    let num: Number = 0;
-    switch (buf.length) {
+    let str: String[] = [];
+    switch (bytes) {
       case 4:
-        num = buf.readFloatLE(0)
+        for (let index = 0; index < buf.length; index += bytes) {
+          str.push(buf.readFloatLE(index).toString())
+        }
         break
       case 8:
-        num = buf.readDoubleLE(0)
+        for (let index = 0; index < buf.length; index += bytes) {
+          str.push(buf.readDoubleLE(index).toString())
+        }
         break
       default:
         return undefined
     }
-    return num.toString()
+    return str.join(', ')
   }
 
   public static toDataUri(message: Base64Message, mimeType: string) {
