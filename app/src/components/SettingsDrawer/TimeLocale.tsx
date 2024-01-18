@@ -8,10 +8,10 @@ import { settingsActions } from '../../actions'
 import { withStyles } from '@material-ui/styles'
 
 function importAll(r: any) {
-  r.keys().forEach(r);
+  r.keys().forEach(r)
 }
 // @ts-expect-error -- webpack require
-importAll(require.context('moment/locale', true, /\.js$/));
+importAll(require.context('moment/locale', true, /\.js$/))
 
 const moment = require('moment')
 

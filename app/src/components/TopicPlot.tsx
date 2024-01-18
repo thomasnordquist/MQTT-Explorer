@@ -40,7 +40,7 @@ function nodeDotPathToHistory(startTime: number | undefined, history: q.MessageH
       let json: any = {}
       try {
         json = message.payload ? JSON.parse(Base64Message.toUnicodeString(message.payload)) : {}
-      } catch (ignore) { }
+      } catch (ignore) {}
 
       const value = dotProp.get(json, dotPath)
 
