@@ -1,3 +1,5 @@
+// cspell:disable
+
 export const protobufStr = `
 syntax = "proto2";
 
@@ -197,3 +199,4 @@ message Payload {
     extensions                      6 to max;   // For third party extensions
 }
 `
+// cspell:enable
