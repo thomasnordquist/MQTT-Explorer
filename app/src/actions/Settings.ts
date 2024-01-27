@@ -103,9 +103,12 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
   }
 
   const topicFilter = filterStr.toLowerCase()
+  // code heavily inspired by https://stackoverflow.com/a/32402438
+  const escapeRegex = (str: string) => str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+  const reTopicFilter = new RegExp(topicFilter.split('+').map(escapeRegex).join('[^/]+'))
 
   const nodeFilter = (node: q.TreeNode<TopicViewModel>): boolean => {
-    const topicMatches = node.path().toLowerCase().indexOf(topicFilter) !== -1
+    const topicMatches = node.path().toLowerCase().search(reTopicFilter) !== -1
     if (topicMatches) {
       return true
     }
