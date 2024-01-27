@@ -102,13 +102,13 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
     return
   }
 
-  const topicFilter = filterStr.toLowerCase()
+  const topicFilter = filterStr
   // code heavily inspired by https://stackoverflow.com/a/32402438
   const escapeRegex = (str: string) => str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
   const reTopicFilter = new RegExp(topicFilter.split('+').map(escapeRegex).join('[^/]+'))
 
   const nodeFilter = (node: q.TreeNode<TopicViewModel>): boolean => {
-    const topicMatches = node.path().toLowerCase().search(reTopicFilter) !== -1
+    const topicMatches = node.path().search(reTopicFilter) !== -1
     if (topicMatches) {
       return true
     }
@@ -126,7 +126,8 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
     .filter(nodeFilter)
     .map((node: q.TreeNode<TopicViewModel>) => {
       const clone = node.unconnectedClone()
-      q.TreeNodeFactory.insertNodeAtPosition(node.path().split('/'), clone)
+      const edgeNames = node.path().replace(reTopicFilter, filterStr).split('/')
+      q.TreeNodeFactory.insertNodeAtPosition(edgeNames, clone)
       return clone.firstNode()
     })
     .reduce((a: q.TreeNode<TopicViewModel>, b: q.TreeNode<TopicViewModel>) => {
