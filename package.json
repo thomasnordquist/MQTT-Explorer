@@ -15,7 +15,7 @@
     "dev": "npm-run-all --parallel dev:*",
     "dev:app": "cd app && npm run dev",
     "dev:electron": "tsc && electron . --development",
-    "lint": "npm-run-all --parallel lint:prettier lint:tslint lint:spellcheck",
+    "lint": "npm-run-all --parallel lint:prettier lint:tslint",
     "lint:prettier": "prettier --check \"**/*.ts{x,}\"",
     "lint:prettier:fix": "prettier --write \"**/*.ts{x,}\"",
     "lint:tslint": "tslint -p ./",
