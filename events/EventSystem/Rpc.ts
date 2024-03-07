@@ -2,24 +2,25 @@ import { Event } from '../Events'
 import { EventBusInterface } from './EventBusInterface'
 import { v4 } from 'uuid'
 
-export type RpcEvent<RequstType, ResponseType> = {
+export type RpcEvent<RequestType, ResponseType> = {
   topic: string
 }
 
 export class Rpc {
   constructor(private participant: EventBusInterface) {}
 
+  // tslint:disable-next-line:member-access
   async call<RpcRequest, RpcResponse>(
     event: RpcEvent<RpcRequest, RpcResponse>,
     request: RpcRequest,
     timeout: number = 0
   ): Promise<RpcResponse> {
     return new Promise((resolve, reject) => {
-      let id = v4()
+      const id = v4()
 
-      let responseEvent: Event<any> = { topic: `${event.topic}/response/${id}` }
-      let requestEvent: Event<any> = { topic: `${event.topic}/request` }
-      let callback = (result: { id: string; payload: RpcResponse; error: unknown }) => {
+      const responseEvent: Event<any> = { topic: `${event.topic}/response/${id}` }
+      const requestEvent: Event<any> = { topic: `${event.topic}/request` }
+      const callback = (result: { id: string; payload: RpcResponse; error: unknown }) => {
         this.participant.unsubscribe(responseEvent as any, callback)
         if (result.error) {
           reject(result.error)
@@ -40,11 +41,12 @@ export class Rpc {
     })
   }
 
+  // tslint:disable-next-line:member-access
   async on<RpcRequest, RpcResponse>(
     event: RpcEvent<RpcRequest, RpcResponse>,
     handler: (request: RpcRequest) => Promise<RpcResponse>
   ) {
-    this.participant.subscribe<RpcRequest>({ topic: `${event.topic}/request` } as RpcEvent<any, any>, async request => {
+    this.participant.subscribe<RpcRequest>({ topic: `${event.topic}/request` }, async request => {
       let payload
       let error
       try {

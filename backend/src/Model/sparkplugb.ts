@@ -10,7 +10,7 @@ export let SparkplugPayload = root.lookupType('com.cirruslink.sparkplug.protobuf
 export const SparkplugDecoder = {
   decode(input: Buffer): Base64Message | undefined {
     try {
-      let message = Base64Message.fromString(
+      const message = Base64Message.fromString(
         JSON.stringify(SparkplugPayload.toObject(SparkplugPayload.decode(new Uint8Array(input))))
       )
       message.decoder = Decoder.SPARKPLUG

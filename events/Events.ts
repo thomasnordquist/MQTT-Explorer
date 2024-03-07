@@ -52,5 +52,5 @@ export function makeConnectionMessageEvent(connectionId: string): Event<MqttMess
 }
 
 export const getAppVersion: RpcEvent<void, string> = {
-  topic: `getAppVersion`,
+  topic: 'getAppVersion',
 }
