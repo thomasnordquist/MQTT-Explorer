@@ -43,9 +43,9 @@ class CodeDiff extends React.PureComponent<Props, State> {
   private plottableLiteralsIndexedWithLineNumbers() {
     const allLiterals = this.isValidJson(this.props.current) ? literalsMappedByLines(this.props.current) || [] : []
 
-    return allLiterals.map((l: JsonPropertyLocation) => (isPlottable(l.value) ? l : undefined)) as Array<
-      JsonPropertyLocation
-    >
+    return allLiterals.map((l: JsonPropertyLocation) =>
+      isPlottable(l.value) ? l : undefined
+    ) as Array<JsonPropertyLocation>
   }
 
   private renderStyledCodeLines(changes: Array<Diff.Change>) {

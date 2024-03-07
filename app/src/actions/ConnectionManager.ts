@@ -51,21 +51,19 @@ export const loadConnectionSettings = () => async (dispatch: Dispatch<any>, getS
 }
 
 export type CertificateTypes = 'selfSignedCertificate' | 'clientCertificate' | 'clientKey'
-export const selectCertificate = (type: CertificateTypes, connectionId: string) => async (
-  dispatch: Dispatch<any>,
-  getState: () => AppState
-) => {
-  try {
-    const certificate = await openCertificate()
-    dispatch(
-      updateConnection(connectionId, {
-        [type]: certificate,
-      })
-    )
-  } catch (error) {
-    dispatch(showError(error))
+export const selectCertificate =
+  (type: CertificateTypes, connectionId: string) => async (dispatch: Dispatch<any>, getState: () => AppState) => {
+    try {
+      const certificate = await openCertificate()
+      dispatch(
+        updateConnection(connectionId, {
+          [type]: certificate,
+        })
+      )
+    } catch (error) {
+      dispatch(showError(error))
+    }
   }
-}
 
 async function openCertificate(): Promise<CertificateParameters> {
   const rejectReasons = {

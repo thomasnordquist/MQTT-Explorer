@@ -1,4 +1,4 @@
 export interface CallbackStore {
-    wrappedCallback: any;
-    callback: any;
+  wrappedCallback: any
+  callback: any
 }

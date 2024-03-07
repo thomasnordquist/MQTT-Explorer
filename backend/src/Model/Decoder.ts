@@ -1,4 +1,4 @@
 export enum Decoder {
-    NONE,
-    SPARKPLUG
+  NONE,
+  SPARKPLUG,
 }

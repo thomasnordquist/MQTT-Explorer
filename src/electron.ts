@@ -21,7 +21,7 @@ registerCrashReporter()
 
 app.commandLine.appendSwitch('--no-sandbox')
 app.whenReady().then(() => {
-  backendRpc.on(makeOpenDialogRpc(), async (request) => {
+  backendRpc.on(makeOpenDialogRpc(), async request => {
     return dialog.showOpenDialog(BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0], request)
   })
   backendRpc.on(getAppVersion, async () => app.getVersion())
