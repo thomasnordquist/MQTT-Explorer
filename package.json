@@ -88,7 +88,7 @@
     "builder-util-runtime": "^9",
     "chai": "^4.2.0",
     "cspell": "^4.0.28",
-    "electron": "^29.1.1",
+    "electron": "29.1.1",
     "electron-builder": "^24.13.3",
     "mocha": "7.1",
     "mustache": "4",
