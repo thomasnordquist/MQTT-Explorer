@@ -91,23 +91,26 @@ class TreeComponent extends React.PureComponent<Props, State> {
     const updateInterval = Math.max(expectedRenderTime * 7, 300)
     const timeUntilNextUpdate = updateInterval - (performance.now() - this.renderTime)
 
-    this.updateTimer = setTimeout(() => {
-      window.requestIdleCallback(
-        () => {
-          this.updateTimer && clearTimeout(this.updateTimer)
-          this.updateTimer = undefined
-          this.renderTime = performance.now()
+    this.updateTimer = setTimeout(
+      () => {
+        window.requestIdleCallback(
+          () => {
+            this.updateTimer && clearTimeout(this.updateTimer)
+            this.updateTimer = undefined
+            this.renderTime = performance.now()
 
-          window.requestIdleCallback(
-            () => {
-              this.setState({ lastUpdate: this.renderTime })
-            },
-            { timeout: 100 }
-          )
-        },
-        { timeout: 500 }
-      )
-    }, Math.max(0, timeUntilNextUpdate))
+            window.requestIdleCallback(
+              () => {
+                this.setState({ lastUpdate: this.renderTime })
+              },
+              { timeout: 100 }
+            )
+          },
+          { timeout: 500 }
+        )
+      },
+      Math.max(0, timeUntilNextUpdate)
+    )
   }
 
   public componentWillUpdate() {

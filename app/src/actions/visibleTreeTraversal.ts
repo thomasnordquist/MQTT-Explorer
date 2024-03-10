@@ -6,53 +6,56 @@ import { SettingsState } from '../reducers/Settings'
 import { sortedNodes } from '../sortedNodes'
 import { TopicViewModel } from '../model/TopicViewModel'
 
-export const moveSelectionUpOrDownwards = (direction: 'next' | 'previous') => (
-  dispatch: Dispatch<any>,
-  getState: () => AppState
-): any => {
-  const state = getState()
-  const selected = state.tree.get('selectedTopic')
-  const tree = state.tree.get('tree')
+export const moveSelectionUpOrDownwards =
+  (direction: 'next' | 'previous') =>
+  (dispatch: Dispatch<any>, getState: () => AppState): any => {
+    const state = getState()
+    const selected = state.tree.get('selectedTopic')
+    const tree = state.tree.get('tree')
 
-  if (!selected || !tree) {
-    if (tree) {
-      dispatch(selectTopic(tree))
+    if (!selected || !tree) {
+      if (tree) {
+        dispatch(selectTopic(tree))
+      }
+      return
     }
-    return
-  }
-  const nextTreeNode = nextVisibleElementInTree(state.settings, tree, selected, direction)
-  if (nextTreeNode && nextTreeNode.viewModel) {
-    dispatch(selectTopic(nextTreeNode))
-  }
-}
-
-export const moveInward = () => (dispatch: Dispatch<any>, getState: () => AppState): any => {
-  const state = getState()
-  const selected = state.tree.get('selectedTopic')
-  if (!selected || !selected.viewModel) {
-    return
+    const nextTreeNode = nextVisibleElementInTree(state.settings, tree, selected, direction)
+    if (nextTreeNode && nextTreeNode.viewModel) {
+      dispatch(selectTopic(nextTreeNode))
+    }
   }
 
-  if (!selected.viewModel.isExpanded() && selected.edgeCount() > 0) {
-    selected.viewModel.setExpanded(true, true)
-  } else {
-    dispatch(moveSelectionUpOrDownwards('next'))
-  }
-}
+export const moveInward =
+  () =>
+  (dispatch: Dispatch<any>, getState: () => AppState): any => {
+    const state = getState()
+    const selected = state.tree.get('selectedTopic')
+    if (!selected || !selected.viewModel) {
+      return
+    }
 
-export const moveOutward = () => (dispatch: Dispatch<any>, getState: () => AppState): any => {
-  const state = getState()
-  const selected = state.tree.get('selectedTopic')
-  if (!selected || !selected.viewModel) {
-    return
+    if (!selected.viewModel.isExpanded() && selected.edgeCount() > 0) {
+      selected.viewModel.setExpanded(true, true)
+    } else {
+      dispatch(moveSelectionUpOrDownwards('next'))
+    }
   }
 
-  if (selected.viewModel.isExpanded() && selected.edgeCount() > 0) {
-    selected.viewModel.setExpanded(false, true)
-  } else {
-    dispatch(moveSelectionUpOrDownwards('previous'))
+export const moveOutward =
+  () =>
+  (dispatch: Dispatch<any>, getState: () => AppState): any => {
+    const state = getState()
+    const selected = state.tree.get('selectedTopic')
+    if (!selected || !selected.viewModel) {
+      return
+    }
+
+    if (selected.viewModel.isExpanded() && selected.edgeCount() > 0) {
+      selected.viewModel.setExpanded(false, true)
+    } else {
+      dispatch(moveSelectionUpOrDownwards('previous'))
+    }
   }
-}
 
 function isTreeNodeVisible(treeNode: q.TreeNode<any>) {
   return Boolean(treeNode.viewModel)

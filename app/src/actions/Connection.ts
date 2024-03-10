@@ -11,31 +11,29 @@ import { showError } from './Global'
 import { TopicViewModel } from '../model/TopicViewModel'
 import { addMqttConnectionEvent, makeConnectionStateEvent, removeConnection, rendererEvents } from '../../../events'
 
-export const connect = (options: MqttOptions, connectionId: string) => (
-  dispatch: Dispatch<any>,
-  getState: () => AppState
-) => {
-  dispatch(connecting(connectionId))
-  rendererEvents.emit(addMqttConnectionEvent, { options, id: connectionId })
-  const event = makeConnectionStateEvent(connectionId)
-  const host = url.parse(options.url).hostname
+export const connect =
+  (options: MqttOptions, connectionId: string) => (dispatch: Dispatch<any>, getState: () => AppState) => {
+    dispatch(connecting(connectionId))
+    rendererEvents.emit(addMqttConnectionEvent, { options, id: connectionId })
+    const event = makeConnectionStateEvent(connectionId)
+    const host = url.parse(options.url).hostname
 
-  rendererEvents.subscribe(event, dataSourceState => {
-    if (dataSourceState.connected) {
-      const didReconnect = Boolean(getState().connection.tree)
-      if (!didReconnect) {
-        const tree = new q.Tree<TopicViewModel>()
-        tree.updateWithConnection(rendererEvents, connectionId)
-        dispatch(showTree(tree))
-        dispatch(connected(tree, host!))
+    rendererEvents.subscribe(event, dataSourceState => {
+      if (dataSourceState.connected) {
+        const didReconnect = Boolean(getState().connection.tree)
+        if (!didReconnect) {
+          const tree = new q.Tree<TopicViewModel>()
+          tree.updateWithConnection(rendererEvents, connectionId)
+          dispatch(showTree(tree))
+          dispatch(connected(tree, host!))
+        }
+      } else if (dataSourceState.error) {
+        dispatch(showError(dataSourceState.error))
+        dispatch(disconnect())
       }
-    } else if (dataSourceState.error) {
-      dispatch(showError(dataSourceState.error))
-      dispatch(disconnect())
-    }
-    dispatch(updateHealth(dataSourceState))
-  })
-}
+      dispatch(updateHealth(dataSourceState))
+    })
+  }
 
 const updateHealth = (dataSourceState: DataSourceState) => (dispatch: Dispatch<any>, getState: () => AppState) => {
   let state

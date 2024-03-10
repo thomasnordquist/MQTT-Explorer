@@ -45,9 +45,11 @@ const initialStateFactory = Record<TreeStateModel>({
   filter: undefined,
 })
 
-const setPaused = (pause: boolean) => (state: TreeState, action: ShowTree): TreeState => {
-  return state.set('paused', pause)
-}
+const setPaused =
+  (pause: boolean) =>
+  (state: TreeState, action: ShowTree): TreeState => {
+    return state.set('paused', pause)
+  }
 
 const actions: {
   [s: string]: (state: TreeState, action: ReduxAction) => TreeState
