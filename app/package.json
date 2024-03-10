@@ -10,7 +10,7 @@
     "mochatest": "mocha --require ts-node/register src/**/*.spec.ts"
   },
   "engines": {
-    "node": "16"
+    "node": "19"
   },
   "author": "",
   "license": "CC-BY-ND-4.0",

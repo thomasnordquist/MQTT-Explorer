@@ -4,7 +4,7 @@
   "description": "Explore your message queues",
   "main": "dist/src/electron.js",
   "engines": {
-    "node": "16"
+    "node": "19"
   },
   "scripts": {
     "start": "electron .",
