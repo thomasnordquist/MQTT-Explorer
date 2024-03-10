@@ -7,7 +7,7 @@ cache:
   - '%LOCALAPPDATA%\electron-builder\cache'
 
 install:
-  - ps: Install-Product node 16
+  - ps: Install-Product node 19
 
 build_script:
   - yarn
