@@ -14,6 +14,8 @@ build_script:
   - yarn build
   - yarn prepare-release
   - yarn package appx
+  - yarn prepare-release
+  - yarn package linux
 
 test_script:
   - yarn lint

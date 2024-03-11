@@ -5,7 +5,16 @@ import * as dotProp from 'dot-prop'
 
 const linuxAppImage: builder.CliOptions = {
   x64: true,
-  ia32: true,
+  ia32: false,
+  armv7l: true,
+  arm64: false,
+  projectDir: './build/clean',
+  publish: 'always',
+}
+
+const linuxDeb: builder.CliOptions = {
+  x64: true,
+  ia32: false,
   armv7l: true,
   arm64: false,
   projectDir: './build/clean',
@@ -23,7 +32,7 @@ const linuxSnap: builder.CliOptions = {
 
 const winPortable: builder.CliOptions = {
   x64: true,
-  ia32: true,
+  ia32: false,
   armv7l: false,
   arm64: false,
   projectDir: './build/clean',
@@ -32,7 +41,7 @@ const winPortable: builder.CliOptions = {
 
 const winNsis: builder.CliOptions = {
   x64: true,
-  ia32: true,
+  ia32: false,
   armv7l: false,
   arm64: false,
   projectDir: './build/clean',
@@ -41,7 +50,7 @@ const winNsis: builder.CliOptions = {
 
 const winAppx: builder.CliOptions = {
   x64: true,
-  ia32: true,
+  ia32: false,
   armv7l: false,
   arm64: false,
   projectDir: './build/clean',
@@ -50,7 +59,7 @@ const winAppx: builder.CliOptions = {
 
 const mac: builder.CliOptions = {
   x64: true,
-  ia32: true,
+  ia32: false,
   armv7l: false,
   arm64: false,
   projectDir: './build/clean',
@@ -69,6 +78,7 @@ async function executeBuild() {
     case 'linux':
       await buildWithOptions(linuxAppImage, { platform: 'linux', package: 'AppImage' })
       await buildWithOptions(linuxSnap, { platform: 'linux', package: 'snap' })
+      await buildWithOptions(linuxDeb, { platform: 'linux', package: 'deb' })
       break
     case 'mac':
       await buildWithOptions(mac, { platform: 'mac', package: 'dmg' })
