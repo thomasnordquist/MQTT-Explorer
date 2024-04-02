@@ -33,7 +33,7 @@ log.info('App starting...')
 const connectionManager = new ConnectionManager()
 connectionManager.manageConnections()
 
-const configStorage = new ConfigStorage(path.join(app.getPath('appData'), app.name, 'settings.json'))
+const configStorage = new ConfigStorage(path.join(app.getPath('userData'), 'settings.json'))
 configStorage.init()
 
 // Keep a global reference of the window object, if you don't, the window will
