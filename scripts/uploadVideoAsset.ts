@@ -27,7 +27,7 @@ async function createDraft(tag: string) {
       draft: true,
     },
   })
-
+  // @ts-ignore
   return cleanUploadUrl(response.data.upload_url)
 }
 
@@ -76,6 +76,7 @@ async function uploadFile(uploadUrl: string, file: string) {
   const data = fs.readFileSync(file)
   const mimeType = mime.getType(path.extname(file))
 
+  // @ts-ignore
   return axios({
     data,
     method: 'post',
