@@ -41,9 +41,12 @@
   "peerDependencies": {
     "fs-extra": "^8.0.1",
     "js-base64": "^2.5.1",
+    "long": "^4.0.0",
     "lowdb": "^1.0.0",
     "mqtt": "^3.0.0",
-    "protobufjs": "~6.11.2",
-    "long": "^4.0.0"
+    "protobufjs": "~6.11.2"
+  },
+  "dependencies": {
+    "protobufjs": "^6.11.4"
   }
 }
