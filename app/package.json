@@ -10,7 +10,7 @@
     "mochatest": "mocha --require ts-node/register src/**/*.spec.ts"
   },
   "engines": {
-    "node": "16"
+    "node": ">=18"
   },
   "author": "",
   "license": "CC-BY-ND-4.0",
@@ -88,6 +88,6 @@
     "webpack-dev-server": "^4.7.4"
   },
   "peerDependencies": {
-    "electron": "^17"
+    "electron": "^29"
   }
 }

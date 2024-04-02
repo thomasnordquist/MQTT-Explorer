@@ -30,4 +30,5 @@ const Panel = (props: {
   )
 }
 
+// @ts-ignore
 export default withStyles(styles)(Panel)
