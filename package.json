@@ -108,7 +108,7 @@
   },
   "dependencies": {
     "about-window": "^1.12.1",
-    "axios": "^0.19.0",
+    "axios": "^0.28.0",
     "dot-prop": "^5.0.0",
     "electron-log": "4.4.6",
     "electron-updater": "^4.6",
