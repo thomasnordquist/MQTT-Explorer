@@ -4,10 +4,10 @@
   "description": "",
   "main": "build/index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --require ts-node/register --require source-map-support/register --recursive ./src/*/**/*.spec.ts",
     "build": "tsc",
-    "test-inspect": "mocha --inspect-brk",
-    "coverage": "nyc mocha",
+    "test-inspect": "mocha --inspect-brk --require ts-node/register --require source-map-support/register --recursive ./src/*/**/*.spec.ts",
+    "coverage": "nyc mocha --require ts-node/register --require source-map-support/register --recursive ./src/*/**/*.spec.ts",
     "debug": "ts-node --inspect ./src/index.ts",
     "postinstall": "yarn build"
   },
