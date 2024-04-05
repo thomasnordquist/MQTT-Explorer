@@ -23,7 +23,7 @@ export async function publishTopic(browser: Page) {
   await clickOn(formatJsonButton)
 
   const publishButton = await browser.locator('#publish-button')
-  await moveToCenterOfElement(publishButton, browser)
+  await moveToCenterOfElement(publishButton)
   await showText('Lamp turns on', 1000, browser, 'top')
   await sleep(500)
 

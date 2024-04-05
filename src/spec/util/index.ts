@@ -55,11 +55,9 @@ export async function setTextInInput(name: string, text: string, browser: Page) 
   await input.fill(text)
 }
 
-export async function moveToCenterOfElement(element: Locator, browser: Page) {
+export async function moveToCenterOfElement(element: Locator) {
   // @ts-ignore
-  const { x, y } = element
-  // @ts-ignore
-  const { width, height } = element
+  const { x, y, width, height } = await element.boundingBox();
 
   const targetX = x + width / 2
   const targetY = y + height / 2
@@ -67,12 +65,13 @@ export async function moveToCenterOfElement(element: Locator, browser: Page) {
   const duration = fast ? 1 : 500
 
   const js = `window.demo.moveMouse(${targetX}, ${targetY}, ${duration});`
-  await runJavascript(js, browser)
+  await runJavascript(js, element.page())
   await sleep(duration)
   await sleep(250, true)
 }
 
 export async function runJavascript(js: string, browser: Page) {
+  console.log(js)
   await browser.evaluate(_js => eval(_js), js)
 }
 
@@ -81,17 +80,11 @@ export async function clickOnHistory(browser: Page) {
   await clickOn(messageHistory)
 }
 
-export async function clickOn(element: Locator, clicks = 1, force = false) {
-  await moveToCenterOfElement(element, element.page())
-  for (let i = 0; i < clicks; i += 1) {
-    if (force) {
-      await element.dispatchEvent('click')
-    } else {
-      await element.click()
-    }
-
-    await sleep(50)
-  }
+export async function clickOn(element: Locator, clicks = 1, delay = 0, button: 'left' | 'right' | 'middle' = 'left', force = false) {
+  await moveToCenterOfElement(element)
+  await element.hover()
+  await element.click({ clickCount: clicks, delay, button, force })
+  await sleep(50)
 }
 
 export async function createFakeMousePointer(browser: Page) {

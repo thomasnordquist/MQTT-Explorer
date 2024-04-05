@@ -1,5 +1,7 @@
 import * as fs from 'fs'
 import * as os from 'os'
+import * as path from 'path'
+
 import { ElectronApplication, Page, _electron as electron } from 'playwright'
 
 import mockMqtt, { stop as stopMqtt } from './mock-mqtt'
@@ -33,7 +35,16 @@ async function doStuff() {
   console.log('Starting playwright/electron')
 
   // Launch Electron app.
-  const electronApp: ElectronApplication = await electron.launch({ args: [`${__dirname}/../../..`] })
+  const electronApp: ElectronApplication = await electron.launch({
+    args: [`${__dirname}/../../..`],
+    // recordVideo: {
+    //   dir: path.join(__dirname, '..', 'playwright-videos'),
+    //   size: {
+    //     width: 1280,
+    //     height: 720,
+    //   },
+    // },
+  })
 
   // Get the first window that the app opens, wait if necessary.
   const page = await electronApp.firstWindow({ timeout: 3000 })

@@ -8,7 +8,7 @@ export async function clearOldTopics(browser: Page) {
     await sleep(1000)
 
     const deleteButton = await browser.locator('//button[contains(@title, "Delete retained topic")]')
-    await moveToCenterOfElement(deleteButton, browser)
+    await moveToCenterOfElement(deleteButton)
     await clickOn(deleteButton)
     await sleep(700)
   }

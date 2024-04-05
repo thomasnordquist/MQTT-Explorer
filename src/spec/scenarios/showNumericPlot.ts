@@ -4,7 +4,7 @@ import { moveToCenterOfElement, clickOn, clickOnHistory, expandTopic, sleep, wri
 export async function showNumericPlot(browser: Page) {
   await expandTopic('kitchen/coffee_maker', browser)
   let heater = await valuePreviewGuttersShowChartIcon('heater', browser)
-  await moveToCenterOfElement(heater, browser)
+  await moveToCenterOfElement(heater)
   await sleep(1000)
   // Refocus and click
   heater = await valuePreviewGuttersShowChartIcon('heater', browser)
@@ -12,7 +12,7 @@ export async function showNumericPlot(browser: Page) {
 
   await sleep(1000)
   let temperature = await valuePreviewGuttersShowChartIcon('temperature', browser)
-  await moveToCenterOfElement(temperature, browser)
+  await moveToCenterOfElement(temperature)
   await sleep(1000)
   // Refocus and click
   temperature = await valuePreviewGuttersShowChartIcon('temperature', browser)
@@ -64,7 +64,7 @@ async function clickAway(name: string, browser: Page) {
   const settings = await browser.locator(
     `//*[contains(@data-test-type, "ChartPaper")][contains(@data-test, "${name}")]`
   )
-  await moveToCenterOfElement(settings, browser)
+  await moveToCenterOfElement(settings)
   await settings.press('Escape')
 }
 
