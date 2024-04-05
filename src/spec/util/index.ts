@@ -1,5 +1,6 @@
 import * as fs from 'fs'
-import { Browser, Element } from 'webdriverio'
+
+import { Page, Locator } from 'playwright'
 
 export { expandTopic } from './expandTopic'
 
@@ -18,48 +19,47 @@ export function sleep(ms: number, required = false) {
   })
 }
 
-export async function writeText(text: string, browser: Browser<'async'>, delay = 0) {
+export async function writeText(text: string, element: Locator, delay = 0) {
+  return element.fill(text)
   if (fast) {
-    return browser.keys(text.split(''))
+    return element.fill(text)
   }
 
   for (const c of text.split('')) {
-    await browser.keys([c])
+    await element.press(c)
     await sleep(delay)
   }
 }
 
-export async function deleteTextWithBackspaces(
-  element: Element<'async'>,
-  browser: Browser<'async'>,
-  delay = 0,
-  count = 0
-) {
-  const length = count > 0 ? count : (await element.getValue()).length
+export async function deleteTextWithBackspaces(element: Locator, delay = 0, count = 0) {
+  // @ts-ignore
+  const length = count > 0 ? count : (await element.textContent()).length
   for (let i = 0; i < length; i += 1) {
-    await browser.keys(['Backspace'])
+    await element.press('Backspace')
     await sleep(delay)
   }
 }
 
-export async function setInputText(input: Element<'async'>, text: string, browser: Browser<'async'>) {
-  await clickOn(input, browser, 1)
-  await deleteTextWithBackspaces(input, browser)
-  await input.setValue(text)
+export async function setInputText(input: Locator, text: string, browser: Page) {
+  await clickOn(input, 1)
+  await deleteTextWithBackspaces(input)
+  await input.fill(text)
 }
 
-export async function setTextInInput(name: string, text: string, browser: Browser<'async'>) {
-  const input = await browser.$(`//label[contains(text(), "${name}")]/..//input`)
-  await clickOn(input, browser, 1)
-  await browser.$(`//label[contains(text(), "${name}")]/..//input`)
+export async function setTextInInput(name: string, text: string, browser: Page) {
+  const input = await browser.locator(`//label[contains(text(), "${name}")]/..//input`)
+  await clickOn(input, 1)
+  await browser.locator(`//label[contains(text(), "${name}")]/..//input`)
 
-  await deleteTextWithBackspaces(input, browser)
-  await input.setValue(text)
+  await deleteTextWithBackspaces(input)
+  await input.fill(text)
 }
 
-export async function moveToCenterOfElement(element: Element<'async'>, browser: Browser<'async'>) {
-  const { x, y } = await element.getLocation()
-  const { width, height } = await element.getSize()
+export async function moveToCenterOfElement(element: Locator, browser: Page) {
+  // @ts-ignore
+  const { x, y } = element
+  // @ts-ignore
+  const { width, height } = element
 
   const targetX = x + width / 2
   const targetY = y + height / 2
@@ -67,50 +67,57 @@ export async function moveToCenterOfElement(element: Element<'async'>, browser: 
   const duration = fast ? 1 : 500
 
   const js = `window.demo.moveMouse(${targetX}, ${targetY}, ${duration});`
-  await browser.execute(js)
+  await runJavascript(js, browser)
   await sleep(duration)
   await sleep(250, true)
-
-  await element.moveTo()
 }
 
-export async function clickOnHistory(browser: Browser<'async'>) {
-  const messageHistory = await browser.$('//span/*[contains(text(), "History")]')
-  await clickOn(messageHistory, browser)
+export async function runJavascript(js: string, browser: Page) {
+  await browser.evaluate(_js => eval(_js), js)
 }
 
-export async function clickOn(element: Element<'async'>, browser: Browser<'async'>, clicks = 1) {
-  await moveToCenterOfElement(element, browser)
+export async function clickOnHistory(browser: Page) {
+  const messageHistory = await browser.locator('//span/*[contains(text(), "History")]').first()
+  await clickOn(messageHistory)
+}
+
+export async function clickOn(element: Locator, clicks = 1, force = false) {
+  await moveToCenterOfElement(element, element.page())
   for (let i = 0; i < clicks; i += 1) {
-    await element.click()
+    if (force) {
+      await element.dispatchEvent('click')
+    } else {
+      await element.click()
+    }
+
     await sleep(50)
   }
 }
 
-export async function createFakeMousePointer(browser: Browser<'async'>) {
+export async function createFakeMousePointer(browser: Page) {
   const js = 'window.demo.enableMouse();'
 
-  await browser.execute(js)
+  await runJavascript(js, browser)
 }
 
 export async function showText(
   text: string,
   duration: number = 0,
-  browser: Browser<'async'>,
+  browser: Page,
   location: 'top' | 'bottom' | 'middle' = 'bottom',
   keys = []
 ) {
   const js = `window.demo.showMessage('${text}', '${location}', ${duration});`
 
-  await browser.execute(js)
+  await runJavascript(js, browser)
 }
 
 type HeapDump = any
 
-export async function getHeapDump(browser: Browser<'async'>): Promise<HeapDump> {
+export async function getHeapDump(browser: Page): Promise<HeapDump> {
   const filename = 'heapdump.json'
   const js = `window.demo.writeHeapdump('${filename}');`
-  await browser.execute(js)
+  await runJavascript(js, browser)
   const buffer = fs.readFileSync(filename)
   fs.unlinkSync(filename)
 
@@ -130,17 +137,17 @@ export async function countInstancesOf(heapDump: HeapDump, className: ClassNameM
 export async function showKeys(
   text: string,
   duration: number = 0,
-  browser: Browser<'async'>,
+  browser: Page,
   location: 'top' | 'bottom' | 'middle' = 'bottom',
   keys: Array<string> = []
 ) {
   const js = `window.demo.showMessage('${text}', '${location}', ${duration}, ${JSON.stringify(keys)});`
 
-  await browser.execute(js)
+  await runJavascript(js, browser)
 }
 
-export async function hideText(browser: Browser<'async'>) {
+export async function hideText(browser: Page) {
   const js = 'window.demo.hideMessage();'
-  await browser.execute(js)
+  await runJavascript(js, browser)
   await sleep(600)
 }

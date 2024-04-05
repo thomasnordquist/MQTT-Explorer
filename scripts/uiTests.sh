@@ -25,16 +25,16 @@ export PID_VNC=$!
 mosquitto &
 export PID_MOSQUITTO=$!
 
-DISPLAY=:$SCR ./node_modules/.bin/chromedriver --url-base=wd/hub --port=9515 &
-export PID_CHROMEDRIVER=$!
-sleep 2
+#DISPLAY=:$SCR ./node_modules/.bin/chromedriver --url-base=wd/hub --port=9515 &
+#export PID_CHROMEDRIVER=$!
+#sleep 2
 
 # Delete old video
 rm ./app.mp4 || echo no need to delete ./app.mp4
 
 # Start recoring in tmux
 #tmux new-session -d -s record ffmpeg -f x11grab -draw_mouse 0 -video_size $DIMENSIONS -i :$SCR -codec:v libx264 -r 20 ./app.mp4
-tmux new-session -d -s record ffmpeg -f x11grab -draw_mouse 0 -video_size $DIMENSIONS -i :$SCR -r 20 -vcodec rawvideo -pix_fmt yuv420p qrawvideorgb24.yuv
+#tmux new-session -d -s record ffmpeg -f x11grab -draw_mouse 0 -video_size $DIMENSIONS -i :$SCR -r 20 -vcodec rawvideo -pix_fmt yuv420p qrawvideorgb24.yuv
 
 # Start tests
 node dist/src/spec/demoVideo.js
