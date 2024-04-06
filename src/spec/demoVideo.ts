@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 
-import { ElectronApplication, Page, _electron as electron } from 'playwright'
+import { ElectronApplication, _electron as electron } from 'playwright'
 
 import mockMqtt, { stop as stopMqtt } from './mock-mqtt'
 import { clearOldTopics } from './scenarios/clearOldTopics'
@@ -13,13 +13,22 @@ import { copyTopicToClipboard } from './scenarios/copyTopicToClipboard'
 import { copyValueToClipboard } from './scenarios/copyValueToClipboard'
 import { disconnect } from './scenarios/disconnect'
 import { publishTopic } from './scenarios/publishTopic'
-import { SceneBuilder } from './SceneBuilder'
+import { Scene, SceneBuilder } from './SceneBuilder'
 import { showAdvancedConnectionSettings } from './scenarios/showAdvancedConnectionSettings'
 import { showJsonPreview } from './scenarios/showJsonPreview'
 import { showMenu } from './scenarios/showMenu'
 import { showNumericPlot } from './scenarios/showNumericPlot'
 import { showOffDiffCapability } from './scenarios/showOffDiffCapability'
 import { showZoomLevel } from './scenarios/showZoomLevel'
+
+/**
+ *  A convenience method that handles gracefully cleaning up the test run.
+ */
+const cleanUp = async (scenes: SceneBuilder, electronApp: ElectronApplication) => {
+  // Exit app.
+  fs.writeFileSync('scenes.json', JSON.stringify(scenes.scenes, undefined, '  '))
+  await electronApp.close()
+}
 
 process.on('unhandledRejection', (error: Error | any) => {
   console.error('unhandledRejection', error.message, error.stack)
@@ -36,16 +45,10 @@ async function doStuff() {
 
   // Launch Electron app.
   const electronApp: ElectronApplication = await electron.launch({
-    args: [`${__dirname}/../../..`],
-    // recordVideo: {
-    //   dir: path.join(__dirname, '..', 'playwright-videos'),
-    //   size: {
-    //     width: 1280,
-    //     height: 720,
-    //   },
-    // },
+    args: [`${__dirname}/../../..`, ...runningUiTestOnCi],
   })
 
+  console.log('Playwright started')
   // Get the first window that the app opens, wait if necessary.
   const page = await electronApp.firstWindow({ timeout: 3000 })
   // Print the title.
@@ -138,14 +141,10 @@ async function doStuff() {
     await sleep(3000)
   })
 
-  // Exit app.
-  await electronApp.close()
-  console.log('Electron exited')
-
   stopMqtt()
   console.log('Stopped mqtt')
 
-  fs.writeFileSync('scenes.json', JSON.stringify(scenes.scenes, undefined, '  '))
+  cleanUp(scenes, electronApp)
 }
 
 doStuff()

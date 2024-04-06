@@ -57,7 +57,7 @@ export async function setTextInInput(name: string, text: string, browser: Page) 
 
 export async function moveToCenterOfElement(element: Locator) {
   // @ts-ignore
-  const { x, y, width, height } = await element.boundingBox();
+  const { x, y, width, height } = await element.boundingBox()
 
   const targetX = x + width / 2
   const targetY = y + height / 2
@@ -71,8 +71,9 @@ export async function moveToCenterOfElement(element: Locator) {
 }
 
 export async function runJavascript(js: string, browser: Page) {
-  console.log(js)
-  await browser.evaluate(_js => eval(_js), js)
+  // there is probably a safer way to do this.. do not use eval...
+  // tslint:disable-next-line no-eval
+  return browser.evaluate(script => eval(script), js)
 }
 
 export async function clickOnHistory(browser: Page) {
@@ -80,16 +81,22 @@ export async function clickOnHistory(browser: Page) {
   await clickOn(messageHistory)
 }
 
-export async function clickOn(element: Locator, clicks = 1, delay = 0, button: 'left' | 'right' | 'middle' = 'left', force = false) {
+export async function clickOn(
+  element: Locator,
+  clicks = 1,
+  delay = 0,
+  button: 'left' | 'right' | 'middle' = 'left',
+  force = false
+) {
   await moveToCenterOfElement(element)
   await element.hover()
-  await element.click({ clickCount: clicks, delay, button, force })
+  await element.click({ delay, button, force, clickCount: clicks })
   await sleep(50)
 }
 
 export async function createFakeMousePointer(browser: Page) {
   const js = 'window.demo.enableMouse();'
-
+  // @ts-lint-ignore
   await runJavascript(js, browser)
 }
 
