@@ -25,7 +25,7 @@ services:
   - docker
 
 install:
-  - yarn install
+  - yarn install --frozen-lockfile
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update && sudo apt-get -y install snap squashfs-tools && sudo snap install snapcraft --classic; fi;
 
 script:
