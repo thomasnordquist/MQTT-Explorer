@@ -1,7 +1,7 @@
-import { Browser, Element } from 'webdriverio'
+import { Page } from 'playwright'
 import { showKeys, showText, sleep } from '../util'
 
-export async function showZoomLevel(browser: Browser<'async'>) {
+export async function showZoomLevel(browser: Page) {
   await showKeys('Zoom in', 2000, browser, 'top', ['Ctrl', '+'])
   await sleep(2000)
   await showKeys('Zoom out', 2000, browser, 'middle', ['Ctrl', '-'])

@@ -10,7 +10,7 @@ install:
   - ps: Install-Product node 19
 
 build_script:
-  - yarn
+  - yarn install --frozen-lockfile
   - yarn build
   - yarn prepare-release
   - yarn package appx

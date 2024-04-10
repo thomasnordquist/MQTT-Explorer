@@ -1,6 +1,6 @@
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const webpack = require('webpack')
 
 module.exports = {
   entry: {
@@ -63,13 +63,8 @@ module.exports = {
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.(png|jpg|gif)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {},
-          },
-        ],
+        test: /\.(png|jpg|gif)$/i,
+        type: 'asset/resource',
       },
       // {
       //   test: /\.node$/,
@@ -101,4 +96,4 @@ module.exports = {
     // "react": "React",
     // "react-dom": "ReactDOM"
   },
-};
+}

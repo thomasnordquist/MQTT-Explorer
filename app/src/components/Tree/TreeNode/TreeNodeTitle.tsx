@@ -19,7 +19,7 @@ class TreeNodeTitle extends React.PureComponent<TreeNodeProps, {}> {
     const name = this.props.name || (this.props.treeNode.sourceEdge && this.props.treeNode.sourceEdge.name)
 
     return (
-      <span key="edge" className={this.props.classes.sourceEdge}>
+      <span key="edge" className={this.props.classes.sourceEdge} data-test-topic={name}>
         {name}
       </span>
     )
