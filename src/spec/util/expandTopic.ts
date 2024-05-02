@@ -20,7 +20,6 @@ export async function expandTopic(path: string, browser: Page) {
   }
   // while (topics.length <= originalTopics.length) {
   //   const match = await browser.locator(topicSelector(topics))
-  //   console.log('topics', topics, 'orignial', originalTopics)
   //   console.log('click', match)
   //   await clickOn(match)
   //   topics.push(originalTopics[topics.length])

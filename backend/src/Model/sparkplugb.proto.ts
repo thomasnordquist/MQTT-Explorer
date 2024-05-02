@@ -1,3 +1,5 @@
+/* spell-checker: disable */
+
 const protocol = `
 syntax = "proto2";
 
@@ -197,4 +199,6 @@ message Payload {
     extensions                      6 to max;   // For third party extensions
 }
 `
+
+/* spell-checker: enable */
 export default protocol
