@@ -53,6 +53,14 @@
     "noconflict",
     "sparkplugb",
     "protojson",
-    "typesafe"
+    "typesafe",
+    "DDATA",
+    "NDATA",
+    "NCMD",
+    "DCMD",
+    "NBIRTH",
+    "DBIRTH",
+    "NDEATH",
+    "DDEATH"
   ]
 }
