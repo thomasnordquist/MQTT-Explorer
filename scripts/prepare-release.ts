@@ -27,7 +27,6 @@ async function prepareRelease() {
   await exec('yarn', ['build'])
 
   // Clean up
-  await fs.remove('node_modules')
   await exec('yarn', ['install', '--production', '--frozen-lockfile']) // Do not clean up, electron version detection will fail otherwise
   await fs.remove(path.join('app', 'node_modules'))
 
