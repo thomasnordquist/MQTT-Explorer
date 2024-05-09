@@ -1,10 +1,25 @@
 #!/bin/bash
-
 function finish {
-  echo "Exiting, cleaning up"
-  tmux send-keys -t record q || echo "No tmux was running"
-  #echo kill $PID_XVFB $PID_CHROMEDRIVER $PID_MOSQUITTO
-  #kill $PID_XVFB $PID_CHROMEDRIVER $PID_MOSQUITTO
+  set +e
+  echo "Exiting, cleaning up.."
+
+  echo "Stopping TMUX session (record).."
+  tmux kill-session -t record || echo "Already stopped"
+
+  if [[ ! -z "$PID_MOSQUITTO" ]]; then
+    echo "Stopping mosquitto ($PID_MOSQUITTO).."
+    kill "$PID_MOSQUITTO" || echo "Already stopped"
+  fi
+
+  if [[ ! -z "$PID_VNC" ]]; then
+    echo "Stopping VNC ($PID_VNC).."
+    kill "$PID_VNC" || echo "Already stopped"
+  fi
+
+  if [[ ! -z "$PID_XVFB" ]]; then
+    echo "Stopping XVFB ($PID_XVFB).."
+    kill "$PID_XVFB" || echo "Already stopped"
+  fi
 }
 
 trap finish EXIT
@@ -18,28 +33,25 @@ export PID_XVFB=$!
 sleep 2
 
 # Debug with VNC
-while [ "$TEST_EXIT_CODE" = "" ]; do x11vnc -localhost -passwd "bierbier" -display :$SCR; done &
+x11vnc -localhost -rfbport 5900 -passwd "bierbier" -display :$SCR & 
 export PID_VNC=$!
 
 # Start mqtt broker
 mosquitto &
 export PID_MOSQUITTO=$!
 
-DISPLAY=:$SCR ./node_modules/.bin/chromedriver --url-base=wd/hub --port=9515 &
-export PID_CHROMEDRIVER=$!
-sleep 2
-
 # Delete old video
-rm ./app.mp4 || echo no need to delete ./app.mp4
+rm -f ./app*.mp4
+rm -f ./qrawvideorgb24.yuv
 
 # Start recoring in tmux
-#tmux new-session -d -s record ffmpeg -f x11grab -draw_mouse 0 -video_size $DIMENSIONS -i :$SCR -codec:v libx264 -r 20 ./app.mp4
+# tmux new-session -d -s record ffmpeg -f x11grab -draw_mouse 0 -video_size $DIMENSIONS -i :$SCR -codec:v libx264 -r 20 ./app.mp4
 tmux new-session -d -s record ffmpeg -f x11grab -draw_mouse 0 -video_size $DIMENSIONS -i :$SCR -r 20 -vcodec rawvideo -pix_fmt yuv420p qrawvideorgb24.yuv
 
 # Start tests
-node dist/src/spec/demoVideo.js
+DISPLAY=:$SCR node dist/src/spec/demoVideo.js
 TEST_EXIT_CODE=$?
-echo "Webriver exitet with $TEST_EXIT_CODE"
+echo "Test script exited with $TEST_EXIT_CODE"
 
 # Stop recording
 tmux send-keys -t record q

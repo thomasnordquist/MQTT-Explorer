@@ -1,4 +1,4 @@
-import { Browser, Element } from 'webdriverio'
+import { Page, Locator } from 'playwright'
 import {
   clickOn,
   sleep,
@@ -9,30 +9,30 @@ import {
   showText,
 } from '../util'
 
-export async function publishTopic(browser: Browser<'async'>) {
+export async function publishTopic(browser: Page) {
   await expandTopic('kitchen/lamp/state', browser)
-  const topicInput = await browser.$('//input[contains(@value,"kitchen/lamp/state")][1]')
-  await clickOn(topicInput, browser)
-  await deleteTextWithBackspaces(topicInput, browser, 120, 5)
-  await writeText('set', browser, 300)
+  const topicInput = await browser.locator('//input[contains(@value,"kitchen/lamp/state")][1]')
+  await clickOn(topicInput)
+  await deleteTextWithBackspaces(topicInput, 120, 5)
+  await writeText('set', topicInput, 300)
 
-  const payloadInput = await browser.$('//*[contains(@class, "ace_text-input")]')
+  const payloadInput = await browser.locator('//*[contains(@class, "ace_text-input")]')
   await writeTextPayload(payloadInput, 'off')
   await sleep(500)
-  const formatJsonButton = await browser.$('#sidebar-publish-format-json')
-  await clickOn(formatJsonButton, browser)
+  const formatJsonButton = await browser.locator('#sidebar-publish-format-json')
+  await clickOn(formatJsonButton)
 
-  const publishButton = await browser.$('#publish-button')
-  await moveToCenterOfElement(publishButton, browser)
+  const publishButton = await browser.locator('#publish-button')
+  await moveToCenterOfElement(publishButton)
   await showText('Lamp turns on', 1000, browser, 'top')
   await sleep(500)
 
-  await clickOn(publishButton, browser)
+  await clickOn(publishButton)
 
-  const sidebarDrawer = await browser.$('#Sidebar')
-  await sidebarDrawer.scrollIntoView()
+  const sidebarDrawer = await browser.locator('#Sidebar')
+  await sidebarDrawer.scrollIntoViewIfNeeded()
 }
 
-async function writeTextPayload(payloadInput: any, text: string) {
-  await payloadInput.setValue(text)
+async function writeTextPayload(payloadInput: Locator, text: string) {
+  await payloadInput.fill(text)
 }

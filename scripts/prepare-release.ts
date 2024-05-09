@@ -17,18 +17,18 @@ async function prepareRelease() {
 
   // Install app dependencies
   chdir('app')
-  await exec('yarn')
+  await exec('yarn', ['install', '--frozen-lockfile'])
   chdir('..')
 
   // Install electron dependencies
-  await exec('yarn')
+  await exec('yarn', ['install', '--frozen-lockfile'])
 
   // Build App and Electron backend
   await exec('yarn', ['build'])
 
   // Clean up
   await fs.remove('node_modules')
-  await exec('yarn', ['install', '--production']) // Do not clean up, electron version detection will fail otherwise
+  await exec('yarn', ['install', '--production', '--frozen-lockfile']) // Do not clean up, electron version detection will fail otherwise
   await fs.remove(path.join('app', 'node_modules'))
 
   chdir(originalDir)

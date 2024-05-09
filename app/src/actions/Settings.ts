@@ -43,12 +43,14 @@ export const storeSettings = () => async (dispatch: Dispatch<any>, getState: () 
   }
 }
 
-export const setAutoExpandLimit = (autoExpandLimit: number = 0) => (dispatch: Dispatch<any>) => {
-  dispatch({
-    autoExpandLimit,
-    type: ActionTypes.SETTINGS_SET_AUTO_EXPAND_LIMIT,
-  })
-}
+export const setAutoExpandLimit =
+  (autoExpandLimit: number = 0) =>
+  (dispatch: Dispatch<any>) => {
+    dispatch({
+      autoExpandLimit,
+      type: ActionTypes.SETTINGS_SET_AUTO_EXPAND_LIMIT,
+    })
+  }
 
 export const setTimeLocale = (timeLocale: string) => (dispatch: Dispatch<any>) => {
   dispatch({
@@ -81,13 +83,15 @@ export const toggleHighlightTopicUpdates = () => (dispatch: Dispatch<any>) => {
   dispatch(storeSettings())
 }
 
-export const setTopicOrder = (topicOrder: TopicOrder = TopicOrder.none) => (dispatch: Dispatch<any>) => {
-  dispatch({
-    topicOrder,
-    type: ActionTypes.SETTINGS_SET_TOPIC_ORDER,
-  })
-  dispatch(storeSettings())
-}
+export const setTopicOrder =
+  (topicOrder: TopicOrder = TopicOrder.none) =>
+  (dispatch: Dispatch<any>) => {
+    dispatch({
+      topicOrder,
+      type: ActionTypes.SETTINGS_SET_TOPIC_ORDER,
+    })
+    dispatch(storeSettings())
+  }
 
 export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, getState: () => AppState) => {
   const { tree } = getState().connection

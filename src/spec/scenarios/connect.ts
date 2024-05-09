@@ -1,11 +1,10 @@
-import { Browser, Element } from 'webdriverio'
 import { clickOn, setTextInInput } from '../util'
-
-export async function connectTo(host: string, browser: Browser<'async'>) {
+import { Page, Locator } from 'playwright'
+export async function connectTo(host: string, browser: Page) {
   await setTextInInput('Host', host, browser)
 
-  await browser.saveScreenshot('screen1.png')
+  await browser.screenshot({ path: 'screen1.png' })
 
-  const connectButton = await browser.$('//button/span[contains(text(),"Connect")]')
-  await clickOn(connectButton, browser)
+  const connectButton = await browser.locator('//button/span[contains(text(),"Connect")]')
+  await clickOn(connectButton)
 }

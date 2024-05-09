@@ -128,4 +128,5 @@ const styles = (theme: Theme) => ({
   },
 })
 
+// @ts-ignore
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ValuePanel))

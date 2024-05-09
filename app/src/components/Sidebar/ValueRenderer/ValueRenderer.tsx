@@ -83,10 +83,12 @@ class ValueRenderer extends React.Component<Props, State> {
   }
 
   public render() {
-    return <div style={{ padding: '0px 0px 8px 0px', width: '100%' }}>
-      {this.props.message?.payload?.decoder === Decoder.SPARKPLUG && "Decoded SparkplugB"}
-      {this.renderValue()}
-    </div>
+    return (
+      <div style={{ padding: '0px 0px 8px 0px', width: '100%' }}>
+        {this.props.message?.payload?.decoder === Decoder.SPARKPLUG && 'Decoded SparkplugB'}
+        {this.renderValue()}
+      </div>
+    )
   }
 
   public renderValue() {

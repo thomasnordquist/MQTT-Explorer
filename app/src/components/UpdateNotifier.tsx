@@ -55,8 +55,8 @@ class UpdateNotifier extends React.PureComponent<Props, State> {
   }
 
   private async checkForUpdates() {
-    const ownVersion = await rendererRpc.call(getAppVersion, undefined, 10000);
-    const releases = await this.fetchReleases();
+    const ownVersion = await rendererRpc.call(getAppVersion, undefined, 10000)
+    const releases = await this.fetchReleases()
     const newerVersions = releases
       .filter(release => this.allowPrereleaseIfOwnVersionIsBeta(release, ownVersion))
       .filter(release => compareVersions(release.tag_name, ownVersion) > 0)

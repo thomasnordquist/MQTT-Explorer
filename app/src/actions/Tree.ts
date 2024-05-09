@@ -12,12 +12,10 @@ export { clearTopic } from './clearTopic'
 
 export { moveSelectionUpOrDownwards, moveInward, moveOutward } from './visibleTreeTraversal'
 
-export const selectTopic = (topic: q.TreeNode<TopicViewModel>) => (
-  dispatch: Dispatch<any>,
-  getState: () => AppState
-) => {
-  debouncedSelectTopic(topic, dispatch, getState)
-}
+export const selectTopic =
+  (topic: q.TreeNode<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState) => {
+    debouncedSelectTopic(topic, dispatch, getState)
+  }
 
 const debouncedSelectTopic = debounce(
   (topic: q.TreeNode<TopicViewModel>, dispatch: Dispatch<any>, getState: () => AppState) => {
@@ -74,25 +72,26 @@ function destroyUnreferencedTree(state: AppState) {
   }
 }
 
-export const resetStore = () => (dispatch: Dispatch<any>, getState: () => AppState): AnyAction => {
-  destroyUnreferencedTree(getState())
+export const resetStore =
+  () =>
+  (dispatch: Dispatch<any>, getState: () => AppState): AnyAction => {
+    destroyUnreferencedTree(getState())
 
-  return dispatch({
-    type: ActionTypes.TREE_RESET_STORE,
-  })
-}
+    return dispatch({
+      type: ActionTypes.TREE_RESET_STORE,
+    })
+  }
 
-export const showTree = (tree: q.Tree<TopicViewModel> | undefined) => (
-  dispatch: Dispatch<any>,
-  getState: () => AppState
-): AnyAction => {
-  destroyUnreferencedTree(getState())
+export const showTree =
+  (tree: q.Tree<TopicViewModel> | undefined) =>
+  (dispatch: Dispatch<any>, getState: () => AppState): AnyAction => {
+    destroyUnreferencedTree(getState())
 
-  return dispatch({
-    tree,
-    type: ActionTypes.TREE_SHOW_TREE,
-  })
-}
+    return dispatch({
+      tree,
+      type: ActionTypes.TREE_SHOW_TREE,
+    })
+  }
 
 export const togglePause = (tree?: q.Tree<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState) => {
   const paused = getState().tree.get('paused')

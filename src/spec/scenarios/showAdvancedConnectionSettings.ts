@@ -1,30 +1,30 @@
-import { Browser } from 'webdriverio'
+import { Page } from 'playwright'
 import { clickOn, sleep, setInputText } from '../util'
 
-export async function showAdvancedConnectionSettings(browser: Browser<'async'>) {
-  const advancedSettingsButton = await browser.$('//button/span[contains(text(),"Advanced")]')
-  const addButton = await browser.$('//button/span[contains(text(),"Add")]')
-  const topicInput = await browser.$('//*[contains(@class, "advanced-connection-settings-topic-input")]//input')
+export async function showAdvancedConnectionSettings(browser: Page) {
+  const advancedSettingsButton = await browser.locator('//button/span[contains(text(),"Advanced")]')
+  const addButton = await browser.locator('//button/span[contains(text(),"Add")]')
+  const topicInput = await browser.locator('//*[contains(@class, "advanced-connection-settings-topic-input")]//input')
 
-  await clickOn(advancedSettingsButton, browser)
+  await clickOn(advancedSettingsButton)
   await setInputText(topicInput, 'garden/#', browser)
-  await clickOn(addButton, browser)
+  await clickOn(addButton)
 
   await setInputText(topicInput, 'livingroom/#', browser)
-  await clickOn(addButton, browser)
+  await clickOn(addButton)
 
   await deleteFirstSubscribedTopic(browser)
   await deleteFirstSubscribedTopic(browser)
   await sleep(1000)
 
-  const backButton = await browser.$('//button/span[contains(text(),"Back")]')
-  await clickOn(backButton, browser)
+  const backButton = await browser.locator('//button/span[contains(text(),"Back")]').first()
+  await clickOn(backButton)
 
-  const connectButton = await browser.$('//button/span[contains(text(),"Connect")]')
-  await clickOn(connectButton, browser)
+  const connectButton = await browser.locator('//button/span[contains(text(),"Connect")]')
+  await clickOn(connectButton)
 }
 
-async function deleteFirstSubscribedTopic(browser: Browser<'async'>) {
-  const deleteButton = await browser.$('.advanced-connection-settings-topic-list button')
-  await clickOn(deleteButton, browser)
+async function deleteFirstSubscribedTopic(browser: Page) {
+  const deleteButton = await browser.locator('.advanced-connection-settings-topic-list button').first()
+  await clickOn(deleteButton)
 }

@@ -1,7 +1,7 @@
-import { Browser } from 'webdriverio'
+import { Page } from 'playwright'
 import { clickOn } from '../util'
 
-export async function copyTopicToClipboard(browser: Browser<'async'>) {
-  const copyButton = await browser.$('//span[contains(text(), "Topic")]//button')
-  await clickOn(copyButton, browser, 1)
+export async function copyTopicToClipboard(browser: Page) {
+  const copyButton = await browser.locator('//span[contains(text(), "Topic")]//button[1]')
+  await clickOn(copyButton, 1)
 }

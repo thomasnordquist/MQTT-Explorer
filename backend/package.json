@@ -4,15 +4,15 @@
   "description": "",
   "main": "build/index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --require ts-node/register --require source-map-support/register --recursive ./src/*/**/*.spec.ts",
     "build": "tsc",
-    "test-inspect": "mocha --inspect-brk",
-    "coverage": "nyc mocha",
+    "test-inspect": "mocha --inspect-brk --require ts-node/register --require source-map-support/register --recursive ./src/*/**/*.spec.ts",
+    "coverage": "nyc mocha --require ts-node/register --require source-map-support/register --recursive ./src/*/**/*.spec.ts",
     "debug": "ts-node --inspect ./src/index.ts",
     "postinstall": "yarn build"
   },
   "engines": {
-    "node": "16"
+    "node": ">=18"
   },
   "author": "",
   "license": "CC-BY-ND-4.0",
@@ -41,9 +41,9 @@
   "peerDependencies": {
     "fs-extra": "^8.0.1",
     "js-base64": "^2.5.1",
+    "long": "^4.0.0",
     "lowdb": "^1.0.0",
     "mqtt": "^3.0.0",
-    "protobufjs": "~6.11.2",
-    "long": "^4.0.0"
+    "protobufjs": "^6.11.4"
   }
 }

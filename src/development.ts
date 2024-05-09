@@ -17,10 +17,12 @@ export async function waitForDevServer() {
 }
 
 export function loadDevTools() {
+  /* spell-checker: disable */
   // Redux
   // BrowserWindow.addDevToolsExtension(
   //   path.join(os.homedir(), '/Library/Application Support/Google/Chrome/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.17.0_0/')
   // )
+  /* spell-checker: enable */
 }
 
 export function isDev() {

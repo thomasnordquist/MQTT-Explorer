@@ -1,7 +1,7 @@
 import { Base64Message } from '../backend/src/Model/Base64Message'
 import { DataSourceState, MqttOptions } from '../backend/src/DataSource'
 import { UpdateInfo } from 'builder-util-runtime'
-import { RpcEvent } from './EventSystem/Rpc';
+import { RpcEvent } from './EventSystem/Rpc'
 
 export type Event<MessageType> = {
   topic: string
@@ -52,5 +52,5 @@ export function makeConnectionMessageEvent(connectionId: string): Event<MqttMess
 }
 
 export const getAppVersion: RpcEvent<void, string> = {
-  topic: `getAppVersion`
+  topic: 'getAppVersion',
 }

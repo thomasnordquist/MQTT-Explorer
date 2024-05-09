@@ -1,4 +1,4 @@
-FROM node:11-stretch
+FROM node:19.8.1-bullseye-slim
 
 RUN DEBIAN_FRONTEND="noninteractive" apt-get update \
   && apt-get install -y --no-install-recommends nano ffmpeg xvfb git-core tmux locales mosquitto x11vnc
