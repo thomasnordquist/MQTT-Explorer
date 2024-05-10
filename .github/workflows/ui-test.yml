@@ -16,3 +16,5 @@ jobs:
         run: yarn build
       - name: Install Packages
         run: yarn ui-test
+      - uses: actions/upload-artifact@v4
+        with: ui-test.*
