@@ -5,7 +5,7 @@ import * as dotProp from 'dot-prop'
 
 const linuxAppImage: builder.CliOptions = {
   x64: true,
-  ia32: true,
+  ia32: false,
   armv7l: true,
   arm64: false,
   projectDir: './build/clean',
@@ -50,9 +50,9 @@ const winAppx: builder.CliOptions = {
 
 const mac: builder.CliOptions = {
   x64: true,
-  ia32: true,
+  ia32: false,
   armv7l: false,
-  arm64: false,
+  arm64: true,
   projectDir: './build/clean',
   publish: 'always',
 }
