@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+      - alpha
+      - beta
 
 concurrency:
   group: ${{ github.ref }}
@@ -30,6 +32,9 @@ jobs:
           node-version: 18
       - run: npm install -g yarn
       - run: yarn
+      - run: npx semantic-release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: yarn build
       - run: yarn prepare-release
       - run: yarn package ${{ matrix.build.task }}
