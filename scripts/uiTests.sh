@@ -59,7 +59,4 @@ tmux send-keys -t record q
 # Ensure video is written
 sleep 5
 
-# Process the video
-./scripts/prepareVideo.sh
-
 exit $TEST_EXIT_CODE

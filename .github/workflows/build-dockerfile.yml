@@ -4,7 +4,6 @@ on:
       - master
       - release
       - beta
-      - tnordquist/test-ci
     paths:
       - Dockerfile
       - .github
