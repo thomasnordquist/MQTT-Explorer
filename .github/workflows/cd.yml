@@ -32,7 +32,7 @@ jobs:
           node-version: 18
       - run: npm install -g yarn
       - run: yarn
-      - run: npx semantic-release
+      - run: npx semantic-release -d
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: yarn build

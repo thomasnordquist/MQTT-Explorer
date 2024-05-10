@@ -28,8 +28,7 @@
     "package": "ts-node package.ts",
     "ui-test": "./scripts/uiTests.sh",
     "upload-video-artifacts": "./scripts/uploadVideoAsset.ts ui-test.mp4 ui-test.gif",
-    "package-with-docker": "./scripts/package-with-docker.sh",
-    "updateVersion": "semantic-release"
+    "package-with-docker": "./scripts/package-with-docker.sh"
   },
   "repository": {
     "type": "git",
