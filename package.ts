@@ -7,12 +7,30 @@ const linuxAppImage: builder.CliOptions = {
   x64: true,
   ia32: false,
   armv7l: true,
-  arm64: false,
+  arm64: true,
   projectDir: './build/clean',
   publish: 'always',
 }
 
 const linuxSnap: builder.CliOptions = {
+  x64: true,
+  ia32: false,
+  armv7l: true,
+  arm64: true,
+  projectDir: './build/clean',
+  publish: 'always',
+}
+
+const linuxDeb: builder.CliOptions = {
+  x64: true,
+  ia32: false,
+  armv7l: true,
+  arm64: true,
+  projectDir: './build/clean',
+  publish: 'always',
+}
+
+const winPortable: builder.CliOptions = {
   x64: true,
   ia32: false,
   armv7l: false,
@@ -21,18 +39,9 @@ const linuxSnap: builder.CliOptions = {
   publish: 'always',
 }
 
-const winPortable: builder.CliOptions = {
-  x64: true,
-  ia32: true,
-  armv7l: false,
-  arm64: false,
-  projectDir: './build/clean',
-  publish: 'always',
-}
-
 const winNsis: builder.CliOptions = {
   x64: true,
-  ia32: true,
+  ia32: false,
   armv7l: false,
   arm64: false,
   projectDir: './build/clean',
@@ -41,7 +50,7 @@ const winNsis: builder.CliOptions = {
 
 const winAppx: builder.CliOptions = {
   x64: true,
-  ia32: true,
+  ia32: false,
   armv7l: false,
   arm64: false,
   projectDir: './build/clean',
