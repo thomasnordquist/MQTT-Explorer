@@ -132,11 +132,4 @@ Ideas and bugs can also be reported on [github](https://github.com/thomasnordqui
 
 ## Telemetry
 
-No personal data is processed, sent or stored.
-
-The app sends telemetry and error reports, this enables me to quickly react on bugs/errors and understand what's going on. Responding quickly to errors is one key element in producing a reliable software product.
-
-It basically sends: app version, processor architecture, operating system, used memory, user interactions and error stacks.
-
-Even though the data is purely technical, an option to disable telemetry is planned. [#52](https://github.com/thomasnordquist/MQTT-Explorer/issues/52)
-
+App telemetry has been removed, we now completely rely on your bug reports to [GitHub issues](https://github.com/thomasnordquist/MQTT-Explorer/issues)
