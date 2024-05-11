@@ -4,7 +4,6 @@ on: [release, workflow_dispatch]
 
 jobs:
   update-website:
-    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
