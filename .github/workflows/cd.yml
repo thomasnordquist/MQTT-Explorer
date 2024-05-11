@@ -34,8 +34,8 @@ jobs:
       - run: npx semantic-release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: yarn build
-      - run: yarn prepare-release
+      #- run: yarn build
+      #- run: yarn prepare-release
       # - run: yarn package ${{ matrix.build.task }}
       #   env:
       #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
