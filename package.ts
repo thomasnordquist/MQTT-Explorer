@@ -15,8 +15,8 @@ const linuxAppImage: builder.CliOptions = {
 const linuxSnap: builder.CliOptions = {
   x64: true,
   ia32: false,
-  armv7l: true,
-  arm64: true,
+  armv7l: false, // not supported to build on x64
+  arm64: false, // not supported to build on x64
   projectDir: './build/clean',
   publish: 'always',
 }
