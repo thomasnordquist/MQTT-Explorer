@@ -31,9 +31,10 @@ jobs:
           node-version: 20
       - run: npm install -g yarn
       - run: yarn
-      - run: npx semantic-release
+      - run: npx semantic-release --ci
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
       #- run: yarn build
       #- run: yarn prepare-release
       # - run: yarn package ${{ matrix.build.task }}
