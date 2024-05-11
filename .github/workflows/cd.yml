@@ -19,8 +19,8 @@ jobs:
             task: linux
           - os: windows-latest
             task: win
-          # - os: macos-latest
-          #   task: mac
+          - os: macos-latest
+            task: mac
     runs-on: ${{ matrix.build.os }}
     steps:
       - if: matrix.build.os == 'ubuntu-latest'
