@@ -18,12 +18,14 @@
   "homepage": "https://github.com/thomasnordquist/MQTT-Explorer#readme",
   "devDependencies": {
     "@types/mustache": "^0.8.32",
+    "@types/semver-sort": "^0.0.5",
     "axios": "^0.18.0",
     "mustache": "^3.0.1",
     "ts-node": "^8.0.3",
     "typescript": "^3.4.2"
   },
   "dependencies": {
-    "@types/node": "^13.1.7"
+    "@types/node": "^13.1.7",
+    "semver-sort": "^1.0.0"
   }
 }
