@@ -40,3 +40,9 @@ jobs:
         name: Semantic Release
         env:
           GH_TOKEN: ${{ steps.create_token.outputs.token }}
+      - run: yarn build
+      - run: yarn prepare-release
+      - run: yarn package ${{ matrix.build.task }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
