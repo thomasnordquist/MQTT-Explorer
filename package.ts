@@ -69,6 +69,7 @@ async function executeBuild() {
     case 'linux':
       await buildWithOptions(linuxAppImage, { platform: 'linux', package: 'AppImage' })
       await buildWithOptions(linuxSnap, { platform: 'linux', package: 'snap' })
+      await buildWithOptions(linuxDeb, { platform: 'linux', package: 'deb' })
       break
     case 'mac':
       await buildWithOptions(mac, { platform: 'mac', package: 'dmg' })

@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  platform_matrix:
+  build:
     strategy:
       matrix:
         build:
@@ -36,13 +36,26 @@ jobs:
         with:
           app_id: ${{ secrets.RELEASE_BOT_APP_ID }}
           private_key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
-      - run: npx semantic-release --ci
-        name: Semantic Release
-        env:
-          GH_TOKEN: ${{ steps.create_token.outputs.token }}
-      - run: yarn build
-      - run: yarn prepare-release
-      - run: yarn package ${{ matrix.build.task }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+      # - run: npx semantic-release --ci
+      #   name: Semantic Release
+      #   env:
+      #     GH_TOKEN: ${{ steps.create_token.outputs.token }}
+      # - run: yarn build
+      # - run: yarn prepare-release
+      # - run: yarn package ${{ matrix.build.task }}
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+  update-readme:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm run readme
+      - uses: stefanzweifel/git-auto-commit-action@v5
