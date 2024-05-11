@@ -73,8 +73,8 @@ async function executeBuild() {
       break
     case 'mac':
       await buildWithOptions(mac, { platform: 'mac', package: 'dmg' })
-      await buildWithOptions(mac, { platform: 'mac', package: 'mas' })
-      await buildWithOptions(mac, { platform: 'mac', package: 'zip' })
+      // await buildWithOptions(mac, { platform: 'mac', package: 'mas' })
+      // await buildWithOptions(mac, { platform: 'mac', package: 'zip' })
       break
     default:
       await buildWithOptions({ ...mac, projectDir: '' }, { platform: 'mac', package: 'mas-dev' })
