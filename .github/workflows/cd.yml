@@ -31,13 +31,12 @@ jobs:
           node-version: 20
       - run: npm install -g yarn
       - run: yarn
+      - id: create_token # get ReleaseBot access token
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.RELEASE_BOT_APP_ID }}
+          private_key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
       - run: npx semantic-release --ci
+        name: Semantic Release
         env:
-          GH_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
-      #- run: yarn build
-      #- run: yarn prepare-release
-      # - run: yarn package ${{ matrix.build.task }}
-      #   env:
-      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+          GH_TOKEN: ${{ steps.create_token.outputs.token }}
