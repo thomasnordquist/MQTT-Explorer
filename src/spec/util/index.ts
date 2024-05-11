@@ -21,14 +21,6 @@ export function sleep(ms: number, required = false) {
 
 export async function writeText(text: string, element: Locator, delay = 0) {
   return element.fill(text)
-  if (fast) {
-    return element.fill(text)
-  }
-
-  for (const c of text.split('')) {
-    await element.press(c)
-    await sleep(delay)
-  }
 }
 
 export async function deleteTextWithBackspaces(element: Locator, delay = 0, count = 0) {

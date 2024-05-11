@@ -6,6 +6,7 @@
       "prerelease": true
     }
   ],
+  repositoryUrl: "git@github.com:thomasnordquist/MQTT-Explorer.git",
   "plugins": [
     "@semantic-release/commit-analyzer",
     "semantic-release-export-data",
