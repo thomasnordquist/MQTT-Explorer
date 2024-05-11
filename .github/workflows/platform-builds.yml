@@ -36,13 +36,17 @@ jobs:
         with:
           app_id: ${{ secrets.RELEASE_BOT_APP_ID }}
           private_key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
-      - run: npx semantic-release --ci
-        name: Semantic Release
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v4
+        id: semantic   # Need an `id` for output variables
         env:
-          GH_TOKEN: ${{ steps.create_token.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.create_token.outputs.token }}
       - run: yarn build
+        if: steps.semantic.outputs.new_release_published == 'true'
       - run: yarn prepare-release
+        if: steps.semantic.outputs.new_release_published == 'true'
       - run: yarn package ${{ matrix.build.task }}
+        if: steps.semantic.outputs.new_release_published == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
