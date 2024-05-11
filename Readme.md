@@ -132,4 +132,4 @@ Ideas and bugs can also be reported on [github](https://github.com/thomasnordqui
 
 ## Telemetry
 
-App telemetry has been removed, we now completely rely on your bug reports to [GitHub issues](https://github.com/thomasnordquist/MQTT-Explorer/issues)
+App telemetry has been removed, we rely on your bug reports to [GitHub issues](https://github.com/thomasnordquist/MQTT-Explorer/issues)
