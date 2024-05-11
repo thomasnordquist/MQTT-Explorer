@@ -1,4 +1,6 @@
-on: [push]
+on:
+  pull_request_target: # Use pull_request_target
+    branches: [master, beta, release]
 
 jobs:
   test:
@@ -15,6 +17,8 @@ jobs:
       - name: Build
         run: yarn build
       - name: Test
+        run: yarn test
+      - name: UI-Test
         run: yarn ui-test
       - name: Post-processing
         run: ./scripts/prepareVideo.sh

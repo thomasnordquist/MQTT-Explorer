@@ -6,11 +6,12 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/c35tkm29rm4m5364/branch/master?svg=true)](https://ci.appveyor.com/project/thomasnordquist/mqtt-explorer/branch/master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/47b26e03fce543ceac7914214482334a)](https://app.codacy.com/app/thomasnordquist/MQTT-Explorer?utm_source=github.com&utm_medium=referral&utm_content=thomasnordquist/MQTT-Explorer&utm_campaign=Badge_Grade_Dashboard)
 
-|   |   |   |
-|:---:|:---:|:---:|
-|[![screen_composite](https://mqtt-explorer.com/img/screen-composite_small.png)](https://mqtt-explorer.com/img/screen-composite.png)|[![screen2_small](https://mqtt-explorer.com/img/screen2_small.png)](https://mqtt-explorer.com/img/screen2.png)|[![screen3_small](https://mqtt-explorer.com/img/screen3_small.png)](https://mqtt-explorer.com/img/screen3.png)|
+|                                                                                                                                     |                                                                                                                |                                                                                                                |
+| :---------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------: |
+| [![screen_composite](https://mqtt-explorer.com/img/screen-composite_small.png)](https://mqtt-explorer.com/img/screen-composite.png) | [![screen2_small](https://mqtt-explorer.com/img/screen2_small.png)](https://mqtt-explorer.com/img/screen2.png) | [![screen3_small](https://mqtt-explorer.com/img/screen3_small.png)](https://mqtt-explorer.com/img/screen3.png) |
 
 # The App has moved to [mqtt-explorer.com](https://mqtt-explorer.com)
+
 MQTT Explorer is a comprehensive and easy-to-use MQTT Client.  
 Downloads can be found at the link above.
 
@@ -29,6 +30,7 @@ yarn start
 ## Develop
 
 Launch Application
+
 ```bash
 npm install -g yarn
 yarn
@@ -62,6 +64,15 @@ Compile and execute tests
 npm run build
 node dist/src/spec/webdriverio.js
 ```
+
+## Create a release
+
+Create a PR to `release` branch.
+There needs to be a "feat: some new feature" or "fix: some bugfix" commit for a new release to be created
+
+## Create a beta release
+
+Create a PR to `beta` branch. A "feat" or "fix" commit is necessary to create a new version.
 
 ## Write docs
 
