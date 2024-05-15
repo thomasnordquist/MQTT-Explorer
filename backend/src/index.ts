@@ -47,9 +47,16 @@ export class ConnectionManager {
         buffer = buffer.slice(0, 20000)
       }
 
+      let decoded_payload = null
+      if (topic.startsWith("spBv1.0/")) {
+        decoded_payload = SparkplugDecoder.decode(buffer)
+      } else {
+        decoded_payload = Base64Message.fromBuffer(buffer)
+      }
+
       backendEvents.emit(messageEvent, {
         topic,
-        payload: SparkplugDecoder.decode(buffer) ?? Base64Message.fromBuffer(buffer),
+        payload: decoded_payload,
         qos: packet.qos,
         retain: packet.retain,
         messageId: packet.messageId,

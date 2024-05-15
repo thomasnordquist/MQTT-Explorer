@@ -9,7 +9,7 @@ const root = protobuf.parse(protocol).root
 export let SparkplugPayload = root.lookupType('com.cirruslink.sparkplug.protobuf.Payload')
 
 export const SparkplugDecoder = {
-  decode(input: Buffer): Base64Message | undefined {
+  decode(input: Buffer): Base64Message {
     try {
       const message = Base64Message.fromString(
         JSON.stringify(SparkplugPayload.toObject(SparkplugPayload.decode(new Uint8Array(input))))
@@ -17,8 +17,9 @@ export const SparkplugDecoder = {
       message.decoder = Decoder.SPARKPLUG
       return message
     } catch {
-      // ignore
+      const message = Base64Message.fromString("Failed to decode sparkplugb payload")
+      message.decoder = Decoder.NONE
+      return message
     }
-    return undefined
   },
 }
