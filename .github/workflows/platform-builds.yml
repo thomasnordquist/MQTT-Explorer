@@ -38,9 +38,11 @@ jobs:
           private_key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4
-        id: semantic   # Need an `id` for output variables
+        id: semantic # Need an `id` for output variables
         env:
           GITHUB_TOKEN: ${{ steps.create_token.outputs.token }}
+        with:
+          semantic_version: 23.0.8
       - run: yarn build
         if: steps.semantic.outputs.new_release_published == 'true'
       - run: yarn prepare-release
