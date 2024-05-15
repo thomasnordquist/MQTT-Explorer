@@ -49,7 +49,7 @@ export class ConnectionManager {
 
       backendEvents.emit(messageEvent, {
         topic,
-        payload: SparkplugDecoder.decode(buffer) ?? Base64Message.fromBuffer(buffer),
+        payload: Base64Message.fromBuffer(buffer),
         qos: packet.qos,
         retain: packet.retain,
         messageId: packet.messageId,
