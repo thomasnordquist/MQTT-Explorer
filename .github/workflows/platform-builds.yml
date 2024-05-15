@@ -11,7 +11,30 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  semantic-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install -g yarn
+      - run: yarn
+      - id: create_token # get ReleaseBot access token
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.RELEASE_BOT_APP_ID }}
+          private_key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v4
+        id: semantic # Need an `id` for output variables
+        env:
+          GITHUB_TOKEN: ${{ steps.create_token.outputs.token }}
+        with:
+          semantic_version: 23.0.8
+
   build:
+    needs: semantic-release
     strategy:
       matrix:
         build:
@@ -31,26 +54,26 @@ jobs:
           node-version: 20
       - run: npm install -g yarn
       - run: yarn
-      - id: create_token # get ReleaseBot access token
-        uses: tibdex/github-app-token@v2
-        with:
-          app_id: ${{ secrets.RELEASE_BOT_APP_ID }}
-          private_key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
-      - name: Semantic Release
-        uses: cycjimmy/semantic-release-action@v4
-        id: semantic # Need an `id` for output variables
-        env:
-          GITHUB_TOKEN: ${{ steps.create_token.outputs.token }}
-        with:
-          semantic_version: 23.0.8
       - run: yarn build
-        if: steps.semantic.outputs.new_release_published == 'true'
+        # if: needs.semantic-release.outputs.semantic.outputs.new_release_published == 'true'
       - run: yarn prepare-release
-        if: steps.semantic.outputs.new_release_published == 'true'
+        # if: needs.semantic-release.outputs.semantic.outputs.new_release_published == 'true'
       - run: yarn package ${{ matrix.build.task }}
-        if: steps.semantic.outputs.new_release_published == 'true'
+        # if: needs.semantic-release.outputs.semantic.outputs.new_release_published == 'true'
         env:
           EP_PRE_RELEASE: 'true'
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
-  
+  update-website:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm run readme
+      - uses: stefanzweifel/git-auto-commit-action@v5
