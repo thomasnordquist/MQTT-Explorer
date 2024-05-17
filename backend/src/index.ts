@@ -48,7 +48,8 @@ export class ConnectionManager {
       }
 
       let decoded_payload = null
-      if (topic.startsWith("spBv1.0/")) {
+      // spell-checker: disable-next-line
+      if (topic.match(/spBv1\.0\/[^/]+\/(DDATA|NDATA|NCMD|DCMD|NBIRTH|DBIRTH|NDEATH|DDEATH\/[^/]+\/)/u)) {
         decoded_payload = SparkplugDecoder.decode(buffer)
       } else {
         decoded_payload = Base64Message.fromBuffer(buffer)
