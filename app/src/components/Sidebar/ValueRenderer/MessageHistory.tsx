@@ -82,7 +82,7 @@ class MessageHistory extends React.PureComponent<Props, State> {
     const history = node.messageHistory.toArray()
     let previousMessage: q.Message | undefined = node.message
     const historyElements = [...history].reverse().map((message, idx) => {
-      const value = message.payload ? Base64Message.toUnicodeString(message.payload) : ''
+      const [value, ignore] = Base64Message.format(message.payload, node.type)
       const element = {
         value,
         key: `${message.messageNumber}-${message.received}`,
@@ -102,7 +102,7 @@ class MessageHistory extends React.PureComponent<Props, State> {
               <MessageId message={message} />
             </span>
             <div style={{ float: 'right' }}>
-              <Copy value={value} />
+              <Copy value={value ? value : ''} />
             </div>
           </span>
         ),
@@ -112,8 +112,8 @@ class MessageHistory extends React.PureComponent<Props, State> {
       return element
     })
 
-    const isMessagePlottable =
-      node.message && node.message.payload && isPlottable(Base64Message.toUnicodeString(node.message.payload))
+    const [value, ignore] = node.message && node.message.payload ? Base64Message.format(node.message.payload, node.type) : [null, undefined]
+    const isMessagePlottable = isPlottable(value)
     return (
       <div>
         <History
@@ -131,7 +131,7 @@ class MessageHistory extends React.PureComponent<Props, State> {
           }
           onClick={this.displayMessage}
         >
-          {isMessagePlottable ? <TopicPlot history={node.messageHistory} /> : null}
+          {isMessagePlottable ? <TopicPlot node={node} history={node.messageHistory} /> : null}
         </History>
       </div>
     )

@@ -31,19 +31,19 @@ class TreeNodeTitle extends React.PureComponent<TreeNodeProps, {}> {
       return ''
     }
 
-    const str = Base64Message.toUnicodeString(this.props.treeNode.message.payload)
-    return str.length > limit ? `${str.slice(0, limit)}…` : str
+    const [value, ignore] = Base64Message.format(this.props.treeNode.message.payload, this.props.treeNode.type)
+    return value.length > limit ? `${value.slice(0, limit)}…` : value
   }
 
   private renderValue() {
     return this.props.treeNode.message &&
       this.props.treeNode.message.payload &&
       this.props.treeNode.message.length > 0 ? (
-      <span key="value" className={this.props.classes.value}>
-        {' '}
+        <span key="value" className={this.props.classes.value}>
+          {' '}
         = {this.truncatedMessage()}
-      </span>
-    ) : null
+        </span>
+      ) : null
   }
 
   private renderExpander() {
@@ -66,9 +66,8 @@ class TreeNodeTitle extends React.PureComponent<TreeNodeProps, {}> {
     const messages = this.props.treeNode.leafMessageCount()
     const topicCount = this.props.treeNode.childTopicCount()
     return (
-      <span key="metadata" className={this.props.classes.collapsedSubnodes}>{` (${topicCount} ${
-        topicCount === 1 ? 'topic' : 'topics'
-      }, ${messages} ${messages === 1 ? 'message' : 'messages'})`}</span>
+      <span key="metadata" className={this.props.classes.collapsedSubnodes}>{` (${topicCount} ${topicCount === 1 ? 'topic' : 'topics'
+        }, ${messages} ${messages === 1 ? 'message' : 'messages'})`}</span>
     )
   }
 
