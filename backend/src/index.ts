@@ -48,12 +48,7 @@ export class ConnectionManager {
       }
 
       let decoded_payload = null
-      // spell-checker: disable-next-line
-      if (topic.match(/spBv1\.0\/[^/]+\/(DDATA|NDATA|NCMD|DCMD|NBIRTH|DBIRTH|NDEATH|DDEATH\/[^/]+\/)/u)) {
-        decoded_payload = SparkplugDecoder.decode(buffer)
-      } else {
-        decoded_payload = Base64Message.fromBuffer(buffer)
-      }
+      decoded_payload = Base64Message.fromBuffer(buffer)
 
       backendEvents.emit(messageEvent, {
         topic,

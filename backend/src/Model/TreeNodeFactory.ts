@@ -1,6 +1,7 @@
 import { Destroyable } from './Destroyable'
 import { Edge, Tree, TreeNode } from './'
 import { MqttMessage } from '../../../events'
+import { Base64Message } from './Base64Message'
 
 export abstract class TreeNodeFactory {
   private static messageCounter = 0
@@ -30,6 +31,7 @@ export abstract class TreeNodeFactory {
     mqttMessage.retain
     node.setMessage({
       ...mqttMessage,
+      payload: mqttMessage.payload && new Base64Message(mqttMessage.payload?.base64Message),
       length: mqttMessage.payload?.length ?? 0,
       received: receiveDate,
       messageNumber: this.messageCounter,

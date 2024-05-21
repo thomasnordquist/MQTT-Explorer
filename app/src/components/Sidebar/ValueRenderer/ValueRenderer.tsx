@@ -2,7 +2,6 @@ import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
 import CodeDiff from '../CodeDiff'
 import { AppState } from '../../../reducers'
-import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
 import { connect } from 'react-redux'
 import { ValueRendererDisplayMode } from '../../../reducers/Settings'
 import { Fade } from '@material-ui/core'
@@ -47,9 +46,8 @@ class ValueRenderer extends React.Component<Props, State> {
     const previousMessage = previousMessages[previousMessages.length - 2]
     const compareMessage = compare || previousMessage || message
 
-    const compareValue = compareMessage.payload || message.payload
-    const [currentStr, currentType] = Base64Message.format(message.payload, treeNode.type)
-    const [compareStr, compareType] = Base64Message.format(compareValue, treeNode.type)
+    const [currentStr, currentType] = treeNode.decodeMessage(message)?.format(treeNode.type) ?? []
+    const [compareStr, compareType] = treeNode.decodeMessage(compareMessage)?.format(treeNode.type) ?? []
 
     const language = currentType === compareType && compareType === 'json' ? 'json' : undefined
 
@@ -61,9 +59,9 @@ class ValueRenderer extends React.Component<Props, State> {
       return
     }
 
-    const [currentStr, currentType] = Base64Message.format(message.payload, treeNode.type)
+    const [currentStr, currentType] = treeNode.decodeMessage(message)?.format(treeNode.type) ?? []
     const [compareStr, compareType] =
-      compare && compare.payload ? Base64Message.format(compare.payload, treeNode.type) : [undefined, undefined]
+      compare && compare.payload ? treeNode.decodeMessage(compare)?.format(treeNode.type) ?? [] : []
 
     return (
       <div>

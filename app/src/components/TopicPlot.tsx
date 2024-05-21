@@ -26,23 +26,28 @@ function filterUsingTimeRange(startTime: number | undefined, data: Array<q.Messa
   return data
 }
 
-function nodeToHistory(startTime: number | undefined, history: q.MessageHistory, type: q.TopicDataType) {
+function nodeToHistory(startTime: number | undefined, history: q.MessageHistory, node: q.TreeNode<any>) {
   return filterUsingTimeRange(startTime, history.toArray())
     .map((message: q.Message) => {
-      const [value, ignore] = message.payload ? Base64Message.format(message.payload, type) : [NaN, undefined]
-      // const value = message.payload ? toPlottableValue(Base64Message.toUnicodeString(message.payload)) : NaN
-      return { x: message.received.getTime(), y: toPlottableValue(value) }
+      const decoded = node.decodeMessage(message)?.toUnicodeString()
+      return { x: message.received.getTime(), y: toPlottableValue(decoded) }
     })
     .filter(data => !isNaN(data.y as any)) as any
 }
 
-function nodeDotPathToHistory(startTime: number | undefined, history: q.MessageHistory, dotPath: string, type: q.TopicDataType) {
+function nodeDotPathToHistory(
+  startTime: number | undefined,
+  history: q.MessageHistory,
+  dotPath: string,
+  node: q.TreeNode<any>
+) {
   return filterUsingTimeRange(startTime, history.toArray())
     .map((message: q.Message) => {
       let json: any = {}
       try {
-        json = message.payload ? JSON.parse(Base64Message.toUnicodeString(message.payload)) : {}
-      } catch (ignore) { }
+        const decoded = node.decodeMessage(message)
+        json = decoded ? JSON.parse(decoded.toUnicodeString()) : {}
+      } catch (ignore) {}
 
       const value = dotProp.get(json, dotPath)
 
@@ -53,13 +58,15 @@ function nodeDotPathToHistory(startTime: number | undefined, history: q.MessageH
 
 function TopicPlot(props: Props) {
   const startOffset = props.timeInterval ? parseDuration(props.timeInterval) : undefined
-  const data = React.useMemo(
-    () =>
-      props.dotPath
-        ? nodeDotPathToHistory(startOffset, props.history, props.dotPath, props.node ? props.node.type : 'string')
-        : nodeToHistory(startOffset, props.history, props.node ? props.node.type : 'string'),
-    [props.history.last(), startOffset, props.dotPath]
-  )
+  const data = React.useMemo(() => {
+    if (!props.node) {
+      return []
+    }
+
+    return props.dotPath
+      ? nodeDotPathToHistory(startOffset, props.history, props.dotPath, props.node)
+      : nodeToHistory(startOffset, props.history, props.node)
+  }, [props.history.last(), startOffset, props.dotPath])
 
   return (
     <PlotHistory

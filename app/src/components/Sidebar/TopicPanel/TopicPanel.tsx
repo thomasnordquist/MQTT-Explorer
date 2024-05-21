@@ -23,13 +23,6 @@ const TopicPanel = (props: { node?: q.TreeNode<any>; actions: typeof sidebarActi
     props.actions.clearTopic(topic, recursive)
   }, [])
 
-  const setTopicType = useCallback((node?: q.TreeNode<any>, type: q.TopicDataType = 'string') => {
-    if (!node) {
-      return
-    }
-    node.type = type
-  }, [])
-
   return useMemo(
     () => (
       <Panel disabled={!Boolean(node)}>
@@ -37,7 +30,7 @@ const TopicPanel = (props: { node?: q.TreeNode<any>; actions: typeof sidebarActi
           Topic {copyTopic}
           <TopicDeleteButton node={node} deleteTopicAction={deleteTopic} />
           <RecursiveTopicDeleteButton node={node} deleteTopicAction={deleteTopic} />
-          <TopicTypeButton node={node} setTopicType={setTopicType} />
+          <TopicTypeButton node={node} />
         </span>
         <Topic node={node} />
       </Panel>

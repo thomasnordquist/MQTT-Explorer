@@ -19,7 +19,7 @@ registerCrashReporter()
 //   const electronTelemetry = electronTelemetryFactory('9b0c8ca04a361eb8160d98c5', buildOptions)
 // }
 
-app.commandLine.appendSwitch('--no-sandbox')
+app.commandLine.appendSwitch('--no-sandbox --disable-dev-shm-usage')
 app.whenReady().then(() => {
   backendRpc.on(makeOpenDialogRpc(), async request => {
     return dialog.showOpenDialog(BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0], request)
@@ -70,7 +70,7 @@ async function createWindow() {
   })
 
   console.log('icon path', iconPath)
-
+  mainWindow.webContents.openDevTools({ mode: 'detach' })
   // Load the index.html of the app.
   if (isDev()) {
     mainWindow.loadURL('http://localhost:8080')

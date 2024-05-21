@@ -68,13 +68,14 @@ export const selectTopicWithMouseOver = (doSelect: boolean) => (dispatch: Dispat
   dispatch(storeSettings())
 }
 
-export const setValueDisplayMode = (valueRendererDisplayMode: ValueRendererDisplayMode) => (dispatch: Dispatch<any>) => {
-  dispatch({
-    valueRendererDisplayMode,
-    type: ActionTypes.SETTINGS_SET_VALUE_RENDERER_DISPLAY_MODE,
-  })
-  dispatch(storeSettings())
-}
+export const setValueDisplayMode =
+  (valueRendererDisplayMode: ValueRendererDisplayMode) => (dispatch: Dispatch<any>) => {
+    dispatch({
+      valueRendererDisplayMode,
+      type: ActionTypes.SETTINGS_SET_VALUE_RENDERER_DISPLAY_MODE,
+    })
+    dispatch(storeSettings())
+  }
 
 export const toggleHighlightTopicUpdates = () => (dispatch: Dispatch<any>) => {
   dispatch({
@@ -117,7 +118,7 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
     const messageMatches =
       node.message &&
       node.message.payload &&
-      Base64Message.toUnicodeString(node.message.payload).toLowerCase().indexOf(filterStr) !== -1
+      node.message.payload.toUnicodeString().toLowerCase().indexOf(filterStr) !== -1
 
     return Boolean(messageMatches)
   }

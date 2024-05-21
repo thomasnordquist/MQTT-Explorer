@@ -1,46 +1,59 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import * as q from '../../../../../backend/src/Model'
-import CustomIconButton from '../../helper/CustomIconButton'
-import Code from '@material-ui/icons/Code'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import Grow from '@material-ui/core/Grow'
+import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
 import Popper from '@material-ui/core/Popper'
 import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
+import WarningRounded from '@material-ui/icons/WarningRounded'
+import { IDecoder, decoders } from '../../../../../backend/src/Model/sparkplugb'
+import { Tooltip } from '@material-ui/core'
 
 // const options: q.TopicDataType[] = ['json', 'string', 'hex', 'integer', 'unsigned int', 'floating point']
-const options: q.TopicDataType[] = ['json', 'string', 'hex', 'uint8', 'uint16', 'uint32', 'uint64', 'int8', 'int16', 'int32', 'int64', 'float', 'double']
+const options: q.TopicDataType[] = [
+  'json',
+  'string',
+  'hex',
+  'uint8',
+  'uint16',
+  'uint32',
+  'uint64',
+  'int8',
+  'int16',
+  'int32',
+  'int64',
+  'float',
+  'double',
+]
 
-export const TopicTypeButton = (props: {
-  node?: q.TreeNode<any>
-  setTopicType: (node: q.TreeNode<any>, type: q.TopicDataType) => void
-}) => {
+export const TopicTypeButton = (props: { node?: q.TreeNode<any> }) => {
   const { node } = props
   if (!node || !node.message || !node.message.payload) {
     return null
   }
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const options = decoders.flatMap(decoder => decoder.formats.map(format => [decoder, format] as const))
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const [open, setOpen] = React.useState(false)
 
-  const handleMenuItemClick = useCallback(
-    (mouseEvent: React.MouseEvent, element: q.TreeNode<any>, type: q.TopicDataType) => {
-      if (!element || !type) {
-        return
-      }
-      props.setTopicType(element, type as q.TopicDataType)
-      setOpen(false)
-    },
-    [props.setTopicType]
-  )
+  const selectOption = useCallback((decoder: IDecoder, format: string) => {
+    if (!node) {
+      return
+    }
+    node.decoder = decoder
+    node.decoderFormat = format
+    setOpen(false)
+  }, [])
 
   const handleToggle = (event: React.MouseEvent<HTMLElement>) => {
     if (open === true) {
       return
     }
     setAnchorEl(event.currentTarget)
-    setOpen((prevOpen) => !prevOpen)
+    setOpen(prevOpen => !prevOpen)
   }
 
   const handleClose = (event: React.MouseEvent<Document, MouseEvent>) => {
@@ -51,8 +64,8 @@ export const TopicTypeButton = (props: {
   }
 
   return (
-    <CustomIconButton tooltip="" onClick={handleToggle}>
-      <Code />
+    <Button onClick={handleToggle}>
+      {props.node?.decoderFormat ?? props.node?.type}
       <Popper open={open} anchorEl={anchorEl} role={undefined} transition>
         {({ TransitionProps, placement }) => (
           <Grow
@@ -64,13 +77,13 @@ export const TopicTypeButton = (props: {
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList id="topicTypeMode">
-                  {options.map((option, index) => (
+                  {options.map(([decoder, format], index) => (
                     <MenuItem
-                      key={option}
-                      selected={node && option === node.type}
-                      onClick={(event) => handleMenuItemClick(event, node, option)}
+                      key={format}
+                      selected={node && format === node.type}
+                      onClick={() => selectOption(decoder, format)}
                     >
-                      {option}
+                      <DecoderStatus decoder={decoder} format={format} node={node} />
                     </MenuItem>
                   ))}
                 </MenuList>
@@ -79,6 +92,22 @@ export const TopicTypeButton = (props: {
           </Grow>
         )}
       </Popper>
-    </CustomIconButton>
+    </Button>
+  )
+}
+
+function DecoderStatus({ node, decoder, format }: { node: q.TreeNode<any>; decoder: IDecoder; format: string }) {
+  const decoded = useMemo(() => {
+    return node.message?.payload && decoder.decode(node.message?.payload, format)
+  }, [node.message, decoder, format])
+
+  return decoded?.error ? (
+    <Tooltip title={decoded.error}>
+      <div>
+        {format} <WarningRounded />
+      </div>
+    </Tooltip>
+  ) : (
+    <>{format}</>
   )
 }

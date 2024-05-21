@@ -85,10 +85,9 @@ function ValuePanel(props: Props) {
     [compareMessage]
   )
 
-  const [value, ignore] = node && node.message && node.message.payload ? Base64Message.format(node.message.payload, node.type) : [null, undefined]
-  const copyValue = value ? (
-    <Copy value={value} />
-  ) : null
+  const [value] =
+    node && node.message && node.message.payload ? node.message.payload?.format(node.type) : [null, undefined]
+  const copyValue = value ? <Copy value={value} /> : null
 
   return (
     <Panel>

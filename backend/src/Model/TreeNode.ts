@@ -1,9 +1,31 @@
 import { Destroyable } from './Destroyable'
 import { Edge, Message, RingBuffer, MessageHistory } from './'
 import { EventDispatcher } from '../../../events'
+import { IDecoder, decoders } from './sparkplugb'
+import { Base64Message } from './Base64Message'
 
 // export type TopicDataType = 'json' | 'string' | 'hex' | 'integer' | 'unsigned int' | 'floating point'
-export type TopicDataType = 'json' | 'string' | 'hex' | 'uint8' | 'uint16' | 'uint32' | 'uint64' | 'int8' | 'int16' | 'int32' | 'int64' | 'float' | 'double'
+export type TopicDataType =
+  | 'json'
+  | 'string'
+  | 'hex'
+  | 'uint8'
+  | 'uint16'
+  | 'uint32'
+  | 'uint64'
+  | 'int8'
+  | 'int16'
+  | 'int32'
+  | 'int64'
+  | 'float'
+  | 'double'
+
+function findDecoder<T extends Destroyable>(node: TreeNode<T>): IDecoder | undefined {
+  return decoders.find(
+    decoder =>
+      decoder.canDecodeTopic?.(node.path()) || (node.message?.payload && decoder.canDecodeData?.(node.message?.payload))
+  )
+}
 
 export class TreeNode<ViewModel extends Destroyable> {
   public sourceEdge?: Edge<ViewModel>
@@ -21,6 +43,28 @@ export class TreeNode<ViewModel extends Destroyable> {
   public onDestroy = new EventDispatcher<TreeNode<ViewModel>>()
   public isTree = false
   public type: TopicDataType = 'json'
+
+  private _decoder?: IDecoder
+
+  public decoderFormat?: string
+
+  get decoder(): IDecoder | undefined {
+    if (!this._decoder) {
+      this._decoder = findDecoder(this)
+    }
+    return this._decoder
+  }
+
+  set decoder(override: IDecoder | undefined) {
+    this._decoder = override
+    this.message && this.onMerge.dispatch()
+  }
+
+  decodeMessage(message: Message): Base64Message | null {
+    const decoder = this.decoder
+
+    return this.decoder && message.payload ? this.decoder.decode(message.payload, this.decoderFormat) : message.payload
+  }
 
   private cachedPath?: string
   private cachedChildTopics?: Array<TreeNode<ViewModel>>
@@ -157,7 +201,7 @@ export class TreeNode<ViewModel extends Destroyable> {
 
   public path(): string {
     if (!this.cachedPath) {
-      return this.branch()
+      this.cachedPath = this.branch()
         .map(node => node.sourceEdge && node.sourceEdge.name)
         .filter(name => name !== undefined)
         .join('/')

@@ -123,7 +123,7 @@ function renderStat(tree: q.Tree<TopicViewModel>, stat: Stats) {
     return null
   }
 
-  const str = node.message.payload ? Base64Message.toUnicodeString(node.message.payload) : ''
+  const str = node.message.payload ? node.message.payload.toUnicodeString() : ''
   let value = node.message && node.message.payload ? parseFloat(str) : NaN
   value = !isNaN(value) ? abbreviate(value) : str
 
