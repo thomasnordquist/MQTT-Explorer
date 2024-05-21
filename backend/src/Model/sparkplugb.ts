@@ -22,7 +22,7 @@ export interface IDecoder<T = string> {
 export const SparkplugDecoder: IDecoder = {
   formats: ['Sparkplug'],
   canDecodeTopic(topic: string) {
-    return !!topic.match(/spBv1\.0\/[^/]+\/(DDATA|NDATA|NCMD|DCMD|NBIRTH|DBIRTH|NDEATH|DDEATH\/[^/]+\/)/u)
+    return !!topic.match(/^spBv1\.0\/[^/]+\/[ND](DATA|CMD|DEATH|BIRTH)\/[^/]+(\/[^/]+)?$/u)
   },
   decode(input: Base64Message): Base64Message {
     try {
