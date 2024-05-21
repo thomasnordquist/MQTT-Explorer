@@ -49,6 +49,7 @@ export const TopicTypeButton = (props: { node?: q.TreeNode<any> }) => {
   }, [])
 
   const handleToggle = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation()
     if (open === true) {
       return
     }
