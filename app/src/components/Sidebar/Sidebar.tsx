@@ -31,7 +31,7 @@ function useUpdateNodeWhenNodeReceivesUpdates(node?: q.TreeNode<any>) {
   const [lastUpdate, setLastUpdate] = useState(0)
   const updateNode = useCallback(
     throttle(() => {
-      setLastUpdate(node ? node.lastUpdate : 0)
+      setLastUpdate(Date.now())
     }, 300),
     [node]
   )

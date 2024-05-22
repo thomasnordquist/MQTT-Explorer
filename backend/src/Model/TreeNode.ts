@@ -57,7 +57,9 @@ export class TreeNode<ViewModel extends Destroyable> {
 
   set decoder(override: IDecoder | undefined) {
     this._decoder = override
-    this.message && this.onMerge.dispatch()
+
+    // Hack to force frontend to update
+    this.message && this.onMessage.dispatch(this.message)
   }
 
   decodeMessage(message: Message): Base64Message | null {
