@@ -2,9 +2,10 @@ import * as dotProp from 'dot-prop'
 import * as q from '../../../backend/src/Model'
 import * as React from 'react'
 import PlotHistory from './Chart/Chart'
-import { Base64Message } from '../../../backend/src/Model/Base64Message'
 import { toPlottableValue } from './Sidebar/CodeDiff/util'
 import { PlotCurveTypes } from '../reducers/Charts'
+import { DecoderFunction, useDecoder } from './hooks/useDecoder'
+
 const parseDuration = require('parse-duration')
 
 interface Props {
@@ -26,26 +27,26 @@ function filterUsingTimeRange(startTime: number | undefined, data: Array<q.Messa
   return data
 }
 
-function nodeToHistory(startTime: number | undefined, history: q.MessageHistory, node: q.TreeNode<any>) {
+function nodeToHistory(decodeMessage: DecoderFunction, startTime: number | undefined, history: q.MessageHistory) {
   return filterUsingTimeRange(startTime, history.toArray())
     .map((message: q.Message) => {
-      const decoded = node.decodeMessage(message)?.toUnicodeString()
+      const decoded = decodeMessage(message)?.toUnicodeString()
       return { x: message.received.getTime(), y: toPlottableValue(decoded) }
     })
     .filter(data => !isNaN(data.y as any)) as any
 }
 
 function nodeDotPathToHistory(
+  decodeMessage: DecoderFunction,
   startTime: number | undefined,
   history: q.MessageHistory,
-  dotPath: string,
-  node: q.TreeNode<any>
+  dotPath: string
 ) {
   return filterUsingTimeRange(startTime, history.toArray())
     .map((message: q.Message) => {
       let json: any = {}
       try {
-        const decoded = node.decodeMessage(message)
+        const decoded = decodeMessage(message)
         json = decoded ? JSON.parse(decoded.toUnicodeString()) : {}
       } catch (ignore) {}
 
@@ -57,6 +58,7 @@ function nodeDotPathToHistory(
 }
 
 function TopicPlot(props: Props) {
+  const decodeMessage = useDecoder(props.node)
   const startOffset = props.timeInterval ? parseDuration(props.timeInterval) : undefined
   const data = React.useMemo(() => {
     if (!props.node) {
@@ -64,8 +66,8 @@ function TopicPlot(props: Props) {
     }
 
     return props.dotPath
-      ? nodeDotPathToHistory(startOffset, props.history, props.dotPath, props.node)
-      : nodeToHistory(startOffset, props.history, props.node)
+      ? nodeDotPathToHistory(decodeMessage, startOffset, props.history, props.dotPath)
+      : nodeToHistory(decodeMessage, startOffset, props.history)
   }, [props.history.last(), startOffset, props.dotPath])
 
   return (

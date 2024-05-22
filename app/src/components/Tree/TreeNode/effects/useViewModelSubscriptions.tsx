@@ -1,6 +1,8 @@
 import * as q from '../../../../../../backend/src/Model'
-import React, { useEffect } from 'react'
+import React, { useCallback } from 'react'
 import { TopicViewModel } from '../../../../model/TopicViewModel'
+import { useSubscription } from '../../../hooks/useSubscription'
+import { useViewModel } from './useViewModel'
 
 export function useViewModelSubscriptions(
   treeNode: q.TreeNode<TopicViewModel>,
@@ -8,37 +10,21 @@ export function useViewModelSubscriptions(
   setSelected: (value: boolean) => void,
   setCollapsedOverride: (value: boolean) => void
 ) {
-  useEffect(() => {
-    const selectionDidChange = () => {
-      const selected = treeNode.viewModel && treeNode.viewModel.isSelected()
-      treeNode.viewModel && setSelected(Boolean(selected))
+  const viewModel = useViewModel(treeNode)
 
-      if (selected && nodeRef && nodeRef.current) {
-        nodeRef.current.focus({ preventScroll: false })
-      }
-    }
+  const selectionDidChange = useCallback(() => {
+    const selected = viewModel && viewModel.isSelected()
+    viewModel && setSelected(Boolean(selected))
 
-    const expandedDidChange = () => {
-      treeNode.viewModel && setCollapsedOverride(!treeNode.viewModel.isExpanded())
+    if (selected && nodeRef && nodeRef.current) {
+      nodeRef.current.focus({ preventScroll: false })
     }
+  }, [viewModel])
 
-    function addSubscriber() {
-      treeNode.viewModel = new TopicViewModel()
-      treeNode.viewModel.selectionChange.subscribe(selectionDidChange)
-      treeNode.viewModel.expandedChange.subscribe(expandedDidChange)
-    }
+  const expandedDidChange = useCallback(() => {
+    viewModel && setCollapsedOverride(!viewModel.isExpanded())
+  }, [viewModel])
 
-    function removeSubscriber() {
-      if (treeNode.viewModel) {
-        treeNode.viewModel.selectionChange.unsubscribe(selectionDidChange)
-        treeNode.viewModel.expandedChange.unsubscribe(expandedDidChange)
-        treeNode.viewModel = undefined
-      }
-    }
-
-    addSubscriber()
-    return function cleanup() {
-      removeSubscriber()
-    }
-  }, [treeNode])
+  useSubscription(viewModel?.selectionChange, selectionDidChange)
+  useSubscription(viewModel?.expandedChange, expandedDidChange)
 }

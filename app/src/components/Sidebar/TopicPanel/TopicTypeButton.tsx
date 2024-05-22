@@ -11,23 +11,6 @@ import WarningRounded from '@material-ui/icons/WarningRounded'
 import { IDecoder, decoders } from '../../../../../backend/src/Model/sparkplugb'
 import { Tooltip } from '@material-ui/core'
 
-// const options: q.TopicDataType[] = ['json', 'string', 'hex', 'integer', 'unsigned int', 'floating point']
-const options: q.TopicDataType[] = [
-  'json',
-  'string',
-  'hex',
-  'uint8',
-  'uint16',
-  'uint32',
-  'uint64',
-  'int8',
-  'int16',
-  'int32',
-  'int64',
-  'float',
-  'double',
-]
-
 export const TopicTypeButton = (props: { node?: q.TreeNode<any> }) => {
   const { node } = props
   if (!node || !node.message || !node.message.payload) {
@@ -39,34 +22,40 @@ export const TopicTypeButton = (props: { node?: q.TreeNode<any> }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const [open, setOpen] = React.useState(false)
 
-  const selectOption = useCallback((decoder: IDecoder, format: string) => {
-    if (!node) {
-      return
-    }
-    node.decoder = decoder
-    node.decoderFormat = format
-    setOpen(false)
-  }, [])
+  const selectOption = useCallback(
+    (decoder: IDecoder, format: string) => {
+      if (!node) {
+        return
+      }
 
-  const handleToggle = (event: React.MouseEvent<HTMLElement>) => {
-    event.stopPropagation()
-    if (open === true) {
-      return
-    }
-    setAnchorEl(event.currentTarget)
-    setOpen(prevOpen => !prevOpen)
-  }
+      node.viewModel.decoder = { decoder, format }
+      setOpen(false)
+    },
+    [node]
+  )
 
-  const handleClose = (event: React.MouseEvent<Document, MouseEvent>) => {
+  const handleToggle = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      event.stopPropagation()
+      if (open === true) {
+        return
+      }
+      setAnchorEl(event.currentTarget)
+      setOpen(prevOpen => !prevOpen)
+    },
+    [open]
+  )
+
+  const handleClose = useCallback((event: React.MouseEvent<Document, MouseEvent>) => {
     if (anchorEl && anchorEl.contains(event.target as HTMLElement)) {
       return
     }
     setOpen(false)
-  }
+  }, [])
 
   return (
     <Button onClick={handleToggle}>
-      {props.node?.decoderFormat ?? props.node?.type}
+      {props.node?.viewModel.decoder?.format ?? props.node?.type}
       <Popper open={open} anchorEl={anchorEl} role={undefined} transition>
         {({ TransitionProps, placement }) => (
           <Grow

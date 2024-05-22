@@ -1,5 +1,4 @@
 import { ConnectionOptions, createEmptyConnection } from './ConnectionOptions'
-import { v4 } from 'uuid'
 
 interface LegacyConnectionSettings {
   host: string

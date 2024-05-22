@@ -12,7 +12,6 @@ import { sidebarActions } from '../../../actions'
 
 const TopicPanel = (props: { node?: q.TreeNode<any>; actions: typeof sidebarActions }) => {
   const { node } = props
-  console.log(node && node.path())
 
   const copyTopic = node ? <Copy value={node.path()} /> : null
 
@@ -35,7 +34,7 @@ const TopicPanel = (props: { node?: q.TreeNode<any>; actions: typeof sidebarActi
         <Topic node={node} />
       </Panel>
     ),
-    [node, node && node.childTopicCount()]
+    [node, node?.childTopicCount()]
   )
 }
 

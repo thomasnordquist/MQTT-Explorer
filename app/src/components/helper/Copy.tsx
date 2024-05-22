@@ -9,7 +9,8 @@ import { globalActions } from '../../actions'
 const copy = require('copy-text-to-clipboard')
 
 interface Props {
-  value: string
+  value?: string
+  getValue?: () => string | undefined
   actions: {
     global: typeof globalActions
   }
@@ -28,7 +29,7 @@ class Copy extends React.PureComponent<Props, State> {
   private handleClick = (event: React.MouseEvent) => {
     event.stopPropagation()
 
-    copy(this.props.value)
+    copy(this.props.value ?? this.props.getValue?.())
     this.props.actions.global.showNotification('Copied to clipboard')
     this.setState({ didCopy: true })
     setTimeout(() => {

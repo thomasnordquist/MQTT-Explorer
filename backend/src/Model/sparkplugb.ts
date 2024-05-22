@@ -12,11 +12,6 @@ export interface IDecoder<T = string> {
   canDecodeTopic?(topic: string): boolean
   canDecodeData?(data: Base64Message): boolean
   decode(input: Base64Message, format: T | string | undefined): Base64Message
-
-  /**
-   * If this is just an intermediate decoder, next-decoder can be defined
-   */
-  nextDecoder?: IDecoder
 }
 
 export const SparkplugDecoder: IDecoder = {
