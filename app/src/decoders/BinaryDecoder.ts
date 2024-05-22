@@ -1,48 +1,5 @@
-import { Base64Message } from './Base64Message'
-import { Decoder } from './Decoder'
-import { get } from 'sparkplug-payload'
-var sparkplug = get('spBv1.0')
-
-export interface IDecoder<T = string> {
-  /**
-   * Can be used to
-   * @param topic
-   */
-  formats: T[]
-  canDecodeTopic?(topic: string): boolean
-  canDecodeData?(data: Base64Message): boolean
-  decode(input: Base64Message, format: T | string | undefined): Base64Message
-}
-
-export const SparkplugDecoder: IDecoder = {
-  formats: ['Sparkplug'],
-  canDecodeTopic(topic: string) {
-    return !!topic.match(/^spBv1\.0\/[^/]+\/[ND](DATA|CMD|DEATH|BIRTH)\/[^/]+(\/[^/]+)?$/u)
-  },
-  decode(input: Base64Message): Base64Message {
-    try {
-      const message = Base64Message.fromString(
-        JSON.stringify(
-          // @ts-ignore
-          sparkplug.decodePayload(new Uint8Array(input.toBuffer()))
-        )
-      )
-      message.decoder = Decoder.SPARKPLUG
-      return message
-    } catch {
-      const message = new Base64Message(undefined, 'Failed to decode sparkplugb payload')
-      message.decoder = Decoder.NONE
-      return message
-    }
-  },
-}
-
-export const StringDecoder: IDecoder = {
-  formats: ['string'],
-  decode(input: Base64Message): Base64Message {
-    return input
-  },
-}
+import { Base64Message } from '../../../backend/src/Model/Base64Message'
+import { MessageDecoder } from './MessageDecoder'
 
 type BinaryFormats =
   | 'int8'
@@ -59,7 +16,7 @@ type BinaryFormats =
 /**
  * Binary decode primitive binary data type and arrays of these
  */
-export const BinaryDecoder: IDecoder<BinaryFormats> = {
+export const BinaryDecoder: MessageDecoder<BinaryFormats> = {
   formats: ['int8', 'int16', 'int32', 'int64', 'uint8', 'uint16', 'uint32', 'uint64', 'float', 'double'],
   decode(input: Base64Message, format: BinaryFormats): Base64Message {
     const decodingOption = {
@@ -89,5 +46,3 @@ export const BinaryDecoder: IDecoder<BinaryFormats> = {
     return Base64Message.fromString(JSON.stringify(str.length === 1 ? str[0] : str))
   },
 }
-
-export const decoders = [SparkplugDecoder, BinaryDecoder, StringDecoder] as const

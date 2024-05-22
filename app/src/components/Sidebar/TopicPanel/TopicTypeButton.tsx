@@ -8,7 +8,7 @@ import Popper from '@material-ui/core/Popper'
 import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
 import WarningRounded from '@material-ui/icons/WarningRounded'
-import { IDecoder, decoders } from '../../../../../backend/src/Model/sparkplugb'
+import { MessageDecoder, decoders } from '../../../decoders'
 import { Tooltip } from '@material-ui/core'
 
 export const TopicTypeButton = (props: { node?: q.TreeNode<any> }) => {
@@ -23,7 +23,7 @@ export const TopicTypeButton = (props: { node?: q.TreeNode<any> }) => {
   const [open, setOpen] = React.useState(false)
 
   const selectOption = useCallback(
-    (decoder: IDecoder, format: string) => {
+    (decoder: MessageDecoder, format: string) => {
       if (!node) {
         return
       }
@@ -86,7 +86,7 @@ export const TopicTypeButton = (props: { node?: q.TreeNode<any> }) => {
   )
 }
 
-function DecoderStatus({ node, decoder, format }: { node: q.TreeNode<any>; decoder: IDecoder; format: string }) {
+function DecoderStatus({ node, decoder, format }: { node: q.TreeNode<any>; decoder: MessageDecoder; format: string }) {
   const decoded = useMemo(() => {
     return node.message?.payload && decoder.decode(node.message?.payload, format)
   }, [node.message, decoder, format])

@@ -1,6 +1,6 @@
 import * as q from '../../../backend/src/Model'
 import { Destroyable } from '../../../backend/src/Model/Destroyable'
-import { IDecoder, decoders } from '../../../backend/src/Model/sparkplugb'
+import { MessageDecoder, decoders } from '../decoders'
 import { EventDispatcher } from '../../../events'
 
 function findDecoder<T extends Destroyable>(node: q.TreeNode<T>): TopicDecoder | undefined {
@@ -17,7 +17,7 @@ function findDecoder<T extends Destroyable>(node: q.TreeNode<T>): TopicDecoder |
     : undefined
 }
 
-type TopicDecoder = { decoder: IDecoder; format: string | undefined }
+type TopicDecoder = { decoder: MessageDecoder; format: string | undefined }
 
 export class TopicViewModel implements Destroyable {
   private selected: boolean

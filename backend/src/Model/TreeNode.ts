@@ -1,24 +1,8 @@
 import { Destroyable } from './Destroyable'
 import { Edge, Message, RingBuffer, MessageHistory } from './'
 import { EventDispatcher } from '../../../events'
-import { IDecoder, decoders } from './sparkplugb'
-import { Base64Message } from './Base64Message'
 
-// export type TopicDataType = 'json' | 'string' | 'hex' | 'integer' | 'unsigned int' | 'floating point'
-export type TopicDataType =
-  | 'json'
-  | 'string'
-  | 'hex'
-  | 'uint8'
-  | 'uint16'
-  | 'uint32'
-  | 'uint64'
-  | 'int8'
-  | 'int16'
-  | 'int32'
-  | 'int64'
-  | 'float'
-  | 'double'
+export type TopicDataType = 'string' | 'json' | 'hex'
 
 export class TreeNode<ViewModel extends Destroyable> {
   public sourceEdge?: Edge<ViewModel>

@@ -28,10 +28,10 @@ interface Props {
 }
 
 function useUpdateNodeWhenNodeReceivesUpdates(node?: q.TreeNode<any>) {
-  const [lastUpdate, setLastUpdate] = useState(0)
+  const [, setLastUpdate] = useState(0)
   const updateNode = useCallback(
     throttle(() => {
-      setLastUpdate(Date.now())
+      setLastUpdate(node ? node.lastUpdate : 0)
     }, 300),
     [node]
   )
@@ -52,7 +52,6 @@ function Sidebar(props: Props) {
   const { classes, tree, nodePath } = props
   const node = usePollingToFetchTreeNode(tree, nodePath || '')
   useUpdateNodeWhenNodeReceivesUpdates(node)
-  // console.log(node && node.path(), tree, nodePath)
 
   return (
     <div id="Sidebar" className={classes.drawer}>

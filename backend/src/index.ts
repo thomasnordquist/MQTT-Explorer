@@ -10,7 +10,6 @@ import {
   makePublishEvent,
   removeConnection,
 } from '../../events'
-import { SparkplugDecoder } from './Model/sparkplugb'
 
 export class ConnectionManager {
   private connections: { [s: string]: DataSource<any> } = {}

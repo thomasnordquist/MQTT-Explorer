@@ -33,7 +33,6 @@ export class Base64Message {
     return new Base64Message(Base64.encode(str))
   }
 
-  /* Raw message conversions ('uint8' | 'uint16' | 'uint32' | 'uint64' | 'int8' | 'int16' | 'int32' | 'int64' | 'float' | 'double') */
   public format(type: TopicDataType = 'string'): [string, 'json' | undefined] {
     try {
       switch (type) {
