@@ -1,6 +1,5 @@
 import 'mocha'
 import { expect } from 'chai'
-import { Base64Message } from '../Base64Message'
 import { makeTreeNode } from './makeTreeNode'
 
 describe('TreeNodeFactory', () => {
@@ -20,7 +19,7 @@ describe('TreeNodeFactory', () => {
 
     expect(node).to.not.eq(undefined)
     expect(node.sourceEdge.name).to.eq('bar')
-    expect(Base64Message.toUnicodeString(node.message.payload!)).to.eq('5')
+    expect(node.message.payload!.toUnicodeString()).to.eq('5')
 
     const foo = node.firstNode().findNode('foo')
     expect(foo && foo.sourceEdge && foo.sourceEdge.name).to.eq('foo')
@@ -34,7 +33,7 @@ describe('TreeNodeFactory', () => {
       return
     }
 
-    expect(Base64Message.toUnicodeString(node.message.payload!)).to.eq('5')
+    expect(node.message.payload!.toUnicodeString()).to.eq('5')
     expect(node.sourceEdge.name).to.eq('baz')
 
     const barNode = node.sourceEdge.source

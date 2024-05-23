@@ -1,7 +1,6 @@
 import 'mocha'
 
 import { expect } from 'chai'
-import { Base64Message } from '../Base64Message'
 import { makeTreeNode } from './makeTreeNode'
 
 describe('TreeNode', () => {
@@ -14,7 +13,7 @@ describe('TreeNode', () => {
   it('updateWithNode should update value', () => {
     const topics = 'foo/bar'.split('/')
     const leaf = makeTreeNode('foo/bar', '3')
-    expect(Base64Message.toUnicodeString(leaf.message!.payload!)).to.eq('3')
+    expect(leaf.message!.payload!.toUnicodeString()).to.eq('3')
 
     const updateLeave = makeTreeNode('foo/bar', '5')
 
@@ -22,13 +21,13 @@ describe('TreeNode', () => {
     root.updateWithNode(updateLeave.firstNode())
 
     expect(root.sourceEdge).to.eq(undefined)
-    expect(Base64Message.toUnicodeString(leaf.message!.payload!)).to.eq('5')
+    expect(leaf.message!.payload!.toUnicodeString()).to.eq('5')
   })
 
   it('updateWithNode should update intermediate nodes', () => {
     const topics1 = 'foo/bar/baz'.split('/')
     const leaf = makeTreeNode('foo/bar/baz', '3')
-    expect(Base64Message.toUnicodeString(leaf.message!.payload!)).to.eq('3')
+    expect(leaf.message!.payload!.toUnicodeString()).to.eq('3')
 
     const topics2 = 'foo/bar'.split('/')
     const updateLeave = makeTreeNode('foo/bar', '5')
@@ -37,10 +36,10 @@ describe('TreeNode', () => {
 
     const barNode = leaf.firstNode().findNode('foo/bar')
     expect(barNode && barNode.sourceEdge && barNode.sourceEdge.name).to.eq('bar')
-    expect(Base64Message.toUnicodeString(barNode!.message!.payload!)).to.eq('5')
+    expect(barNode!.message!.payload!.toUnicodeString()).to.eq('5')
 
     expect(leaf.sourceEdge && leaf.sourceEdge.name).to.eq('baz')
-    expect(Base64Message.toUnicodeString(leaf.message!.payload!)).to.eq('3')
+    expect(leaf.message!.payload!.toUnicodeString()).to.eq('3')
   })
 
   it('updateWithNode should add nodes to the tree', () => {
