@@ -30,7 +30,7 @@ function filterUsingTimeRange(startTime: number | undefined, data: Array<q.Messa
 function nodeToHistory(decodeMessage: DecoderFunction, startTime: number | undefined, history: q.MessageHistory) {
   return filterUsingTimeRange(startTime, history.toArray())
     .map((message: q.Message) => {
-      const decoded = decodeMessage(message)?.toUnicodeString()
+      const decoded = decodeMessage(message)?.message?.toUnicodeString()
       return { x: message.received.getTime(), y: toPlottableValue(decoded) }
     })
     .filter(data => !isNaN(data.y as any)) as any
@@ -46,7 +46,7 @@ function nodeDotPathToHistory(
     .map((message: q.Message) => {
       let json: any = {}
       try {
-        const decoded = decodeMessage(message)
+        const decoded = decodeMessage(message)?.message
         json = decoded ? JSON.parse(decoded.toUnicodeString()) : {}
       } catch (ignore) {}
 

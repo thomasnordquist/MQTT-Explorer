@@ -65,7 +65,7 @@ export const MessageHistory: React.FC<Props> = props => {
   const history = node.messageHistory.toArray()
   let previousMessage: q.Message | undefined = node.message
   const historyElements = [...history].reverse().map((message, idx) => {
-    const value = node.message ? decodeMessage(node.message)?.format()[0] ?? null : null
+    const value = node.message ? decodeMessage(message)?.message?.format()[0] ?? null : null
 
     const element = {
       value: value ?? '',
@@ -96,7 +96,7 @@ export const MessageHistory: React.FC<Props> = props => {
     return element
   })
 
-  const value = node.message ? decodeMessage(node.message)?.format()[0] ?? null : null
+  const value = node.message ? decodeMessage(node.message)?.message?.format()[0] ?? null : null
 
   const isMessagePlottable = isPlottable(value)
   return (

@@ -1,12 +1,13 @@
 import * as q from '../../../../../backend/src/Model'
-import * as React from 'react'
+import React, { useMemo } from 'react'
 import CodeDiff from '../CodeDiff'
 import { AppState } from '../../../reducers'
 import { connect } from 'react-redux'
 import { ValueRendererDisplayMode } from '../../../reducers/Settings'
 import { Fade } from '@material-ui/core'
 import { Decoder } from '../../../../../backend/src/Model/Decoder'
-import { DecoderFunction, useDecoder } from '../../hooks/useDecoder'
+import { useDecoder } from '../../hooks/useDecoder'
+import { TopicViewModel } from '../../../model/TopicViewModel'
 
 interface Props {
   message: q.Message
@@ -15,86 +16,112 @@ interface Props {
   renderMode: ValueRendererDisplayMode
 }
 
-export const ValueRenderer: React.FC<Props> = props => {
-  const decodeMessage = useDecoder(props.treeNode)
+type Language = 'json'
 
-  function renderDiff(current: string = '', previous: string = '', title?: string, language?: 'json') {
-    return (
-      <CodeDiff
-        treeNode={props.treeNode}
-        previous={previous}
-        current={current}
-        title={title}
-        language={language}
-        nameOfCompareMessage={props.compareWith ? 'selected' : 'previous'}
-      />
-    )
-  }
+function renderDiff(
+  treeNode: q.TreeNode<TopicViewModel>,
+  compareWithPreviousMessage: boolean,
+  current: string = '',
+  previous: string = '',
+  title?: string,
+  language?: Language
+) {
+  return (
+    <CodeDiff
+      treeNode={treeNode}
+      previous={previous}
+      current={current}
+      title={title}
+      language={language}
+      nameOfCompareMessage={compareWithPreviousMessage ? 'selected' : 'previous'}
+    />
+  )
+}
 
-  function renderDiffMode(
-    decodeMessage: DecoderFunction,
-    message: q.Message,
-    treeNode: q.TreeNode<any>,
-    compare?: q.Message
+function renderDiffMode(
+  treeNode: q.TreeNode<TopicViewModel>,
+  currentStr: string | undefined,
+  compareStr: string | undefined,
+  currentType: Language | undefined,
+  compareType: Language | undefined,
+  compareWithPreviousMessage: boolean
+) {
+  const language = currentType === compareType && compareType === 'json' ? 'json' : undefined
+
+  return <div>{renderDiff(treeNode, compareWithPreviousMessage, currentStr, compareStr, undefined, language)}</div>
+}
+
+function renderRawMode(
+  treeNode: q.TreeNode<TopicViewModel>,
+  currentStr: string | undefined,
+  compareStr: string | undefined,
+  currentType: Language | undefined,
+  compareType: Language | undefined,
+  compareWithPreviousMessage: boolean
+) {
+  return (
+    <div>
+      {renderDiff(treeNode, compareWithPreviousMessage, currentStr, currentStr, undefined, currentType)}
+      <Fade in={Boolean(compareStr)} timeout={400}>
+        <div>
+          {Boolean(compareStr)
+            ? renderDiff(treeNode, compareWithPreviousMessage, compareStr, compareStr, 'selected', compareType)
+            : null}
+        </div>
+      </Fade>
+    </div>
+  )
+}
+
+export const ValueRenderer: React.FC<Props> = ({ treeNode, compareWith: compare, message, renderMode }) => {
+  const decodeMessage = useDecoder(treeNode)
+  const decodedMessage = useMemo(() => decodeMessage(message), [decodeMessage, message])
+
+  const previousMessages = treeNode.messageHistory.toArray()
+  const previousMessage = previousMessages[previousMessages.length - 2]
+  const compareMessage = compare || previousMessage || message
+  const compareWithPreviousMessage = !!compare
+
+  const [currentStr, currentType] = useMemo(
+    () => decodedMessage?.message?.format(treeNode.type) ?? [],
+    [decodedMessage, treeNode.type]
+  )
+  const [compareStr, compareType] = useMemo(
+    () => decodeMessage(compareMessage)?.message?.format(treeNode.type) ?? [],
+    [compareMessage, decodeMessage, treeNode.type]
+  )
+
+  function renderValue(
+    treeNode: q.TreeNode<TopicViewModel>,
+    currentStr: string | undefined,
+    compareStr: string | undefined,
+    currentType: Language | undefined,
+    compareType: Language | undefined,
+    renderMode: string,
+    compareWithPreviousMessage: boolean
   ) {
-    if (!message.payload) {
-      return
-    }
-
-    const previousMessages = treeNode.messageHistory.toArray()
-    const previousMessage = previousMessages[previousMessages.length - 2]
-    const compareMessage = compare || previousMessage || message
-
-    const [currentStr, currentType] = decodeMessage(message)?.format(treeNode.type) ?? []
-    const [compareStr, compareType] = decodeMessage(compareMessage)?.format(treeNode.type) ?? []
-
-    const language = currentType === compareType && compareType === 'json' ? 'json' : undefined
-
-    return <div>{renderDiff(currentStr, compareStr, undefined, language)}</div>
-  }
-
-  function renderRawMode(
-    decodeMessage: DecoderFunction,
-    message: q.Message,
-    treeNode: q.TreeNode<any>,
-    compare?: q.Message
-  ) {
-    if (!message.payload) {
-      return
-    }
-
-    const [currentStr, currentType] = decodeMessage(message)?.format(treeNode.type) ?? []
-    const [compareStr, compareType] =
-      compare && compare.payload ? decodeMessage(compare)?.format(treeNode.type) ?? [] : []
-
-    return (
-      <div>
-        {renderDiff(currentStr, currentStr, undefined, currentType)}
-        <Fade in={Boolean(compareStr)} timeout={400}>
-          <div>{Boolean(compareStr) ? renderDiff(compareStr, compareStr, 'selected', compareType) : null}</div>
-        </Fade>
-      </div>
-    )
-  }
-
-  function renderValue(decodeMessage: DecoderFunction) {
-    const { message, treeNode, compareWith, renderMode } = props
-    if (!message.payload) {
+    if (!decodedMessage) {
       return null
     }
 
     switch (renderMode) {
       case 'diff':
-        return renderDiffMode(decodeMessage, message, treeNode, compareWith)
+        return renderDiffMode(treeNode, currentStr, compareStr, currentType, compareType, compareWithPreviousMessage)
       default:
-        return renderRawMode(decodeMessage, message, treeNode, compareWith)
+        return renderRawMode(treeNode, currentStr, compareStr, currentType, compareType, compareWithPreviousMessage)
     }
   }
 
+  const renderedValue = useMemo(
+    () =>
+      renderValue(treeNode, currentStr, compareStr, currentType, compareType, renderMode, compareWithPreviousMessage),
+    [treeNode, currentStr, compareStr, currentType, compareType, renderMode, compareWithPreviousMessage]
+  )
+
   return (
     <div style={{ padding: '0px 0px 8px 0px', width: '100%' }}>
-      {props.message?.payload?.decoder === Decoder.SPARKPLUG && 'Decoded SparkplugB'}
-      {renderValue(decodeMessage)}
+      {decodedMessage?.decoder === Decoder.SPARKPLUG && 'Decoded SparkplugB'}
+      {renderedValue}
     </div>
   )
 }

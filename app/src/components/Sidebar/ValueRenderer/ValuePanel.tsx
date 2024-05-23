@@ -56,7 +56,7 @@ function ValuePanel(props: Props) {
   }
 
   const getDecodedValue = useCallback(() => {
-    return node?.message && decodeMessage(node.message)?.toUnicodeString()
+    return node?.message && decodeMessage(node.message)?.message?.toUnicodeString()
   }, [node, decodeMessage])
 
   function messageMetaInfo() {

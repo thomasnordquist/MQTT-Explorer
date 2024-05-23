@@ -15,7 +15,7 @@ export class ChangeBuffer {
   public push(val: MqttMessage) {
     if (!this.isFull()) {
       this.buffer.push({ message: val, received: new Date() })
-      this.size += this.estimatedMessageOverhead + (val.payload ? val.payload.length : 0)
+      this.size += this.estimatedMessageOverhead + (val.payload?.base64Message.length ?? 0)
       this.length += 1
     }
   }

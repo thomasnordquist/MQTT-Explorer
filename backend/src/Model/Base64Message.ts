@@ -1,20 +1,42 @@
 import { Base64 } from 'js-base64'
-import { Decoder } from './Decoder'
 import { TopicDataType } from './TreeNode'
+
+export type Base64MessageDTO = Pick<Base64Message, 'base64Message'>
 
 export class Base64Message {
   public base64Message: string
-  private unicodeValue: string
-  public error?: string
-  public decoder: Decoder
-  public length: number
+  private _unicodeValue: string | undefined
 
-  constructor(base64Str?: string, error?: string) {
-    this.base64Message = base64Str ?? ''
-    this.error = error
-    this.unicodeValue = Base64.decode(base64Str ?? '')
-    this.length = base64Str?.length ?? 0
-    this.decoder = Decoder.NONE
+  // Todo: Rename to `encodedLength`
+  public get length(): number {
+    return this.base64Message.length
+  }
+
+  private get unicodeValue(): string {
+    if (!this._unicodeValue) {
+      this._unicodeValue = Base64.decode(this.base64Message ?? '')
+    }
+
+    return this._unicodeValue
+  }
+
+  constructor(base64Str?: string | Base64MessageDTO, error?: string) {
+    if (typeof base64Str === 'string' || typeof base64Str === 'undefined') {
+      this.base64Message = base64Str ?? ''
+    } else {
+      if (typeof base64Str.base64Message !== 'string') {
+        throw new Error('Received unexpected type in copy constructor')
+      }
+      this.base64Message = base64Str.base64Message
+    }
+  }
+
+  /**
+   * Override default JSON serialization behavior to only return the DTO
+   * @returns
+   */
+  public toJSON(): Base64MessageDTO {
+    return { base64Message: this.base64Message }
   }
 
   public toUnicodeString() {

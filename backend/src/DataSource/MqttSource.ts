@@ -98,7 +98,7 @@ export class MqttSource implements DataSource<MqttOptions> {
 
   public publish(msg: MqttMessage) {
     if (this.client) {
-      this.client.publish(msg.topic, msg.payload?.toBuffer() ?? '', {
+      this.client.publish(msg.topic, (msg.payload && new Base64Message(msg.payload))?.toBuffer() ?? '', {
         qos: msg.qos,
         retain: msg.retain,
       })

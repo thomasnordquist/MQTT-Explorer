@@ -1,7 +1,8 @@
 import { Base64Message } from './Base64Message'
 import { QoS } from '../DataSource/MqttSource'
+import { MemoryConsumptionExpressedByLength } from './RingBuffer'
 
-export interface Message {
+export interface Message extends MemoryConsumptionExpressedByLength {
   // mqtt based info
   payload: Base64Message | null
   messageId?: number

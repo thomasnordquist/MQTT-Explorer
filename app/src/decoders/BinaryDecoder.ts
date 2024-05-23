@@ -1,4 +1,6 @@
 import { Base64Message } from '../../../backend/src/Model/Base64Message'
+import { Decoder } from '../../../backend/src/Model/Decoder'
+import { DecoderEnvelope } from './DecoderEnvelope'
 import { MessageDecoder } from './MessageDecoder'
 
 type BinaryFormats =
@@ -18,7 +20,7 @@ type BinaryFormats =
  */
 export const BinaryDecoder: MessageDecoder<BinaryFormats> = {
   formats: ['int8', 'int16', 'int32', 'int64', 'uint8', 'uint16', 'uint32', 'uint64', 'float', 'double'],
-  decode(input: Base64Message, format: BinaryFormats): Base64Message {
+  decode(input: Base64Message, format: BinaryFormats): DecoderEnvelope {
     const decodingOption = {
       int8: [Buffer.prototype.readInt8, 1],
       int16: [Buffer.prototype.readInt16LE, 2],
@@ -37,12 +39,18 @@ export const BinaryDecoder: MessageDecoder<BinaryFormats> = {
     const buf = input.toBuffer()
     let str: String[] = []
     if (buf.length % bytesToRead !== 0) {
-      return new Base64Message(undefined, 'Data type does not align with message')
+      return {
+        error: 'Data type does not align with message',
+        decoder: Decoder.NONE,
+      }
     }
     for (let index = 0; index < buf.length; index += bytesToRead) {
       str.push((readNumber as any).apply(buf, [index]).toString())
     }
 
-    return Base64Message.fromString(JSON.stringify(str.length === 1 ? str[0] : str))
+    return {
+      message: Base64Message.fromString(JSON.stringify(str.length === 1 ? str[0] : str)),
+      decoder: Decoder.NONE,
+    }
   },
 }

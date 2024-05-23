@@ -32,7 +32,7 @@ export const TreeNodeTitle = (props: TreeNodeProps) => {
     if (!props.treeNode.message || !props.treeNode.message.payload) {
       return ''
     }
-    const [value = ''] = decodeMessage(props.treeNode.message)?.format(props.treeNode.type) ?? []
+    const [value = ''] = decodeMessage(props.treeNode.message)?.message?.format(props.treeNode.type) ?? []
 
     return value.length > limit ? `${value.slice(0, limit)}…` : value
   }

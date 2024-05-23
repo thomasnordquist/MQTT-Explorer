@@ -32,7 +32,7 @@ export abstract class TreeNodeFactory {
     node.setMessage({
       ...mqttMessage,
       payload: mqttMessage.payload && new Base64Message(mqttMessage.payload?.base64Message),
-      length: mqttMessage.payload?.length ?? 0,
+      length: mqttMessage.payload?.base64Message.length ?? 0,
       received: receiveDate,
       messageNumber: this.messageCounter,
     })

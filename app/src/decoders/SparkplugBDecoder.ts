@@ -9,7 +9,7 @@ export const SparkplugDecoder: MessageDecoder = {
   canDecodeTopic(topic: string) {
     return !!topic.match(/^spBv1\.0\/[^/]+\/[ND](DATA|CMD|DEATH|BIRTH)\/[^/]+(\/[^/]+)?$/u)
   },
-  decode(input: Base64Message): Base64Message {
+  decode(input) {
     try {
       const message = Base64Message.fromString(
         JSON.stringify(
@@ -17,12 +17,12 @@ export const SparkplugDecoder: MessageDecoder = {
           sparkplug.decodePayload(new Uint8Array(input.toBuffer()))
         )
       )
-      message.decoder = Decoder.SPARKPLUG
-      return message
+      return { message, decoder: Decoder.SPARKPLUG }
     } catch {
-      const message = new Base64Message(undefined, 'Failed to decode sparkplugb payload')
-      message.decoder = Decoder.NONE
-      return message
+      return {
+        error: 'Failed to decode sparkplugb payload',
+        decoder: Decoder.NONE,
+      }
     }
   },
 }
