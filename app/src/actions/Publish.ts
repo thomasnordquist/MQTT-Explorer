@@ -3,6 +3,7 @@ import { AppState } from '../reducers'
 import { Base64Message } from '../../../backend/src/Model/Base64Message'
 import { Dispatch } from 'redux'
 import { makePublishEvent, rendererEvents } from '../../../events'
+import { Decoder } from '../../../backend/src/Model/Decoder'
 
 export const setTopic = (topic?: string): Action => {
   return {
@@ -47,6 +48,14 @@ export const publish = (connectionId: string) => (dispatch: Dispatch<Action>, ge
     retain: state.publish.retain,
     qos: state.publish.qos,
   }
+
+  if (
+    mqttMessage.payload &&
+    mqttMessage.topic.match(/spBv1\.0\/[^/]+\/(DDATA|NDATA|NCMD|DCMD|NBIRTH|DBIRTH|NDEATH|DDEATH\/[^/]+\/)/u)
+  ) {
+    mqttMessage.payload.decoder = Decoder.SPARKPLUG
+  }
+
   rendererEvents.emit(publishEvent, mqttMessage)
 }
 
