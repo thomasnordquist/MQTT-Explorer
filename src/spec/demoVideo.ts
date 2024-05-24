@@ -5,6 +5,7 @@ import * as path from 'path'
 import { ElectronApplication, _electron as electron } from 'playwright'
 
 import mockMqtt, { stop as stopMqtt } from './mock-mqtt'
+import { default as MockSparkplug } from './mock-sparkplugb'
 import { clearOldTopics } from './scenarios/clearOldTopics'
 import { clearSearch, searchTree } from './scenarios/searchTree'
 import { clickOnHistory, createFakeMousePointer, hideText, showText, sleep } from './util'
@@ -64,6 +65,7 @@ async function doStuff() {
   const scenes = new SceneBuilder()
   await scenes.record('connect', async () => {
     await connectTo('127.0.0.1', page)
+    await MockSparkplug.run() // Start sparkplug client after connect or birth topics will be missed
     await sleep(1000)
   })
 
@@ -142,7 +144,7 @@ async function doStuff() {
   })
 
   stopMqtt()
-  console.log('Stopped mqtt')
+  console.log('Stopped mqtt client')
 
   cleanUp(scenes, electronApp)
 }
