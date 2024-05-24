@@ -147,6 +147,9 @@ async function doStuff() {
   console.log('Stopped mqtt client')
 
   cleanUp(scenes, electronApp)
+
+  // Force exit since there appear to be open handles
+  process.exit(0)
 }
 
 doStuff()
