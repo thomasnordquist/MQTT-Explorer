@@ -1,11 +1,11 @@
-import { Destroyable } from './Destroyable'
+import { Destroyable, MemoryLifecycle } from './Destroyable'
 import { Edge, Tree, TreeNode } from './'
 import { MqttMessage } from '../../../events'
 import { Base64Message } from './Base64Message'
 
 export abstract class TreeNodeFactory {
   private static messageCounter = 0
-  public static insertNodeAtPosition<ViewModel extends Destroyable>(
+  public static insertNodeAtPosition<ViewModel extends Destroyable & MemoryLifecycle>(
     edgeNames: Array<string>,
     node: TreeNode<ViewModel>
   ) {
@@ -21,7 +21,7 @@ export abstract class TreeNodeFactory {
     node.sourceEdge!.target = node
   }
 
-  public static fromMessage<ViewModel extends Destroyable>(
+  public static fromMessage<ViewModel extends Destroyable & MemoryLifecycle>(
     mqttMessage: MqttMessage,
     receiveDate: Date = new Date()
   ): TreeNode<ViewModel> {

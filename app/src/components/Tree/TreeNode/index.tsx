@@ -18,6 +18,7 @@ export interface Props {
   treeNode: q.TreeNode<TopicViewModel>
   name?: string | undefined
   collapsed?: boolean | undefined
+  doNotRenderSubnodes?: boolean
   classes: any
   lastUpdate: number
   actions: typeof treeActions
@@ -27,8 +28,8 @@ export interface Props {
 }
 
 function TreeNodeComponent(props: Props) {
-  const { actions, classes, settings, theme, treeNode, lastUpdate, name } = props
-  const [collapsedOverride, setCollapsedOverride] = useState<boolean | undefined>(undefined)
+  const { actions, classes, settings, theme, treeNode, lastUpdate, name, doNotRenderSubnodes } = props
+  const [collapsedOverride, setCollapsedOverride] = useState<boolean | undefined>(!treeNode.viewModel?.isExpanded())
   const [selected, selectionLastUpdate, setSelected] = useSelectionState(false)
   const nodeRef = useRef<HTMLDivElement>()
   const isAllowedToAutoExpand = useIsAllowedToAutoExpandState(props)
@@ -94,7 +95,7 @@ function TreeNodeComponent(props: Props) {
 
   return useMemo(() => {
     function renderNodes() {
-      if (isCollapsed) {
+      if (isCollapsed || doNotRenderSubnodes) {
         return null
       }
 
@@ -134,7 +135,7 @@ function TreeNodeComponent(props: Props) {
         {renderNodes()}
       </div>
     )
-  }, [treeNode.lastUpdate, treeNode, name, isCollapsed, selected, theme, mouseOver, settings])
+  }, [treeNode.lastUpdate, treeNode, name, isCollapsed, selected, theme, mouseOver, settings, doNotRenderSubnodes])
 }
 
 export default withStyles(styles, { withTheme: true })(React.memo(TreeNodeComponent))

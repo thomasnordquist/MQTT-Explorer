@@ -1,10 +1,11 @@
-import { Destroyable } from './Destroyable'
+import { Destroyable, MemoryLifecycle } from './Destroyable'
 import { Edge, Message, RingBuffer, MessageHistory } from './'
 import { EventDispatcher } from '../../../events'
+import { TopicViewModel } from '../../../app/src/model/TopicViewModel'
 
 export type TopicDataType = 'string' | 'json' | 'hex'
 
-export class TreeNode<ViewModel extends Destroyable> {
+export class TreeNode<ViewModel extends Destroyable & MemoryLifecycle> {
   public sourceEdge?: Edge<ViewModel>
   public message?: Message
   public messageHistory: MessageHistory = new RingBuffer<Message>(20000, 100)
@@ -48,6 +49,8 @@ export class TreeNode<ViewModel extends Destroyable> {
     this.onMessage.subscribe(() => {
       this.lastUpdate = Date.now()
     })
+    this.viewModel = new TopicViewModel(this as any) as any
+    this.viewModel?.retain()
   }
 
   private previous(): TreeNode<ViewModel> | undefined {
@@ -117,7 +120,7 @@ export class TreeNode<ViewModel extends Destroyable> {
     for (const edge of this.edgeArray) {
       edge.target.destroy()
     }
-    this.viewModel && this.viewModel.destroy()
+    this.viewModel?.release()
     this.viewModel = undefined
     this.edgeArray = []
     this.edges = {}
@@ -147,7 +150,7 @@ export class TreeNode<ViewModel extends Destroyable> {
   }
 
   public hash(): string {
-    return `N${this.sourceEdge ? this.sourceEdge.hash() : ''}`
+    return `N${this.sourceEdge?.hash() ?? ''}`
   }
 
   public firstNode(): TreeNode<ViewModel> {
