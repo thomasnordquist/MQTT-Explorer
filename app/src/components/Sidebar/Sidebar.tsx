@@ -1,10 +1,9 @@
 import * as q from '../../../../backend/src/Model'
 import React, { useState, useEffect, useCallback } from 'react'
-import ExpandMore from '@material-ui/icons/ExpandMore'
 import NodeStats from './NodeStats'
 import ValuePanel from './ValueRenderer/ValuePanel'
 import { AppState } from '../../reducers'
-import { Badge, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Typography } from '@material-ui/core'
+import { ExpansionPanelDetails } from '@material-ui/core'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { settingsActions, sidebarActions } from '../../actions'
@@ -28,7 +27,7 @@ interface Props {
 }
 
 function useUpdateNodeWhenNodeReceivesUpdates(node?: q.TreeNode<any>) {
-  const [lastUpdate, setLastUpdate] = useState(0)
+  const [, setLastUpdate] = useState(0)
   const updateNode = useCallback(
     throttle(() => {
       setLastUpdate(node ? node.lastUpdate : 0)
@@ -52,7 +51,6 @@ function Sidebar(props: Props) {
   const { classes, tree, nodePath } = props
   const node = usePollingToFetchTreeNode(tree, nodePath || '')
   useUpdateNodeWhenNodeReceivesUpdates(node)
-  // console.log(node && node.path(), tree, nodePath)
 
   return (
     <div id="Sidebar" className={classes.drawer}>

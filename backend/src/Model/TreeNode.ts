@@ -2,6 +2,8 @@ import { Destroyable } from './Destroyable'
 import { Edge, Message, RingBuffer, MessageHistory } from './'
 import { EventDispatcher } from '../../../events'
 
+export type TopicDataType = 'string' | 'json' | 'hex'
+
 export class TreeNode<ViewModel extends Destroyable> {
   public sourceEdge?: Edge<ViewModel>
   public message?: Message
@@ -17,6 +19,7 @@ export class TreeNode<ViewModel extends Destroyable> {
   public onMessage = new EventDispatcher<Message>()
   public onDestroy = new EventDispatcher<TreeNode<ViewModel>>()
   public isTree = false
+  public type: TopicDataType = 'json'
 
   private cachedPath?: string
   private cachedChildTopics?: Array<TreeNode<ViewModel>>
@@ -153,7 +156,7 @@ export class TreeNode<ViewModel extends Destroyable> {
 
   public path(): string {
     if (!this.cachedPath) {
-      return this.branch()
+      this.cachedPath = this.branch()
         .map(node => node.sourceEdge && node.sourceEdge.name)
         .filter(name => name !== undefined)
         .join('/')

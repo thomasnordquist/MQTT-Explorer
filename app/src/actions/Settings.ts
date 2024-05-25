@@ -1,5 +1,5 @@
 import * as q from '../../../backend/src/Model'
-import { ActionTypes, SettingsStateModel, TopicOrder } from '../reducers/Settings'
+import { ActionTypes, SettingsStateModel, TopicOrder, ValueRendererDisplayMode } from '../reducers/Settings'
 import { AppState } from '../reducers'
 import { autoExpandLimitSet } from '../components/SettingsDrawer/Settings'
 import { Base64Message } from '../../../backend/src/Model/Base64Message'
@@ -68,13 +68,14 @@ export const selectTopicWithMouseOver = (doSelect: boolean) => (dispatch: Dispat
   dispatch(storeSettings())
 }
 
-export const setValueDisplayMode = (valueRendererDisplayMode: 'diff' | 'raw') => (dispatch: Dispatch<any>) => {
-  dispatch({
-    valueRendererDisplayMode,
-    type: ActionTypes.SETTINGS_SET_VALUE_RENDERER_DISPLAY_MODE,
-  })
-  dispatch(storeSettings())
-}
+export const setValueDisplayMode =
+  (valueRendererDisplayMode: ValueRendererDisplayMode) => (dispatch: Dispatch<any>) => {
+    dispatch({
+      valueRendererDisplayMode,
+      type: ActionTypes.SETTINGS_SET_VALUE_RENDERER_DISPLAY_MODE,
+    })
+    dispatch(storeSettings())
+  }
 
 export const toggleHighlightTopicUpdates = () => (dispatch: Dispatch<any>) => {
   dispatch({
@@ -117,7 +118,7 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
     const messageMatches =
       node.message &&
       node.message.payload &&
-      Base64Message.toUnicodeString(node.message.payload).toLowerCase().indexOf(filterStr) !== -1
+      node.message.payload.toUnicodeString().toLowerCase().indexOf(filterStr) !== -1
 
     return Boolean(messageMatches)
   }

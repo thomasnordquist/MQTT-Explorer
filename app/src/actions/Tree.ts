@@ -33,13 +33,8 @@ const debouncedSelectTopic = debounce(
       setTopicDispatch = setTopic(topic.path())
     }
 
-    if (previouslySelectedTopic && previouslySelectedTopic.viewModel) {
-      previouslySelectedTopic.viewModel.setSelected(false)
-    }
-
-    if (topic.viewModel) {
-      topic.viewModel.setSelected(true)
-    }
+    previouslySelectedTopic?.viewModel?.setSelected(false)
+    topic.viewModel?.setSelected(true)
 
     const selectTreeTopicDispatch = {
       selectedTopic: topic,

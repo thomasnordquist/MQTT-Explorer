@@ -2,7 +2,7 @@ import { Action, ActionTypes } from '../reducers/Publish'
 import { AppState } from '../reducers'
 import { Base64Message } from '../../../backend/src/Model/Base64Message'
 import { Dispatch } from 'redux'
-import { makePublishEvent, rendererEvents } from '../../../events'
+import { MqttMessage, makePublishEvent, rendererEvents } from '../../../events'
 
 export const setTopic = (topic?: string): Action => {
   return {
@@ -41,7 +41,7 @@ export const publish = (connectionId: string) => (dispatch: Dispatch<Action>, ge
   }
 
   const publishEvent = makePublishEvent(connectionId)
-  const mqttMessage = {
+  const mqttMessage: Partial<MqttMessage> = {
     topic,
     payload: state.publish.payload ? Base64Message.fromString(state.publish.payload) : null,
     retain: state.publish.retain,

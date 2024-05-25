@@ -7,13 +7,13 @@ import Panel from '../Panel'
 import React, { useCallback } from 'react'
 import ValueRenderer from './ValueRenderer'
 import { AppState } from '../../../reducers'
-import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
 import { bindActionCreators } from 'redux'
 import { Theme, Typography, withStyles } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { sidebarActions } from '../../../actions'
 import DeleteSelectedTopicButton from './DeleteSelectedTopicButton'
 import { MessageId } from '../MessageId'
+import { useDecoder } from '../../hooks/useDecoder'
 
 interface Props {
   node?: q.TreeNode<any>
@@ -35,6 +35,7 @@ function RenderedValue(props: { node?: q.TreeNode<any>; compareMessage?: q.Messa
 
 function ValuePanel(props: Props) {
   const { node, compareMessage } = props
+  const decodeMessage = useDecoder(node)
 
   function renderViewOptions() {
     if (!props.node || !props.node.message) {
@@ -53,6 +54,10 @@ function ValuePanel(props: Props) {
       </div>
     )
   }
+
+  const getDecodedValue = useCallback(() => {
+    return node?.message && decodeMessage(node.message)?.message?.toUnicodeString()
+  }, [node, decodeMessage])
 
   function messageMetaInfo() {
     if (!props.node || !props.node.message) {
@@ -85,10 +90,9 @@ function ValuePanel(props: Props) {
     [compareMessage]
   )
 
-  const copyValue =
-    node && node.message && node.message.payload ? (
-      <Copy value={Base64Message.toUnicodeString(node.message.payload)} />
-    ) : null
+  const [value] =
+    node && node.message && node.message.payload ? node.message.payload?.format(node.type) : [null, undefined]
+  const copyValue = value ? <Copy getValue={getDecodedValue} /> : null
 
   return (
     <Panel>

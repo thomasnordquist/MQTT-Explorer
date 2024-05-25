@@ -5,7 +5,6 @@ import Copy from '../../helper/Copy'
 import DateFormatter from '../../helper/DateFormatter'
 import History from '../HistoryDrawer'
 import TopicPlot from '../../TopicPlot'
-import { Base64Message } from '../../../../../backend/src/Model/Base64Message'
 import { isPlottable } from '../CodeDiff/util'
 import { TopicViewModel } from '../../../model/TopicViewModel'
 import { bindActionCreators } from 'redux'
@@ -13,6 +12,8 @@ import { chartActions } from '../../../actions'
 import { connect } from 'react-redux'
 import CustomIconButton from '../../helper/CustomIconButton'
 import { MessageId } from '../MessageId'
+import { useSubscription } from '../../hooks/useSubscription'
+import { useDecoder } from '../../hooks/useDecoder'
 
 const throttle = require('lodash.throttle')
 
@@ -25,117 +26,100 @@ interface Props {
   }
 }
 
-interface State {
-  displayMessage?: q.Message
-  anchorEl?: HTMLElement
-  lastUpdate: number
-}
+export const MessageHistory: React.FC<Props> = props => {
+  const [, setLastUpdate] = React.useState(Date.now())
+  const updateNodeThrottled = React.useCallback(
+    throttle(() => {
+      setLastUpdate
+    }, 300),
+    []
+  )
 
-class MessageHistory extends React.PureComponent<Props, State> {
-  private updateNode = throttle(() => {
-    this.setState({ lastUpdate: Date.now() })
-  }, 300)
+  useSubscription(props.node?.onMessage, updateNodeThrottled)
+  const decodeMessage = useDecoder(props.node)
 
-  constructor(props: any) {
-    super(props)
-    this.state = { lastUpdate: 0 }
-  }
-
-  private addNodeToCharts = (event: React.MouseEvent) => {
+  function addNodeToCharts(event: React.MouseEvent) {
     event.preventDefault()
     event.stopPropagation()
 
-    const { node } = this.props
+    const { node } = props
     if (!node) {
       return null
     }
 
-    this.props.actions.charts.addChart({ topic: node.path() })
+    props.actions.charts.addChart({ topic: node.path() })
   }
 
-  private displayMessage = (index: number, eventTarget: EventTarget) => {
-    const message = this.props.node && this.props.node.messageHistory.toArray().reverse()[index]
+  function displayMessage(index: number, eventTarget: EventTarget) {
+    const message = props.node && props.node.messageHistory.toArray().reverse()[index]
     if (message) {
-      this.props.onSelect(message)
+      props.onSelect(message)
     }
   }
 
-  public componentWillReceiveProps(nextProps: Props) {
-    this.props.node && this.props.node.onMessage.unsubscribe(this.updateNode)
-    nextProps.node && nextProps.node.onMessage.subscribe(this.updateNode)
+  const { node } = props
+  if (!node) {
+    return null
   }
 
-  public componentDidMount() {
-    this.props.node && this.props.node.onMessage.subscribe(this.updateNode)
-  }
+  const history = node.messageHistory.toArray()
+  let previousMessage: q.Message | undefined = node.message
+  const historyElements = [...history].reverse().map((message, idx) => {
+    const value = node.message ? decodeMessage(message)?.message?.format()[0] ?? null : null
 
-  public componentWillUnMount() {
-    this.props.node && this.props.node.onMessage.unsubscribe(this.updateNode)
-  }
-
-  public render() {
-    const { node } = this.props
-    if (!node) {
-      return null
-    }
-
-    const history = node.messageHistory.toArray()
-    let previousMessage: q.Message | undefined = node.message
-    const historyElements = [...history].reverse().map((message, idx) => {
-      const value = message.payload ? Base64Message.toUnicodeString(message.payload) : ''
-      const element = {
-        value,
-        key: `${message.messageNumber}-${message.received}`,
-        title: (
+    const element = {
+      value: value ?? '',
+      key: `${message.messageNumber}-${message.received}`,
+      title: (
+        <span>
+          <div style={{ float: 'left' }}>
+            <DateFormatter date={message.received} />
+            {previousMessage && previousMessage !== message ? (
+              <i>
+                (-
+                <DateFormatter date={message.received} intervalSince={previousMessage.received} />)
+              </i>
+            ) : null}
+          </div>
           <span>
-            <div style={{ float: 'left' }}>
-              <DateFormatter date={message.received} />
-              {previousMessage && previousMessage !== message ? (
-                <i>
-                  (-
-                  <DateFormatter date={message.received} intervalSince={previousMessage.received} />)
-                </i>
-              ) : null}
-            </div>
-            <span>
-              &nbsp;
-              <MessageId message={message} />
-            </span>
-            <div style={{ float: 'right' }}>
-              <Copy value={value} />
-            </div>
+            &nbsp;
+            <MessageId message={message} />
           </span>
-        ),
-        selected: message && message === this.props.selected,
-      }
-      previousMessage = message
-      return element
-    })
+          <div style={{ float: 'right' }}>
+            <Copy value={value ?? ''} />
+          </div>
+        </span>
+      ),
+      selected: message && message === props.selected,
+    }
+    previousMessage = message
+    return element
+  })
 
-    const isMessagePlottable =
-      node.message && node.message.payload && isPlottable(Base64Message.toUnicodeString(node.message.payload))
-    return (
-      <div>
-        <History
-          items={historyElements}
-          contentTypeIndicator={
-            isMessagePlottable ? (
-              <CustomIconButton
-                style={{ height: '22px', width: '22px' }}
-                onClick={this.addNodeToCharts}
-                tooltip="Add to chart panel"
-              >
-                <ShowChart style={{ marginTop: '-5px' }} />
-              </CustomIconButton>
-            ) : undefined
-          }
-          onClick={this.displayMessage}
-        >
-          {isMessagePlottable ? <TopicPlot history={node.messageHistory} /> : null}
-        </History>
-      </div>
-    )
-  }
+  const value = node.message ? decodeMessage(node.message)?.message?.format()[0] ?? null : null
+
+  const isMessagePlottable = isPlottable(value)
+  return (
+    <div>
+      <History
+        items={historyElements}
+        contentTypeIndicator={
+          isMessagePlottable ? (
+            <CustomIconButton
+              style={{ height: '22px', width: '22px' }}
+              onClick={addNodeToCharts}
+              tooltip="Add to chart panel"
+            >
+              <ShowChart style={{ marginTop: '-5px' }} />
+            </CustomIconButton>
+          ) : undefined
+        }
+        onClick={displayMessage}
+      >
+        {isMessagePlottable ? <TopicPlot node={node} history={node.messageHistory} /> : null}
+      </History>
+    </div>
+  )
 }
 
 const mapDispatchToProps = (dispatch: any) => {
@@ -144,4 +128,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(MessageHistory)
+export default connect(null, mapDispatchToProps)(React.memo(MessageHistory))

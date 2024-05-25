@@ -1,7 +1,7 @@
-import * as FileAsync from 'lowdb/adapters/FileAsync'
-import * as fs from 'fs-extra'
-import * as lowdb from 'lowdb'
-import * as path from 'path'
+import FileAsync from 'lowdb/adapters/FileAsync'
+import fs from 'fs-extra'
+import lowdb from 'lowdb'
+import path from 'path'
 import { backendRpc } from '../../events'
 import { storageClearEvent, storageLoadEvent, storageStoreEvent } from '../../events/StorageEvents'
 

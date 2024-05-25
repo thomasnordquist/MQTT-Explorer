@@ -10,7 +10,6 @@ import {
   makePublishEvent,
   removeConnection,
 } from '../../events'
-import { SparkplugDecoder } from './Model/sparkplugb'
 
 export class ConnectionManager {
   private connections: { [s: string]: DataSource<any> } = {}
@@ -48,12 +47,7 @@ export class ConnectionManager {
       }
 
       let decoded_payload = null
-      // spell-checker: disable-next-line
-      if (topic.match(/^spBv1\.0\/[^/]+\/[ND](DATA|CMD|DEATH|BIRTH)\/[^/]+(\/[^/]+)?$/u)) {
-        decoded_payload = SparkplugDecoder.decode(buffer)
-      } else {
-        decoded_payload = Base64Message.fromBuffer(buffer)
-      }
+      decoded_payload = Base64Message.fromBuffer(buffer)
 
       backendEvents.emit(messageEvent, {
         topic,

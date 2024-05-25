@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../../actions'
 import { ConnectionOptions } from '../../../model/ConnectionOptions'
 import { KeyCodes } from '../../../utils/KeyCodes'
-import { List, ListSubheader } from '@material-ui/core'
+import { List } from '@material-ui/core'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { useGlobalKeyEventHandler } from '../../../effects/useGlobalKeyEventHandler'
 

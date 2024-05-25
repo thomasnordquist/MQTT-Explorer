@@ -2,12 +2,14 @@ import * as dotProp from 'dot-prop'
 import * as q from '../../../backend/src/Model'
 import * as React from 'react'
 import PlotHistory from './Chart/Chart'
-import { Base64Message } from '../../../backend/src/Model/Base64Message'
 import { toPlottableValue } from './Sidebar/CodeDiff/util'
 import { PlotCurveTypes } from '../reducers/Charts'
+import { DecoderFunction, useDecoder } from './hooks/useDecoder'
+
 const parseDuration = require('parse-duration')
 
 interface Props {
+  node?: q.TreeNode<any>
   history: q.MessageHistory
   dotPath?: string
   timeInterval?: string
@@ -25,21 +27,27 @@ function filterUsingTimeRange(startTime: number | undefined, data: Array<q.Messa
   return data
 }
 
-function nodeToHistory(startTime: number | undefined, history: q.MessageHistory) {
+function nodeToHistory(decodeMessage: DecoderFunction, startTime: number | undefined, history: q.MessageHistory) {
   return filterUsingTimeRange(startTime, history.toArray())
     .map((message: q.Message) => {
-      const value = message.payload ? toPlottableValue(Base64Message.toUnicodeString(message.payload)) : NaN
-      return { x: message.received.getTime(), y: toPlottableValue(value) }
+      const decoded = decodeMessage(message)?.message?.toUnicodeString()
+      return { x: message.received.getTime(), y: toPlottableValue(decoded) }
     })
     .filter(data => !isNaN(data.y as any)) as any
 }
 
-function nodeDotPathToHistory(startTime: number | undefined, history: q.MessageHistory, dotPath: string) {
+function nodeDotPathToHistory(
+  decodeMessage: DecoderFunction,
+  startTime: number | undefined,
+  history: q.MessageHistory,
+  dotPath: string
+) {
   return filterUsingTimeRange(startTime, history.toArray())
     .map((message: q.Message) => {
       let json: any = {}
       try {
-        json = message.payload ? JSON.parse(Base64Message.toUnicodeString(message.payload)) : {}
+        const decoded = decodeMessage(message)?.message
+        json = decoded ? JSON.parse(decoded.toUnicodeString()) : {}
       } catch (ignore) {}
 
       const value = dotProp.get(json, dotPath)
@@ -50,14 +58,17 @@ function nodeDotPathToHistory(startTime: number | undefined, history: q.MessageH
 }
 
 function TopicPlot(props: Props) {
+  const decodeMessage = useDecoder(props.node)
   const startOffset = props.timeInterval ? parseDuration(props.timeInterval) : undefined
-  const data = React.useMemo(
-    () =>
-      props.dotPath
-        ? nodeDotPathToHistory(startOffset, props.history, props.dotPath)
-        : nodeToHistory(startOffset, props.history),
-    [props.history.last(), startOffset, props.dotPath]
-  )
+  const data = React.useMemo(() => {
+    if (!props.node) {
+      return []
+    }
+
+    return props.dotPath
+      ? nodeDotPathToHistory(decodeMessage, startOffset, props.history, props.dotPath)
+      : nodeToHistory(decodeMessage, startOffset, props.history)
+  }, [props.history.last(), startOffset, props.dotPath])
 
   return (
     <PlotHistory

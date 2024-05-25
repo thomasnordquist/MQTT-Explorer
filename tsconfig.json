@@ -9,15 +9,11 @@
     "moduleResolution": "node",
     "sourceRoot": "src/",
     "target": "ES2017",
-    "lib": [
-      "es2017",
-      "dom"
-    ],
+    "lib": ["ES2017", "dom"],
     "sourceMap": true,
-    "types": [
-      "node"
-    ],
-    "skipLibCheck": true
+    "types": ["node"],
+    "skipLibCheck": true,
+    "esModuleInterop": true
   },
   "include": [
     "src/electron.ts",
@@ -26,7 +22,5 @@
     "src/spec/leakTest.ts",
     "scripts/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }
