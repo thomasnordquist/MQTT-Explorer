@@ -36,6 +36,14 @@ process.on('unhandledRejection', (error: Error | any) => {
   process.exit(1)
 })
 
+setTimeout(
+  () => {
+    console.error('Timeout reached')
+    process.exit(1)
+  },
+  60 * 10 * 1000
+)
+
 const runningUiTestOnCi = os.platform() === 'darwin' ? [] : ['--runningUiTestOnCi']
 
 async function doStuff() {
@@ -143,6 +151,10 @@ async function doStuff() {
     await sleep(3000)
   })
 
+  setTimeout(() => {
+    console.log('Forced quit')
+    process.exit(0)
+  }, 10 * 1000)
   stopMqtt()
   console.log('Stopped mqtt client')
 
