@@ -17,31 +17,36 @@ export const setTopic = (topic?: string): Action => {
 export const openFile = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
   try {
     const file = await getFileContent()
-    dispatch(
-      setPayload(Base64Message.fromBuffer(file.data).toUnicodeString()
-      ))
+    if (file) {
+      dispatch(
+        setPayload(Base64Message.fromBuffer(file.data).toUnicodeString()
+        ))
+    }
   } catch (error) {
     dispatch(showError(error))
   }
-
 }
 
 type FileParameters = {
   name: string,
   data: Buffer
 }
-async function getFileContent(): Promise<FileParameters> {
+async function getFileContent(): Promise<FileParameters | undefined> {
   const rejectReasons = {
     noFileSelected: 'No file selected',
     errorReadingFile: 'Error reading file'
   }
 
-  const openDialogReturnValue = await rendererRpc.call(makeOpenDialogRpc(), {
+  const { canceled, filePaths } = await rendererRpc.call(makeOpenDialogRpc(), {
     properties: ['openFile'],
     securityScopedBookmarks: true,
   })
 
-  const selectedFile = openDialogReturnValue.filePaths && openDialogReturnValue.filePaths[0]
+  if (canceled) {
+    return
+  }
+
+  const selectedFile = filePaths[0]
   if (!selectedFile) {
     throw rejectReasons.noFileSelected
   }

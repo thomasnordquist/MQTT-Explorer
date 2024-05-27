@@ -1,6 +1,7 @@
 import * as q from '../../../../../backend/src/Model'
 import ActionButtons from './ActionButtons'
 import Copy from '../../helper/Copy'
+import Save from '../../helper/Save'
 import DateFormatter from '../../helper/DateFormatter'
 import MessageHistory from './MessageHistory'
 import Panel from '../Panel'
@@ -59,6 +60,12 @@ function ValuePanel(props: Props) {
     return node?.message && decodeMessage(node.message)?.message?.toUnicodeString()
   }, [node, decodeMessage])
 
+  const getBuffer = () => {
+    if (node?.message && node.message.payload) {
+      return node.message.payload.toBuffer()
+    }
+  }
+
   function messageMetaInfo() {
     if (!props.node || !props.node.message) {
       return null
@@ -93,10 +100,13 @@ function ValuePanel(props: Props) {
   const [value] =
     node && node.message && node.message.payload ? node.message.payload?.format(node.type) : [null, undefined]
   const copyValue = value ? <Copy getValue={getDecodedValue} /> : null
+  const saveValue = value ? <Save getBuffer={getBuffer} /> : null
 
   return (
     <Panel>
-      <span>Value {copyValue}</span>
+      <span>
+        Value {copyValue} {saveValue}
+      </span>
       <span style={{ width: '100%' }}>
         {renderViewOptions()}
         <div style={{ marginBottom: '-8px', marginTop: '8px' }}>

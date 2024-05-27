@@ -10,7 +10,7 @@ import buildOptions from './buildOptions'
 import { waitForDevServer, isDev, runningUiTestOnCi, loadDevTools } from './development'
 import { shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
 import { registerCrashReporter } from './registerCrashReporter'
-import { makeOpenDialogRpc } from '../events/OpenDialogRequest'
+import { makeOpenDialogRpc, makeSaveDialogRpc } from '../events/OpenDialogRequest'
 import { backendRpc, getAppVersion } from '../events'
 
 registerCrashReporter()
@@ -25,6 +25,11 @@ app.whenReady().then(() => {
   backendRpc.on(makeOpenDialogRpc(), async request => {
     return dialog.showOpenDialog(BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0], request)
   })
+
+  backendRpc.on(makeSaveDialogRpc(), async request => {
+    return dialog.showSaveDialog(BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0], request)
+  })
+
   backendRpc.on(getAppVersion, async () => app.getVersion())
 })
 
