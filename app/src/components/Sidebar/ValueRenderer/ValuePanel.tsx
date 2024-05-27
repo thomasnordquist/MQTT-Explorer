@@ -60,9 +60,9 @@ function ValuePanel(props: Props) {
     return node?.message && decodeMessage(node.message)?.message?.toUnicodeString()
   }, [node, decodeMessage])
 
-  const getBuffer = () => {
+  const getData = () => {
     if (node?.message && node.message.payload) {
-      return node.message.payload.toBuffer()
+      return node.message.payload.base64Message
     }
   }
 
@@ -100,7 +100,7 @@ function ValuePanel(props: Props) {
   const [value] =
     node && node.message && node.message.payload ? node.message.payload?.format(node.type) : [null, undefined]
   const copyValue = value ? <Copy getValue={getDecodedValue} /> : null
-  const saveValue = value ? <Save getBuffer={getBuffer} /> : null
+  const saveValue = value ? <Save getData={getData} /> : null
 
   return (
     <Panel>

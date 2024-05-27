@@ -2,15 +2,15 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import Check from '@material-ui/icons/Check'
 import CustomIconButton from './CustomIconButton'
-import { promises as fsPromise } from 'fs'
+
 import { SaveAlt } from '@material-ui/icons'
 import { bindActionCreators } from 'redux'
-import { rendererRpc } from '../../../../events'
+import { rendererRpc, writeFile } from '../../../../events'
 import { makeSaveDialogRpc } from '../../../../events/OpenDialogRequest'
 
 import { globalActions } from '../../actions'
 
-export async function saveToFile(buffer: Buffer | string): Promise<string | undefined> {
+export async function saveToFile(data: string): Promise<string | undefined> {
   const rejectReasons = {
     errorWritingFile: 'Error writing file',
   }
@@ -21,7 +21,7 @@ export async function saveToFile(buffer: Buffer | string): Promise<string | unde
 
   if (!canceled && filePath !== undefined) {
     try {
-      await fsPromise.writeFile(filePath, buffer)
+      const filename = await rendererRpc.call(writeFile, { filePath, data })
       return filePath
     } catch (error) {
       throw rejectReasons.errorWritingFile
@@ -30,7 +30,7 @@ export async function saveToFile(buffer: Buffer | string): Promise<string | unde
 }
 
 interface Props {
-  getBuffer: () => Buffer | undefined
+  getData: () => string | undefined
   actions: {
     global: typeof globalActions
   }
@@ -48,9 +48,9 @@ class Save extends React.PureComponent<Props, State> {
 
   private handleClick = async (event: React.MouseEvent) => {
     event.stopPropagation()
-    const buffer = this.props.getBuffer()
-    if (buffer !== undefined) {
-      const filename = await saveToFile(buffer)
+    const data = this.props.getData()
+    if (data != undefined) {
+      const filename = await saveToFile(data)
       this.props.actions.global.showNotification(`Saved to ${filename}`)
       this.setState({ didSave: true })
       setTimeout(() => {

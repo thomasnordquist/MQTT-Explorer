@@ -54,3 +54,7 @@ export function makeConnectionMessageEvent(connectionId: string): Event<MqttMess
 export const getAppVersion: RpcEvent<void, string> = {
   topic: 'getAppVersion',
 }
+
+export const writeFile: RpcEvent<{ filePath: string, data: string }, void> = {
+  topic: 'writeFile',
+}

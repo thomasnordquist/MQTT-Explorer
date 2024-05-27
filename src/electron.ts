@@ -4,6 +4,7 @@ import ConfigStorage from '../backend/src/ConfigStorage'
 import { app, BrowserWindow, Menu, dialog } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import { ConnectionManager } from '../backend/src/index'
+import { promises as fsPromise } from 'fs'
 // import { electronTelemetryFactory } from 'electron-telemetry'
 import { menuTemplate } from './MenuTemplate'
 import buildOptions from './buildOptions'
@@ -11,7 +12,7 @@ import { waitForDevServer, isDev, runningUiTestOnCi, loadDevTools } from './deve
 import { shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
 import { registerCrashReporter } from './registerCrashReporter'
 import { makeOpenDialogRpc, makeSaveDialogRpc } from '../events/OpenDialogRequest'
-import { backendRpc, getAppVersion } from '../events'
+import { backendRpc, getAppVersion, writeFile } from '../events'
 
 registerCrashReporter()
 
@@ -31,6 +32,10 @@ app.whenReady().then(() => {
   })
 
   backendRpc.on(getAppVersion, async () => app.getVersion())
+
+  backendRpc.on(writeFile, async ({ filePath, data }) => {
+    await fsPromise.writeFile(filePath, Buffer.from(data, 'base64'))
+  })
 })
 
 autoUpdater.logger = log
