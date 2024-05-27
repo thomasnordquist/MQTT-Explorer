@@ -2,12 +2,54 @@ import { Action, ActionTypes } from '../reducers/Publish'
 import { AppState } from '../reducers'
 import { Base64Message } from '../../../backend/src/Model/Base64Message'
 import { Dispatch } from 'redux'
-import { MqttMessage, makePublishEvent, rendererEvents } from '../../../events'
+import { promises as fsPromise } from 'fs'
+import { MqttMessage, makePublishEvent, rendererEvents, rendererRpc } from '../../../events'
+import { makeOpenDialogRpc } from '../../../events/OpenDialogRequest'
+import { showError } from './Global'
 
 export const setTopic = (topic?: string): Action => {
   return {
     topic,
     type: ActionTypes.PUBLISH_SET_TOPIC,
+  }
+}
+
+export const openFile = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
+  try {
+    const file = await getFileContent()
+    dispatch(
+      setPayload(Base64Message.fromBuffer(file.data).toUnicodeString()
+      ))
+  } catch (error) {
+    dispatch(showError(error))
+  }
+
+}
+
+type FileParameters = {
+  name: string,
+  data: Buffer
+}
+async function getFileContent(): Promise<FileParameters> {
+  const rejectReasons = {
+    noFileSelected: 'No file selected',
+    errorReadingFile: 'Error reading file'
+  }
+
+  const openDialogReturnValue = await rendererRpc.call(makeOpenDialogRpc(), {
+    properties: ['openFile'],
+    securityScopedBookmarks: true,
+  })
+
+  const selectedFile = openDialogReturnValue.filePaths && openDialogReturnValue.filePaths[0]
+  if (!selectedFile) {
+    throw rejectReasons.noFileSelected
+  }
+  try {
+    const data = await fsPromise.readFile(selectedFile)
+    return { name: selectedFile, data }
+  } catch (error) {
+    throw rejectReasons.errorReadingFile
   }
 }
 
