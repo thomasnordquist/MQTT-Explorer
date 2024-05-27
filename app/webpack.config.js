@@ -41,6 +41,7 @@ module.exports = {
   devServer: {
     // contentBase: './dist', // content not from webpack
     hot: true,
+    liveReload: true,
   },
   target: 'electron-renderer',
   mode: 'production',
@@ -89,7 +90,6 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({ template: './index.html', file: './build/index.html', inject: false }),
     // new BundleAnalyzerPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
     // new webpack.IgnorePlugin({
     //   resourceRegExp: /\.\/build\/Debug\/addon/,
     //   contextRegExp: /heapdump$/
@@ -106,5 +106,8 @@ module.exports = {
   },
   cache: {
     type: 'filesystem',
+  },
+  optimization: {
+    runtimeChunk: 'single',
   },
 }
