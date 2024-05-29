@@ -21,6 +21,7 @@ import { showMenu } from './scenarios/showMenu'
 import { showNumericPlot } from './scenarios/showNumericPlot'
 import { showOffDiffCapability } from './scenarios/showOffDiffCapability'
 import { showZoomLevel } from './scenarios/showZoomLevel'
+import { showSparkPlugDecoding } from './scenarios/showSparkplugDecoding'
 
 /**
  *  A convenience method that handles gracefully cleaning up the test run.
@@ -118,6 +119,11 @@ async function doStuff() {
     await sleep(1500)
     await clearSearch(page)
     await sleep(1000)
+  })
+
+  await scenes.record('sparkplugb-decoding', async () => {
+    await showText('SparkplugB Decoding', 2000, page, 'top')
+    await showSparkPlugDecoding(page)
   })
 
   // disable this scenario for now until expandTopic is sorted out
