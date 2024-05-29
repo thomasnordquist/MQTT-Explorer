@@ -1,5 +1,5 @@
 import { Page } from 'playwright'
-import { moveToCenterOfElement, clickOn, clickOnHistory, expandTopic, sleep, writeText } from '../util'
+import { moveToCenterOfElement, clickOn, clickOnHistory, expandTopic, sleep } from '../util'
 
 export async function showNumericPlot(browser: Page) {
   await expandTopic('kitchen/coffee_maker', browser)

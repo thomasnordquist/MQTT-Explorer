@@ -14,7 +14,7 @@ export async function publishTopic(browser: Page) {
   const topicInput = await browser.locator('//input[contains(@value,"kitchen/lamp/state")][1]')
   await clickOn(topicInput)
   await deleteTextWithBackspaces(topicInput, 120, 5)
-  await writeText('set', topicInput, 300)
+  await writeText('set', topicInput)
 
   const payloadInput = await browser.locator('//*[contains(@class, "ace_text-input")]')
   await writeTextPayload(payloadInput, 'off')
@@ -34,5 +34,6 @@ export async function publishTopic(browser: Page) {
 }
 
 async function writeTextPayload(payloadInput: Locator, text: string) {
-  await payloadInput.fill(text)
+  await clickOn(payloadInput)
+  await writeText(text, payloadInput)
 }
