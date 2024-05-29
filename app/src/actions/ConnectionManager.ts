@@ -9,12 +9,11 @@ import {
 import { default as persistentStorage, StorageIdentifier } from '../utils/PersistentStorage'
 import { Dispatch } from 'redux'
 import { showError } from './Global'
-import { promises as fsPromise } from 'fs'
 import * as path from 'path'
 import { ActionTypes, Action } from '../reducers/ConnectionManager'
 import { Subscription } from '../../../backend/src/DataSource/MqttSource'
 import { connectionsMigrator } from './migrations/Connection'
-import { rendererRpc } from '../../../events'
+import { rendererRpc, readFromFile } from '../../../events'
 import { makeOpenDialogRpc } from '../../../events/OpenDialogRequest'
 
 export interface ConnectionDictionary {
@@ -81,7 +80,7 @@ async function openCertificate(): Promise<CertificateParameters> {
     throw rejectReasons.noCertificateSelected
   }
 
-  const data = await fsPromise.readFile(selectedFile)
+  const data = await rendererRpc.call(readFromFile, { filePath: selectedFile })
   if (data.length > 16_384 || data.length < 64) {
     throw rejectReasons.certificateSizeDoesNotMatch
   }
