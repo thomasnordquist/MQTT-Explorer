@@ -2,10 +2,10 @@ import { Action, ActionTypes } from '../reducers/Publish'
 import { AppState } from '../reducers'
 import { Base64Message } from '../../../backend/src/Model/Base64Message'
 import { Dispatch } from 'redux'
-import { promises as fsPromise } from 'fs'
-import { MqttMessage, makePublishEvent, rendererEvents, rendererRpc } from '../../../events'
+import { MqttMessage, makePublishEvent, rendererEvents, rendererRpc, readFromFile } from '../../../events'
 import { makeOpenDialogRpc } from '../../../events/OpenDialogRequest'
 import { showError } from './Global'
+import { Base64 } from 'js-base64'
 
 export const setTopic = (topic?: string): Action => {
   return {
@@ -14,13 +14,12 @@ export const setTopic = (topic?: string): Action => {
   }
 }
 
-export const openFile = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
+export const openFile = (encoding: 'utf8' = 'utf8') => async (dispatch: Dispatch<any>, getState: () => AppState) => {
   try {
-    const file = await getFileContent()
+    const file = await getFileContent(encoding)
     if (file) {
       dispatch(
-        setPayload(Base64Message.fromBuffer(file.data).toUnicodeString()
-        ))
+        setPayload(file.data))
     }
   } catch (error) {
     dispatch(showError(error))
@@ -29,9 +28,9 @@ export const openFile = () => async (dispatch: Dispatch<any>, getState: () => Ap
 
 type FileParameters = {
   name: string,
-  data: Buffer
+  data: string
 }
-async function getFileContent(): Promise<FileParameters | undefined> {
+async function getFileContent(encoding: string): Promise<FileParameters | undefined> {
   const rejectReasons = {
     noFileSelected: 'No file selected',
     errorReadingFile: 'Error reading file'
@@ -51,8 +50,8 @@ async function getFileContent(): Promise<FileParameters | undefined> {
     throw rejectReasons.noFileSelected
   }
   try {
-    const data = await fsPromise.readFile(selectedFile)
-    return { name: selectedFile, data }
+    const data = await rendererRpc.call(readFromFile, { filePath: selectedFile, encoding })
+    return { name: selectedFile, data: data.toString(encoding) }
   } catch (error) {
     throw rejectReasons.errorReadingFile
   }

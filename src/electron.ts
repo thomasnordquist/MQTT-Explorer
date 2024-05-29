@@ -12,7 +12,7 @@ import { waitForDevServer, isDev, runningUiTestOnCi, loadDevTools } from './deve
 import { shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
 import { registerCrashReporter } from './registerCrashReporter'
 import { makeOpenDialogRpc, makeSaveDialogRpc } from '../events/OpenDialogRequest'
-import { backendRpc, getAppVersion, writeFile } from '../events'
+import { backendRpc, getAppVersion, writeToFile, readFromFile } from '../events'
 
 registerCrashReporter()
 
@@ -33,8 +33,12 @@ app.whenReady().then(() => {
 
   backendRpc.on(getAppVersion, async () => app.getVersion())
 
-  backendRpc.on(writeFile, async ({ filePath, data }) => {
-    await fsPromise.writeFile(filePath, Buffer.from(data, 'base64'))
+  backendRpc.on(writeToFile, async ({ filePath, data, encoding }) => {
+    await fsPromise.writeFile(filePath, Buffer.from(data, 'base64'), { encoding })
+  })
+
+  backendRpc.on(readFromFile, async ({ filePath, encoding }) => {
+    return fsPromise.readFile(filePath, { encoding })
   })
 })
 

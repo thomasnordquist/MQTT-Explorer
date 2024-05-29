@@ -5,7 +5,7 @@ import CustomIconButton from './CustomIconButton'
 
 import { SaveAlt } from '@material-ui/icons'
 import { bindActionCreators } from 'redux'
-import { rendererRpc, writeFile } from '../../../../events'
+import { rendererRpc, writeToFile } from '../../../../events'
 import { makeSaveDialogRpc } from '../../../../events/OpenDialogRequest'
 
 import { globalActions } from '../../actions'
@@ -21,7 +21,7 @@ export async function saveToFile(data: string): Promise<string | undefined> {
 
   if (!canceled && filePath !== undefined) {
     try {
-      const filename = await rendererRpc.call(writeFile, { filePath, data })
+      const filename = await rendererRpc.call(writeToFile, { filePath, data })
       return filePath
     } catch (error) {
       throw rejectReasons.errorWritingFile
