@@ -4,14 +4,15 @@ import ConfigStorage from '../backend/src/ConfigStorage'
 import { app, BrowserWindow, Menu, dialog } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import { ConnectionManager } from '../backend/src/index'
+import { promises as fsPromise } from 'fs'
 // import { electronTelemetryFactory } from 'electron-telemetry'
 import { menuTemplate } from './MenuTemplate'
 import buildOptions from './buildOptions'
 import { waitForDevServer, isDev, runningUiTestOnCi, loadDevTools } from './development'
 import { shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
 import { registerCrashReporter } from './registerCrashReporter'
-import { makeOpenDialogRpc } from '../events/OpenDialogRequest'
-import { backendRpc, getAppVersion } from '../events'
+import { makeOpenDialogRpc, makeSaveDialogRpc } from '../events/OpenDialogRequest'
+import { backendRpc, getAppVersion, writeToFile, readFromFile } from '../events'
 
 registerCrashReporter()
 
@@ -25,7 +26,20 @@ app.whenReady().then(() => {
   backendRpc.on(makeOpenDialogRpc(), async request => {
     return dialog.showOpenDialog(BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0], request)
   })
+
+  backendRpc.on(makeSaveDialogRpc(), async request => {
+    return dialog.showSaveDialog(BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0], request)
+  })
+
   backendRpc.on(getAppVersion, async () => app.getVersion())
+
+  backendRpc.on(writeToFile, async ({ filePath, data, encoding }) => {
+    await fsPromise.writeFile(filePath, Buffer.from(data, 'base64'), { encoding })
+  })
+
+  backendRpc.on(readFromFile, async ({ filePath, encoding }) => {
+    return fsPromise.readFile(filePath, { encoding })
+  })
 })
 
 autoUpdater.logger = log

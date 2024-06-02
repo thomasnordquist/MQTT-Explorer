@@ -1,5 +1,5 @@
 import Editor from './Editor'
-import FormatAlignLeft from '@material-ui/icons/FormatAlignLeft'
+import { AttachFileOutlined, FormatAlignLeft } from '@material-ui/icons'
 import Message from './Model/Message'
 import Navigation from '@material-ui/icons/Navigation'
 import PublishHistory from './PublishHistory'
@@ -116,6 +116,10 @@ const EditorMode = memo(function EditorMode(props: {
     props.actions.setEditorMode(value)
   }, [])
 
+  const openFile = useCallback(() => {
+    props.actions.openFile()
+  }, [])
+
   const formatJson = useCallback(() => {
     if (props.payload) {
       try {
@@ -132,6 +136,7 @@ const EditorMode = memo(function EditorMode(props: {
       <div style={{ width: '100%', lineHeight: '64px', textAlign: 'center' }}>
         <EditorModeSelect value={props.editorMode} onChange={updateMode} focusEditor={props.focusEditor} />
         <FormatJsonButton editorMode={props.editorMode} focusEditor={props.focusEditor} formatJson={formatJson} />
+        <OpenFileButton editorMode={props.editorMode} openFile={openFile} />
         <div style={{ float: 'right' }}>
           <PublishButton publish={props.publish} focusEditor={props.focusEditor} />
         </div>
@@ -158,6 +163,20 @@ const FormatJsonButton = React.memo(function FormatJsonButton(props: {
         id="sidebar-publish-format-json"
       >
         <FormatAlignLeft style={{ fontSize: '20px' }} />
+      </Fab>
+    </Tooltip>
+  )
+})
+
+const OpenFileButton = React.memo(function OpenFileButton(props: { editorMode: string; openFile: () => void }) {
+  return (
+    <Tooltip title="Open file">
+      <Fab
+        style={{ width: '36px', height: '36px', margin: '0 8px' }}
+        onClick={props.openFile}
+        id="sidebar-publish-open-file"
+      >
+        <AttachFileOutlined style={{ fontSize: '20px' }} />
       </Fab>
     </Tooltip>
   )
