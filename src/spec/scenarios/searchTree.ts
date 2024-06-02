@@ -4,7 +4,7 @@ import { clickOn, deleteTextWithBackspaces, showText, sleep, writeText } from '.
 export async function searchTree(text: string, browser: Page) {
   const searchField = await browser.locator('//input[contains(@placeholder, "Search")]')
   await clickOn(searchField, 1)
-  await writeText(text, searchField, 100)
+  await writeText(text, searchField)
   await sleep(1500)
 }
 

@@ -19,15 +19,14 @@ export function sleep(ms: number, required = false) {
   })
 }
 
-export async function writeText(text: string, element: Locator, delay = 0) {
-  return element.fill(text)
+export async function writeText(text: string, element: Locator, delay = 30) {
+  element.pressSequentially(text, { delay })
 }
 
-export async function deleteTextWithBackspaces(element: Locator, delay = 0, count = 0) {
-  // @ts-ignore
-  const length = count > 0 ? count : (await element.textContent()).length
+export async function deleteTextWithBackspaces(element: Locator, delay = 30, count = 0) {
+  const length = count > 0 ? count : (await element.inputValue()).length
   for (let i = 0; i < length; i += 1) {
-    await element.press('Backspace')
+    await element.press('Backspace', { delay: 30 })
     await sleep(delay)
   }
 }

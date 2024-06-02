@@ -19,6 +19,7 @@ export type SceneNames =
   | 'settings'
   | 'customize_subscriptions'
   | 'keyboard_shortcuts'
+  | 'sparkplugb-decoding'
   | 'end'
 
 export class SceneBuilder {
