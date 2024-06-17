@@ -1,5 +1,5 @@
 on:
-  pull_request_target: # Use pull_request_target
+  pull_request:
     branches: [master, beta, release]
 
 jobs:
@@ -22,17 +22,3 @@ jobs:
         run: yarn ui-test
       - name: Post-processing
         run: ./scripts/prepareVideo.sh
-      - uses: hkusu/s3-upload-action@v2
-        id: upload # specify some ID for use in subsequent steps
-        with:
-          aws-access-key-id: ${{ vars.AWS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: 'eu-central-1'
-          aws-bucket: ${{ vars.AWS_BUCKET }}
-          file-path: './ui-test.gif'
-          content-type: image/gif
-          output-file-url: 'true'
-      - name: Show URL
-        run: echo '${{ steps.upload.outputs.file-url }}'
-        id: artifact-upload-step
-      - run: echo '<picture><img src="${{ steps.upload.outputs.file-url }}"></picture>' >> $GITHUB_STEP_SUMMARY
