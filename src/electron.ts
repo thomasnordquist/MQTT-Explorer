@@ -1,7 +1,7 @@
 import * as log from 'electron-log'
 import * as path from 'path'
 import ConfigStorage from '../backend/src/ConfigStorage'
-import { app, BrowserWindow, Menu, dialog } from 'electron'
+import { app, BrowserWindow, Tray, Menu, dialog } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import { ConnectionManager } from '../backend/src/index'
 import { promises as fsPromise } from 'fs'
@@ -54,6 +54,7 @@ configStorage.init()
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow: BrowserWindow | undefined
+let tray: Tray | undefined
 
 async function createWindow() {
   if (isDev()) {
@@ -103,6 +104,22 @@ async function createWindow() {
     // when you should delete the corresponding element.
     mainWindow = undefined
     app.quit()
+  })
+
+  mainWindow.on('hide', () => {
+    tray = new Tray(path.join(__dirname, '..', '..', 'icon.png'));
+    tray.setContextMenu(Menu.buildFromTemplate([
+      {
+        label: 'Show App', click: function () {
+          mainWindow?.show();
+        }
+      },
+    ]));
+  })
+
+  mainWindow.on('show', () => {
+    tray?.removeBalloon()
+    tray?.destroy()
   })
 }
 
