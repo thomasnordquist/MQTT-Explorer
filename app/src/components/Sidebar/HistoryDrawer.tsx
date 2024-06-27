@@ -70,6 +70,21 @@ function HistoryDrawer(props: Props) {
       </div>
     ))
 
+    const save = (() => {
+      var filename = "save.txt"
+      var text = ''
+      const elementsText = props.items.map((element, index) => (
+        text.concat('"').concat(element.key).concat('";"').concat(element.value).concat('";\r\n')
+      ))
+      var element = document.createElement('a')
+      element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(elementsText.join('')))
+      element.setAttribute('download', filename)
+      element.style.display = 'none'
+      document.body.appendChild(element)
+      element.click()
+      document.body.removeChild(element)
+    })
+
     const visible = props.items.length > 0 && !expanded
 
     return (
@@ -97,6 +112,24 @@ function HistoryDrawer(props: Props) {
         <div style={{ maxHeight: '230px', overflowY: 'scroll' }}>
           {expanded ? props.children : null}
           {expanded ? elements : null}
+        </div>
+        <div
+          style={{
+            backgroundColor: emphasize(props.theme.palette.background.default, 0.15),
+          }}
+        >
+          <Typography component={'span'} onClick={save} style={{ cursor: 'pointer', display: 'flex' }}>
+            <span style={{ flexGrow: 1 }}>
+              <Badge
+                classes={{ badge: props.classes.badge }}
+                invisible={true}
+                badgeContent={props.items.length}
+                color="primary"
+              >
+                Save history
+              </Badge>
+            </span>
+          </Typography>
         </div>
       </div>
     )
