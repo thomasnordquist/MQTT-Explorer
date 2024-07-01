@@ -22,9 +22,8 @@ interface Props {
 
 function dowloadHistoryAsFile(props: Props) {
   var filename = "save.txt"
-  var text = ''
-  const elementsText = props.items.map((element, index) => (
-    text.concat('"').concat(element.key).concat('";"').concat(element.value).concat('";\r\n')
+  const elementsText = props.items.map((element) => (
+    '"' + element.key + '";"' + element.value + '";\r\n'
   ))
   var element = document.createElement('a')
   element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(elementsText.join('')))
