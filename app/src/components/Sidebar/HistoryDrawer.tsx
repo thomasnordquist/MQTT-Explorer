@@ -20,6 +20,21 @@ interface Props {
   children?: any
 }
 
+function dowloadHistoryAsFile(props: Props) {
+  var filename = "save.txt"
+  var text = ''
+  const elementsText = props.items.map((element, index) => (
+    text.concat('"').concat(element.key).concat('";"').concat(element.value).concat('";\r\n')
+  ))
+  var element = document.createElement('a')
+  element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(elementsText.join('')))
+  element.setAttribute('download', filename)
+  element.style.display = 'none'
+  document.body.appendChild(element)
+  element.click()
+  document.body.removeChild(element)
+}
+
 function HistoryDrawer(props: Props) {
   const handleCtrlA = selectTextWithCtrlA({ targetSelector: 'pre' })
   const [expanded, setExpanded] = useState<boolean | undefined>(undefined)
@@ -39,6 +54,10 @@ function HistoryDrawer(props: Props) {
     event.preventDefault()
     event.stopPropagation()
   }
+
+  const saveHistory = (() => {
+    dowloadHistoryAsFile(props);
+  })
 
   function renderHistory() {
     const style = (element: HistoryItem) => ({
@@ -69,21 +88,6 @@ function HistoryDrawer(props: Props) {
         </div>
       </div>
     ))
-
-    const save = (() => {
-      var filename = "save.txt"
-      var text = ''
-      const elementsText = props.items.map((element, index) => (
-        text.concat('"').concat(element.key).concat('";"').concat(element.value).concat('";\r\n')
-      ))
-      var element = document.createElement('a')
-      element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(elementsText.join('')))
-      element.setAttribute('download', filename)
-      element.style.display = 'none'
-      document.body.appendChild(element)
-      element.click()
-      document.body.removeChild(element)
-    })
 
     const visible = props.items.length > 0 && !expanded
 
@@ -118,7 +122,7 @@ function HistoryDrawer(props: Props) {
             backgroundColor: emphasize(props.theme.palette.background.default, 0.15),
           }}
         >
-          <Typography component={'span'} onClick={save} style={{ cursor: 'pointer', display: 'flex' }}>
+          <Typography component={'span'} onClick={saveHistory} style={{ cursor: 'pointer', display: 'flex' }}>
             <span style={{ flexGrow: 1 }}>
               <Badge
                 classes={{ badge: props.classes.badge }}
