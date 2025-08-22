@@ -99,7 +99,7 @@ The readme will be generated from the docs.
 
 ## License
 
-![CC-BY-ND 4.0](https://img.shields.io/badge/License-CC%20BY--ND%204.0-blue.svg)  
-[CC-BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0/)
+![CC-BY-Nc 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-blue.svg)  
+[CC-BY-Nc 4.0](https://creativecommons.org/licenses/by-nC/4.0/)
 
-The license is a little restrictive to distributing derived work, this may change in the future if the interest arises or more people work on this project.
+The license allows for anyone to adapt, share, and redistribute the material, as long as it is non-commercial.
