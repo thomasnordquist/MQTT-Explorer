@@ -21,6 +21,12 @@ const applicationMenu: MenuItemConstructorOptions = {
       type: 'separator' as 'separator',
     },
     {
+      label: 'Minimize to tray',
+      click: () => {
+        BrowserWindow.getFocusedWindow()?.hide()
+      }
+    },
+    {
       label: 'Dev Tools',
       accelerator: 'CmdOrCtrl+Alt+I',
       role: 'toggleDevTools',
