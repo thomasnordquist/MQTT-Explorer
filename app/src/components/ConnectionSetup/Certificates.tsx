@@ -2,7 +2,7 @@ import * as React from 'react'
 import CertificateFileSelection from './CertificateFileSelection'
 import Undo from '@material-ui/icons/Undo'
 import { bindActionCreators } from 'redux'
-import { Button, Grid } from '@material-ui/core'
+import { Button, Grid, TextField } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
 import { ConnectionOptions } from '../../model/ConnectionOptions'
@@ -66,6 +66,16 @@ class Certificates extends React.PureComponent<Props, State> {
                 certificate={this.props.connection.clientKey}
                 title="Client Key"
                 certificateType="clientKey"
+              />
+            </Grid>
+            <Grid item={true} xs={12} className={classes.gridPadding}>
+              <TextField
+                className={`${classes.fullWidth} advanced-connection-settings-topic-input`}
+                label="Pre Shared Key (PSK)"
+                placeholder="0123456789ABCDEF0123456789ABCDEF"
+                margin="normal"
+                value={this.props.connection.psk}
+                onChange={this.handleChange('psk')}
               />
             </Grid>
             <Grid item={true} xs={2} className={classes.gridPadding}>

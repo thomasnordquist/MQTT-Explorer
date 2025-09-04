@@ -16,6 +16,7 @@ export interface MqttOptions {
   certificateAuthority?: string
   clientCertificate?: string
   clientKey?: string
+  psk?: string
 }
 
 export interface Subscription {
@@ -47,6 +48,18 @@ export class MqttSource implements DataSource<MqttOptions> {
       throw error
     }
 
+    // See psk under https://nodejs.org/api/tls.html#tls_tls_connect_options_callback
+    const pskOptions = {
+      pskCallback: () => {
+        if (options.psk) {
+          return {
+            psk: Buffer.from(options.psk, 'hex'),
+            identity: options.username,
+          }
+        }
+      },
+    }
+
     const client = mqttConnect(url.toString(), {
       resubscribe: false,
       rejectUnauthorized: options.certValidation,
@@ -57,12 +70,13 @@ export class MqttSource implements DataSource<MqttOptions> {
       ca: options.certificateAuthority ? Buffer.from(options.certificateAuthority, 'base64') : undefined,
       cert: options.clientCertificate ? Buffer.from(options.clientCertificate, 'base64') : undefined,
       key: options.clientKey ? Buffer.from(options.clientKey, 'base64') : undefined,
+      ...(options.psk ? pskOptions : {}),
     } as any)
 
     this.client = client
 
     client.on('error', (error: Error) => {
-      console.log(error)
+      console.log('client error', error)
       this.stateMachine.setError(error)
     })
 

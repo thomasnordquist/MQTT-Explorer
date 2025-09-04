@@ -49,7 +49,19 @@ export const loadConnectionSettings = () => async (dispatch: Dispatch<any>, getS
   }
 }
 
-export type CertificateTypes = 'selfSignedCertificate' | 'clientCertificate' | 'clientKey'
+// A Pre-shared-key is a symmetric encryption key, such as an AES-128 key, that is shared
+// ahead of time (out of band) between the client and server. It might be programmed into
+// the firmware at the factory for an IoT device.
+//
+// The server optionally sends a `psk_hint`, and the client sends a `pskIdentity` (also
+// sometimes called an hint) that functions as a username. The server uses the `pskIdentity`
+// to figure out which shared key to use, and they both encrypt using that key.
+//
+// For more information on the `psk` and `pskIdentity` options:
+// See https://mosquitto.org/man/mosquitto-conf-5.html#idm854 "Pre-shared-key based SSL/TLS Support", and also
+// mosquitto's `psk_file` option.
+
+export type CertificateTypes = 'selfSignedCertificate' | 'clientCertificate' | 'clientKey' | 'psk'
 export const selectCertificate =
   (type: CertificateTypes, connectionId: string) => async (dispatch: Dispatch<any>, getState: () => AppState) => {
     try {
