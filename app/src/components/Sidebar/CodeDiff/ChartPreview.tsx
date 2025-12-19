@@ -52,16 +52,16 @@ function ChartPreview(props: Props) {
       />
     </Tooltip>
   ) : (
-      <Tooltip title="Add to chart panel, not enough data for preview">
-        <ShowChart
-          onClick={onClick}
-          className={props.classes.icon}
-          style={{ color: '#aaa' }}
-          data-test-type="ShowChart"
-          data-test={props.literal.path}
-        />
-      </Tooltip>
-    )
+    <Tooltip title="Add to chart panel, not enough data for preview">
+      <ShowChart
+        onClick={onClick}
+        className={props.classes.icon}
+        style={{ color: '#aaa' }}
+        data-test-type="ShowChart"
+        data-test={props.literal.path}
+      />
+    </Tooltip>
+  )
 
   return (
     <span>
@@ -69,7 +69,11 @@ function ChartPreview(props: Props) {
       <Popper open={open} anchorEl={chartIconRef.current} placement="left-end">
         <Fade in={open} timeout={300}>
           <Paper style={{ width: '300px' }}>
-            {open ? <TopicPlot node={props.treeNode} history={props.treeNode.messageHistory} dotPath={props.literal.path} /> : <span />}
+            {open ? (
+              <TopicPlot node={props.treeNode} history={props.treeNode.messageHistory} dotPath={props.literal.path} />
+            ) : (
+              <span />
+            )}
           </Paper>
         </Fade>
       </Popper>
