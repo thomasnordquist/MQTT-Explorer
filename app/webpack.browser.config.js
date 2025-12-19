@@ -47,12 +47,14 @@ module.exports = {
   devtool: 'source-map',
   resolve: {
     extensions: ['.ts', '.mjs', '.m.js', '.tsx', '.js', '.json'],
+    alias: {
+      electron: require.resolve('./src/mocks/electron.ts'),
+    },
     fallback: {
       // Browser fallbacks for Node.js modules
       path: require.resolve('path-browserify'),
       fs: false,
       crypto: false,
-      electron: false,
       url: require.resolve('url/'),
       os: require.resolve('os-browserify/browser'),
       events: require.resolve('events/'),

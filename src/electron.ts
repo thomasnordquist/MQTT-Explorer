@@ -19,7 +19,7 @@ import {
 import { shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
 import { registerCrashReporter } from './registerCrashReporter'
 import { makeOpenDialogRpc, makeSaveDialogRpc } from '../events/OpenDialogRequest'
-import { backendRpc, getAppVersion, writeToFile, readFromFile } from '../events'
+import { backendRpc, backendEvents, getAppVersion, writeToFile, readFromFile } from '../events'
 import { RpcEvents } from '../events/EventsV2'
 
 registerCrashReporter()
@@ -71,7 +71,7 @@ app.whenReady().then(() => {
 autoUpdater.logger = log
 log.info('App starting...')
 
-const connectionManager = new ConnectionManager()
+const connectionManager = new ConnectionManager(backendEvents)
 connectionManager.manageConnections()
 
 const configStorage = new ConfigStorage(path.join(app.getPath('userData'), 'settings.json'))

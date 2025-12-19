@@ -1,6 +1,5 @@
 import compareVersions from 'compare-versions'
 import electron from 'electron'
-import os from 'os'
 import React from 'react'
 import axios from 'axios'
 import Close from '@material-ui/icons/Close'
@@ -182,15 +181,24 @@ class UpdateNotifier extends React.PureComponent<Props, State> {
 
   private assetForCurrentPlatform(asset: GithubAsset) {
     let regex: RegExp
-    if (os.platform() === 'darwin') {
+    const platform = this.getPlatform()
+    if (platform === 'darwin') {
       regex = /\.dmg$/
-    } else if (os.platform() === 'win32') {
+    } else if (platform === 'win32') {
       regex = /\.exe$/
     } else {
       regex = /\.AppImage$/
     }
 
     return regex.test(asset.name)
+  }
+
+  private getPlatform(): string {
+    if (typeof window === 'undefined') return 'linux'
+    const userAgent = window.navigator.userAgent.toLowerCase()
+    if (userAgent.includes('mac')) return 'darwin'
+    if (userAgent.includes('win')) return 'win32'
+    return 'linux'
   }
 
   private renderDownloads() {

@@ -52,7 +52,7 @@ async function startServer() {
   const backendRpc = new Rpc(backendEvents)
 
   // Initialize connection manager
-  const connectionManager = new ConnectionManager()
+  const connectionManager = new ConnectionManager(backendEvents)
   connectionManager.manageConnections()
 
   // Setup RPC handlers for file operations
@@ -125,11 +125,11 @@ async function startServer() {
   })
 
   // Serve static files
-  app.use(express.static(path.join(__dirname, '..', 'app', 'build')))
+  app.use(express.static(path.join(__dirname, '..', '..', 'app', 'build')))
 
   // Serve index.html for all other routes (SPA)
-  app.get('*', (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, '..', 'app', 'build', 'index.html'))
+  app.use((req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, '..', '..', 'app', 'index.html'))
   })
 
   // Start server
