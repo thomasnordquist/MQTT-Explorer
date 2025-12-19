@@ -1,7 +1,7 @@
 import express from 'express'
 import * as http from 'http'
 import * as path from 'path'
-import * as socketIO from 'socket.io'
+import { Server as SocketIOServer } from 'socket.io'
 import { promises as fsPromise } from 'fs'
 import { Request, Response } from 'express'
 import { AuthManager } from './AuthManager'
@@ -23,7 +23,7 @@ async function startServer() {
   // Create Express app
   const app = express()
   const server = http.createServer(app)
-  const io = new socketIO.Server(server, {
+  const io = new SocketIOServer(server, {
     cors: {
       origin: '*',
       methods: ['GET', 'POST'],
@@ -86,7 +86,11 @@ async function startServer() {
 
     try {
       await fsPromise.mkdir(dataDir, { recursive: true })
-      await fsPromise.writeFile(safePath, Buffer.from(data, 'base64'), { encoding })
+      if (encoding) {
+        await fsPromise.writeFile(safePath, Buffer.from(data, 'base64'), { encoding: encoding as BufferEncoding })
+      } else {
+        await fsPromise.writeFile(safePath, Buffer.from(data, 'base64'))
+      }
     } catch (error) {
       console.error('Error writing file:', error)
       throw error
@@ -99,7 +103,11 @@ async function startServer() {
     const safePath = path.join(dataDir, path.basename(filePath))
 
     try {
-      return await fsPromise.readFile(safePath, { encoding })
+      if (encoding) {
+        const content = await fsPromise.readFile(safePath, { encoding: encoding as BufferEncoding })
+        return Buffer.from(content)
+      }
+      return await fsPromise.readFile(safePath)
     } catch (error) {
       console.error('Error reading file:', error)
       throw error
@@ -140,13 +148,13 @@ async function startServer() {
   })
 
   // Handle graceful shutdown
-  process.on('SIGTERM', () => {
+  process.on('SIGTERM' as any, () => {
     console.log('SIGTERM received, closing connections...')
     connectionManager.closeAllConnections()
     server.close()
   })
 
-  process.on('SIGINT', () => {
+  process.on('SIGINT' as any, () => {
     console.log('SIGINT received, closing connections...')
     connectionManager.closeAllConnections()
     server.close()

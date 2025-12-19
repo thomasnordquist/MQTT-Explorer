@@ -1,5 +1,5 @@
 // Browser-specific EventBus implementation using Socket.io
-import * as io from 'socket.io-client'
+import { io } from 'socket.io-client'
 import { SocketIOClientEventBus } from './SocketIOClientEventBus'
 import { Rpc } from './Rpc'
 

@@ -50,11 +50,15 @@ app.whenReady().then(() => {
   backendRpc.on(getAppVersion, async () => app.getVersion())
 
   backendRpc.on(writeToFile, async ({ filePath, data, encoding }) => {
-    await fsPromise.writeFile(filePath, Buffer.from(data, 'base64'), { encoding })
+    await fsPromise.writeFile(filePath, Buffer.from(data, 'base64'), { encoding: encoding as BufferEncoding })
   })
 
   backendRpc.on(readFromFile, async ({ filePath, encoding }) => {
-    return fsPromise.readFile(filePath, { encoding })
+    if (encoding) {
+      const content = await fsPromise.readFile(filePath, { encoding: encoding as BufferEncoding })
+      return Buffer.from(content)
+    }
+    return fsPromise.readFile(filePath)
   })
 
   // Certificate upload handler - works for both Electron and browser mode via IPC

@@ -54,7 +54,7 @@
     "redux-batched-actions": "0.5",
     "redux-thunk": "^2.3.0",
     "sha1": "^1.1.1",
-    "socket.io-client": "^2.2.0",
+    "socket.io-client": "^4.8.1",
     "url": "^0.11.4",
     "uuid": "7"
   },

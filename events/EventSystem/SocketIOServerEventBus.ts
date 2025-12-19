@@ -1,13 +1,13 @@
-import * as SocketIO from 'socket.io'
+import { Server as SocketIOServer, Socket } from 'socket.io'
 import { Event } from '../Events'
 import { EventBusInterface } from './EventBusInterface'
 
 export class SocketIOServerEventBus implements EventBusInterface {
-  private io: SocketIO.Server
-  private client: SocketIO.Socket | undefined
+  private io: SocketIOServer
+  private client: Socket | undefined
   private eventHandlers: Map<string, (arg: any) => void> = new Map()
 
-  constructor(io: SocketIO.Server) {
+  constructor(io: SocketIOServer) {
     this.io = io
 
     // Register connection handler once

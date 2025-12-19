@@ -96,7 +96,7 @@
     "@types/mime": "^2.0.0",
     "@types/mocha": "^7.0.2",
     "@types/mustache": "4",
-    "@types/node": "^12.6.8",
+    "@types/node": "^25.0.3",
     "@types/semver": "7",
     "@types/sha1": "^1.1.1",
     "@types/socket.io": "^3.0.2",

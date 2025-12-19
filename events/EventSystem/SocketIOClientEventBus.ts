@@ -1,13 +1,13 @@
-import * as io from 'socket.io-client'
+import { Socket } from 'socket.io-client'
 import { CallbackStore } from './CallbackStore'
 import { EventBusInterface } from './EventBusInterface'
 import { Event } from '../Events'
 
 export class SocketIOClientEventBus implements EventBusInterface {
-  private socket: SocketIOClient.Socket
+  private socket: Socket
   private callbacks: Array<CallbackStore> = []
 
-  constructor(socket: SocketIOClient.Socket) {
+  constructor(socket: Socket) {
     this.socket = socket
   }
 
