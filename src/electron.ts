@@ -8,7 +8,14 @@ import { promises as fsPromise } from 'fs'
 // import { electronTelemetryFactory } from 'electron-telemetry'
 import { menuTemplate } from './MenuTemplate'
 import buildOptions from './buildOptions'
-import { waitForDevServer, isDev, runningUiTestOnCi, loadDevTools, enableMcpIntrospection, getRemoteDebuggingPort } from './development'
+import {
+  waitForDevServer,
+  isDev,
+  runningUiTestOnCi,
+  loadDevTools,
+  enableMcpIntrospection,
+  getRemoteDebuggingPort,
+} from './development'
 import { shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
 import { registerCrashReporter } from './registerCrashReporter'
 import { makeOpenDialogRpc, makeSaveDialogRpc } from '../events/OpenDialogRequest'
