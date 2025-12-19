@@ -254,10 +254,11 @@ class Settings extends React.PureComponent<Props, State> {
   }
 
   private onBlurMaxMessageSize = () => {
-    const value = parseInt(this.state.maxMessageSizeInput, 10)
+    const inputValue = this.state.maxMessageSizeInput.trim()
+    const value = parseInt(inputValue, 10)
     
-    // Validate and update the setting, or reset to current value if invalid
-    if (!isNaN(value) && value >= MAX_MESSAGE_SIZE_MIN && value <= MAX_MESSAGE_SIZE_MAX) {
+    // Validate: ensure the entire string is a valid number and within range
+    if (inputValue !== '' && !isNaN(value) && String(value) === inputValue && value >= MAX_MESSAGE_SIZE_MIN && value <= MAX_MESSAGE_SIZE_MAX) {
       this.props.actions.settings.setMaxMessageSize(value)
     } else {
       // Reset to current valid value without triggering backend updates
