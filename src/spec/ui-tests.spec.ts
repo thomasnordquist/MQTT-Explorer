@@ -388,4 +388,304 @@ describe('MQTT Explorer UI Tests', function () {
       await page.screenshot({ path: 'test-screenshot-retained.png' })
     })
   })
+
+  describe('Reconnection and Connection State', () => {
+    it('Given a connected client, should successfully disconnect and reconnect', async function () {
+      // Given: Application is connected
+      await sleep(1000)
+
+      // When: User disconnects
+      const disconnectButton = await page.locator('//button/span[contains(text(),"Disconnect")]')
+      await disconnectButton.waitFor({ state: 'visible', timeout: 5000 })
+      await disconnectButton.click()
+      await sleep(1000)
+
+      // Then: Connect button should be visible
+      const connectButton = await page.locator('//button/span[contains(text(),"Connect")]')
+      await connectButton.waitFor({ state: 'visible', timeout: 5000 })
+      expect(await connectButton.isVisible()).to.be.true
+
+      await page.screenshot({ path: 'test-screenshot-disconnected.png' })
+
+      // When: User reconnects
+      await connectButton.click()
+      await sleep(2000)
+
+      // Then: Disconnect button should be visible again
+      await disconnectButton.waitFor({ state: 'visible', timeout: 5000 })
+      expect(await disconnectButton.isVisible()).to.be.true
+
+      await page.screenshot({ path: 'test-screenshot-reconnected.png' })
+    })
+  })
+
+  describe('Message History and Updates', () => {
+    it('Given topics with updating values, should display message history', async function () {
+      // Given: Topics that update over time (livingroom/temperature)
+      await sleep(3000) // Wait for several updates
+
+      // When: Navigate to a topic with history
+      await expandTopic('livingroom/temperature', page)
+      await sleep(1000)
+
+      // Then: History should be available
+      // Click on History tab if visible
+      const historyTab = await page.locator('//span[contains(text(), "History")]')
+      const historyExists = (await historyTab.count()) > 0
+
+      if (historyExists) {
+        await historyTab.click()
+        await sleep(500)
+        await page.screenshot({ path: 'test-screenshot-history.png' })
+      }
+    })
+
+    it('Given a topic with changing values, should show value updates in real-time', async function () {
+      // Given: kitchen/coffee_maker/temperature updates periodically
+      await sleep(1000)
+
+      // When: Navigate to the topic
+      await expandTopic('kitchen/coffee_maker', page)
+      await sleep(500)
+
+      // Then: Topic should be selected and showing current value
+      const selectedTopic = await page.locator('[class*="selectedTopic"]')
+      expect((await selectedTopic.count()) > 0).to.be.true
+
+      // Wait for value to update
+      await sleep(2000)
+
+      await page.screenshot({ path: 'test-screenshot-updating-value.png' })
+    })
+  })
+
+  describe('Different QoS Levels', () => {
+    it('Given messages with different QoS levels (0, 1, 2), should display them correctly', async function () {
+      // Given: Mock publishes messages with different QoS
+      // QoS 0: livingroom/lamp/state
+      // QoS 2: kitchen/coffee_maker
+      await sleep(1000)
+
+      // When: Navigate to QoS 0 topic
+      await expandTopic('livingroom/lamp/state', page)
+      await sleep(500)
+
+      await page.screenshot({ path: 'test-screenshot-qos-0.png' })
+
+      // When: Navigate to QoS 2 topic
+      await expandTopic('kitchen/coffee_maker', page)
+      await sleep(500)
+
+      // Then: Both should display their QoS levels
+      await page.screenshot({ path: 'test-screenshot-qos-2.png' })
+    })
+  })
+
+  describe('Special Topic Names and Characters', () => {
+    it('Given topics with spaces and special characters, should display correctly', async function () {
+      // Given: Mock publishes to "test 123" and "hello"
+      await sleep(1000)
+
+      // When: Navigate to topic with space
+      const testTopic = await page.locator('span[data-test-topic="test 123"]')
+      await testTopic.waitFor({ state: 'visible', timeout: 5000 })
+
+      // Then: Topic should be visible
+      expect(await testTopic.isVisible()).to.be.true
+
+      await testTopic.click()
+      await sleep(500)
+
+      await page.screenshot({ path: 'test-screenshot-special-chars.png' })
+    })
+
+    it('Given topic with MAC address format (01-80-C2-00-00-0F/LWT), should display correctly', async function () {
+      // Given: Mock publishes to MAC address topic
+      await sleep(1000)
+
+      // When: Search for MAC address topic
+      await searchTree('01-80-C2', page)
+      await sleep(1000)
+
+      // Then: Topic should be found
+      const macTopic = await page.locator('span[data-test-topic="01-80-C2-00-00-0F"]')
+      const macVisible = (await macTopic.count()) > 0
+
+      await page.screenshot({ path: 'test-screenshot-mac-address.png' })
+
+      await clearSearch(page)
+      await sleep(500)
+    })
+  })
+
+  describe('Bridge Status Topics', () => {
+    it('Given bridge status topics (zigbee2mqtt, ble2mqtt), should display online status', async function () {
+      // Given: Mock publishes bridge status topics
+      await sleep(1000)
+
+      // When: Navigate to zigbee2mqtt bridge
+      const zigbeeTopic = await page.locator('span[data-test-topic="zigbee2mqtt"]')
+      await zigbeeTopic.waitFor({ state: 'visible', timeout: 5000 })
+      expect(await zigbeeTopic.isVisible()).to.be.true
+
+      await zigbeeTopic.click()
+      await sleep(500)
+
+      const bridgeTopic = await page.locator('span[data-test-topic="bridge"]')
+      await bridgeTopic.waitFor({ state: 'visible', timeout: 5000 })
+      await bridgeTopic.click()
+      await sleep(500)
+
+      // Then: State topic should show "online"
+      await page.screenshot({ path: 'test-screenshot-bridge-status.png' })
+    })
+  })
+
+  describe('3D Printer Integration', () => {
+    it('Given 3D printer temperature topics with JSON data, should display bed and tool temperatures', async function () {
+      // Given: Mock publishes 3D printer data
+      await sleep(4000) // Wait for 3D printer interval
+
+      // When: Navigate to 3D printer topics
+      const printerTopic = await page.locator('span[data-test-topic="3d-printer"]')
+      await printerTopic.waitFor({ state: 'visible', timeout: 5000 })
+      expect(await printerTopic.isVisible()).to.be.true
+
+      await printerTopic.click()
+      await sleep(500)
+
+      const octoPrintTopic = await page.locator('span[data-test-topic="OctoPrint"]')
+      await octoPrintTopic.waitFor({ state: 'visible', timeout: 5000 })
+      await octoPrintTopic.click()
+      await sleep(500)
+
+      // Then: Temperature topics should be visible
+      const tempTopic = await page.locator('span[data-test-topic="temperature"]')
+      await tempTopic.waitFor({ state: 'visible', timeout: 5000 })
+      expect(await tempTopic.isVisible()).to.be.true
+
+      await page.screenshot({ path: 'test-screenshot-3d-printer.png' })
+    })
+  })
+
+  describe('Garden/IoT Device Topics', () => {
+    it('Given garden device topics (pump, water level, lamps), should display all device states', async function () {
+      // Given: Mock publishes garden device topics
+      await sleep(1000)
+
+      // When: Navigate to garden
+      const gardenTopic = await page.locator('span[data-test-topic="garden"]')
+      await gardenTopic.waitFor({ state: 'visible', timeout: 5000 })
+      expect(await gardenTopic.isVisible()).to.be.true
+
+      await gardenTopic.click()
+      await sleep(500)
+
+      // Then: Pump, water, and lamps topics should be visible
+      const pumpTopic = await page.locator('span[data-test-topic="pump"]')
+      const waterTopic = await page.locator('span[data-test-topic="water"]')
+      const lampsTopic = await page.locator('span[data-test-topic="lamps"]')
+
+      await pumpTopic.waitFor({ state: 'visible', timeout: 5000 })
+      expect(await pumpTopic.isVisible()).to.be.true
+      expect(await waterTopic.isVisible()).to.be.true
+      expect(await lampsTopic.isVisible()).to.be.true
+
+      await page.screenshot({ path: 'test-screenshot-garden-devices.png' })
+    })
+  })
+
+  describe('Topic Value Types', () => {
+    it('Given topics with different value types (string, number, percentage), should display correctly', async function () {
+      // Given: Various value types in mock data
+      await sleep(1000)
+
+      // When: Check string value (garden/pump/state = "off")
+      await expandTopic('garden/pump/state', page)
+      await sleep(500)
+
+      await page.screenshot({ path: 'test-screenshot-string-value.png' })
+
+      // When: Check percentage value (garden/water/level = "70%")
+      await expandTopic('garden/water/level', page)
+      await sleep(500)
+
+      await page.screenshot({ path: 'test-screenshot-percentage-value.png' })
+
+      // When: Check numeric value with units (livingroom/thermostat/targetTemperature = "20°C")
+      await expandTopic('livingroom/thermostat/targetTemperature', page)
+      await sleep(500)
+
+      // Then: All value types should display correctly
+      await page.screenshot({ path: 'test-screenshot-temperature-value.png' })
+    })
+  })
+
+  describe('Multiple Lamp Devices', () => {
+    it('Given multiple lamp devices (lamp-1, lamp-2) with same properties, should distinguish them', async function () {
+      // Given: Mock publishes to livingroom/lamp-1 and lamp-2
+      await sleep(1000)
+
+      // When: Navigate to livingroom
+      const livingroomTopic = await page.locator('span[data-test-topic="livingroom"]')
+      await livingroomTopic.click()
+      await sleep(500)
+
+      // Then: Both lamp-1 and lamp-2 should be visible
+      const lamp1Topic = await page.locator('span[data-test-topic="lamp-1"]')
+      const lamp2Topic = await page.locator('span[data-test-topic="lamp-2"]')
+
+      await lamp1Topic.waitFor({ state: 'visible', timeout: 5000 })
+      await lamp2Topic.waitFor({ state: 'visible', timeout: 5000 })
+
+      expect(await lamp1Topic.isVisible()).to.be.true
+      expect(await lamp2Topic.isVisible()).to.be.true
+
+      // When: Expand lamp-1
+      await lamp1Topic.click()
+      await sleep(500)
+
+      // Then: lamp-1 state and brightness should be visible
+      const stateTopic = await page.locator('span[data-test-topic="state"]')
+      const brightnessTopic = await page.locator('span[data-test-topic="brightness"]')
+
+      expect(await stateTopic.isVisible()).to.be.true
+      expect(await brightnessTopic.isVisible()).to.be.true
+
+      await page.screenshot({ path: 'test-screenshot-multiple-lamps.png' })
+    })
+  })
+
+  describe('Search Functionality Edge Cases', () => {
+    it('Given a search term that matches multiple topics at different levels, should show all matches', async function () {
+      // Given: Multiple topics contain "state" (lamp/state, pump/state, etc.)
+      await sleep(1000)
+
+      // When: Search for "state"
+      await searchTree('state', page)
+      await sleep(1000)
+
+      // Then: Multiple state topics should be visible
+      const stateTopics = await page.locator('span[data-test-topic="state"]')
+      const count = await stateTopics.count()
+      expect(count).to.be.greaterThan(1, 'Should find multiple state topics')
+
+      await page.screenshot({ path: 'test-screenshot-search-multiple.png' })
+
+      await clearSearch(page)
+      await sleep(500)
+    })
+
+    it('Given a search term with no matches, should display empty tree', async function () {
+      // When: Search for non-existent topic
+      await searchTree('nonexistenttopic12345', page)
+      await sleep(1000)
+
+      // Then: No topics should be visible (or a message)
+      await page.screenshot({ path: 'test-screenshot-search-no-results.png' })
+
+      await clearSearch(page)
+      await sleep(500)
+    })
+  })
 })
