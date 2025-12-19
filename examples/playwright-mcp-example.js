@@ -60,7 +60,17 @@ async function main() {
     console.log('Press Ctrl+C to close this script (the app will keep running)')
     
     // Keep the script running to maintain the connection
-    await new Promise(() => {})
+    // Set up signal handlers for graceful shutdown
+    process.on('SIGINT', () => {
+      console.log('\nClosing connection...')
+      browser.close().then(() => {
+        console.log('Connection closed.')
+        process.exit(0)
+      })
+    })
+    
+    // Keep process alive
+    process.stdin.resume()
   } catch (error) {
     console.error('Error connecting to MQTT Explorer:', error.message)
     console.error('\nMake sure MQTT Explorer is running with MCP introspection:')
