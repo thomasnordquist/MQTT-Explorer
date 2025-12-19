@@ -12,6 +12,8 @@ import {
   setMaxMessageSize as setMaxMessageSizeEvent,
   MAX_MESSAGE_SIZE_DEFAULT,
   MAX_MESSAGE_SIZE_20KB,
+  MAX_MESSAGE_SIZE_100KB,
+  MAX_MESSAGE_SIZE_1MB,
   MAX_MESSAGE_SIZE_5MB,
   MAX_MESSAGE_SIZE_UNLIMITED,
 } from '../../events'
@@ -73,12 +75,15 @@ export class ConnectionManager {
     })
     backendEvents.subscribe(setMaxMessageSizeEvent, (maxMessageSize: number) => {
       // Validate the value is one of the allowed sizes
-      const validSizes = [MAX_MESSAGE_SIZE_20KB, MAX_MESSAGE_SIZE_5MB, MAX_MESSAGE_SIZE_UNLIMITED]
-      if (typeof maxMessageSize === 'number') {
-        // Allow any positive number or unlimited
-        if (maxMessageSize === MAX_MESSAGE_SIZE_UNLIMITED || maxMessageSize > 0) {
-          this.maxMessageSize = maxMessageSize
-        }
+      const validSizes = [
+        MAX_MESSAGE_SIZE_20KB,
+        MAX_MESSAGE_SIZE_100KB,
+        MAX_MESSAGE_SIZE_1MB,
+        MAX_MESSAGE_SIZE_5MB,
+        MAX_MESSAGE_SIZE_UNLIMITED,
+      ]
+      if (typeof maxMessageSize === 'number' && validSizes.includes(maxMessageSize)) {
+        this.maxMessageSize = maxMessageSize
       }
     })
   }
