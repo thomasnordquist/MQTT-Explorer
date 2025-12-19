@@ -1,0 +1,46 @@
+{
+  "name": "MQTT Explorer Development",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-typescript-next",
+        "ms-azuretools.vscode-docker",
+        "eamodio.gitlens"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        }
+      }
+    }
+  },
+
+  "forwardPorts": [3000, 8080, 1883],
+  "portsAttributes": {
+    "3000": {
+      "label": "MQTT Explorer Server",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "Webpack Dev Server",
+      "onAutoForward": "notify"
+    },
+    "1883": {
+      "label": "MQTT Broker",
+      "onAutoForward": "ignore"
+    }
+  },
+
+  "postCreateCommand": "yarn install",
+
+  "remoteUser": "node"
+}

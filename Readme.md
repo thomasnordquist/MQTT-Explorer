@@ -18,6 +18,18 @@ Downloads can be found at the link above.
 This page is dedicated to its development.
 Pull-Requests and error reports are welcome.
 
+## Quick Start with GitHub Codespaces
+
+The fastest way to start developing is with GitHub Codespaces:
+
+1. Click the green "Code" button above
+2. Select "Codespaces" tab
+3. Click "Create codespace on [branch]"
+4. Wait for the environment to set up (includes Node.js and MQTT broker)
+5. Run `yarn dev:server` to start development
+
+The devcontainer includes a pre-configured MQTT broker and all development tools. See [.devcontainer/README.md](.devcontainer/README.md) for details.
+
 ## Run from sources
 
 ### Desktop Application (Electron)
