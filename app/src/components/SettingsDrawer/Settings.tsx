@@ -92,10 +92,23 @@ interface Props {
   maxMessageSize: number
 }
 
-class Settings extends React.PureComponent<Props, {}> {
+interface State {
+  maxMessageSizeInput: string
+}
+
+class Settings extends React.PureComponent<Props, State> {
   constructor(props: any) {
     super(props)
-    this.state = {}
+    this.state = {
+      maxMessageSizeInput: String(props.maxMessageSize),
+    }
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    // Update local state when prop changes from outside (e.g., loading from storage)
+    if (prevProps.maxMessageSize !== this.props.maxMessageSize) {
+      this.setState({ maxMessageSizeInput: String(this.props.maxMessageSize) })
+    }
   }
 
   private openGithubPage = () => {
@@ -206,7 +219,8 @@ class Settings extends React.PureComponent<Props, {}> {
   }
 
   private renderMaxMessageSize() {
-    const { classes, maxMessageSize } = this.props
+    const { classes } = this.props
+    const { maxMessageSizeInput } = this.state
 
     return (
       <div style={{ padding: '8px', display: 'flex' }}>
@@ -217,13 +231,13 @@ class Settings extends React.PureComponent<Props, {}> {
         </Tooltip>
         <Input
           type="number"
-          value={maxMessageSize}
+          value={maxMessageSizeInput}
           onChange={this.onChangeMaxMessageSize}
           onBlur={this.onBlurMaxMessageSize}
           inputProps={{
             min: MAX_MESSAGE_SIZE_MIN,
             max: MAX_MESSAGE_SIZE_MAX,
-            step: 1000,
+            step: 100,
           }}
           name="max-message-size"
           id="max-message-size"
@@ -235,20 +249,19 @@ class Settings extends React.PureComponent<Props, {}> {
   }
 
   private onChangeMaxMessageSize = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value, 10)
-    if (!isNaN(value) && value >= MAX_MESSAGE_SIZE_MIN && value <= MAX_MESSAGE_SIZE_MAX) {
-      this.props.actions.settings.setMaxMessageSize(value)
-    }
+    // Allow users to type freely
+    this.setState({ maxMessageSizeInput: e.target.value })
   }
 
-  private onBlurMaxMessageSize = (e: React.FocusEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value, 10)
-    const currentValue = this.props.maxMessageSize
+  private onBlurMaxMessageSize = () => {
+    const value = parseInt(this.state.maxMessageSizeInput, 10)
     
-    // If the value is invalid, reset to current value
-    if (isNaN(value) || value < MAX_MESSAGE_SIZE_MIN || value > MAX_MESSAGE_SIZE_MAX) {
-      // Force re-render with valid value
-      this.props.actions.settings.setMaxMessageSize(currentValue)
+    // Validate and update the setting, or reset to current value if invalid
+    if (!isNaN(value) && value >= MAX_MESSAGE_SIZE_MIN && value <= MAX_MESSAGE_SIZE_MAX) {
+      this.props.actions.settings.setMaxMessageSize(value)
+    } else {
+      // Reset to current valid value without triggering backend updates
+      this.setState({ maxMessageSizeInput: String(this.props.maxMessageSize) })
     }
   }
 
