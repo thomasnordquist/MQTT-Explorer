@@ -62,3 +62,7 @@ export const writeToFile: RpcEvent<{ filePath: string, data: string, encoding?: 
 export const readFromFile: RpcEvent<{ filePath: string, encoding?: string }, Buffer> = {
   topic: 'readFromFile',
 }
+
+export const setMaxMessageSize: Event<number> = {
+  topic: 'settings/maxMessageSize',
+}

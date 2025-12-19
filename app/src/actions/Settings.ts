@@ -10,6 +10,7 @@ import { globalActions } from './'
 import { showError } from './Global'
 import { showTree } from './Tree'
 import { TopicViewModel } from '../model/TopicViewModel'
+import { backendEvents, setMaxMessageSize as setMaxMessageSizeEvent } from '../../../events'
 
 const settingsIdentifier: StorageIdentifier<Partial<SettingsStateModel>> = {
   id: 'Settings',
@@ -22,6 +23,9 @@ export const loadSettings = () => async (dispatch: Dispatch<any>, getState: () =
       settings: getState().settings.merge(settings),
       type: ActionTypes.SETTINGS_DID_LOAD_SETTINGS,
     })
+    // Emit the maxMessageSize to backend after loading settings
+    const maxMessageSize = getState().settings.get('maxMessageSize')
+    backendEvents.emit(setMaxMessageSizeEvent, maxMessageSize)
   } catch (error) {
     dispatch(showError(error))
   }
@@ -168,4 +172,13 @@ export const toggleTheme = () => (dispatch: Dispatch<any>, getState: () => AppSt
         : ActionTypes.SETTINGS_SET_THEME_LIGHT,
   })
   dispatch(storeSettings())
+}
+
+export const setMaxMessageSize = (maxMessageSize: number) => (dispatch: Dispatch<any>) => {
+  dispatch({
+    maxMessageSize,
+    type: ActionTypes.SETTINGS_SET_MAX_MESSAGE_SIZE,
+  })
+  dispatch(storeSettings())
+  backendEvents.emit(setMaxMessageSizeEvent, maxMessageSize)
 }

@@ -18,6 +18,7 @@ export interface SettingsStateModel {
   valueRendererDisplayMode: ValueRendererDisplayMode
   selectTopicWithMouseOver: boolean
   theme: 'light' | 'dark'
+  maxMessageSize: number
 }
 
 export type SettingsState = Record<SettingsStateModel>
@@ -30,7 +31,8 @@ export type Actions = SetAutoExpandLimitAction &
   SetValueRendererDisplayModeAction &
   SetTheme &
   SetSelectTopicWithMouseOverAction &
-  SetTimeLocale
+  SetTimeLocale &
+  SetMaxMessageSizeAction
 
 export enum ActionTypes {
   SETTINGS_SET_AUTO_EXPAND_LIMIT = 'SETTINGS_SET_AUTO_EXPAND_LIMIT',
@@ -43,6 +45,7 @@ export enum ActionTypes {
   SETTINGS_SET_THEME_LIGHT = 'SETTINGS_SET_THEME_LIGHT',
   SETTINGS_SET_THEME_DARK = 'SETTINGS_SET_THEME_DARK',
   SETTINGS_SET_TIME_LOCALE = 'SETTINGS_SET_TIME_LOCALE',
+  SETTINGS_SET_MAX_MESSAGE_SIZE = 'SETTINGS_SET_MAX_MESSAGE_SIZE',
 }
 
 const initialState = Record<SettingsStateModel>({
@@ -54,6 +57,7 @@ const initialState = Record<SettingsStateModel>({
   selectTopicWithMouseOver: false,
   theme: 'light',
   topicFilter: undefined,
+  maxMessageSize: 20000,
 })
 
 const setTheme = (theme: 'light' | 'dark') => (state: SettingsState) => {
@@ -73,6 +77,7 @@ const reducerActions: {
   SETTINGS_SET_THEME_LIGHT: setTheme('light'),
   SETTINGS_SET_THEME_DARK: setTheme('dark'),
   SETTINGS_SET_TIME_LOCALE: setTimeLocale,
+  SETTINGS_SET_MAX_MESSAGE_SIZE: setMaxMessageSize,
 }
 
 export const settingsReducer = createReducer(initialState(), reducerActions)
@@ -152,4 +157,13 @@ export interface FilterTopicsAction {
 // @Todo: move to tree reducer, should not be persisted / is no application setting
 function filterTopics(state: SettingsState, action: FilterTopicsAction) {
   return state.set('topicFilter', action.topicFilter)
+}
+
+export interface SetMaxMessageSizeAction {
+  type: ActionTypes.SETTINGS_SET_MAX_MESSAGE_SIZE
+  maxMessageSize: number
+}
+
+function setMaxMessageSize(state: SettingsState, action: SetMaxMessageSizeAction) {
+  return state.set('maxMessageSize', action.maxMessageSize)
 }

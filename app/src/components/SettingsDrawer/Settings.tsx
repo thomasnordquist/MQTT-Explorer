@@ -88,6 +88,7 @@ interface Props {
   topicOrder: TopicOrder
   visible: boolean
   theme: 'light' | 'dark'
+  maxMessageSize: number
 }
 
 class Settings extends React.PureComponent<Props, {}> {
@@ -203,6 +204,40 @@ class Settings extends React.PureComponent<Props, {}> {
     this.props.actions.settings.setTopicOrder(e.target.value as TopicOrder)
   }
 
+  private renderMaxMessageSize() {
+    const { classes, maxMessageSize } = this.props
+
+    return (
+      <div style={{ padding: '8px', display: 'flex' }}>
+        <Tooltip title="Maximum size of message payloads in bytes (1-1000000)">
+          <InputLabel htmlFor="max-message-size" style={{ flex: '1', marginTop: '8px' }}>
+            Max Message Size (bytes)
+          </InputLabel>
+        </Tooltip>
+        <Input
+          type="number"
+          value={maxMessageSize}
+          onChange={this.onChangeMaxMessageSize}
+          inputProps={{
+            min: 1,
+            max: 1000000,
+          }}
+          name="max-message-size"
+          id="max-message-size"
+          className={classes.input}
+          style={{ flex: '1' }}
+        />
+      </div>
+    )
+  }
+
+  private onChangeMaxMessageSize = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10)
+    if (!isNaN(value) && value >= 1 && value <= 1000000) {
+      this.props.actions.settings.setMaxMessageSize(value)
+    }
+  }
+
   public render() {
     const { classes, actions, visible } = this.props
     return (
@@ -220,6 +255,7 @@ class Settings extends React.PureComponent<Props, {}> {
           {this.renderAutoExpand()}
           {this.renderNodeOrder()}
           <TimeLocale />
+          {this.renderMaxMessageSize()}
           {this.renderHighlightTopicUpdates()}
           {this.selectTopicsOnMouseOver()}
           {this.toggleTheme()}
@@ -243,6 +279,7 @@ const mapStateToProps = (state: AppState) => {
     highlightTopicUpdates: state.settings.get('highlightTopicUpdates'),
     selectTopicWithMouseOver: state.settings.get('selectTopicWithMouseOver'),
     theme: state.settings.get('theme'),
+    maxMessageSize: state.settings.get('maxMessageSize'),
   }
 }
 
