@@ -67,7 +67,10 @@ export class ConnectionManager {
       this.removeConnection(connectionId)
     })
     backendEvents.subscribe(setMaxMessageSizeEvent, (maxMessageSize: number) => {
-      this.maxMessageSize = maxMessageSize
+      // Validate and clamp the value to reasonable bounds
+      if (typeof maxMessageSize === 'number' && maxMessageSize >= 1 && maxMessageSize <= 1000000) {
+        this.maxMessageSize = maxMessageSize
+      }
     })
   }
 

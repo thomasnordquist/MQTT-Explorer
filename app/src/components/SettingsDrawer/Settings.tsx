@@ -218,9 +218,11 @@ class Settings extends React.PureComponent<Props, {}> {
           type="number"
           value={maxMessageSize}
           onChange={this.onChangeMaxMessageSize}
+          onBlur={this.onBlurMaxMessageSize}
           inputProps={{
             min: 1,
             max: 1000000,
+            step: 1000,
           }}
           name="max-message-size"
           id="max-message-size"
@@ -235,6 +237,17 @@ class Settings extends React.PureComponent<Props, {}> {
     const value = parseInt(e.target.value, 10)
     if (!isNaN(value) && value >= 1 && value <= 1000000) {
       this.props.actions.settings.setMaxMessageSize(value)
+    }
+  }
+
+  private onBlurMaxMessageSize = (e: React.FocusEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10)
+    const currentValue = this.props.maxMessageSize
+    
+    // If the value is invalid, reset to current value
+    if (isNaN(value) || value < 1 || value > 1000000) {
+      // Force re-render with valid value
+      this.props.actions.settings.setMaxMessageSize(currentValue)
     }
   }
 
