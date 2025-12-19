@@ -32,3 +32,15 @@ export function isDev() {
 export function runningUiTestOnCi() {
   return Boolean(process.argv.find(arg => arg === '--runningUiTestOnCi'))
 }
+
+export function enableMcpIntrospection() {
+  return Boolean(process.argv.find(arg => arg === '--enable-mcp-introspection'))
+}
+
+export function getRemoteDebuggingPort() {
+  const portArg = process.argv.find(arg => arg.startsWith('--remote-debugging-port='))
+  if (portArg) {
+    return parseInt(portArg.split('=')[1], 10)
+  }
+  return enableMcpIntrospection() ? 9222 : undefined
+}

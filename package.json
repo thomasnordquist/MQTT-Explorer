@@ -9,6 +9,7 @@
   "private": "true",
   "scripts": {
     "start": "electron .",
+    "start:mcp": "./scripts/start-with-mcp.sh",
     "test": "yarn test:app && yarn test:backend",
     "test:app": "cd app && yarn test",
     "test:backend": "cd backend && yarn test",
