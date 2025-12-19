@@ -1,13 +1,5 @@
 import * as React from 'react'
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
-  Typography,
-} from '@material-ui/core'
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography } from '@material-ui/core'
 
 interface LoginDialogProps {
   open: boolean

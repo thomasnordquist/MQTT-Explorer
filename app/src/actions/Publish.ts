@@ -14,26 +14,27 @@ export const setTopic = (topic?: string): Action => {
   }
 }
 
-export const openFile = (encoding: 'utf8' = 'utf8') => async (dispatch: Dispatch<any>, getState: () => AppState) => {
-  try {
-    const file = await getFileContent(encoding)
-    if (file) {
-      dispatch(
-        setPayload(file.data))
+export const openFile =
+  (encoding: 'utf8' = 'utf8') =>
+  async (dispatch: Dispatch<any>, getState: () => AppState) => {
+    try {
+      const file = await getFileContent(encoding)
+      if (file) {
+        dispatch(setPayload(file.data))
+      }
+    } catch (error) {
+      dispatch(showError(error))
     }
-  } catch (error) {
-    dispatch(showError(error))
   }
-}
 
 type FileParameters = {
-  name: string,
+  name: string
   data: string
 }
 async function getFileContent(encoding: string): Promise<FileParameters | undefined> {
   const rejectReasons = {
     noFileSelected: 'No file selected',
-    errorReadingFile: 'Error reading file'
+    errorReadingFile: 'Error reading file',
   }
 
   const { canceled, filePaths } = await rendererRpc.call(makeOpenDialogRpc(), {
