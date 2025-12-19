@@ -40,12 +40,19 @@ The UI test suite validates the core functionality of MQTT Explorer through auto
 ### Commands
 
 ```bash
-# Run UI tests with automated setup
+# Run UI tests with automated setup (recommended)
 ./scripts/runUiTests.sh
 
 # Or directly (requires manual MQTT broker setup)
 yarn test:ui
+
+# Run demo video generation (different from UI tests)
+yarn ui-test
 ```
+
+**Note:** There are two separate UI-related commands:
+- `yarn test:ui` - Runs the automated UI test suite (new)
+- `yarn ui-test` - Generates the demo video (existing)
 
 ### In CI/CD
 
