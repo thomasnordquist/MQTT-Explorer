@@ -70,7 +70,7 @@
     "@types/react-redux": "^7.0.9",
     "@types/react-resize-detector": "^4.0.1",
     "@types/sha1": "^1.1.1",
-    "@types/socket.io-client": "^1.4.32",
+    "@types/socket.io-client": "^3.0.0",
     "@types/uuid": "^7.0.2",
     "@types/vis": "^4.21.9",
     "chai": "^4.2.0",

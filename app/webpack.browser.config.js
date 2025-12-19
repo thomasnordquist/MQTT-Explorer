@@ -1,6 +1,7 @@
 // Browser-specific webpack configuration
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
+const path = require('path')
 
 module.exports = {
   entry: {
@@ -47,6 +48,7 @@ module.exports = {
   devtool: 'source-map',
   resolve: {
     extensions: ['.ts', '.mjs', '.m.js', '.tsx', '.js', '.json'],
+    modules: ['node_modules', path.resolve(__dirname, 'node_modules')],
     alias: {
       electron: require.resolve('./src/mocks/electron.ts'),
     },
@@ -67,6 +69,9 @@ module.exports = {
         use: [
           {
             loader: 'ts-loader',
+            options: {
+              transpileOnly: true, // Skip type checking, we already did it with tsc
+            },
           },
         ],
         exclude: /node_modules/,
@@ -87,8 +92,9 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.BROWSER_MODE': JSON.stringify('true'),
     }),
-    new webpack.NormalModuleReplacementPlugin(/events[\/\\]EventSystem[\/\\]EventBus$/, resource => {
-      resource.request = resource.request.replace(/EventBus$/, 'BrowserEventBus')
+    new webpack.NormalModuleReplacementPlugin(/EventSystem[\\/]EventBus$/, resource => {
+      console.log('Replacing EventBus:', resource.request);
+      resource.request = resource.request.replace(/EventBus$/, 'BrowserEventBus');
     }),
   ],
   externals: {},
