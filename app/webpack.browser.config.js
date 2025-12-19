@@ -52,6 +52,7 @@ module.exports = {
       path: require.resolve('path-browserify'),
       fs: false,
       crypto: false,
+      electron: false,
     },
   },
   module: {
@@ -81,6 +82,10 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.BROWSER_MODE': JSON.stringify('true'),
     }),
+    new webpack.NormalModuleReplacementPlugin(
+      /events\/EventSystem\/EventBus\.ts$/,
+      require.resolve('../../events/EventSystem/BrowserEventBus.ts')
+    ),
   ],
   externals: {},
   cache: {

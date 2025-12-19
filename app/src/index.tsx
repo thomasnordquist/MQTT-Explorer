@@ -10,6 +10,7 @@ import { connect, Provider } from 'react-redux'
 import { ThemeProvider } from '@material-ui/styles'
 import './utils/tracking'
 import { themes } from './theme'
+import { BrowserAuthWrapper } from './components/BrowserAuthWrapper'
 
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const store = createStore(reducers, composeEnhancers(applyMiddleware(reduxThunk, batchDispatchMiddleware)))
@@ -33,7 +34,9 @@ const Application = connect(mapStateToProps)(ApplicationRenderer)
 
 ReactDOM.render(
   <Provider store={store}>
-    <Application />
+    <BrowserAuthWrapper>
+      <Application />
+    </BrowserAuthWrapper>
   </Provider>,
   document.getElementById('app')
 )
