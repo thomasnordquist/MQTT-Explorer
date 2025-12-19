@@ -20,6 +20,8 @@ Pull-Requests and error reports are welcome.
 
 ## Run from sources
 
+### Desktop Application (Electron)
+
 ```bash
 npm install -g yarn
 yarn
@@ -27,7 +29,22 @@ yarn build
 yarn start
 ```
 
+### Browser Mode (Web Application)
+
+MQTT Explorer can also run as a web application served by a Node.js server:
+
+```bash
+npm install -g yarn
+yarn
+yarn build:server
+yarn start:server
+```
+
+Then open your browser to `http://localhost:3000`. For more details, see [BROWSER_MODE.md](BROWSER_MODE.md).
+
 ## Develop
+
+### Desktop Application
 
 Launch Application
 
@@ -35,6 +52,16 @@ Launch Application
 npm install -g yarn
 yarn
 yarn dev
+```
+
+### Browser Mode
+
+Launch in development mode with hot reload:
+
+```bash
+npm install -g yarn
+yarn
+yarn dev:server
 ```
 
 The `app` directory contains all the rendering logic, the `backend` directory currently contains the models, tests, connection management, `src` contains all the electron bindings. [mqttjs](https://github.com/mqttjs/MQTT.js) is used to facilitate communication to MQTT brokers.

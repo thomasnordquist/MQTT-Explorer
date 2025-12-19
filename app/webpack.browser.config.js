@@ -53,6 +53,9 @@ module.exports = {
       fs: false,
       crypto: false,
       electron: false,
+      url: require.resolve('url/'),
+      os: require.resolve('os-browserify/browser'),
+      events: require.resolve('events/'),
     },
   },
   module: {
@@ -82,10 +85,9 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.BROWSER_MODE': JSON.stringify('true'),
     }),
-    new webpack.NormalModuleReplacementPlugin(
-      /events\/EventSystem\/EventBus\.ts$/,
-      require.resolve('../../events/EventSystem/BrowserEventBus.ts')
-    ),
+    new webpack.NormalModuleReplacementPlugin(/events\/EventSystem\/EventBus/, resource => {
+      resource.request = resource.request.replace('/EventBus', '/BrowserEventBus')
+    }),
   ],
   externals: {},
   cache: {
