@@ -38,6 +38,7 @@
     "moving-average": "^1.0.0",
     "number-abbreviate": "^2.0.0",
     "parse-duration": "^0.1.1",
+    "path-browserify": "^1.0.1",
     "prismjs": "^1.15.0",
     "react": "^16.11",
     "react-ace": "^8",

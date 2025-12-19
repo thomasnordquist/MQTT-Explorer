@@ -1,0 +1,160 @@
+import * as express from 'express'
+import * as http from 'http'
+import * as path from 'path'
+import * as socketIO from 'socket.io'
+import { promises as fsPromise } from 'fs'
+import { AuthManager } from './AuthManager'
+import { ConnectionManager } from '../backend/src/index'
+import { SocketIOServerEventBus } from '../events/EventSystem/SocketIOServerEventBus'
+import { Rpc } from '../events/EventSystem/Rpc'
+import { makeOpenDialogRpc, makeSaveDialogRpc } from '../events/OpenDialogRequest'
+import { getAppVersion, writeToFile, readFromFile } from '../events'
+
+const PORT = process.env.PORT || 3000
+const CREDENTIALS_PATH = path.join(process.cwd(), 'data', 'credentials.json')
+
+async function startServer() {
+  // Initialize authentication
+  const authManager = new AuthManager(CREDENTIALS_PATH)
+  await authManager.initialize()
+
+  // Create Express app
+  const app = express()
+  const server = http.createServer(app)
+  const io = new socketIO.Server(server, {
+    cors: {
+      origin: '*',
+      methods: ['GET', 'POST'],
+    },
+  })
+
+  // Authentication middleware for Socket.io
+  io.use(async (socket, next) => {
+    const { username, password } = socket.handshake.auth
+
+    if (!username || !password) {
+      return next(new Error('Authentication required'))
+    }
+
+    const isValid = await authManager.verifyCredentials(username, password)
+    if (!isValid) {
+      return next(new Error('Invalid credentials'))
+    }
+
+    console.log('Client authenticated:', username)
+    next()
+  })
+
+  // Initialize backend event bus with Socket.io
+  const backendEvents = new SocketIOServerEventBus(io)
+  const backendRpc = new Rpc(backendEvents)
+
+  // Initialize connection manager
+  const connectionManager = new ConnectionManager()
+  connectionManager.manageConnections()
+
+  // Setup RPC handlers for file operations
+  backendRpc.on(makeOpenDialogRpc(), async request => {
+    // In browser mode, file selection is handled client-side via upload
+    // Return empty result as this will be handled differently
+    return { canceled: true, filePaths: [] }
+  })
+
+  backendRpc.on(makeSaveDialogRpc(), async request => {
+    // In browser mode, file saving is handled client-side via download
+    return { canceled: true, filePath: undefined }
+  })
+
+  backendRpc.on(getAppVersion, async () => {
+    // Return version from package.json
+    try {
+      const packageJson = require('../../package.json')
+      return packageJson.version
+    } catch (e) {
+      return '0.0.0'
+    }
+  })
+
+  backendRpc.on(writeToFile, async ({ filePath, data, encoding }) => {
+    // In browser mode, we store files in the server's data directory
+    const dataDir = path.join(process.cwd(), 'data', 'uploads')
+    const safePath = path.join(dataDir, path.basename(filePath))
+
+    try {
+      await fsPromise.mkdir(dataDir, { recursive: true })
+      await fsPromise.writeFile(safePath, Buffer.from(data, 'base64'), { encoding })
+    } catch (error) {
+      console.error('Error writing file:', error)
+      throw error
+    }
+  })
+
+  backendRpc.on(readFromFile, async ({ filePath, encoding }) => {
+    // In browser mode, files are read from the server's data directory
+    const dataDir = path.join(process.cwd(), 'data', 'uploads')
+    const safePath = path.join(dataDir, path.basename(filePath))
+
+    try {
+      return await fsPromise.readFile(safePath, { encoding })
+    } catch (error) {
+      console.error('Error reading file:', error)
+      throw error
+    }
+  })
+
+  // Serve static files
+  app.use(express.static(path.join(__dirname, '..', 'app', 'build')))
+
+  // Certificate upload endpoint
+  app.post('/api/upload-certificate', express.json({ limit: '50mb' }), async (req, res) => {
+    try {
+      const { filename, data } = req.body
+
+      if (!filename || !data) {
+        return res.status(400).json({ error: 'Missing filename or data' })
+      }
+
+      const dataDir = path.join(process.cwd(), 'data', 'certificates')
+      await fsPromise.mkdir(dataDir, { recursive: true })
+
+      const safePath = path.join(dataDir, path.basename(filename))
+      await fsPromise.writeFile(safePath, Buffer.from(data, 'base64'))
+
+      res.json({ success: true, path: safePath })
+    } catch (error) {
+      console.error('Certificate upload error:', error)
+      res.status(500).json({ error: 'Upload failed' })
+    }
+  })
+
+  // Serve index.html for all other routes (SPA)
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'app', 'build', 'index.html'))
+  })
+
+  // Start server
+  server.listen(PORT, () => {
+    console.log('='.repeat(60))
+    console.log(`MQTT Explorer server running on http://localhost:${PORT}`)
+    console.log('='.repeat(60))
+  })
+
+  // Handle graceful shutdown
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM received, closing connections...')
+    connectionManager.closeAllConnections()
+    server.close()
+  })
+
+  process.on('SIGINT', () => {
+    console.log('SIGINT received, closing connections...')
+    connectionManager.closeAllConnections()
+    server.close()
+    process.exit(0)
+  })
+}
+
+startServer().catch(error => {
+  console.error('Failed to start server:', error)
+  process.exit(1)
+})
