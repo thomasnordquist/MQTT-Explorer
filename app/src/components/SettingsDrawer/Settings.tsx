@@ -10,6 +10,7 @@ import { globalActions, settingsActions } from '../../actions'
 import { shell } from 'electron'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { TopicOrder } from '../../reducers/Settings'
+import { MAX_MESSAGE_SIZE_MIN, MAX_MESSAGE_SIZE_MAX } from '../../../../events'
 
 import {
   Divider,
@@ -209,7 +210,7 @@ class Settings extends React.PureComponent<Props, {}> {
 
     return (
       <div style={{ padding: '8px', display: 'flex' }}>
-        <Tooltip title="Maximum size of message payloads in bytes (1-1000000)">
+        <Tooltip title={`Maximum size of message payloads in bytes (${MAX_MESSAGE_SIZE_MIN}-${MAX_MESSAGE_SIZE_MAX})`}>
           <InputLabel htmlFor="max-message-size" style={{ flex: '1', marginTop: '8px' }}>
             Max Message Size (bytes)
           </InputLabel>
@@ -220,8 +221,8 @@ class Settings extends React.PureComponent<Props, {}> {
           onChange={this.onChangeMaxMessageSize}
           onBlur={this.onBlurMaxMessageSize}
           inputProps={{
-            min: 1,
-            max: 1000000,
+            min: MAX_MESSAGE_SIZE_MIN,
+            max: MAX_MESSAGE_SIZE_MAX,
             step: 1000,
           }}
           name="max-message-size"
@@ -235,7 +236,7 @@ class Settings extends React.PureComponent<Props, {}> {
 
   private onChangeMaxMessageSize = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value, 10)
-    if (!isNaN(value) && value >= 1 && value <= 1000000) {
+    if (!isNaN(value) && value >= MAX_MESSAGE_SIZE_MIN && value <= MAX_MESSAGE_SIZE_MAX) {
       this.props.actions.settings.setMaxMessageSize(value)
     }
   }
@@ -245,7 +246,7 @@ class Settings extends React.PureComponent<Props, {}> {
     const currentValue = this.props.maxMessageSize
     
     // If the value is invalid, reset to current value
-    if (isNaN(value) || value < 1 || value > 1000000) {
+    if (isNaN(value) || value < MAX_MESSAGE_SIZE_MIN || value > MAX_MESSAGE_SIZE_MAX) {
       // Force re-render with valid value
       this.props.actions.settings.setMaxMessageSize(currentValue)
     }

@@ -1,5 +1,6 @@
 import { createReducer } from './lib'
 import { Record } from 'immutable'
+import { MAX_MESSAGE_SIZE_DEFAULT } from '../../../events'
 
 export enum TopicOrder {
   none = 'none',
@@ -57,7 +58,7 @@ const initialState = Record<SettingsStateModel>({
   selectTopicWithMouseOver: false,
   theme: 'light',
   topicFilter: undefined,
-  maxMessageSize: 20000,
+  maxMessageSize: MAX_MESSAGE_SIZE_DEFAULT,
 })
 
 const setTheme = (theme: 'light' | 'dark') => (state: SettingsState) => {

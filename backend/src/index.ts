@@ -10,11 +10,14 @@ import {
   makePublishEvent,
   removeConnection,
   setMaxMessageSize as setMaxMessageSizeEvent,
+  MAX_MESSAGE_SIZE_DEFAULT,
+  MAX_MESSAGE_SIZE_MIN,
+  MAX_MESSAGE_SIZE_MAX,
 } from '../../events'
 
 export class ConnectionManager {
   private connections: { [s: string]: DataSource<any> } = {}
-  private maxMessageSize: number = 20000
+  private maxMessageSize: number = MAX_MESSAGE_SIZE_DEFAULT
 
   private handleConnectionRequest = (event: AddMqttConnection) => {
     const connectionId = event.id
@@ -68,7 +71,7 @@ export class ConnectionManager {
     })
     backendEvents.subscribe(setMaxMessageSizeEvent, (maxMessageSize: number) => {
       // Validate and clamp the value to reasonable bounds
-      if (typeof maxMessageSize === 'number' && maxMessageSize >= 1 && maxMessageSize <= 1000000) {
+      if (typeof maxMessageSize === 'number' && maxMessageSize >= MAX_MESSAGE_SIZE_MIN && maxMessageSize <= MAX_MESSAGE_SIZE_MAX) {
         this.maxMessageSize = maxMessageSize
       }
     })
