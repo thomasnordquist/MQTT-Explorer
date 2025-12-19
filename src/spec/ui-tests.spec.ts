@@ -84,7 +84,8 @@ describe('MQTT Explorer UI Tests', function () {
 
       // Verify connected state by checking for disconnect button
       const disconnectButton = await page.locator('//button/span[contains(text(),"Disconnect")]')
-      await expect(disconnectButton.isVisible()).to.eventually.be.true
+      const isVisible = await disconnectButton.isVisible()
+      expect(isVisible).to.be.true
 
       // Take screenshot for verification
       await page.screenshot({ path: 'test-screenshot-connection.png' })
