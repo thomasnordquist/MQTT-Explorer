@@ -2,6 +2,14 @@
 
 This document explains how to use MCP (Model Context Protocol) introspection with MQTT Explorer for deterministic testing and automation with tools like GitHub Copilot with Playwright.
 
+## Screenshots
+
+Here's MQTT Explorer running with MCP introspection enabled:
+
+![MQTT Explorer Connection Form](https://github.com/user-attachments/assets/834dcb47-c2e0-4b34-b55f-c2b2bbf177fa)
+
+The application runs normally while exposing the Chrome DevTools Protocol on port 9222 for external automation tools.
+
 ## What is MCP Introspection?
 
 MCP introspection allows external tools to interact with and control the MQTT Explorer Electron application through the Chrome DevTools Protocol (CDP). This enables:

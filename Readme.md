@@ -51,6 +51,8 @@ To achieve a reliable product automated tests run regularly on travis.
 
 MQTT Explorer supports MCP (Model Context Protocol) introspection for deterministic testing and integration with tools like GitHub Copilot agent mode with Playwright.
 
+![MQTT Explorer with MCP Introspection](https://github.com/user-attachments/assets/834dcb47-c2e0-4b34-b55f-c2b2bbf177fa)
+
 See [MCP_INTROSPECTION.md](MCP_INTROSPECTION.md) for detailed documentation.
 
 Quick start:

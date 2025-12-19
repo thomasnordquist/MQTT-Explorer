@@ -13,6 +13,7 @@
     "test": "yarn test:app && yarn test:backend",
     "test:app": "cd app && yarn test",
     "test:backend": "cd backend && yarn test",
+    "test:mcp": "tsc && node dist/src/spec/testMcpIntrospection.js",
     "install": "cd app && yarn && cd ..",
     "dev": "npm-run-all --parallel dev:*",
     "dev:app": "cd app && npm run dev",
