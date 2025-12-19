@@ -45,7 +45,7 @@ export const storeSettings = () => async (dispatch: Dispatch<any>, getState: () 
     topicFilter: undefined,
     visible: undefined,
     // Don't persist unlimited - reset to default
-    maxMessageSize: currentSettings.maxMessageSize === MAX_MESSAGE_SIZE_UNLIMITED ? undefined : currentSettings.maxMessageSize,
+    maxMessageSize: currentSettings.maxMessageSize === MAX_MESSAGE_SIZE_UNLIMITED ? MAX_MESSAGE_SIZE_DEFAULT : currentSettings.maxMessageSize,
   }
 
   try {
