@@ -10,7 +10,12 @@ import { globalActions } from './'
 import { showError } from './Global'
 import { showTree } from './Tree'
 import { TopicViewModel } from '../model/TopicViewModel'
-import { backendEvents, setMaxMessageSize as setMaxMessageSizeEvent } from '../../../events'
+import {
+  backendEvents,
+  setMaxMessageSize as setMaxMessageSizeEvent,
+  MAX_MESSAGE_SIZE_UNLIMITED,
+  MAX_MESSAGE_SIZE_DEFAULT,
+} from '../../../events'
 
 const settingsIdentifier: StorageIdentifier<Partial<SettingsStateModel>> = {
   id: 'Settings',
@@ -33,11 +38,14 @@ export const loadSettings = () => async (dispatch: Dispatch<any>, getState: () =
 }
 
 export const storeSettings = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
+  const currentSettings = getState().settings.toJS()
   const settings = {
-    ...getState().settings.toJS(),
+    ...currentSettings,
     autoExpandLimit: undefined,
     topicFilter: undefined,
     visible: undefined,
+    // Don't persist unlimited - reset to default
+    maxMessageSize: currentSettings.maxMessageSize === MAX_MESSAGE_SIZE_UNLIMITED ? undefined : currentSettings.maxMessageSize,
   }
 
   try {

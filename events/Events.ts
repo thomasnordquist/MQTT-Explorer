@@ -63,9 +63,12 @@ export const readFromFile: RpcEvent<{ filePath: string, encoding?: string }, Buf
   topic: 'readFromFile',
 }
 
-export const MAX_MESSAGE_SIZE_MIN = 1
-export const MAX_MESSAGE_SIZE_MAX = 1000000
-export const MAX_MESSAGE_SIZE_DEFAULT = 20000
+export const MAX_MESSAGE_SIZE_20KB = 20000
+export const MAX_MESSAGE_SIZE_100KB = 100000
+export const MAX_MESSAGE_SIZE_1MB = 1000000
+export const MAX_MESSAGE_SIZE_5MB = 5000000
+export const MAX_MESSAGE_SIZE_UNLIMITED = -1
+export const MAX_MESSAGE_SIZE_DEFAULT = MAX_MESSAGE_SIZE_20KB
 
 export const setMaxMessageSize: Event<number> = {
   topic: 'settings/maxMessageSize',

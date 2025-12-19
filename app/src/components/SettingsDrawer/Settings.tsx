@@ -10,7 +10,13 @@ import { globalActions, settingsActions } from '../../actions'
 import { shell } from 'electron'
 import { Theme, withStyles } from '@material-ui/core/styles'
 import { TopicOrder } from '../../reducers/Settings'
-import { MAX_MESSAGE_SIZE_MIN, MAX_MESSAGE_SIZE_MAX } from '../../../../events'
+import {
+  MAX_MESSAGE_SIZE_20KB,
+  MAX_MESSAGE_SIZE_100KB,
+  MAX_MESSAGE_SIZE_1MB,
+  MAX_MESSAGE_SIZE_5MB,
+  MAX_MESSAGE_SIZE_UNLIMITED,
+} from '../../../../events'
 
 import {
   Divider,
@@ -92,23 +98,10 @@ interface Props {
   maxMessageSize: number
 }
 
-interface State {
-  maxMessageSizeInput: string
-}
-
-class Settings extends React.PureComponent<Props, State> {
+class Settings extends React.PureComponent<Props, {}> {
   constructor(props: any) {
     super(props)
-    this.state = {
-      maxMessageSizeInput: String(props.maxMessageSize),
-    }
-  }
-
-  componentDidUpdate(prevProps: Props) {
-    // Update local state when prop changes from outside (e.g., loading from storage)
-    if (prevProps.maxMessageSize !== this.props.maxMessageSize) {
-      this.setState({ maxMessageSizeInput: String(this.props.maxMessageSize) })
-    }
+    this.state = {}
   }
 
   private openGithubPage = () => {
@@ -219,51 +212,44 @@ class Settings extends React.PureComponent<Props, State> {
   }
 
   private renderMaxMessageSize() {
-    const { classes } = this.props
-    const { maxMessageSizeInput } = this.state
+    const { classes, maxMessageSize } = this.props
+
+    const formatSize = (size: number) => {
+      if (size === MAX_MESSAGE_SIZE_UNLIMITED) {
+        return 'Unlimited'
+      } else if (size >= 1000000) {
+        return `${size / 1000000} MB`
+      } else if (size >= 1000) {
+        return `${size / 1000} KB`
+      }
+      return `${size} bytes`
+    }
 
     return (
       <div style={{ padding: '8px', display: 'flex' }}>
-        <Tooltip title={`Maximum size of message payloads in bytes (${MAX_MESSAGE_SIZE_MIN}-${MAX_MESSAGE_SIZE_MAX})`}>
-          <InputLabel htmlFor="max-message-size" style={{ flex: '1', marginTop: '8px' }}>
-            Max Message Size (bytes)
-          </InputLabel>
-        </Tooltip>
-        <Input
-          type="number"
-          value={maxMessageSizeInput}
+        <InputLabel htmlFor="max-message-size" style={{ flex: '1', marginTop: '8px' }}>
+          Max Message Size
+        </InputLabel>
+        <Select
+          value={maxMessageSize}
           onChange={this.onChangeMaxMessageSize}
-          onBlur={this.onBlurMaxMessageSize}
-          inputProps={{
-            min: MAX_MESSAGE_SIZE_MIN,
-            max: MAX_MESSAGE_SIZE_MAX,
-            step: 100,
-          }}
+          input={<Input name="max-message-size" id="max-message-size-label-placeholder" />}
           name="max-message-size"
-          id="max-message-size"
           className={classes.input}
           style={{ flex: '1' }}
-        />
+        >
+          <MenuItem value={MAX_MESSAGE_SIZE_20KB}>{formatSize(MAX_MESSAGE_SIZE_20KB)}</MenuItem>
+          <MenuItem value={MAX_MESSAGE_SIZE_100KB}>{formatSize(MAX_MESSAGE_SIZE_100KB)}</MenuItem>
+          <MenuItem value={MAX_MESSAGE_SIZE_1MB}>{formatSize(MAX_MESSAGE_SIZE_1MB)}</MenuItem>
+          <MenuItem value={MAX_MESSAGE_SIZE_5MB}>{formatSize(MAX_MESSAGE_SIZE_5MB)}</MenuItem>
+          <MenuItem value={MAX_MESSAGE_SIZE_UNLIMITED}>{formatSize(MAX_MESSAGE_SIZE_UNLIMITED)}</MenuItem>
+        </Select>
       </div>
     )
   }
 
-  private onChangeMaxMessageSize = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Allow users to type freely
-    this.setState({ maxMessageSizeInput: e.target.value })
-  }
-
-  private onBlurMaxMessageSize = () => {
-    const inputValue = this.state.maxMessageSizeInput.trim()
-    const value = parseInt(inputValue, 10)
-    
-    // Validate: ensure the entire string is a valid number and within range
-    if (inputValue !== '' && !isNaN(value) && String(value) === inputValue && value >= MAX_MESSAGE_SIZE_MIN && value <= MAX_MESSAGE_SIZE_MAX) {
-      this.props.actions.settings.setMaxMessageSize(value)
-    } else {
-      // Reset to current valid value without triggering backend updates
-      this.setState({ maxMessageSizeInput: String(this.props.maxMessageSize) })
-    }
+  private onChangeMaxMessageSize = (e: React.ChangeEvent<{ value: unknown }>) => {
+    this.props.actions.settings.setMaxMessageSize(parseInt(String(e.target.value), 10))
   }
 
   public render() {

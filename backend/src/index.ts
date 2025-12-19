@@ -11,8 +11,9 @@ import {
   removeConnection,
   setMaxMessageSize as setMaxMessageSizeEvent,
   MAX_MESSAGE_SIZE_DEFAULT,
-  MAX_MESSAGE_SIZE_MIN,
-  MAX_MESSAGE_SIZE_MAX,
+  MAX_MESSAGE_SIZE_20KB,
+  MAX_MESSAGE_SIZE_5MB,
+  MAX_MESSAGE_SIZE_UNLIMITED,
 } from '../../events'
 
 export class ConnectionManager {
@@ -47,7 +48,8 @@ export class ConnectionManager {
     const messageEvent = makeConnectionMessageEvent(connectionId)
     connection.onMessage((topic: string, payload: Buffer, packet: any) => {
       let buffer = payload
-      if (buffer.length > this.maxMessageSize) {
+      // Only apply limit if not unlimited
+      if (this.maxMessageSize !== MAX_MESSAGE_SIZE_UNLIMITED && buffer.length > this.maxMessageSize) {
         buffer = buffer.slice(0, this.maxMessageSize)
       }
 
@@ -70,9 +72,13 @@ export class ConnectionManager {
       this.removeConnection(connectionId)
     })
     backendEvents.subscribe(setMaxMessageSizeEvent, (maxMessageSize: number) => {
-      // Validate and clamp the value to reasonable bounds
-      if (typeof maxMessageSize === 'number' && maxMessageSize >= MAX_MESSAGE_SIZE_MIN && maxMessageSize <= MAX_MESSAGE_SIZE_MAX) {
-        this.maxMessageSize = maxMessageSize
+      // Validate the value is one of the allowed sizes
+      const validSizes = [MAX_MESSAGE_SIZE_20KB, MAX_MESSAGE_SIZE_5MB, MAX_MESSAGE_SIZE_UNLIMITED]
+      if (typeof maxMessageSize === 'number') {
+        // Allow any positive number or unlimited
+        if (maxMessageSize === MAX_MESSAGE_SIZE_UNLIMITED || maxMessageSize > 0) {
+          this.maxMessageSize = maxMessageSize
+        }
       }
     })
   }
