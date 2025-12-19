@@ -8,6 +8,8 @@ import { CertificateTypes } from '../../actions/ConnectionManager'
 import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
 import { withStyles } from '@material-ui/styles'
+import { rendererRpc } from '../../../../events'
+import { RpcEvents } from '../../../../events/EventsV2'
 
 function BrowserCertificateFileSelection(props: {
   certificateType: CertificateTypes
@@ -43,10 +45,16 @@ function BrowserCertificateFileSelection(props: {
             // Convert to base64
             const base64Data = content.split(',')[1] || content
 
+            // Upload via IPC instead of HTTP POST
+            const result = await rendererRpc.call(RpcEvents.uploadCertificate, {
+              filename: file.name,
+              data: base64Data,
+            })
+
             // Create certificate parameters
             const certificate: CertificateParameters = {
-              name: file.name,
-              data: base64Data,
+              name: result.name,
+              data: result.data,
             }
 
             // Update connection
@@ -57,7 +65,7 @@ function BrowserCertificateFileSelection(props: {
         }
         reader.readAsDataURL(file)
       } catch (error) {
-        console.error('Error reading certificate file:', error)
+        console.error('Error uploading certificate:', error)
       }
 
       // Reset input

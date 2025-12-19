@@ -10,6 +10,7 @@ import { SocketIOServerEventBus } from '../events/EventSystem/SocketIOServerEven
 import { Rpc } from '../events/EventSystem/Rpc'
 import { makeOpenDialogRpc, makeSaveDialogRpc } from '../events/OpenDialogRequest'
 import { getAppVersion, writeToFile, readFromFile } from '../events'
+import { RpcEvents } from '../events/EventsV2'
 
 const PORT = process.env.PORT || 3000
 const CREDENTIALS_PATH = path.join(process.cwd(), 'data', 'credentials.json')
@@ -105,30 +106,26 @@ async function startServer() {
     }
   })
 
-  // Serve static files
-  app.use(express.static(path.join(__dirname, '..', 'app', 'build')))
+  // Certificate upload handler - via IPC for consistency
+  backendRpc.on(RpcEvents.uploadCertificate, async ({ filename, data }) => {
+    // Store certificate on server for browser mode
+    const dataDir = path.join(process.cwd(), 'data', 'certificates')
+    await fsPromise.mkdir(dataDir, { recursive: true })
 
-  // Certificate upload endpoint
-  app.post('/api/upload-certificate', express.json({ limit: '50mb' }), async (req: Request, res: Response) => {
-    try {
-      const { filename, data } = req.body
+    const safePath = path.join(dataDir, path.basename(filename))
+    await fsPromise.writeFile(safePath, Buffer.from(data, 'base64'))
 
-      if (!filename || !data) {
-        return res.status(400).json({ error: 'Missing filename or data' })
-      }
+    console.log('Certificate uploaded:', filename)
 
-      const dataDir = path.join(process.cwd(), 'data', 'certificates')
-      await fsPromise.mkdir(dataDir, { recursive: true })
-
-      const safePath = path.join(dataDir, path.basename(filename))
-      await fsPromise.writeFile(safePath, Buffer.from(data, 'base64'))
-
-      res.json({ success: true, path: safePath })
-    } catch (error) {
-      console.error('Certificate upload error:', error)
-      res.status(500).json({ error: 'Upload failed' })
+    // Return the certificate data for client to use
+    return {
+      name: filename,
+      data,
     }
   })
+
+  // Serve static files
+  app.use(express.static(path.join(__dirname, '..', 'app', 'build')))
 
   // Serve index.html for all other routes (SPA)
   app.get('*', (req: Request, res: Response) => {

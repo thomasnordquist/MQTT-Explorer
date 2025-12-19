@@ -20,6 +20,7 @@ import { shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
 import { registerCrashReporter } from './registerCrashReporter'
 import { makeOpenDialogRpc, makeSaveDialogRpc } from '../events/OpenDialogRequest'
 import { backendRpc, getAppVersion, writeToFile, readFromFile } from '../events'
+import { RpcEvents } from '../events/EventsV2'
 
 registerCrashReporter()
 
@@ -54,6 +55,16 @@ app.whenReady().then(() => {
 
   backendRpc.on(readFromFile, async ({ filePath, encoding }) => {
     return fsPromise.readFile(filePath, { encoding })
+  })
+
+  // Certificate upload handler - works for both Electron and browser mode via IPC
+  backendRpc.on(RpcEvents.uploadCertificate, async ({ filename, data }) => {
+    // In Electron, we just return the data as-is since it's already read
+    // The client will use it directly
+    return {
+      name: filename,
+      data,
+    }
   })
 })
 

@@ -138,6 +138,7 @@
     "lowdb": "^1.0.0",
     "mime": "^2.4.4",
     "mqtt": "^4.3.6",
+    "protobufjs": "^8.0.0",
     "sha1": "^1.1.1",
     "socket.io": "^4.8.1",
     "sparkplug-payload": "^1.0.3",
