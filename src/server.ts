@@ -69,7 +69,9 @@ async function startServer() {
   backendRpc.on(getAppVersion, async () => {
     // Return version from package.json
     try {
-      const packageJson = require('../../package.json')
+      const packageJsonPath = path.join(__dirname, '..', '..', 'package.json')
+      const packageJsonData = await fsPromise.readFile(packageJsonPath, 'utf8')
+      const packageJson = JSON.parse(packageJsonData)
       return packageJson.version
     } catch (e) {
       return '0.0.0'

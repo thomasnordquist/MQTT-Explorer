@@ -5,7 +5,8 @@ interface BrowserAuthWrapperProps {
   children: React.ReactNode
 }
 
-const isBrowserMode = typeof process !== 'undefined' && process.env.BROWSER_MODE === 'true'
+const isBrowserMode =
+  typeof window !== 'undefined' && typeof process !== 'undefined' && process.env?.BROWSER_MODE === 'true'
 
 export function BrowserAuthWrapper(props: BrowserAuthWrapperProps) {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false)

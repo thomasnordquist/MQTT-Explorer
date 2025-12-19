@@ -85,8 +85,8 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.BROWSER_MODE': JSON.stringify('true'),
     }),
-    new webpack.NormalModuleReplacementPlugin(/events\/EventSystem\/EventBus/, resource => {
-      resource.request = resource.request.replace('/EventBus', '/BrowserEventBus')
+    new webpack.NormalModuleReplacementPlugin(/events[\/\\]EventSystem[\/\\]EventBus$/, resource => {
+      resource.request = resource.request.replace(/EventBus$/, 'BrowserEventBus')
     }),
   ],
   externals: {},
