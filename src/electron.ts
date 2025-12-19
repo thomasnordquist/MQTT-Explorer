@@ -8,7 +8,14 @@ import { promises as fsPromise } from 'fs'
 // import { electronTelemetryFactory } from 'electron-telemetry'
 import { menuTemplate } from './MenuTemplate'
 import buildOptions from './buildOptions'
-import { waitForDevServer, isDev, runningUiTestOnCi, loadDevTools } from './development'
+import {
+  waitForDevServer,
+  isDev,
+  runningUiTestOnCi,
+  loadDevTools,
+  enableMcpIntrospection,
+  getRemoteDebuggingPort,
+} from './development'
 import { shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
 import { registerCrashReporter } from './registerCrashReporter'
 import { makeOpenDialogRpc, makeSaveDialogRpc } from '../events/OpenDialogRequest'
@@ -22,6 +29,14 @@ registerCrashReporter()
 
 // disable-dev-shm-usage is required to run the debug console
 app.commandLine.appendSwitch('--no-sandbox --disable-dev-shm-usage')
+
+// Enable remote debugging for MCP introspection
+const remoteDebuggingPort = getRemoteDebuggingPort()
+if (remoteDebuggingPort) {
+  app.commandLine.appendSwitch('--remote-debugging-port', remoteDebuggingPort.toString())
+  log.info(`Remote debugging enabled on port ${remoteDebuggingPort}`)
+}
+
 app.whenReady().then(() => {
   backendRpc.on(makeOpenDialogRpc(), async request => {
     return dialog.showOpenDialog(BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0], request)

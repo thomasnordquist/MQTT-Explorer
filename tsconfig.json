@@ -20,6 +20,7 @@
     "src/spec/electron.ts",
     "src/spec/demoVideo.ts",
     "src/spec/leakTest.ts",
+    "src/spec/testMcpIntrospection.ts",
     "scripts/*.ts"
   ],
   "exclude": ["node_modules"]
