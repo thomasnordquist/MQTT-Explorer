@@ -36,8 +36,9 @@ electron . --enable-mcp-introspection --remote-debugging-port=9223
 ### Requirements for All Tests
 
 1. **Tests MUST be deterministic** - They should produce the same results every time they run
-2. **Include screenshots** - Visual verification is required for UI changes
-3. **Handle asynchronous operations properly** - This is an MQTT message queue tool
+2. **Tests MUST be independent** - Each test should be able to run in isolation without depending on other tests
+3. **Include screenshots** - Visual verification is required for UI changes
+4. **Handle asynchronous operations properly** - This is an MQTT message queue tool
 
 ### Handling MQTT Asynchronous Operations
 
