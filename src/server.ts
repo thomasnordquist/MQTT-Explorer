@@ -1,8 +1,9 @@
-import * as express from 'express'
+import express from 'express'
 import * as http from 'http'
 import * as path from 'path'
 import * as socketIO from 'socket.io'
 import { promises as fsPromise } from 'fs'
+import { Request, Response } from 'express'
 import { AuthManager } from './AuthManager'
 import { ConnectionManager } from '../backend/src/index'
 import { SocketIOServerEventBus } from '../events/EventSystem/SocketIOServerEventBus'
@@ -106,7 +107,7 @@ async function startServer() {
   app.use(express.static(path.join(__dirname, '..', 'app', 'build')))
 
   // Certificate upload endpoint
-  app.post('/api/upload-certificate', express.json({ limit: '50mb' }), async (req, res) => {
+  app.post('/api/upload-certificate', express.json({ limit: '50mb' }), async (req: Request, res: Response) => {
     try {
       const { filename, data } = req.body
 
@@ -128,7 +129,7 @@ async function startServer() {
   })
 
   // Serve index.html for all other routes (SPA)
-  app.get('*', (req, res) => {
+  app.get('*', (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, '..', 'app', 'build', 'index.html'))
   })
 
