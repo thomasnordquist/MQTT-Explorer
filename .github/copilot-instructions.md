@@ -99,6 +99,6 @@ The project supports MCP (Model Context Protocol) for automated testing with Pla
 ## Important Notes
 
 - Always run `yarn build` before starting the application
-- The app uses Electron 29.2.0
+- The app uses Electron (see `package.json` for version)
 - MQTT communication is handled via [mqttjs](https://github.com/mqttjs/MQTT.js)
 - All code changes should pass linting (`yarn lint`)

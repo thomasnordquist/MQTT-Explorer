@@ -33,12 +33,7 @@ jobs:
             ${{ runner.os }}-yarn-
       
       - name: Install dependencies
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
-      
-      - name: Install app dependencies
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: cd app && yarn install --frozen-lockfile
       
       - name: Build project
         run: yarn build
