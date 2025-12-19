@@ -26,6 +26,7 @@ import { disconnect } from './scenarios/disconnect'
  * - MQTT broker running on localhost:1883
  * - Application built with `yarn build`
  */
+// tslint:disable:only-arrow-functions ter-prefer-arrow-callback no-unused-expression
 describe('MQTT Explorer UI Tests', function () {
   // Increase timeout for UI tests
   this.timeout(60000)
