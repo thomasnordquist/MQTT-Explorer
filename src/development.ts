@@ -40,11 +40,13 @@ export function enableMcpIntrospection() {
 export function getRemoteDebuggingPort() {
   const portArg = process.argv.find(arg => arg.startsWith('--remote-debugging-port='))
   if (portArg) {
-    const portString = portArg.split('=')[1]
-    const port = parseInt(portString, 10)
-    // Return the port only if it's a valid number between 1 and 65535
-    if (!isNaN(port) && port > 0 && port <= 65535) {
-      return port
+    const parts = portArg.split('=')
+    if (parts.length === 2 && parts[1]) {
+      const port = parseInt(parts[1], 10)
+      // Return the port only if it's a valid number between 1 and 65535
+      if (!isNaN(port) && port > 0 && port <= 65535) {
+        return port
+      }
     }
   }
   return enableMcpIntrospection() ? 9222 : undefined
