@@ -20,6 +20,20 @@ interface Props {
   children?: any
 }
 
+function dowloadHistoryAsFile(props: Props) {
+  var filename = "save.txt"
+  const elementsText = props.items.map((element) => (
+    '"' + element.key + '";"' + element.value + '";\r\n'
+  ))
+  var element = document.createElement('a')
+  element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(elementsText.join('')))
+  element.setAttribute('download', filename)
+  element.style.display = 'none'
+  document.body.appendChild(element)
+  element.click()
+  document.body.removeChild(element)
+}
+
 function HistoryDrawer(props: Props) {
   const handleCtrlA = selectTextWithCtrlA({ targetSelector: 'pre' })
   const [expanded, setExpanded] = useState<boolean | undefined>(undefined)
@@ -39,6 +53,10 @@ function HistoryDrawer(props: Props) {
     event.preventDefault()
     event.stopPropagation()
   }
+
+  const saveHistory = (() => {
+    dowloadHistoryAsFile(props);
+  })
 
   function renderHistory() {
     const style = (element: HistoryItem) => ({
@@ -97,6 +115,24 @@ function HistoryDrawer(props: Props) {
         <div style={{ maxHeight: '230px', overflowY: 'scroll' }}>
           {expanded ? props.children : null}
           {expanded ? elements : null}
+        </div>
+        <div
+          style={{
+            backgroundColor: emphasize(props.theme.palette.background.default, 0.15),
+          }}
+        >
+          <Typography component={'span'} onClick={saveHistory} style={{ cursor: 'pointer', display: 'flex' }}>
+            <span style={{ flexGrow: 1 }}>
+              <Badge
+                classes={{ badge: props.classes.badge }}
+                invisible={true}
+                badgeContent={props.items.length}
+                color="primary"
+              >
+                Save history
+              </Badge>
+            </span>
+          </Typography>
         </div>
       </div>
     )
