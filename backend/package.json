@@ -12,7 +12,7 @@
     "postinstall": "yarn build"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "author": "",
   "license": "CC-BY-ND-4.0",

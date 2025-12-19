@@ -234,5 +234,5 @@ yarn package-with-docker
 - The app uses Electron (see `package.json` for version)
 - MQTT communication is handled via [mqttjs](https://github.com/mqttjs/MQTT.js)
 - All code changes should pass linting (`yarn lint`)
-- Node.js version requirement: >= 18
+- Node.js version requirement: >= 20
 - The project uses workspace-like structure with separate package.json files for app and backend

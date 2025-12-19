@@ -4,7 +4,7 @@ This directory contains the development container configuration for GitHub Codes
 
 ## What's Included
 
-- **Node.js 18**: JavaScript runtime environment
+- **Node.js 20**: JavaScript runtime environment
 - **MQTT Broker (Mosquitto)**: Pre-configured Eclipse Mosquitto MQTT broker on port 1883
 - **VS Code Extensions**: ESLint, Prettier, TypeScript, Docker, and GitLens
 - **Port Forwarding**: Automatic forwarding for:

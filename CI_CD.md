@@ -31,13 +31,13 @@ Tests the traditional Electron desktop application:
 
 Tests the new browser/server mode:
 
-- **Environment**: Ubuntu latest with Node.js 18
+- **Environment**: Ubuntu latest with Node.js 20
 - **Services**:
   - **Mosquitto MQTT Broker**: Eclipse Mosquitto v2 on port 1883
     - Health checks enabled
     - Anonymous connections allowed
 - **Steps**:
-  1. Setup Node.js 18
+  1. Setup Node.js 20
   2. Install dependencies
   3. Build browser mode (`yarn build:server`)
   4. Run unit tests (app + backend)
@@ -120,7 +120,7 @@ curl http://localhost:3000
 ## GitHub Codespaces / Devcontainer
 
 The repository includes a devcontainer configuration that automatically sets up:
-- Node.js 18
+- Node.js 20
 - MQTT broker (Mosquitto)
 - All development dependencies
 - Port forwarding for development

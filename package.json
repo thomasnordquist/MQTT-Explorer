@@ -4,7 +4,7 @@
   "description": "Explore your message queues",
   "main": "dist/src/electron.js",
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "private": "true",
   "scripts": {

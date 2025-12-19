@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: mcr.microsoft.com/devcontainers/javascript-node:18
+    image: mcr.microsoft.com/devcontainers/javascript-node:20
     volumes:
       - ../..:/workspace:cached
     command: sleep infinity
