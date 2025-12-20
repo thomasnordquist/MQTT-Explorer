@@ -10,6 +10,9 @@ interface State {
   startTime: number
   duration: number
   clicking: boolean
+  jitterSeed: number
+  overshootTarget: { x: number; y: number } | null
+  isOvershootCorrection: boolean
 }
 
 class Demo extends React.Component<{ classes: any }, State> {
@@ -27,6 +30,39 @@ class Demo extends React.Component<{ classes: any }, State> {
       startTime: 0,
       duration: 0,
       clicking: false,
+      jitterSeed: Math.random(),
+      overshootTarget: null,
+      isOvershootCorrection: false,
+    }
+  }
+
+  /**
+   * Generates a seeded random value for consistent but varied jitter
+   * Uses a simple hash-based PRNG to ensure reproducible jitter patterns
+   */
+  private seededRandom(seed: number): number {
+    const x = Math.sin(seed) * 10000
+    return x - Math.floor(x)
+  }
+
+  /**
+   * Adds human-like micro-movements to the cursor position
+   * Small random offsets that don't affect the overall path significantly
+   */
+  private addJitter(x: number, y: number, progress: number): { x: number; y: number } {
+    // Jitter is strongest in the middle of the movement (more natural)
+    const jitterStrength = Math.sin(progress * Math.PI) * 2 // 0 at start/end, max at middle
+
+    // Use progress to vary the seed for different jitter at each frame
+    const seed1 = this.state.jitterSeed * 1000 + progress * 100
+    const seed2 = this.state.jitterSeed * 2000 + progress * 150
+
+    const jitterX = (this.seededRandom(seed1) - 0.5) * jitterStrength
+    const jitterY = (this.seededRandom(seed2) - 0.5) * jitterStrength
+
+    return {
+      x: x + jitterX,
+      y: y + jitterY,
     }
   }
 
@@ -48,6 +84,39 @@ class Demo extends React.Component<{ classes: any }, State> {
     return this.cubicBezier(t, 0, 0.25, 0.75, 1)
   }
 
+  /**
+   * Calculates an overshoot target for more realistic human-like movement
+   * Returns null if no overshoot, or a point slightly past the target
+   */
+  private calculateOvershootTarget(
+    startX: number,
+    startY: number,
+    targetX: number,
+    targetY: number
+  ): { x: number; y: number } | null {
+    // 30% chance of overshoot for natural variation
+    if (this.seededRandom(this.state.jitterSeed * 3) > 0.3) {
+      return null
+    }
+
+    const dx = targetX - startX
+    const dy = targetY - startY
+    const distance = Math.sqrt(dx * dx + dy * dy)
+
+    // Overshoot by 2-8% of the distance
+    const overshootPercent = 0.02 + this.seededRandom(this.state.jitterSeed * 4) * 0.06
+    const overshootDistance = distance * overshootPercent
+
+    // Overshoot in the direction of movement
+    const dirX = dx / (distance || 1)
+    const dirY = dy / (distance || 1)
+
+    return {
+      x: targetX + dirX * overshootDistance,
+      y: targetY + dirY * overshootDistance,
+    }
+  }
+
   private moveCloser() {
     const elapsed = Date.now() - this.state.startTime
     const progress = Math.min(elapsed / (this.state.duration || 1), 1)
@@ -55,12 +124,15 @@ class Demo extends React.Component<{ classes: any }, State> {
     // Apply easing function for smooth, human-like movement timing
     const easedProgress = this.easeInOutCubic(progress)
 
+    // Determine actual target (could be overshoot target or final target)
+    const actualTarget = this.state.overshootTarget || this.state.target
+
     // Calculate bezier curve control points for a natural arc trajectory
     // Instead of moving in a straight line, the cursor follows a curved path
     const startX = this.state.startPosition.x
     const startY = this.state.startPosition.y
-    const endX = this.state.target.x
-    const endY = this.state.target.y
+    const endX = actualTarget.x
+    const endY = actualTarget.y
 
     // Create control points for a quadratic bezier curve
     // The control point is offset perpendicular to the direct line, creating an arc
@@ -70,21 +142,32 @@ class Demo extends React.Component<{ classes: any }, State> {
 
     // Arc height is proportional to distance (80% of distance, capped at 200px max)
     // Quadrupled from original 20% to make the curve highly visible
-    const arcHeight = Math.min(distance * 0.8, 200)
+    // For overshoot correction, use smaller arc (more direct)
+    const arcPercent = this.state.isOvershootCorrection ? 0.3 : 0.8
+    const arcCap = this.state.isOvershootCorrection ? 50 : 200
+    const arcHeight = Math.min(distance * arcPercent, arcCap)
 
     // Calculate perpendicular offset for the control point
     const perpX = -dy / (distance || 1)
     const perpY = dx / (distance || 1)
 
+    // Add slight randomness to control point to avoid perfectly predictable curves
+    const controlPointJitter = this.seededRandom(this.state.jitterSeed * 5) * 20 - 10
+
     // Control point is at the midpoint, offset perpendicular to create an arc
-    const controlX = (startX + endX) / 2 + perpX * arcHeight
-    const controlY = (startY + endY) / 2 + perpY * arcHeight
+    const controlX = (startX + endX) / 2 + perpX * (arcHeight + controlPointJitter)
+    const controlY = (startY + endY) / 2 + perpY * (arcHeight + controlPointJitter)
 
     // Calculate position on quadratic bezier curve: B(t) = (1-t)²P₀ + 2(1-t)tP₁ + t²P₂
     const t = easedProgress
     const u = 1 - t
-    const newX = u * u * startX + 2 * u * t * controlX + t * t * endX
-    const newY = u * u * startY + 2 * u * t * controlY + t * t * endY
+    let newX = u * u * startX + 2 * u * t * controlX + t * t * endX
+    let newY = u * u * startY + 2 * u * t * controlY + t * t * endY
+
+    // Add jitter for human-like micro-movements
+    const jittered = this.addJitter(newX, newY, progress)
+    newX = jittered.x
+    newY = jittered.y
 
     this.setState({
       position: {
@@ -95,11 +178,35 @@ class Demo extends React.Component<{ classes: any }, State> {
 
     // Continue animation if not complete
     if (progress < 1) {
+      // Add random delay variation (jitter in timing)
+      // Frame interval varies between 15-25ms for irregular movement
+      const jitterDelay = this.seededRandom(this.state.jitterSeed * 6 + elapsed) * 10 - 5
+      const nextInterval = Math.max(10, this.frameInterval + jitterDelay)
+
       this.timer = setTimeout(() => {
         this.moveCloser()
-      }, this.frameInterval)
+      }, nextInterval)
     } else {
       this.timer && clearTimeout(this.timer)
+
+      // If we just reached overshoot target, start correction to actual target
+      if (this.state.overshootTarget && !this.state.isOvershootCorrection) {
+        const correctionDuration = this.state.duration * 0.15 // Correction takes 15% of original time
+        setTimeout(() => {
+          this.setState({
+            startPosition: { x: this.state.position.x, y: this.state.position.y },
+            target: this.state.target, // Keep original target
+            overshootTarget: null, // Clear overshoot
+            isOvershootCorrection: true,
+            startTime: Date.now(),
+            duration: correctionDuration,
+          })
+          this.moveCloser()
+        }, 50) // Small delay before correction
+      } else {
+        // Reset overshoot state for next movement
+        this.setState({ isOvershootCorrection: false })
+      }
     }
   }
 
@@ -108,12 +215,25 @@ class Demo extends React.Component<{ classes: any }, State> {
       this.setState({ enabled: true })
     }
     ;(window as any).demo.moveMouse = (x: number, y: number, animationTime: number) => {
+      const newJitterSeed = Math.random()
+      const currentPos = this.state.position
+
+      // Calculate if this movement should have overshoot
+      const overshoot = this.calculateOvershootTarget(currentPos.x, currentPos.y, x, y)
+
+      // If overshoot exists, adjust duration to account for correction time
+      // Main movement gets 85% of time, correction gets 15%
+      const mainDuration = overshoot ? animationTime * 0.85 : animationTime
+
       this.setState({
         enabled: true,
-        target: { x, y },
-        startPosition: { x: this.state.position.x, y: this.state.position.y },
+        target: { x, y }, // Store the actual target
+        overshootTarget: overshoot, // May be null or an overshoot position
+        isOvershootCorrection: false,
+        startPosition: { x: currentPos.x, y: currentPos.y },
         startTime: Date.now(),
-        duration: animationTime,
+        duration: mainDuration,
+        jitterSeed: newJitterSeed,
       })
       this.moveCloser()
     }
