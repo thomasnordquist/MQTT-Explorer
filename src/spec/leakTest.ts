@@ -7,7 +7,7 @@ import { clearSearch, searchTree } from './scenarios/searchTree'
 import { connectTo } from './scenarios/connect'
 import { reconnect } from './scenarios/reconnect'
 
-process.on('unhandledRejection', (error: Error | any) => {
+process.on('unhandledRejection' as any, (error: Error | any) => {
   console.error('unhandledRejection', error.message, error.stack)
   process.exit(1)
 })

@@ -12,6 +12,8 @@ jobs:
       options: --user root
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Install Packages
         run: yarn install --frozen-lockfile
       - name: Build
@@ -28,11 +30,14 @@ jobs:
       options: --user root
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Install Packages
         run: yarn install --frozen-lockfile
       - name: Build
         run: yarn build
       - name: Run UI Tests
+        timeout-minutes: 10
         run: ./scripts/runUiTests.sh
       - name: Upload Test Screenshots
         if: always()
@@ -52,6 +57,8 @@ jobs:
       options: --user root
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Install Packages
         run: yarn install --frozen-lockfile
       - name: Build
@@ -74,3 +81,55 @@ jobs:
         run: echo '${{ steps.upload.outputs.file-url }}'
         id: artifact-upload-step
       - run: echo '<picture><img src="${{ steps.upload.outputs.file-url }}"></picture>' >> $GITHUB_STEP_SUMMARY
+
+  test-browser:
+    runs-on: ubuntu-latest
+    services:
+      mosquitto:
+        image: eclipse-mosquitto:2
+        ports:
+          - 1883:1883
+        options: >-
+          --health-cmd "mosquitto_sub -t '$SYS/#' -C 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build Browser Mode
+        run: yarn build:server
+      - name: Test App
+        run: yarn test:app
+      - name: Test Backend
+        run: yarn test:backend
+      - name: Start Server in Background
+        run: |
+          yarn start:server &
+          echo $! > server.pid
+        env:
+          MQTT_EXPLORER_USERNAME: test
+          MQTT_EXPLORER_PASSWORD: test123
+          PORT: 3000
+      - name: Wait for Server
+        run: |
+          timeout 30 bash -c 'until curl -f http://localhost:3000; do sleep 1; done'
+      - name: Browser Smoke Test
+        run: |
+          # Test server is running
+          curl -f http://localhost:3000 || exit 1
+          echo "Browser mode server is running successfully"
+      - name: Stop Server
+        if: always()
+        run: |
+          if [ -f server.pid ]; then
+            kill $(cat server.pid) || true
+            rm server.pid
+          fi

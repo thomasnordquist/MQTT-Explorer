@@ -2,37 +2,34 @@ import { clickOn } from './'
 import { Page } from 'playwright'
 
 export async function expandTopic(path: string, browser: Page) {
-  const originalTopics = path.split('/')
+  const topics = path.split('/')
   console.log('expandTopic', path)
-  let topics = path.split('/')
-  while (topics.length > 0 && !(await topicMatches(topics, browser))) {
-    topics = topics.slice(0, topics.length - 1)
+
+  // Build hierarchical selector and expand one level at a time
+  for (let i = 0; i < topics.length; i++) {
+    // Build a hierarchical selector for the current level
+    // e.g., "kitchen" then "kitchen coffee_maker"
+    const currentPath = topics.slice(0, i + 1)
+    const selectors = currentPath.map(v => `span[data-test-topic='${v}']`)
+    const hierarchicalSelector = selectors.join(' ')
+    
+    console.log(`topic matches`, currentPath, `locator('${hierarchicalSelector}')`)
+
+    const locator = browser.locator(hierarchicalSelector).first()
+
+    // Wait for the topic to be visible with a reasonable timeout
+    try {
+      await locator.waitFor({ state: 'visible', timeout: 30000 })
+      console.log(`found topics`, currentPath, topics)
+
+      // Click to expand this level
+      await clickOn(locator)
+
+      // Reduced delay for UI to expand - 200ms is sufficient for most cases
+      await new Promise(resolve => setTimeout(resolve, 200))
+    } catch (error) {
+      console.error(`Failed to find topic path: ${currentPath.join('/')}`, error)
+      throw new Error(`Could not find topic "${currentPath.join('/')}" in path "${path}"`)
+    }
   }
-  if (topics.length === 0) {
-    throw Error('could not expand topics, no match found')
-  }
-
-  console.log('found topics', topics, originalTopics)
-
-  for (const topic of topics) {
-    const match = await browser.locator(topicSelector([topic]))
-    await clickOn(match.first())
-  }
-  // while (topics.length <= originalTopics.length) {
-  //   const match = await browser.locator(topicSelector(topics))
-  //   console.log('click', match)
-  //   await clickOn(match)
-  //   topics.push(originalTopics[topics.length])
-  // }
-}
-
-async function topicMatches(topics: Array<string>, browser: Page) {
-  const result = await browser.locator(topicSelector(topics))
-  console.log('topic matches', topics, result)
-  return true
-}
-
-function topicSelector(topics: Array<string>) {
-  const selectors = topics.map(v => `span[data-test-topic='${v}']`)
-  return selectors.join(' ')
 }

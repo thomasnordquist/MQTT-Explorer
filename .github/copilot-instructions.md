@@ -25,6 +25,10 @@ yarn install
 # Build the project
 yarn build
 
+# Set password for browser testing
+export MQTT_EXPLORER_USERNAME=admin
+export MQTT_EXPLORER_PASSWORD=secretpassword
+
 # Start the application
 yarn start
 
@@ -184,6 +188,59 @@ yarn lint
 yarn lint:fix
 ```
 
+### Running UI Tests (yarn test:ui)
+
+The UI tests require specific setup in the test environment:
+
+**Prerequisites:**
+1. **Xvfb (X Virtual Framebuffer)** - Required for headless Electron testing
+   ```bash
+   # Start Xvfb on display :99
+   Xvfb :99 -screen 0 1024x720x24 -ac &
+   export DISPLAY=:99
+   ```
+
+2. **Mosquitto MQTT Broker** - Required for MQTT message testing
+   ```bash
+   # Install mosquitto
+   sudo apt-get install -y mosquitto mosquitto-clients
+   
+   # Start mosquitto service
+   sudo systemctl start mosquitto
+   
+   # Verify it's running on port 1883
+   sudo systemctl status mosquitto
+   ```
+
+3. **@types/node** - Required for TypeScript compilation
+   ```bash
+   yarn add -D @types/node
+   ```
+
+**Running UI Tests:**
+```bash
+# Build the application first
+yarn build
+
+# Run UI tests with proper display
+DISPLAY=:99 yarn test:ui
+```
+
+**Common Issues:**
+- **"Timeout exceeded" in before hook**: Mosquitto is not running or not accessible on port 1883
+- **"Cannot find type definition file for 'node'"**: Run `yarn add -D @types/node`
+- **Electron fails to launch**: Xvfb is not running or DISPLAY variable not set
+- **Tests hang**: Check if old Electron/mosquitto processes are still running and kill them
+
+**Environment Cleanup:**
+```bash
+# Kill old Electron processes
+ps aux | grep electron | grep -v grep | awk '{print $2}' | xargs kill -9 2>/dev/null
+
+# Kill old mosquitto processes (if running custom instance)
+ps aux | grep mosquitto | grep -v grep | awk '{print $2}' | xargs kill -9 2>/dev/null
+```
+
 ## MCP Introspection Testing
 
 The project supports MCP (Model Context Protocol) for automated testing with Playwright:
@@ -322,5 +379,5 @@ yarn package-with-docker
 - The app uses Electron (see `package.json` for version)
 - MQTT communication is handled via [mqttjs](https://github.com/mqttjs/MQTT.js)
 - All code changes should pass linting (`yarn lint`)
-- Node.js version requirement: >= 18
+- Node.js version requirement: >= 20
 - The project uses workspace-like structure with separate package.json files for app and backend

@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/javascript-node:20
+    volumes:
+      - ../..:/workspace:cached
+    command: sleep infinity
+    network_mode: service:mosquitto
+    environment:
+      - MQTT_EXPLORER_USERNAME=dev
+      - MQTT_EXPLORER_PASSWORD=dev123
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports:
+      - "1883:1883"
+      - "3000:3000"
+      - "8080:8080"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro

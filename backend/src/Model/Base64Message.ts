@@ -82,7 +82,7 @@ export class Base64Message {
 
     let str: string = ''
     buf.forEach(element => {
-      let hex = element.toString(16).toUpperCase()
+      const hex = element.toString(16).toUpperCase()
       str += `0x${hex.length < 2 ? '0' + hex : hex} `
     })
     return str.trimRight()

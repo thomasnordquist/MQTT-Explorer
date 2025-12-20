@@ -6,11 +6,21 @@
     "strictNullChecks": true,
     "outDir": "./build",
     "strict": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "ES2017",
     "lib": [
       "es2017",
       "dom"
     ],
-    "sourceMap": true
+    "sourceMap": true,
+    "esModuleInterop": true
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs"
+    },
+    "transpileOnly": true
   },
   "includes": [
     "src/**/*.ts"
@@ -20,6 +30,8 @@
     "node_modules",
     "src/**/*.spec.ts",
     "**/*.d.ts",
-    "typings"
+    "typings",
+    "../events",
+    "../app"
   ]
 }

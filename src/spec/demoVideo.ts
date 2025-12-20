@@ -32,7 +32,7 @@ const cleanUp = async (scenes: SceneBuilder, electronApp: ElectronApplication) =
   await electronApp.close()
 }
 
-process.on('unhandledRejection', (error: Error | any) => {
+process.on('unhandledRejection' as any, (error: Error | any) => {
   console.error('unhandledRejection', error.message, error.stack)
   process.exit(1)
 })
