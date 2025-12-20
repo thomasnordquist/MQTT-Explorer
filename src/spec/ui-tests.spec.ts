@@ -68,7 +68,7 @@ describe('MQTT Explorer UI Tests', function () {
       // When: Connect and expand topic
       await connectTo('127.0.0.1', page)
       await sleep(2000)
-      await expandTopic(page, 'livingroom/lamp')
+      await expandTopic('livingroom/lamp', page)
 
       // Then: Should see lamp state
       const stateTopic = await page.locator('span[data-test-topic="state"]')
@@ -97,7 +97,7 @@ describe('MQTT Explorer UI Tests', function () {
       // When: Connect and expand topic
       await connectTo('127.0.0.1', page)
       await sleep(2000)
-      await expandTopic(page, 'kitchen/coffee_maker')
+      await expandTopic('kitchen/coffee_maker', page)
 
       // Then: JSON content should be visible (check for heater key)
       const valueDisplay = await page.locator('text="heater"')
@@ -119,7 +119,7 @@ describe('MQTT Explorer UI Tests', function () {
       // When: Connect and expand to nested topic
       await connectTo('127.0.0.1', page)
       await sleep(2000)
-      await expandTopic(page, 'livingroom/lamp/brightness')
+      await expandTopic('livingroom/lamp/brightness', page)
 
       // Then: Brightness topic should be visible and selected
       const brightnessTopic = await page.locator('span[data-test-topic="brightness"]')
@@ -148,7 +148,7 @@ describe('MQTT Explorer UI Tests', function () {
       await sleep(1000)
       await clearSearch(page)
       await sleep(500)
-      await expandTopic(page, 'kitchen/temperature')
+      await expandTopic('kitchen/temperature', page)
 
       // Then: Temperature topic should be visible
       const tempTopic = await page.locator('span[data-test-topic="temperature"]')
@@ -175,7 +175,7 @@ describe('MQTT Explorer UI Tests', function () {
       await sleep(1000)
       await clearSearch(page)
       await sleep(500)
-      await expandTopic(page, 'kitchen/lamp')
+      await expandTopic('kitchen/lamp', page)
 
       // Then: Lamp topic should be visible
       const lampTopic = await page.locator('span[data-test-topic="lamp"]')
