@@ -19,6 +19,7 @@ class Demo extends React.Component<{ classes: any }, State> {
   private timer: any
   private clickTimer: any
   private frameInterval = 20
+  private readonly correctionDelayMs = 50 // Delay before overshoot correction starts
 
   constructor(props: any) {
     super(props)
@@ -37,12 +38,16 @@ class Demo extends React.Component<{ classes: any }, State> {
   }
 
   /**
-   * Generates a seeded random value for consistent but varied jitter
-   * Uses a simple hash-based PRNG to ensure reproducible jitter patterns
+   * Generates a seeded random value using a simple LCG algorithm
+   * Better quality than sin-based PRNG for consistent jitter patterns
    */
   private seededRandom(seed: number): number {
-    const x = Math.sin(seed) * 10000
-    return x - Math.floor(x)
+    // Linear Congruential Generator with common constants
+    const a = 1664525
+    const c = 1013904223
+    const m = Math.pow(2, 32)
+    const x = (a * seed + c) % m
+    return x / m
   }
 
   /**
@@ -94,22 +99,27 @@ class Demo extends React.Component<{ classes: any }, State> {
     targetX: number,
     targetY: number
   ): { x: number; y: number } | null {
+    const dx = targetX - startX
+    const dy = targetY - startY
+    const distance = Math.sqrt(dx * dx + dy * dy)
+
+    // Don't overshoot for very short distances (less than 10px)
+    if (distance < 10) {
+      return null
+    }
+
     // 30% chance of overshoot for natural variation
     if (this.seededRandom(this.state.jitterSeed * 3) > 0.3) {
       return null
     }
-
-    const dx = targetX - startX
-    const dy = targetY - startY
-    const distance = Math.sqrt(dx * dx + dy * dy)
 
     // Overshoot by 2-8% of the distance
     const overshootPercent = 0.02 + this.seededRandom(this.state.jitterSeed * 4) * 0.06
     const overshootDistance = distance * overshootPercent
 
     // Overshoot in the direction of movement
-    const dirX = dx / (distance || 1)
-    const dirY = dy / (distance || 1)
+    const dirX = dx / distance
+    const dirY = dy / distance
 
     return {
       x: targetX + dirX * overshootDistance,
@@ -180,7 +190,8 @@ class Demo extends React.Component<{ classes: any }, State> {
     if (progress < 1) {
       // Add random delay variation (jitter in timing)
       // Frame interval varies between 15-25ms for irregular movement
-      const jitterDelay = this.seededRandom(this.state.jitterSeed * 6 + elapsed) * 10 - 5
+      // Use modulo to keep seed in reasonable range
+      const jitterDelay = this.seededRandom((this.state.jitterSeed * 6 + elapsed) % 100000) * 10 - 5
       const nextInterval = Math.max(10, this.frameInterval + jitterDelay)
 
       this.timer = setTimeout(() => {
@@ -202,7 +213,7 @@ class Demo extends React.Component<{ classes: any }, State> {
             duration: correctionDuration,
           })
           this.moveCloser()
-        }, 50) // Small delay before correction
+        }, this.correctionDelayMs)
       } else {
         // Reset overshoot state for next movement
         this.setState({ isOvershootCorrection: false })
