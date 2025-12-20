@@ -68,9 +68,9 @@ class Demo extends React.Component<{ classes: any }, State> {
     const dy = endY - startY
     const distance = Math.sqrt(dx * dx + dy * dy)
 
-    // Arc height is proportional to distance (40% of distance, capped at 100px max)
-    // Increased from 20% to make the curve more visible
-    const arcHeight = Math.min(distance * 0.4, 100)
+    // Arc height is proportional to distance (80% of distance, capped at 200px max)
+    // Quadrupled from original 20% to make the curve highly visible
+    const arcHeight = Math.min(distance * 0.8, 200)
 
     // Calculate perpendicular offset for the control point
     const perpX = -dy / (distance || 1)
@@ -122,7 +122,7 @@ class Demo extends React.Component<{ classes: any }, State> {
       this.clickTimer && clearTimeout(this.clickTimer)
       this.clickTimer = setTimeout(() => {
         this.setState({ clicking: false })
-      }, 200)
+      }, 300)
     }
   }
 
@@ -157,7 +157,7 @@ const style = (theme: Theme) => ({
       opacity: 1,
     },
     to: {
-      transform: 'scale(1.5)',
+      transform: 'scale(2.5)',
       opacity: 0,
     },
   },
@@ -170,13 +170,13 @@ const style = (theme: Theme) => ({
     pointerEvents: 'none' as 'none',
   },
   clickRipple: {
-    width: '32px',
-    height: '32px',
+    width: '48px',
+    height: '48px',
     position: 'fixed' as 'fixed',
     zIndex: 1000000 - 1, // Just below cursor
     borderRadius: '50%',
-    border: '3px solid #4CAF50',
-    animation: '$clickPulse 200ms ease-out',
+    border: '4px solid #4CAF50',
+    animation: '$clickPulse 300ms ease-out',
     pointerEvents: 'none' as 'none',
   },
 })
