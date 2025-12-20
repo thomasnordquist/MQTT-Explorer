@@ -22,8 +22,8 @@ export interface MockSparkplugClient {
   stop: () => void
 }
 
-var sample = (function () {
-  var config = {
+let sample = (function () {
+  let config = {
       serverUrl: 'tcp://127.0.0.1:1883',
       username: '',
       password: '',
@@ -169,12 +169,12 @@ var sample = (function () {
       // Create node command handler
       // spell-checker: disable-next-line
       sparkplugClient.on('ncmd', function (payload: UPayload) {
-        var timestamp = payload.timestamp,
+        let timestamp = payload.timestamp,
           metrics = payload.metrics
 
         if (metrics !== undefined && metrics !== null) {
-          for (var i = 0; i < metrics.length; i++) {
-            var metric = metrics[i]
+          for (let i = 0; i < metrics.length; i++) {
+            let metric = metrics[i]
             if (metric.name == 'Node Control/Rebirth' && metric.value) {
               console.log("Received 'Rebirth' command")
               // Publish Node BIRTH certificate
@@ -189,7 +189,7 @@ var sample = (function () {
       // Create device command handler
       // spell-checker: disable-next-line
       sparkplugClient.on('dcmd', function (deviceId: string, payload: UPayload) {
-        var timestamp = payload.timestamp,
+        let timestamp = payload.timestamp,
           metrics = payload.metrics,
           inboundMetricMap: { [name: string]: any } = {},
           outboundMetric: Array<UMetric> = [],
@@ -199,8 +199,8 @@ var sample = (function () {
 
         // Loop over the metrics and store them in a map
         if (metrics !== undefined && metrics !== null) {
-          for (var i = 0; i < metrics.length; i++) {
-            var metric = metrics[i]
+          for (let i = 0; i < metrics.length; i++) {
+            let metric = metrics[i]
             if (metric.name !== undefined && metric.name !== null) {
               inboundMetricMap[metric.name] = metric.value
             }
@@ -239,7 +239,7 @@ var sample = (function () {
       return connected
     }
 
-  return { run: run }
+  return { run }
 })()
 
 export default sample

@@ -35,7 +35,7 @@ async function main() {
   console.log(`✓ Window ready, title: ${title}`)
 
   // Check console logs for remote debugging message
-  const logs: string[] = []
+  const logs: Array<string> = []
   page.on('console', msg => {
     const text = msg.text()
     logs.push(text)
