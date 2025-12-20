@@ -23,12 +23,12 @@ class ErrorBoundary extends React.PureComponent<Props, State> {
   }
 
   private restart = () => {
-    window.location = window.location
+    window.location.reload()
   }
 
   private clearStorage = () => {
     PersistentStorage.clear()
-    window.location = window.location
+    window.location.reload()
   }
 
   public componentDidCatch(error: Error, errorInfo: any) {

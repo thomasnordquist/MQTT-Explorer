@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import { exec } from './util'
 import { Scene, SceneNames } from '../src/spec/SceneBuilder'
 
-// tslint:disable-next-line
+// @ts-ignore - ffmpeg-concat doesn't have type definitions
 import concat from 'ffmpeg-concat'
 
 async function cutScenes(scenes: Array<Scene>) {

@@ -15,7 +15,7 @@ export const setTopic = (topic?: string): Action => {
 }
 
 export const openFile =
-  (encoding: 'utf8' = 'utf8') =>
+  (encoding: BufferEncoding = 'utf8') =>
   async (dispatch: Dispatch<any>, getState: () => AppState) => {
     try {
       const file = await getFileContent(encoding)
@@ -31,7 +31,7 @@ type FileParameters = {
   name: string
   data: string
 }
-async function getFileContent(encoding: string): Promise<FileParameters | undefined> {
+async function getFileContent(encoding: BufferEncoding): Promise<FileParameters | undefined> {
   const rejectReasons = {
     noFileSelected: 'No file selected',
     errorReadingFile: 'Error reading file',

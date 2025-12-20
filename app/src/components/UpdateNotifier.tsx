@@ -1,4 +1,4 @@
-import compareVersions from 'compare-versions'
+import { compareVersions } from 'compare-versions'
 import electron from 'electron'
 import React from 'react'
 import axios from 'axios'

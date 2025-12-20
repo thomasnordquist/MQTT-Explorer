@@ -63,6 +63,7 @@
     "@types/d3": "^7.4.3",
     "@types/diff": "^7.0.0",
     "@types/get-value": "^3.0.5",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^25.0.3",
     "@types/prismjs": "^1.26.5",
     "@types/react": "^16.14.62",

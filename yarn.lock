@@ -674,9 +674,9 @@
   optionalDependencies:
     global-agent "^3.0.0"
 
-"@electron/node-gyp@git+https://github.com/electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2":
+"@electron/node-gyp@https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2":
   version "10.2.0-electron.1"
-  resolved "git+https://github.com/electron/node-gyp.git#06b29aafb7708acef8b3669835c8a7857ebc92d2"
+  resolved "https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2"
   dependencies:
     env-paths "^2.2.0"
     exponential-backoff "^3.1.1"
@@ -1583,6 +1583,11 @@
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/@types/http-errors/-/http-errors-2.0.5.tgz#5b749ab2b16ba113423feb1a64a95dcd30398472"
   integrity sha512-r8Tayk8HJnX0FztbZN7oVqGccWgw98T/0neJphO91KkmOzug1KkofZURD4UaD5uH8AqcFLfdPErnBod0u71/qg==
+
+"@types/json-to-ast@^2.1.4":
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/@types/json-to-ast/-/json-to-ast-2.1.4.tgz#33d25f1c9be030f167536c463aa66a642b230693"
+  integrity sha512-131wOmuwDg8ypYCSQ437bGdP+K2lJ8GJUu+ng4iQQxAc3irRnb7mGHbexsPChBcKWLctTR9V5LJdX5A8WWk44A==
 
 "@types/jsonfile@*":
   version "6.1.4"
