@@ -114,8 +114,6 @@ async function buildWithOptions(options: builder.CliOptions, buildInfo: BuildInf
   const architectures = []
   if (options.x64) architectures.push('x64')
   if (options.arm64) architectures.push('arm64')
-  if (options.armv7l) architectures.push('armv7l')
-  if (options.ia32) architectures.push('ia32')
   console.log(`Building ${buildInfo.package} for architectures: ${architectures.join(', ')}`)
 
   // AppX must have a different name since the store name is already taken (but not used)
