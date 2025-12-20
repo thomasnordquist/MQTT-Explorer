@@ -1,8 +1,13 @@
-// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const webpack = require('webpack')
+// import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import webpack from 'webpack'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+export default {
   entry: {
     app: './src/index.tsx',
     bugtracking: './src/utils/bugtracking.ts',

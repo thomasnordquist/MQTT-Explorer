@@ -7,7 +7,7 @@ import { batchActions } from 'redux-batched-actions'
 import { globalActions } from './'
 import { setTopic } from './Publish'
 import { TopicViewModel } from '../model/TopicViewModel'
-const debounce = require('lodash.debounce')
+import debounce from 'lodash.debounce'
 export { clearTopic } from './clearTopic'
 
 export { moveSelectionUpOrDownwards, moveInward, moveOutward } from './visibleTreeTraversal'
