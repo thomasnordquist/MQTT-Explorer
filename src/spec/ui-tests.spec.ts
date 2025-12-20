@@ -179,6 +179,10 @@ describe('MQTT Explorer UI Tests', function () {
       // Given: coffee_maker publishes JSON with heater, temperature, waterLevel
       await sleep(2000)
 
+      // Ensure no search filter is active
+      await clearSearch(page)
+      await sleep(500)
+
       // When: Navigate to kitchen/coffee_maker
       await expandTopic('kitchen/coffee_maker', page)
       await sleep(1000)
@@ -270,6 +274,10 @@ describe('MQTT Explorer UI Tests', function () {
 
     it('should show numeric plots for topics with numeric values', async function () {
       // Given: Topics with numeric values (kitchen/coffee_maker/temperature)
+      // Ensure no search filter is active
+      await clearSearch(page)
+      await sleep(500)
+
       // When: User creates charts for numeric values
       await showNumericPlot(page)
       await sleep(2000)
@@ -296,6 +304,10 @@ describe('MQTT Explorer UI Tests', function () {
       // Given: kitchen/coffee_maker is published with QoS 2
       await sleep(1000)
 
+      // Ensure no search filter is active
+      await clearSearch(page)
+      await sleep(500)
+
       // When: Navigate to the topic
       await expandTopic('kitchen/coffee_maker', page)
       await sleep(1000)
@@ -309,6 +321,12 @@ describe('MQTT Explorer UI Tests', function () {
   describe('Clipboard Operations', () => {
     it('should copy topic path to clipboard', async function () {
       // Given: A topic is selected
+      // Ensure no search filter is active and select a topic
+      await clearSearch(page)
+      await sleep(500)
+      await expandTopic('kitchen/coffee_maker', page)
+      await sleep(500)
+
       // When: User clicks copy topic button
       await copyTopicToClipboard(page)
       await sleep(500)
@@ -320,6 +338,12 @@ describe('MQTT Explorer UI Tests', function () {
 
     it('should copy message value to clipboard', async function () {
       // Given: A topic with a value is selected
+      // Ensure no search filter is active and select a topic
+      await clearSearch(page)
+      await sleep(500)
+      await expandTopic('livingroom/lamp/state', page)
+      await sleep(500)
+
       // When: User clicks copy value button
       await copyValueToClipboard(page)
       await sleep(500)
@@ -424,6 +448,10 @@ describe('MQTT Explorer UI Tests', function () {
       // Given: Topics that update over time (livingroom/temperature)
       await sleep(3000) // Wait for several updates
 
+      // Ensure no search filter is active
+      await clearSearch(page)
+      await sleep(500)
+
       // When: Navigate to a topic with history
       await expandTopic('livingroom/temperature', page)
       await sleep(1000)
@@ -443,6 +471,10 @@ describe('MQTT Explorer UI Tests', function () {
     it('Given a topic with changing values, should show value updates in real-time', async function () {
       // Given: kitchen/coffee_maker/temperature updates periodically
       await sleep(1000)
+
+      // Ensure no search filter is active
+      await clearSearch(page)
+      await sleep(500)
 
       // When: Navigate to the topic
       await expandTopic('kitchen/coffee_maker', page)
@@ -466,6 +498,10 @@ describe('MQTT Explorer UI Tests', function () {
       // QoS 2: kitchen/coffee_maker
       await sleep(1000)
 
+      // Ensure no search filter is active
+      await clearSearch(page)
+      await sleep(500)
+
       // When: Navigate to QoS 0 topic
       await expandTopic('livingroom/lamp/state', page)
       await sleep(500)
@@ -485,6 +521,10 @@ describe('MQTT Explorer UI Tests', function () {
     it('Given topics with spaces and special characters, should display correctly', async function () {
       // Given: Mock publishes to "test 123" and "hello"
       await sleep(1000)
+
+      // Ensure no search filter is active
+      await clearSearch(page)
+      await sleep(500)
 
       // When: Navigate to topic with space
       const testTopic = await page.locator('span[data-test-topic="test 123"]')
@@ -599,6 +639,10 @@ describe('MQTT Explorer UI Tests', function () {
     it('Given topics with different value types (string, number, percentage), should display correctly', async function () {
       // Given: Various value types in mock data
       await sleep(1000)
+
+      // Ensure no search filter is active
+      await clearSearch(page)
+      await sleep(500)
 
       // When: Check string value (garden/pump/state = "off")
       await expandTopic('garden/pump/state', page)
