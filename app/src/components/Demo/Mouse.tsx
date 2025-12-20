@@ -9,6 +9,7 @@ interface State {
   startPosition: { x: number; y: number }
   startTime: number
   duration: number
+  clicking: boolean
 }
 
 class Demo extends React.Component<{ classes: any }, State> {
@@ -24,6 +25,7 @@ class Demo extends React.Component<{ classes: any }, State> {
       startPosition: { x: 0, y: 0 },
       startTime: 0,
       duration: 0,
+      clicking: false,
     }
   }
 
@@ -65,8 +67,9 @@ class Demo extends React.Component<{ classes: any }, State> {
     const dy = endY - startY
     const distance = Math.sqrt(dx * dx + dy * dy)
 
-    // Arc height is proportional to distance (20% of distance, capped at 50px max)
-    const arcHeight = Math.min(distance * 0.2, 50)
+    // Arc height is proportional to distance (40% of distance, capped at 100px max)
+    // Increased from 20% to make the curve more visible
+    const arcHeight = Math.min(distance * 0.4, 100)
 
     // Calculate perpendicular offset for the control point
     const perpX = -dy / (distance || 1)
@@ -113,6 +116,12 @@ class Demo extends React.Component<{ classes: any }, State> {
       })
       this.moveCloser()
     }
+    ;(window as any).demo.clickMouse = () => {
+      this.setState({ clicking: true })
+      setTimeout(() => {
+        this.setState({ clicking: false })
+      }, 200)
+    }
   }
 
   public render() {
@@ -125,17 +134,42 @@ class Demo extends React.Component<{ classes: any }, State> {
       top: this.state.position.y + 2,
     }
 
-    return <img src={cursor} style={cursorStyle} className={this.props.classes.cursor} />
+    return (
+      <>
+        <img src={cursor} style={cursorStyle} className={this.props.classes.cursor} />
+        {this.state.clicking && <div style={cursorStyle} className={this.props.classes.clickRipple} />}
+      </>
+    )
   }
 }
 
 const style = (theme: Theme) => ({
+  '@keyframes clickPulse': {
+    from: {
+      transform: 'scale(1)',
+      opacity: 1,
+    },
+    to: {
+      transform: 'scale(1.5)',
+      opacity: 0,
+    },
+  },
   cursor: {
     width: '32px',
     height: '32px',
     position: 'fixed' as 'fixed',
     zIndex: 1000000,
     filter: theme.palette.type === 'light' ? undefined : 'invert(100%)',
+    pointerEvents: 'none' as 'none',
+  },
+  clickRipple: {
+    width: '32px',
+    height: '32px',
+    position: 'fixed' as 'fixed',
+    zIndex: 999999,
+    borderRadius: '50%',
+    border: '3px solid #4CAF50',
+    animation: '$clickPulse 200ms ease-out',
     pointerEvents: 'none' as 'none',
   },
 })
