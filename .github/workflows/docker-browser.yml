@@ -16,7 +16,7 @@ on:
       - 'yarn.lock'
       - '.github/workflows/docker-browser.yml'
   schedule:
-    # Run every two weeks on Sunday at 2:00 AM UTC
+    # Run every two weeks (1st and 15th of each month) at 2:00 AM UTC
     - cron: '0 2 1,15 * *'
   workflow_dispatch:
 
