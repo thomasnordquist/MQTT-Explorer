@@ -47,8 +47,17 @@ export async function setTextInInput(name: string, text: string, browser: Page) 
 }
 
 export async function moveToCenterOfElement(element: Locator) {
+  // Wait for element to be visible and attached before getting bounding box
+  await element.waitFor({ state: 'visible', timeout: 30000 })
+
   // @ts-ignore
-  const { x, y, width, height } = await element.boundingBox()
+  const boundingBox = await element.boundingBox()
+
+  if (!boundingBox) {
+    throw new Error('Could not get bounding box for element')
+  }
+
+  const { x, y, width, height } = boundingBox
 
   const targetX = x + width / 2
   const targetY = y + height / 2
@@ -79,6 +88,9 @@ export async function clickOn(
   button: 'left' | 'right' | 'middle' = 'left',
   force = false
 ) {
+  // Ensure element is visible before trying to interact
+  await element.waitFor({ state: 'visible', timeout: 30000 })
+
   await moveToCenterOfElement(element)
   await element.hover()
   await element.click({ delay, button, force, clickCount: clicks })

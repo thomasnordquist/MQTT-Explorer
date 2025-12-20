@@ -10,9 +10,8 @@ import { ConnectionOptions } from '../../model/ConnectionOptions'
 import { Theme, withStyles } from '@material-ui/core/styles'
 
 // Check if we're in browser mode
-const isBrowserMode = 
-  typeof window !== 'undefined' && 
-  (typeof process === 'undefined' || process.env?.BROWSER_MODE === 'true')
+const isBrowserMode =
+  typeof window !== 'undefined' && (typeof process === 'undefined' || process.env?.BROWSER_MODE === 'true')
 const CertSelector = isBrowserMode ? BrowserCertificateFileSelection : CertificateFileSelection
 
 interface Props {

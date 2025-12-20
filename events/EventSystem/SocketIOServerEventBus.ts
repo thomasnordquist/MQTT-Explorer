@@ -73,7 +73,7 @@ export class SocketIOServerEventBus implements EventBusInterface {
       event,
       totalClients,
       totalSubscriptions,
-      
+
       totalConnections,
       socketId.substring(0, 8),
       socketSubs,

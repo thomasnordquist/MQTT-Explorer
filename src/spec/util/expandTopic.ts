@@ -2,28 +2,34 @@ import { clickOn } from './'
 import { Page } from 'playwright'
 
 export async function expandTopic(path: string, browser: Page) {
-  const originalTopics = path.split('/')
-  console.log('expandTopic', path)
-  let topics = path.split('/')
-  while (topics.length > 0 && !(await topicMatches(topics, browser))) {
-    topics = topics.slice(0, topics.length - 1)
-  }
-  if (topics.length === 0) {
-    throw Error('could not expand topics, no match found')
-  }
+  const topics = path.split('/')
+  console.log('expandTopic', path, topics)
 
-  console.log('found topics', topics, originalTopics)
-
+  // Navigate through the topic hierarchy one level at a time
+  let topicIndex = 0
   for (const topic of topics) {
-    const match = await browser.locator(topicSelector([topic]))
-    await clickOn(match.first())
+    const selector = `span[data-test-topic='${topic}']`
+
+    console.log(`Looking for topic: ${topic}, selector: ${selector}`)
+
+    const locator = browser.locator(selector).first()
+
+    // Wait for the topic to be visible with a reasonable timeout
+    try {
+      await locator.waitFor({ state: 'visible', timeout: 30000 })
+      console.log(`Found topic: ${topic}`)
+
+      // Click to expand (if not the last topic)
+      await clickOn(locator)
+
+      // Give time for UI to expand and show children
+      await new Promise(resolve => setTimeout(resolve, 500))
+    } catch (error) {
+      console.error(`Failed to find topic: ${topic}`, error)
+      throw new Error(`Could not find topic "${topic}" in path "${path}"`)
+    }
+    topicIndex += 1
   }
-  // while (topics.length <= originalTopics.length) {
-  //   const match = await browser.locator(topicSelector(topics))
-  //   console.log('click', match)
-  //   await clickOn(match)
-  //   topics.push(originalTopics[topics.length])
-  // }
 }
 
 async function topicMatches(topics: Array<string>, browser: Page) {
