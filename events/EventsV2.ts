@@ -22,6 +22,9 @@ export const Events = {
   removeConnection: { topic: 'connection/remove' } as EventV2<string>,
   updateAvailable: { topic: 'app/update/available' } as EventV2<UpdateInfo>,
 
+  // Settings
+  setMaxMessageSize: { topic: 'settings/maxMessageSize' } as EventV2<number>,
+
   // Parameterized events (for connection-specific events)
   connectionState: (connectionId: string) => ({ topic: `conn/state/${connectionId}` }) as EventV2<DataSourceState>,
   connectionMessage: (connectionId: string) => ({ topic: `conn/${connectionId}` }) as EventV2<MqttMessageV2>,
@@ -61,6 +64,14 @@ export interface CertificateUploadResponse {
   name: string
   data: string // base64 encoded
 }
+
+// Message size constants
+export const MAX_MESSAGE_SIZE_20KB = 20000
+export const MAX_MESSAGE_SIZE_100KB = 100000
+export const MAX_MESSAGE_SIZE_1MB = 1000000
+export const MAX_MESSAGE_SIZE_5MB = 5000000
+export const MAX_MESSAGE_SIZE_UNLIMITED = -1
+export const MAX_MESSAGE_SIZE_DEFAULT = MAX_MESSAGE_SIZE_20KB
 
 // Electron dialog types (re-exported for convenience)
 import { OpenDialogOptions, OpenDialogReturnValue, SaveDialogOptions, SaveDialogReturnValue } from 'electron'

@@ -16,7 +16,7 @@ import {
   MAX_MESSAGE_SIZE_1MB,
   MAX_MESSAGE_SIZE_5MB,
   MAX_MESSAGE_SIZE_UNLIMITED,
-} from '../../../../events'
+} from '../../../../events/EventsV2'
 
 import {
   Divider,

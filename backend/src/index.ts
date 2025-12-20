@@ -8,11 +8,13 @@ import {
   makeConnectionStateEvent,
   makePublishEvent,
   removeConnection,
-  setMaxMessageSize as setMaxMessageSizeEvent,
+} from '../../events'
+import {
+  Events,
   MAX_MESSAGE_SIZE_DEFAULT,
   MAX_MESSAGE_SIZE_20KB,
   MAX_MESSAGE_SIZE_UNLIMITED,
-} from '../../events'
+} from '../../events/EventsV2'
 import { EventBusInterface } from '../../events/EventSystem/EventBusInterface'
 
 export class ConnectionManager {
@@ -75,7 +77,7 @@ export class ConnectionManager {
     this.backendEvents.subscribe(removeConnection, (connectionId: string) => {
       this.removeConnection(connectionId)
     })
-    backendEvents.subscribe(setMaxMessageSizeEvent, (maxMessageSize: number) => {
+    this.backendEvents.subscribe(Events.setMaxMessageSize, (maxMessageSize: number) => {
       // Validate: must be an integer >= 20KB or unlimited (-1)
       if (typeof maxMessageSize === 'number' && Number.isInteger(maxMessageSize)) {
         if (maxMessageSize === MAX_MESSAGE_SIZE_UNLIMITED || maxMessageSize >= MAX_MESSAGE_SIZE_20KB) {

@@ -1,6 +1,6 @@
 import { createReducer } from './lib'
 import { Record } from 'immutable'
-import { MAX_MESSAGE_SIZE_DEFAULT } from '../../../events'
+import { MAX_MESSAGE_SIZE_DEFAULT } from '../../../events/EventsV2'
 
 export enum TopicOrder {
   none = 'none',
