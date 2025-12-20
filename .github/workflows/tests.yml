@@ -33,6 +33,7 @@ jobs:
       - name: Build
         run: yarn build
       - name: Run UI Tests
+        timeout-minutes: 10
         run: ./scripts/runUiTests.sh
       - name: Upload Test Screenshots
         if: always()
