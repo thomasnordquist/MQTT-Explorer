@@ -14,6 +14,7 @@ interface State {
 
 class Demo extends React.Component<{ classes: any }, State> {
   private timer: any
+  private clickTimer: any
   private frameInterval = 20
 
   constructor(props: any) {
@@ -118,10 +119,16 @@ class Demo extends React.Component<{ classes: any }, State> {
     }
     ;(window as any).demo.clickMouse = () => {
       this.setState({ clicking: true })
-      setTimeout(() => {
+      this.clickTimer && clearTimeout(this.clickTimer)
+      this.clickTimer = setTimeout(() => {
         this.setState({ clicking: false })
       }, 200)
     }
+  }
+
+  public componentWillUnmount() {
+    this.timer && clearTimeout(this.timer)
+    this.clickTimer && clearTimeout(this.clickTimer)
   }
 
   public render() {
@@ -166,7 +173,7 @@ const style = (theme: Theme) => ({
     width: '32px',
     height: '32px',
     position: 'fixed' as 'fixed',
-    zIndex: 999999,
+    zIndex: 1000000 - 1, // Just below cursor
     borderRadius: '50%',
     border: '3px solid #4CAF50',
     animation: '$clickPulse 200ms ease-out',
