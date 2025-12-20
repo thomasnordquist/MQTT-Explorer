@@ -54,7 +54,7 @@ describe('MQTT Explorer UI Tests', function () {
 
     console.log('Launching Electron application...')
     electronApp = await electron.launch({
-      args: [`${__dirname}/../../..`, '--runningUiTestOnCi'],
+      args: [`${__dirname}/../../..`, '--runningUiTestOnCi', '--no-sandbox', '--disable-dev-shm-usage'],
     })
 
     console.log('Waiting for application window...')
