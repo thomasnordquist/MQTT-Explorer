@@ -9,7 +9,7 @@ import type { MqttClient } from 'mqtt'
 
 /**
  * Isolated Test for expandTopic UI Helper
- * 
+ *
  * This test validates that the expandTopic function correctly:
  * 1. Finds topics in the tree hierarchy
  * 2. Expands nested topics correctly
