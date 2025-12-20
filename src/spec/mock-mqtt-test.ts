@@ -2,10 +2,10 @@ import * as mqtt from 'mqtt'
 
 /**
  * Test-specific MQTT mock (no timers)
- * 
+ *
  * This mock connects to the broker but doesn't publish any messages automatically.
  * Each test should publish only the messages it needs via the returned client.
- * 
+ *
  * This is different from the demo video mock which uses timers.
  */
 
