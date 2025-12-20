@@ -92,6 +92,6 @@
     "webpack-dev-server": "^5.0.4"
   },
   "peerDependencies": {
-    "electron": "^29"
+    "electron": "^38"
   }
 }
