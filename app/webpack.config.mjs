@@ -19,6 +19,7 @@ export default {
   },
   optimization: {
     minimize: false,
+    runtimeChunk: 'single',
     splitChunks: {
       chunks: 'all',
       minSize: 30000,
@@ -111,8 +112,5 @@ export default {
   },
   cache: {
     type: 'filesystem',
-  },
-  optimization: {
-    runtimeChunk: 'single',
   },
 }
