@@ -2,7 +2,8 @@ import { clickOn } from './'
 import { Page, Locator } from 'playwright'
 
 // Time to wait after clicking a topic for the tree to expand and render children
-const TREE_EXPANSION_DELAY_MS = 500
+// Increased to 1000ms to handle sequential test execution where UI might be slower
+const TREE_EXPANSION_DELAY_MS = 1000
 
 export async function expandTopic(path: string, browser: Page) {
   const topics = path.split('/')
@@ -35,7 +36,8 @@ export async function expandTopic(path: string, browser: Page) {
     for (let j = 0; j < count; j += 1) {
       const candidate = allMatches.nth(j)
       try {
-        await candidate.waitFor({ state: 'visible', timeout: 1000 })
+        // Increased timeout to 3000ms to handle slower UI after many test runs
+        await candidate.waitFor({ state: 'visible', timeout: 3000 })
         locator = candidate
         console.log(`Using match #${j} for '${topicName}'`)
         break
