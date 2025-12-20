@@ -1,11 +1,12 @@
 import express from 'express'
 import * as http from 'http'
 import * as path from 'path'
-import { Server as SocketIOServer } from 'socket.io'
+import { Server } from 'socket.io'
 import { promises as fsPromise } from 'fs'
 import { Request, Response } from 'express'
 import { AuthManager } from './AuthManager'
 import { ConnectionManager } from '../backend/src/index'
+import ConfigStorage from '../backend/src/ConfigStorage'
 import { SocketIOServerEventBus } from '../events/EventSystem/SocketIOServerEventBus'
 import { Rpc } from '../events/EventSystem/Rpc'
 import { makeOpenDialogRpc, makeSaveDialogRpc } from '../events/OpenDialogRequest'
@@ -23,11 +24,15 @@ async function startServer() {
   // Create Express app
   const app = express()
   const server = http.createServer(app)
-  const io = new SocketIOServer(server, {
+  const io = new Server(server, {
     cors: {
       origin: '*',
       methods: ['GET', 'POST'],
     },
+    allowEIO3: true, // Allow Engine.IO v3 clients (backwards compatibility)
+    transports: ['websocket', 'polling'], // Support both transports
+    pingTimeout: 60000, // Increase ping timeout
+    pingInterval: 25000, // Ping interval
   })
 
   // Authentication middleware for Socket.io
@@ -54,6 +59,10 @@ async function startServer() {
   // Initialize connection manager
   const connectionManager = new ConnectionManager(backendEvents)
   connectionManager.manageConnections()
+
+  // Initialize config storage
+  const configStorage = new ConfigStorage(path.join(process.cwd(), 'data', 'settings.json'), backendRpc)
+  configStorage.init()
 
   // Setup RPC handlers for file operations
   backendRpc.on(makeOpenDialogRpc(), async request => {

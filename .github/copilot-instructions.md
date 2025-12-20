@@ -25,6 +25,10 @@ yarn install
 # Build the project
 yarn build
 
+# Set password for browser testing
+export MQTT_EXPLORER_USERNAME=admin
+export MQTT_EXPLORER_PASSWORD=secretpassword
+
 # Start the application
 yarn start
 

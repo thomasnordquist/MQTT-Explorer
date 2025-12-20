@@ -142,6 +142,37 @@ For production deployment:
 
 ## Troubleshooting
 
+### Debugging
+
+Enable detailed Socket.IO connection and lifecycle debugging:
+
+```bash
+DEBUG=mqtt-explorer:socketio* yarn start:server
+```
+
+Available debug namespaces:
+- `mqtt-explorer:socketio` - General Socket.IO events and metrics
+- `mqtt-explorer:socketio:connect` - Client connection events
+- `mqtt-explorer:socketio:disconnect` - Client disconnection and cleanup
+- `mqtt-explorer:socketio:subscriptions` - Subscription lifecycle tracking
+- `mqtt-explorer:socketio:connections` - MQTT connection ownership
+
+This will log:
+- Client connect/disconnect events
+- Subscription counts per socket
+- MQTT connection ownership tracking
+- Memory leak detection metrics (subscriptions, handlers, connections)
+
+Example output:
+```
+mqtt-explorer:socketio:connect Client connected: abc123de
+mqtt-explorer:socketio [connect] clients=1 subscriptions=8 mqttConns=0 | socket[abc123de]: subs=8 conns=0
+mqtt-explorer:socketio:connections Connection my-mqtt owned by socket abc123de (total: 1)
+mqtt-explorer:socketio:disconnect Client disconnected: abc123de
+mqtt-explorer:socketio:subscriptions Removed 8 subscriptions for socket abc123de
+mqtt-explorer:socketio [disconnect] clients=0 subscriptions=0 mqttConns=0 | socket[abc123de]: subs=0 conns=0
+```
+
 ### Authentication Fails
 
 1. Check the console output for the generated credentials

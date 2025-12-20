@@ -1,5 +1,5 @@
 // Browser-specific EventBus implementation using Socket.io
-import { io } from 'socket.io-client'
+import io from 'socket.io-client'
 import { SocketIOClientEventBus } from './SocketIOClientEventBus'
 import { Rpc } from './Rpc'
 
@@ -13,6 +13,11 @@ const socket = io({
     username,
     password,
   },
+  reconnection: true,
+  reconnectionDelay: 1000,
+  reconnectionDelayMax: 5000,
+  reconnectionAttempts: Infinity,
+  transports: ['websocket', 'polling'],
 })
 
 export const rendererEvents = new SocketIOClientEventBus(socket)

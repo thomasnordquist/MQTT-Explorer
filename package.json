@@ -128,6 +128,7 @@
     "about-window": "^1.12.1",
     "axios": "^0.28.0",
     "bcryptjs": "^3.0.3",
+    "debug": "^4.3.4",
     "dot-prop": "^5.0.0",
     "electron-log": "4.4.6",
     "electron-updater": "^4.6",

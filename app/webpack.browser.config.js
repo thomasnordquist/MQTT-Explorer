@@ -98,7 +98,5 @@ module.exports = {
     }),
   ],
   externals: {},
-  cache: {
-    type: 'filesystem',
-  },
+  cache: false,
 }
