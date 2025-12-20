@@ -10,6 +10,47 @@ MQTT Explorer uses GitHub Actions for continuous integration and testing. The pi
 
 This workflow runs on pull requests to `master`, `beta`, and `release` branches.
 
+### Docker Browser Build Workflow (`.github/workflows/docker-browser.yml`)
+
+This workflow builds and publishes a Docker image for the browser mode.
+
+**Triggers**:
+- Push to `master`, `beta`, or `release` branches (when relevant files change)
+- Schedule: Runs every two weeks (1st and 15th of each month at 2:00 AM UTC)
+- Manual trigger via workflow_dispatch
+
+**Platforms**: linux/amd64
+
+**Image Registry**: GitHub Container Registry (ghcr.io)
+
+**Tags**:
+- `latest` - Latest build from master branch
+- `master` - Latest build from master
+- `beta` - Latest build from beta branch
+- `release` - Latest build from release branch
+- `<branch>-<sha>` - Specific commit builds
+
+**Steps**:
+1. Build Docker image with multi-stage build
+2. Run container with test credentials
+3. Test basic startup and health check
+4. Verify HTTP response
+5. Test data directory creation
+6. Push image to GitHub Container Registry
+7. Generate build attestation for supply chain security
+
+**Image Features**:
+- Multi-stage build for minimal size
+- Alpine Linux base (~200MB final image)
+- Non-root user (UID 1001)
+- Health check endpoint
+- Proper signal handling with dumb-init
+- Persistent data volume at `/app/data`
+
+### Test Workflow (`.github/workflows/tests.yml`)
+
+This workflow runs on pull requests to `master`, `beta`, and `release` branches.
+
 #### Jobs
 
 ##### 1. `test` - Electron Mode Tests
@@ -91,6 +132,32 @@ Example:
 ```
 
 ## Local Testing
+
+### Docker Browser Mode
+
+```bash
+# Build the image locally
+docker build -f Dockerfile.browser -t mqtt-explorer-browser:local .
+
+# Run the container
+docker run -d \
+  -p 3000:3000 \
+  -e MQTT_EXPLORER_USERNAME=test \
+  -e MQTT_EXPLORER_PASSWORD=test123 \
+  mqtt-explorer-browser:local
+
+# Test the server
+curl http://localhost:3000
+
+# Check logs
+docker logs <container-id>
+
+# Stop and remove
+docker stop <container-id>
+docker rm <container-id>
+```
+
+See [DOCKER.md](DOCKER.md) for complete documentation.
 
 ### Electron Mode
 

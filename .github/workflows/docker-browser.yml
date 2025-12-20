@@ -1,0 +1,162 @@
+name: Docker Browser Build
+
+on:
+  push:
+    branches:
+      - master
+      - release
+      - beta
+    paths:
+      - 'Dockerfile.browser'
+      - 'src/server.ts'
+      - 'src/AuthManager.ts'
+      - 'app/**'
+      - 'backend/**'
+      - 'package.json'
+      - 'yarn.lock'
+      - '.github/workflows/docker-browser.yml'
+  schedule:
+    # Run every two weeks on Sunday at 2:00 AM UTC
+    - cron: '0 2 1,15 * *'
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    services:
+      # MQTT broker for testing
+      mosquitto:
+        image: eclipse-mosquitto:2
+        ports:
+          - 1883:1883
+        options: >-
+          --health-cmd "mosquitto_sub -t '$SYS/#' -C 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}-browser
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.browser
+          platforms: linux/amd64
+          push: false
+          load: true
+          tags: mqtt-explorer-browser:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Test Docker image - Basic startup
+        run: |
+          # Start container with test credentials
+          docker run -d \
+            --name mqtt-explorer-test \
+            -p 3000:3000 \
+            -e MQTT_EXPLORER_USERNAME=test \
+            -e MQTT_EXPLORER_PASSWORD=test123 \
+            -e PORT=3000 \
+            mqtt-explorer-browser:test
+
+          # Wait for server to be ready (max 60 seconds)
+          echo "Waiting for server to start..."
+          for i in {1..60}; do
+            if curl -f http://localhost:3000 > /dev/null 2>&1; then
+              echo "Server started successfully after $i seconds"
+              break
+            fi
+            if [ $i -eq 60 ]; then
+              echo "Server failed to start within 60 seconds"
+              docker logs mqtt-explorer-test
+              exit 1
+            fi
+            sleep 1
+          done
+
+      - name: Test Docker image - Health check
+        run: |
+          # Wait for health check to pass
+          echo "Waiting for health check to pass..."
+          for i in {1..30}; do
+            health=$(docker inspect --format='{{.State.Health.Status}}' mqtt-explorer-test)
+            if [ "$health" = "healthy" ]; then
+              echo "Container is healthy"
+              break
+            fi
+            if [ $i -eq 30 ]; then
+              echo "Health check failed"
+              docker logs mqtt-explorer-test
+              exit 1
+            fi
+            sleep 2
+          done
+
+      - name: Test Docker image - Verify response
+        run: |
+          # Test that the server responds with HTML
+          response=$(curl -s http://localhost:3000)
+          if echo "$response" | grep -q "MQTT Explorer"; then
+            echo "Server is serving the application correctly"
+          else
+            echo "Server response does not contain expected content"
+            echo "Response: $response"
+            exit 1
+          fi
+
+      - name: Test Docker image - Verify data persistence
+        run: |
+          # Check that data directory was created
+          docker exec mqtt-explorer-test sh -c '[ -d /app/data ] && echo "Data directory exists"'
+
+      - name: Clean up test container
+        if: always()
+        run: |
+          docker stop mqtt-explorer-test || true
+          docker rm mqtt-explorer-test || true
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.browser
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ghcr.io/${{ github.repository }}-browser
+          subject-digest: ${{ steps.meta.outputs.digest }}
+          push-to-registry: true

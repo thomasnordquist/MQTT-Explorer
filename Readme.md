@@ -54,6 +54,21 @@ yarn start:server
 
 Then open your browser to `http://localhost:3000`. For more details, see [BROWSER_MODE.md](BROWSER_MODE.md).
 
+### Docker (Browser Mode)
+
+Run MQTT Explorer in a Docker container:
+
+```bash
+docker run -d \
+  -p 3000:3000 \
+  -e MQTT_EXPLORER_USERNAME=admin \
+  -e MQTT_EXPLORER_PASSWORD=your_secure_password \
+  -v mqtt-explorer-data:/app/data \
+  ghcr.io/thomasnordquist/mqtt-explorer-browser:latest
+```
+
+For complete Docker documentation, see [DOCKER.md](DOCKER.md).
+
 ## Develop
 
 ### Desktop Application

@@ -1,0 +1,63 @@
+# Multi-stage build for MQTT Explorer Browser Mode
+# Stage 1: Build
+FROM node:20-alpine AS builder
+
+WORKDIR /build
+
+# Copy package files
+COPY package.json yarn.lock ./
+COPY app/package.json ./app/
+COPY backend/package.json ./backend/
+
+# Install dependencies with frozen lockfile for reproducibility
+RUN yarn install --frozen-lockfile --network-timeout 100000
+
+# Copy source files
+COPY . .
+
+# Build the browser mode application
+RUN yarn build:server
+
+# Stage 2: Production
+FROM node:20-alpine
+
+# Install dumb-init to handle signals properly
+RUN apk add --no-cache dumb-init
+
+# Create app user
+RUN addgroup -g 1001 -S mqttexplorer && \
+    adduser -u 1001 -S mqttexplorer -G mqttexplorer
+
+WORKDIR /app
+
+# Copy built application from builder
+COPY --from=builder --chown=mqttexplorer:mqttexplorer /build/dist ./dist
+COPY --from=builder --chown=mqttexplorer:mqttexplorer /build/app/build ./app/build
+COPY --from=builder --chown=mqttexplorer:mqttexplorer /build/app/index.html ./app/
+COPY --from=builder --chown=mqttexplorer:mqttexplorer /build/package.json ./
+COPY --from=builder --chown=mqttexplorer:mqttexplorer /build/backend ./backend
+
+# Install only production dependencies
+COPY --from=builder /build/yarn.lock ./
+RUN yarn install --production --frozen-lockfile --network-timeout 100000 && \
+    yarn cache clean
+
+# Create data directory for persistent storage
+RUN mkdir -p /app/data && \
+    chown -R mqttexplorer:mqttexplorer /app/data
+
+# Switch to non-root user
+USER mqttexplorer
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
+# Start the server
+CMD ["node", "dist/src/server.js"]
