@@ -1,5 +1,6 @@
 import * as React from 'react'
 import CertificateFileSelection from './CertificateFileSelection'
+import BrowserCertificateFileSelection from './BrowserCertificateFileSelection'
 import Undo from '@material-ui/icons/Undo'
 import { bindActionCreators } from 'redux'
 import { Button, Grid } from '@material-ui/core'
@@ -7,6 +8,11 @@ import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
 import { ConnectionOptions } from '../../model/ConnectionOptions'
 import { Theme, withStyles } from '@material-ui/core/styles'
+
+// Check if we're in browser mode
+const isBrowserMode =
+  typeof window !== 'undefined' && (typeof process === 'undefined' || process.env?.BROWSER_MODE === 'true')
+const CertSelector = isBrowserMode ? BrowserCertificateFileSelection : CertificateFileSelection
 
 interface Props {
   connection: ConnectionOptions
@@ -45,7 +51,7 @@ class Certificates extends React.PureComponent<Props, State> {
         <form noValidate={true} autoComplete="off">
           <Grid container={true} spacing={3}>
             <Grid item={true} xs={12} className={classes.gridPadding}>
-              <CertificateFileSelection
+              <CertSelector
                 connection={this.props.connection}
                 certificate={this.props.connection.selfSignedCertificate}
                 title="Server Certificate (CA)"
@@ -53,7 +59,7 @@ class Certificates extends React.PureComponent<Props, State> {
               />
             </Grid>
             <Grid item={true} xs={12} className={classes.gridPadding}>
-              <CertificateFileSelection
+              <CertSelector
                 connection={this.props.connection}
                 certificate={this.props.connection.clientCertificate}
                 title="Client Certificate"
@@ -61,7 +67,7 @@ class Certificates extends React.PureComponent<Props, State> {
               />
             </Grid>
             <Grid item={true} xs={12} className={classes.gridPadding}>
-              <CertificateFileSelection
+              <CertSelector
                 connection={this.props.connection}
                 certificate={this.props.connection.clientKey}
                 title="Client Key"

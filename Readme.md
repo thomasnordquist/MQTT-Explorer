@@ -18,7 +18,21 @@ Downloads can be found at the link above.
 This page is dedicated to its development.
 Pull-Requests and error reports are welcome.
 
+## Quick Start with GitHub Codespaces
+
+The fastest way to start developing is with GitHub Codespaces:
+
+1. Click the green "Code" button above
+2. Select "Codespaces" tab
+3. Click "Create codespace on [branch]"
+4. Wait for the environment to set up (includes Node.js and MQTT broker)
+5. Run `yarn dev:server` to start development
+
+The devcontainer includes a pre-configured MQTT broker and all development tools. See [.devcontainer/README.md](.devcontainer/README.md) for details.
+
 ## Run from sources
+
+### Desktop Application (Electron)
 
 ```bash
 npm install -g yarn
@@ -27,7 +41,22 @@ yarn build
 yarn start
 ```
 
+### Browser Mode (Web Application)
+
+MQTT Explorer can also run as a web application served by a Node.js server:
+
+```bash
+npm install -g yarn
+yarn
+yarn build:server
+yarn start:server
+```
+
+Then open your browser to `http://localhost:3000`. For more details, see [BROWSER_MODE.md](BROWSER_MODE.md).
+
 ## Develop
+
+### Desktop Application
 
 Launch Application
 
@@ -37,32 +66,49 @@ yarn
 yarn dev
 ```
 
+### Browser Mode
+
+Launch in development mode with hot reload:
+
+```bash
+npm install -g yarn
+yarn
+yarn dev:server
+```
+
 The `app` directory contains all the rendering logic, the `backend` directory currently contains the models, tests, connection management, `src` contains all the electron bindings. [mqttjs](https://github.com/mqttjs/MQTT.js) is used to facilitate communication to MQTT brokers.
 
 ## Automated Tests
 
-To achieve a reliable product automated tests run regularly on travis.
+To achieve a reliable product automated tests run regularly on CI.
 
-- Data model
-- MQTT integration
-- UI-Tests (The demo is a recorded ui test)
+- **Data model tests**: `yarn test:backend`
+- **App tests**: `yarn test:app`
+- **UI test suite**: `yarn test:ui` (independent, deterministic tests)
+- **Demo video**: `yarn ui-test` (UI test recording for documentation)
 
-## Run UI-tests
+### Run UI Test Suite
 
-A [mosquitto](https://mosquitto.org/) MQTT broker is required to run the ui-tests.
-
-Run tests with
+The UI test suite validates core functionality through automated browser tests. Each test is independent and deterministic.
 
 ```bash
-# Run chromedriver in a separate terminal session
-./node_modules/.bin/chromedriver --url-base=wd/hub --port=9515 --verbose
+# Run with automated setup (recommended)
+./scripts/runUiTests.sh
+
+# Or run directly (requires manual MQTT broker setup)
+yarn build
+yarn test:ui
 ```
 
-Compile and execute tests
+See [docs/UI-TEST-SUITE.md](docs/UI-TEST-SUITE.md) for more details.
+
+### Run Demo Video Generation
+
+A [mosquitto](https://mosquitto.org/) MQTT broker is required to generate the demo video.
 
 ```bash
-npm run build
-node dist/src/spec/webdriverio.js
+yarn build
+yarn ui-test
 ```
 
 ## Create a release

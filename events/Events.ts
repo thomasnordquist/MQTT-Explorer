@@ -55,11 +55,11 @@ export const getAppVersion: RpcEvent<void, string> = {
   topic: 'getAppVersion',
 }
 
-export const writeToFile: RpcEvent<{ filePath: string, data: string, encoding?: string }, void> = {
+export const writeToFile: RpcEvent<{ filePath: string; data: string; encoding?: string }, void> = {
   topic: 'writeFile',
 }
 
-export const readFromFile: RpcEvent<{ filePath: string, encoding?: string }, Buffer> = {
+export const readFromFile: RpcEvent<{ filePath: string; encoding?: string }, Buffer> = {
   topic: 'readFromFile',
 }
 
@@ -73,3 +73,4 @@ export const MAX_MESSAGE_SIZE_DEFAULT = MAX_MESSAGE_SIZE_20KB
 export const setMaxMessageSize: Event<number> = {
   topic: 'settings/maxMessageSize',
 }
+

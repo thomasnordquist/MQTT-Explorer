@@ -45,7 +45,9 @@ export async function showNumericPlot(browser: Page) {
 async function valuePreviewGuttersShowChartIcon(name: string, browser: Page) {
   for (let retries = 0; retries < 2; retries += 1) {
     try {
-      return await browser.locator(`//*[contains(@data-test-type, "ShowChart")][contains(@data-test, "${name}")]`).first()
+      return await browser
+        .locator(`//*[contains(@data-test-type, "ShowChart")][contains(@data-test, "${name}")]`)
+        .first()
     } catch {
       // ignore
     }

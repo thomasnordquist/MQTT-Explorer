@@ -9,3 +9,11 @@ test.png
 .awcache
 .scannerwork
 screen*.png
+
+# MCP introspection artifacts
+mqtt-explorer-mcp-screenshot.png
+screenshot-mcp-*.png
+test-mcp-introspection.js
+
+/data
+test-screenshot-*.png
