@@ -6,8 +6,9 @@ interface State {
   enabled: boolean
   target: { x: number; y: number }
   position: { x: number; y: number }
-  stepSizeX: number
-  stepSizeY: number
+  startPosition: { x: number; y: number }
+  startTime: number
+  duration: number
 }
 
 class Demo extends React.Component<{ classes: any }, State> {
@@ -16,30 +17,86 @@ class Demo extends React.Component<{ classes: any }, State> {
 
   constructor(props: any) {
     super(props)
-    this.state = { enabled: false, target: { x: 0, y: 0 }, position: { x: 0, y: 0 }, stepSizeX: 1, stepSizeY: 1 }
+    this.state = {
+      enabled: false,
+      target: { x: 0, y: 0 },
+      position: { x: 0, y: 0 },
+      startPosition: { x: 0, y: 0 },
+      startTime: 0,
+      duration: 0,
+    }
+  }
+
+  /**
+   * Cubic bezier easing function for natural-looking mouse movement
+   * Uses control points (0.25, 0.1) and (0.25, 1.0) for a smooth ease-in-out curve
+   */
+  private cubicBezier(t: number, p0: number, p1: number, p2: number, p3: number): number {
+    const u = 1 - t
+    return u * u * u * p0 + 3 * u * u * t * p1 + 3 * u * t * t * p2 + t * t * t * p3
+  }
+
+  /**
+   * Easing function that creates a smooth acceleration and deceleration
+   * This makes the mouse movement appear more human-like
+   */
+  private easeInOutCubic(t: number): number {
+    // Cubic bezier approximation for ease-in-out
+    return this.cubicBezier(t, 0, 0.25, 0.75, 1)
   }
 
   private moveCloser(steps: number = 0) {
-    const steSizeX = Math.min(this.state.stepSizeX, Math.abs(this.state.position.x - this.state.target.x))
-    const steSizeY = Math.min(this.state.stepSizeY, Math.abs(this.state.position.y - this.state.target.y))
-    const dirX = this.state.position.x > this.state.target.x ? -1 : 1
-    const dirY = this.state.position.y > this.state.target.y ? -1 : 1
+    const elapsed = Date.now() - this.state.startTime
+    const progress = Math.min(elapsed / this.state.duration, 1)
 
-    if (steSizeX <= 0.1 && steSizeY <= 0.1) {
-      this.timer && clearTimeout(this.timer)
-      return
-    }
+    // Apply easing function for smooth, human-like movement timing
+    const easedProgress = this.easeInOutCubic(progress)
+
+    // Calculate bezier curve control points for a natural arc trajectory
+    // Instead of moving in a straight line, the cursor follows a curved path
+    const startX = this.state.startPosition.x
+    const startY = this.state.startPosition.y
+    const endX = this.state.target.x
+    const endY = this.state.target.y
+
+    // Create control points for a quadratic bezier curve
+    // The control point is offset perpendicular to the direct line, creating an arc
+    const dx = endX - startX
+    const dy = endY - startY
+    const distance = Math.sqrt(dx * dx + dy * dy)
+
+    // Arc height is proportional to distance (max 20% of distance)
+    const arcHeight = Math.min(distance * 0.2, 50)
+
+    // Calculate perpendicular offset for the control point
+    const perpX = -dy / (distance || 1)
+    const perpY = dx / (distance || 1)
+
+    // Control point is at the midpoint, offset perpendicular to create an arc
+    const controlX = (startX + endX) / 2 + perpX * arcHeight
+    const controlY = (startY + endY) / 2 + perpY * arcHeight
+
+    // Calculate position on quadratic bezier curve: B(t) = (1-t)²P₀ + 2(1-t)tP₁ + t²P₂
+    const t = easedProgress
+    const u = 1 - t
+    const newX = u * u * startX + 2 * u * t * controlX + t * t * endX
+    const newY = u * u * startY + 2 * u * t * controlY + t * t * endY
 
     this.setState({
       position: {
-        x: this.state.position.x + dirX * steSizeX,
-        y: this.state.position.y + dirY * steSizeY,
+        x: newX,
+        y: newY,
       },
     })
 
-    this.timer = setTimeout(() => {
-      this.moveCloser(steps + 1)
-    }, this.frameInterval)
+    // Continue animation if not complete
+    if (progress < 1) {
+      this.timer = setTimeout(() => {
+        this.moveCloser(steps + 1)
+      }, this.frameInterval)
+    } else {
+      this.timer && clearTimeout(this.timer)
+    }
   }
 
   public componentDidMount() {
@@ -47,9 +104,13 @@ class Demo extends React.Component<{ classes: any }, State> {
       this.setState({ enabled: true })
     }
     ;(window as any).demo.moveMouse = (x: number, y: number, animationTime: number) => {
-      const stepSizeX = Math.abs(this.state.position.x - x) / (animationTime / this.frameInterval)
-      const stepSizeY = Math.abs(this.state.position.y - y) / (animationTime / this.frameInterval)
-      this.setState({ stepSizeX, stepSizeY, enabled: true, target: { x, y } })
+      this.setState({
+        enabled: true,
+        target: { x, y },
+        startPosition: { x: this.state.position.x, y: this.state.position.y },
+        startTime: Date.now(),
+        duration: animationTime,
+      })
       this.moveCloser()
     }
   }
