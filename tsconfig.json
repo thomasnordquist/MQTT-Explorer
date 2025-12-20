@@ -25,6 +25,7 @@
     "src/spec/leakTest.ts",
     "src/spec/testMcpIntrospection.ts",
     "src/spec/ui-tests.spec.ts",
+    "src/spec/ui-tests-comprehensive.spec.ts",
     "src/spec/expandTopic.spec.ts",
     "scripts/*.ts"
   ],
