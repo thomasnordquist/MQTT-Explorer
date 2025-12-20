@@ -18,6 +18,17 @@ Downloads can be found at the link above.
 This page is dedicated to its development.
 Pull-Requests and error reports are welcome.
 
+## Platform Support
+
+MQTT Explorer supports multiple platforms and architectures:
+
+- **Windows**: x64
+- **macOS**: x64 (Intel) and ARM64 (Apple Silicon)
+- **Linux**: x64, ARM64 (Raspberry Pi 5), and ARMv7l (Raspberry Pi 4 and older)
+  - Available formats: AppImage, Deb, Snap
+
+ARM64 builds are perfect for running on Raspberry Pi 5 and other ARM64-based single-board computers.
+
 ## Quick Start with GitHub Codespaces
 
 The fastest way to start developing is with GitHub Codespaces:

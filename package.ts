@@ -3,11 +3,13 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as dotProp from 'dot-prop'
 
+// Linux AppImage build for multiple architectures
+// Builds for: x64, ARM64 (Raspberry Pi 5), and ARMv7l (Raspberry Pi 4 and older)
 const linuxAppImage: builder.CliOptions = {
   x64: true,
   ia32: false,
   armv7l: true,
-  arm64: true,
+  arm64: true, // Raspberry Pi 5 support
   projectDir: './build/clean',
   publish: 'always',
 }
@@ -21,11 +23,13 @@ const linuxSnap: builder.CliOptions = {
   publish: 'always',
 }
 
+// Linux Deb package build for multiple architectures
+// Builds for: amd64 (x64), arm64 (Raspberry Pi 5), and armhf (Raspberry Pi 4 and older)
 const linuxDeb: builder.CliOptions = {
   x64: true,
   ia32: false,
   armv7l: true,
-  arm64: true,
+  arm64: true, // Raspberry Pi 5 support
   projectDir: './build/clean',
   publish: 'always',
 }
@@ -76,6 +80,7 @@ async function executeBuild() {
       await buildWithOptions(winAppx, { platform: 'win', package: 'appx' })
       break
     case 'linux':
+      console.log('Building Linux packages for architectures: x64, arm64 (Raspberry Pi 5), armv7l')
       await buildWithOptions(linuxAppImage, { platform: 'linux', package: 'AppImage' })
       await buildWithOptions(linuxSnap, { platform: 'linux', package: 'snap' })
       await buildWithOptions(linuxDeb, { platform: 'linux', package: 'deb' })
@@ -104,6 +109,14 @@ async function buildWithOptions(options: builder.CliOptions, buildInfo: BuildInf
   const packageJsonStr = fs.readFileSync(jsonLocation).toString()
 
   const packageJson = JSON.parse(fs.readFileSync(jsonLocation).toString())
+
+  // Log architectures being built
+  const architectures = []
+  if (options.x64) architectures.push('x64')
+  if (options.arm64) architectures.push('arm64')
+  if (options.armv7l) architectures.push('armv7l')
+  if (options.ia32) architectures.push('ia32')
+  console.log(`Building ${buildInfo.package} for architectures: ${architectures.join(', ')}`)
 
   // AppX must have a different name since the store name is already taken (but not used)
   if (buildInfo.package === 'appx') {
