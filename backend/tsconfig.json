@@ -6,7 +6,7 @@
     "strictNullChecks": true,
     "outDir": "./build",
     "strict": true,
-    "module": "ES2020",
+    "module": "commonjs",
     "moduleResolution": "node",
     "target": "ES2020",
     "lib": [
@@ -18,10 +18,9 @@
   },
   "ts-node": {
     "compilerOptions": {
-      "module": "ES2020"
+      "module": "commonjs"
     },
-    "transpileOnly": true,
-    "esm": true
+    "transpileOnly": true
   },
   "includes": [
     "src/**/*.ts"

@@ -5,7 +5,7 @@
     "strictNullChecks": true,
     "outDir": "./dist",
     "strict": true,
-    "module": "ES2020",
+    "module": "commonjs",
     "moduleResolution": "node",
     "sourceRoot": "src/",
     "target": "ES2020",
