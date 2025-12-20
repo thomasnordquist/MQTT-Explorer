@@ -73,7 +73,7 @@ async function startServer() {
 
   backendRpc.on(makeSaveDialogRpc(), async request => {
     // In browser mode, file saving is handled client-side via download
-    return { canceled: true, filePath: undefined }
+    return { canceled: true, filePath: '' }
   })
 
   backendRpc.on(getAppVersion, async () => {

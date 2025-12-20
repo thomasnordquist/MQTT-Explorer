@@ -9,7 +9,7 @@ export default class ConfigStorage {
   private file: string
   private database: any
   private rpc: Rpc
-  
+
   constructor(file: string, rpc: Rpc) {
     this.file = file
     this.rpc = rpc

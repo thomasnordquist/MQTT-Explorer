@@ -23,7 +23,7 @@ export class SocketIOServerEventBus implements EventBusInterface {
   private globalHandlers: Map<string, (socket: Socket, arg: any) => void> = new Map()
 
   // Per-socket subscriptions for cleanup
-  private socketSubscriptions: Map<string, SocketSubscription[]> = new Map()
+  private socketSubscriptions: Map<string, Array<SocketSubscription>> = new Map()
 
   // Track which socket is currently processing a request
   private currentSocket: Socket | undefined
@@ -73,7 +73,7 @@ export class SocketIOServerEventBus implements EventBusInterface {
       event,
       totalClients,
       totalSubscriptions,
-      
+
       totalConnections,
       socketId.substring(0, 8),
       socketSubs,
