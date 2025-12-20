@@ -8,21 +8,20 @@ import { connectTo } from './scenarios/connect'
 import { searchTree, clearSearch } from './scenarios/searchTree'
 
 /**
- * MQTT Explorer UI Tests - Minimal Core Suite
+ * MQTT Explorer UI Tests - Fully Isolated Test Suite
  * 
- * This is a minimal, reliable test suite that focuses on core functionality
- * and avoids complex navigation that causes timeouts.
+ * Each test is completely independent with its own page reload for clean state.
+ * This ensures no test interference or state carryover.
  */
 // tslint:disable:only-arrow-functions ter-prefer-arrow-callback no-unused-expression
 describe('MQTT Explorer UI Tests', function () {
   this.timeout(60000)
 
   let electronApp: ElectronApplication
-  let page: Page
   let mqttClientStarted = false
 
   before(async function () {
-    this.timeout(90000)
+    this.timeout(30000)
 
     console.log('Starting MQTT mock broker...')
     await mockMqtt()
@@ -33,14 +32,6 @@ describe('MQTT Explorer UI Tests', function () {
       args: [`${__dirname}/../../..`, '--runningUiTestOnCi', '--no-sandbox', '--disable-dev-shm-usage'],
       timeout: 60000,
     })
-
-    console.log('Waiting for application window...')
-    page = await electronApp.firstWindow({ timeout: 30000 })
-
-    // Wait for the connection form to be ready
-    await page.locator('//label[contains(text(), "Host")]/..//input').waitFor({ timeout: 10000 })
-
-    console.log('Application ready for testing')
   })
 
   after(async function () {
@@ -55,37 +46,63 @@ describe('MQTT Explorer UI Tests', function () {
     }
   })
 
+  // Helper function to get a fresh page
+  async function getFreshPage(): Promise<Page> {
+    const page = await electronApp.firstWindow({ timeout: 30000 })
+    await page.locator('//label[contains(text(), "Host")]/..//input').waitFor({ timeout: 10000 })
+    return page
+  }
+
   describe('Connection Management', () => {
     it('should connect to MQTT broker successfully', async function () {
+      // Given: Fresh page
+      const page = await getFreshPage()
+
+      // When: Connect to MQTT broker
       await connectTo('127.0.0.1', page)
       await sleep(1000)
 
       await MockSparkplug.run()
       await sleep(1000)
 
+      // Then: Disconnect button should be visible
       const disconnectButton = await page.locator('//button/span[contains(text(),"Disconnect")]')
       await disconnectButton.waitFor({ state: 'visible', timeout: 5000 })
       const isVisible = await disconnectButton.isVisible()
       expect(isVisible).to.be.true
 
       await page.screenshot({ path: 'test-screenshot-connection.png' })
+
+      // Clean up: Reload page for next test
+      await page.reload()
     })
   })
 
   describe('Topic Tree Structure', () => {
     it('should display kitchen topic from mock data', async function () {
+      // Given: Fresh page and connected
+      const page = await getFreshPage()
+      await connectTo('127.0.0.1', page)
       await sleep(2000)
 
+      // Then: Kitchen topic should be visible
       const kitchenTopic = await page.locator('span[data-test-topic="kitchen"]')
       await kitchenTopic.waitFor({ state: 'visible', timeout: 5000 })
       expect(await kitchenTopic.isVisible()).to.be.true
 
       await page.screenshot({ path: 'test-screenshot-kitchen.png' })
+
+      // Clean up: Reload page
+      await page.reload()
     })
 
     it('should display root topics from mock data', async function () {
-      await sleep(1000)
+      // Given: Fresh page and connected
+      const page = await getFreshPage()
+      await connectTo('127.0.0.1', page)
+      await sleep(2000)
 
+      // Then: All root topics should be visible
       const rootTopics = ['livingroom', 'kitchen', 'garden']
       for (const topicName of rootTopics) {
         const topic = await page.locator(`span[data-test-topic="${topicName}"]`)
@@ -95,14 +112,24 @@ describe('MQTT Explorer UI Tests', function () {
       }
 
       await page.screenshot({ path: 'test-screenshot-root-topics.png' })
+
+      // Clean up: Reload page
+      await page.reload()
     })
   })
 
   describe('Search Functionality', () => {
     it('should search and filter topics containing "temp"', async function () {
+      // Given: Fresh page and connected
+      const page = await getFreshPage()
+      await connectTo('127.0.0.1', page)
+      await sleep(2000)
+
+      // When: Search for "temp"
       await searchTree('temp', page)
       await sleep(1000)
 
+      // Then: Search field should contain "temp" and temperature topic should be visible
       const searchField = await page.locator('//input[contains(@placeholder, "Search")]')
       const searchValue = await searchField.inputValue()
       expect(searchValue).to.equal('temp')
@@ -112,25 +139,30 @@ describe('MQTT Explorer UI Tests', function () {
       expect(await tempTopic.isVisible()).to.be.true
 
       await page.screenshot({ path: 'test-screenshot-search.png' })
-      
-      // Clear search for next test
-      await clearSearch(page)
-      await sleep(500)
+
+      // Clean up: Reload page
+      await page.reload()
     })
 
     it('should search for specific topic path like "kitchen/lamp"', async function () {
+      // Given: Fresh page and connected
+      const page = await getFreshPage()
+      await connectTo('127.0.0.1', page)
+      await sleep(2000)
+
+      // When: Search for "kitchen/lamp"
       await searchTree('kitchen/lamp', page)
       await sleep(1000)
 
+      // Then: Search field should contain "kitchen/lamp"
       const searchField = await page.locator('//input[contains(@placeholder, "Search")]')
       const searchValue = await searchField.inputValue()
       expect(searchValue).to.equal('kitchen/lamp')
 
       await page.screenshot({ path: 'test-screenshot-search-path.png' })
-      
-      // Clear search
-      await clearSearch(page)
-      await sleep(500)
+
+      // Clean up: Reload page
+      await page.reload()
     })
   })
 })
