@@ -13,42 +13,35 @@ export class IpcMainEventBus implements EventBusInterface {
   }
 
   public subscribe<MessageType>(subscribeEvent: Event<MessageType>, callback: (msg: MessageType) => void) {
-    console.log('subscribing', subscribeEvent.topic)
     this.ipc.on(subscribeEvent.topic, (event: any, arg: any) => {
       const sender = event.sender as WebContents
       this.currentClient = sender
       
-      // Track the client
+      // Track the client (O(1) operation)
       if (!this.clients.has(sender.id)) {
         this.clients.set(sender.id, sender)
         
         // Clean up when window is closed
         sender.once('destroyed', () => {
-          console.log('WebContents destroyed:', sender.id)
           this.clients.delete(sender.id)
           
           // Clean up owned connections
-          const ownedConnections = Array.from(this.connectionOwners.entries())
-            .filter(([_, webContentsId]) => webContentsId === sender.id)
-            .map(([connectionId]) => connectionId)
-          
-          ownedConnections.forEach(connectionId => {
-            this.connectionOwners.delete(connectionId)
-            console.log(`Removed connection ${connectionId} (window closed)`)
-          })
+          for (const [connectionId, webContentsId] of this.connectionOwners.entries()) {
+            if (webContentsId === sender.id) {
+              this.connectionOwners.delete(connectionId)
+            }
+          }
         })
       }
       
-      // Track connection ownership when a connection is added
+      // Track connection ownership
       if (subscribeEvent.topic === 'connection/add/mqtt' && arg?.id) {
         this.connectionOwners.set(arg.id, sender.id)
-        console.log(`Connection ${arg.id} owned by window ${sender.id}`)
       }
       
-      // Remove connection ownership when a connection is removed
+      // Remove connection ownership
       if (subscribeEvent.topic === 'connection/remove' && typeof arg === 'string') {
         this.connectionOwners.delete(arg)
-        console.log(`Connection ${arg} removed`)
       }
       
       callback(arg)
@@ -56,7 +49,6 @@ export class IpcMainEventBus implements EventBusInterface {
   }
 
   public unsubscribeAll<MessageType>(event: Event<MessageType>) {
-    console.log('unsubscribeAll', event.topic)
     this.ipc.removeAllListeners(event.topic)
   }
 
@@ -67,28 +59,27 @@ export class IpcMainEventBus implements EventBusInterface {
   public emit<MessageType>(event: Event<MessageType>, msg: MessageType) {
     const topic = event.topic
     
-    // Check if this is an RPC response (contains /response/ in topic)
-    const isRpcResponse = topic.includes('/response/')
-    
-    if (isRpcResponse && this.currentClient && !this.currentClient.isDestroyed()) {
-      // RPC responses go only to the requesting client
-      this.currentClient.send(topic, msg)
+    // RPC responses go only to the requesting client
+    if (topic.includes('/response/')) {
+      if (this.currentClient && !this.currentClient.isDestroyed()) {
+        this.currentClient.send(topic, msg)
+      }
       return
     }
     
-    // Check if this is a connection-specific event
-    const connectionPatterns = [
-      /^conn\/([^/]+)$/,              // conn/${connectionId}
-      /^conn\/state\/([^/]+)$/,       // conn/state/${connectionId}
-      /^conn\/publish\/([^/]+)$/,     // conn/publish/${connectionId}
-    ]
-    
-    for (const pattern of connectionPatterns) {
-      const match = topic.match(pattern)
-      if (match) {
-        const connectionId = match[1]
+    // Connection-specific events - optimized with early pattern match
+    if (topic.startsWith('conn/')) {
+      const parts = topic.split('/')
+      let connectionId: string | undefined
+      
+      if (parts.length === 2) {
+        connectionId = parts[1]
+      } else if (parts.length === 3 && (parts[1] === 'state' || parts[1] === 'publish')) {
+        connectionId = parts[2]
+      }
+      
+      if (connectionId) {
         const ownerWebContentsId = this.connectionOwners.get(connectionId)
-        
         if (ownerWebContentsId !== undefined) {
           const ownerClient = this.clients.get(ownerWebContentsId)
           if (ownerClient && !ownerClient.isDestroyed()) {
@@ -99,7 +90,7 @@ export class IpcMainEventBus implements EventBusInterface {
       }
     }
     
-    // All other events go to all clients (or fallback if owner not found)
+    // All other events go to all clients
     this.clients.forEach(client => {
       if (!client.isDestroyed()) {
         client.send(topic, msg)
