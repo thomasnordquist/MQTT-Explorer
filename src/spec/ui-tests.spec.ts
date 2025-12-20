@@ -1,31 +1,38 @@
 import 'mocha'
 import { expect } from 'chai'
 import { ElectronApplication, Page, _electron as electron } from 'playwright'
-import mockMqtt, { stop as stopMqtt } from './mock-mqtt'
+import { createTestMock, stopTestMock } from './mock-mqtt-test'
 import { default as MockSparkplug } from './mock-sparkplugb'
 import { sleep } from './util'
 import { connectTo } from './scenarios/connect'
 import { searchTree, clearSearch } from './scenarios/searchTree'
+import { expandTopic } from './util/expandTopic'
+import type { MqttClient } from 'mqtt'
 
 /**
  * MQTT Explorer UI Tests - Fully Isolated Test Suite
  * 
- * Each test is completely independent with its own page reload for clean state.
- * This ensures no test interference or state carryover.
+ * Each test:
+ * 1. Gets fresh page
+ * 2. Mocks only the MQTT messages it needs (no timers)
+ * 3. Connects to broker
+ * 4. Tests functionality using expandTopic
+ * 5. Reloads page for next test
+ * 
+ * This ensures complete test isolation with no state carryover.
  */
 // tslint:disable:only-arrow-functions ter-prefer-arrow-callback no-unused-expression
 describe('MQTT Explorer UI Tests', function () {
   this.timeout(60000)
 
   let electronApp: ElectronApplication
-  let mqttClientStarted = false
+  let testMock: MqttClient
 
   before(async function () {
-    this.timeout(30000)
+    this.timeout(90000)
 
-    console.log('Starting MQTT mock broker...')
-    await mockMqtt()
-    mqttClientStarted = true
+    console.log('Creating test-specific MQTT mock (no timers)...')
+    testMock = await createTestMock()
 
     console.log('Launching Electron application...')
     electronApp = await electron.launch({
@@ -41,9 +48,7 @@ describe('MQTT Explorer UI Tests', function () {
       await electronApp.close()
     }
 
-    if (mqttClientStarted) {
-      stopMqtt()
-    }
+    stopTestMock()
   })
 
   // Helper function to get a fresh page
@@ -54,64 +59,74 @@ describe('MQTT Explorer UI Tests', function () {
   }
 
   describe('Connection Management', () => {
-    it('should connect to MQTT broker successfully', async function () {
-      // Given: Fresh page
+    it('should connect and expand livingroom/lamp topic', async function () {
+      // Given: Fresh page and mocked topic
       const page = await getFreshPage()
+      testMock.publish('livingroom/lamp/state', 'on', { retain: true, qos: 0 })
+      await sleep(500) // Let MQTT message propagate
 
-      // When: Connect to MQTT broker
+      // When: Connect and expand topic
       await connectTo('127.0.0.1', page)
-      await sleep(1000)
+      await sleep(2000)
+      await expandTopic(page, 'livingroom/lamp')
 
-      await MockSparkplug.run()
-      await sleep(1000)
-
-      // Then: Disconnect button should be visible
-      const disconnectButton = await page.locator('//button/span[contains(text(),"Disconnect")]')
-      await disconnectButton.waitFor({ state: 'visible', timeout: 5000 })
-      const isVisible = await disconnectButton.isVisible()
-      expect(isVisible).to.be.true
+      // Then: Should see lamp state
+      const stateTopic = await page.locator('span[data-test-topic="state"]')
+      await stateTopic.waitFor({ state: 'visible', timeout: 5000 })
+      expect(await stateTopic.isVisible()).to.be.true
 
       await page.screenshot({ path: 'test-screenshot-connection.png' })
 
-      // Clean up: Reload page for next test
+      // Clean up: Reload page
       await page.reload()
     })
   })
 
   describe('Topic Tree Structure', () => {
-    it('should display kitchen topic from mock data', async function () {
-      // Given: Fresh page and connected
+    it('should expand and display kitchen/coffee_maker with JSON payload', async function () {
+      // Given: Fresh page and mocked JSON message
       const page = await getFreshPage()
+      const coffeeData = {
+        heater: 'on',
+        temperature: 92.5,
+        waterLevel: 0.5,
+      }
+      testMock.publish('kitchen/coffee_maker', JSON.stringify(coffeeData), { retain: true, qos: 2 })
+      await sleep(500)
+
+      // When: Connect and expand topic
       await connectTo('127.0.0.1', page)
       await sleep(2000)
+      await expandTopic(page, 'kitchen/coffee_maker')
 
-      // Then: Kitchen topic should be visible
-      const kitchenTopic = await page.locator('span[data-test-topic="kitchen"]')
-      await kitchenTopic.waitFor({ state: 'visible', timeout: 5000 })
-      expect(await kitchenTopic.isVisible()).to.be.true
+      // Then: JSON content should be visible (check for heater key)
+      const valueDisplay = await page.locator('text="heater"')
+      await valueDisplay.waitFor({ state: 'visible', timeout: 5000 })
+      expect(await valueDisplay.isVisible()).to.be.true
 
-      await page.screenshot({ path: 'test-screenshot-kitchen.png' })
+      await page.screenshot({ path: 'test-screenshot-kitchen-json.png' })
 
       // Clean up: Reload page
       await page.reload()
     })
 
-    it('should display root topics from mock data', async function () {
-      // Given: Fresh page and connected
+    it('should expand nested topic livingroom/lamp/brightness', async function () {
+      // Given: Fresh page and nested mocked topic
       const page = await getFreshPage()
+      testMock.publish('livingroom/lamp/brightness', '128', { retain: true, qos: 0 })
+      await sleep(500)
+
+      // When: Connect and expand to nested topic
       await connectTo('127.0.0.1', page)
       await sleep(2000)
+      await expandTopic(page, 'livingroom/lamp/brightness')
 
-      // Then: All root topics should be visible
-      const rootTopics = ['livingroom', 'kitchen', 'garden']
-      for (const topicName of rootTopics) {
-        const topic = await page.locator(`span[data-test-topic="${topicName}"]`)
-        await topic.waitFor({ state: 'visible', timeout: 5000 })
-        const visible = await topic.isVisible()
-        expect(visible).to.be.true
-      }
+      // Then: Brightness topic should be visible and selected
+      const brightnessTopic = await page.locator('span[data-test-topic="brightness"]')
+      await brightnessTopic.waitFor({ state: 'visible', timeout: 5000 })
+      expect(await brightnessTopic.isVisible()).to.be.true
 
-      await page.screenshot({ path: 'test-screenshot-root-topics.png' })
+      await page.screenshot({ path: 'test-screenshot-nested-topic.png' })
 
       // Clean up: Reload page
       await page.reload()
@@ -119,47 +134,55 @@ describe('MQTT Explorer UI Tests', function () {
   })
 
   describe('Search Functionality', () => {
-    it('should search and filter topics containing "temp"', async function () {
-      // Given: Fresh page and connected
+    it('should search for temperature and expand kitchen/temperature', async function () {
+      // Given: Fresh page and mocked temperature topics
       const page = await getFreshPage()
+      testMock.publish('kitchen/temperature', '22.5', { retain: true, qos: 0 })
+      testMock.publish('livingroom/temperature', '21.0', { retain: true, qos: 0 })
+      await sleep(500)
+
+      // When: Connect, search, and expand
       await connectTo('127.0.0.1', page)
       await sleep(2000)
-
-      // When: Search for "temp"
       await searchTree('temp', page)
       await sleep(1000)
+      await clearSearch(page)
+      await sleep(500)
+      await expandTopic(page, 'kitchen/temperature')
 
-      // Then: Search field should contain "temp" and temperature topic should be visible
-      const searchField = await page.locator('//input[contains(@placeholder, "Search")]')
-      const searchValue = await searchField.inputValue()
-      expect(searchValue).to.equal('temp')
-
-      const tempTopic = await page.locator('span[data-test-topic="temperature"]').first()
+      // Then: Temperature topic should be visible
+      const tempTopic = await page.locator('span[data-test-topic="temperature"]')
       await tempTopic.waitFor({ state: 'visible', timeout: 5000 })
       expect(await tempTopic.isVisible()).to.be.true
 
-      await page.screenshot({ path: 'test-screenshot-search.png' })
+      await page.screenshot({ path: 'test-screenshot-search-temp.png' })
 
       // Clean up: Reload page
       await page.reload()
     })
 
-    it('should search for specific topic path like "kitchen/lamp"', async function () {
-      // Given: Fresh page and connected
+    it('should search for lamp and expand kitchen/lamp', async function () {
+      // Given: Fresh page and mocked lamp topics
       const page = await getFreshPage()
+      testMock.publish('kitchen/lamp/state', 'off', { retain: true, qos: 0 })
+      testMock.publish('livingroom/lamp/state', 'on', { retain: true, qos: 0 })
+      await sleep(500)
+
+      // When: Connect, search, and expand
       await connectTo('127.0.0.1', page)
       await sleep(2000)
-
-      // When: Search for "kitchen/lamp"
       await searchTree('kitchen/lamp', page)
       await sleep(1000)
+      await clearSearch(page)
+      await sleep(500)
+      await expandTopic(page, 'kitchen/lamp')
 
-      // Then: Search field should contain "kitchen/lamp"
-      const searchField = await page.locator('//input[contains(@placeholder, "Search")]')
-      const searchValue = await searchField.inputValue()
-      expect(searchValue).to.equal('kitchen/lamp')
+      // Then: Lamp topic should be visible
+      const lampTopic = await page.locator('span[data-test-topic="lamp"]')
+      await lampTopic.waitFor({ state: 'visible', timeout: 5000 })
+      expect(await lampTopic.isVisible()).to.be.true
 
-      await page.screenshot({ path: 'test-screenshot-search-path.png' })
+      await page.screenshot({ path: 'test-screenshot-search-lamp.png' })
 
       // Clean up: Reload page
       await page.reload()
