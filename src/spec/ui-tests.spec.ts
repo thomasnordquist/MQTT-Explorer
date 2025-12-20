@@ -288,6 +288,21 @@ describe('MQTT Explorer UI Tests', function () {
       expect(chartExists).to.be.true
 
       await page.screenshot({ path: 'test-screenshot-numeric-plots.png' })
+
+      // Cleanup: Ensure we're not stuck in History view
+      // Click on "Value" tab to go back to main view
+      const valueTab = await page.locator('//span[contains(text(), "Value")]').first()
+      const valueTabExists = (await valueTab.count()) > 0
+      if (valueTabExists) {
+        try {
+          await valueTab.click({ timeout: 2000 })
+          await sleep(300)
+        } catch {
+          // Ignore if clicking fails
+        }
+      }
+      await clearSearch(page)
+      await sleep(500)
     })
 
     it('should display message diffs when messages change', async function () {
@@ -465,7 +480,20 @@ describe('MQTT Explorer UI Tests', function () {
         await historyTab.click()
         await sleep(500)
         await page.screenshot({ path: 'test-screenshot-history.png' })
+
+        // Cleanup: Click back to Value tab
+        const valueTab = await page.locator('//span[contains(text(), "Value")]').first()
+        try {
+          await valueTab.click({ timeout: 2000 })
+          await sleep(300)
+        } catch {
+          // Ignore if clicking fails
+        }
       }
+
+      // Final cleanup
+      await clearSearch(page)
+      await sleep(300)
     })
 
     it('Given a topic with changing values, should show value updates in real-time', async function () {
