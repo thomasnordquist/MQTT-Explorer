@@ -80,7 +80,7 @@ describe('MQTT Explorer UI Tests', function () {
       await expandTopic('livingroom/lamp', page)
 
       // Then: Should see lamp state topic
-      const stateTopic = page.locator('span[data-test-topic="state"]')
+      const stateTopic = page.locator('span[data-test-topic="state"]').first()
       await stateTopic.waitFor({ state: 'visible', timeout: 5000 })
       expect(await stateTopic.isVisible()).to.be.true
 
@@ -95,7 +95,7 @@ describe('MQTT Explorer UI Tests', function () {
       await expandTopic('kitchen/coffee_maker', page)
 
       // Then: The topic should be visible and selected
-      const coffeeMakerTopic = page.locator('span[data-test-topic="coffee_maker"]')
+      const coffeeMakerTopic = page.locator('span[data-test-topic="coffee_maker"]').first()
       await coffeeMakerTopic.waitFor({ state: 'visible', timeout: 5000 })
       expect(await coffeeMakerTopic.isVisible()).to.be.true
 
@@ -108,7 +108,7 @@ describe('MQTT Explorer UI Tests', function () {
       await expandTopic('livingroom/lamp/state', page)
 
       // Then: State topic should be visible and selected
-      const stateTopic = page.locator('span[data-test-topic="state"]')
+      const stateTopic = page.locator('span[data-test-topic="state"]').first()
       await stateTopic.waitFor({ state: 'visible', timeout: 5000 })
       expect(await stateTopic.isVisible()).to.be.true
 
