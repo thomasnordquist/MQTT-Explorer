@@ -10,7 +10,7 @@
     "mochatest": "mocha --require ts-node/register --require source-map-support/register --recursive src/*/**/*.spec.ts"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "author": "",
   "license": "CC-BY-ND-4.0",
