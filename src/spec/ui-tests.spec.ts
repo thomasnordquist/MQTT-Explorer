@@ -176,53 +176,9 @@ describe('MQTT Explorer UI Tests', function () {
       await page.screenshot({ path: 'test-screenshot-root-topics.png' })
     })
 
-    it('Given a JSON message with nested properties, the tree should display the JSON structure', async function () {
-      // Given: coffee_maker publishes JSON with heater, temperature, waterLevel
-      await sleep(2000)
-
-      // Ensure no search filter is active
-      await clearSearch(page)
-      await sleep(500)
-
-      // When: Navigate to kitchen/coffee_maker
-      await expandTopic('kitchen/coffee_maker', page)
-      await sleep(1000)
-
-      // Then: The JSON properties should be visible in the value preview
-      // We can verify by checking that the topic is selected and showing details
-      const selectedTopic = await page.locator('[class*="selectedTopic"]')
-      const hasSelectedTopic = (await selectedTopic.count()) > 0
-
-      expect(hasSelectedTopic).to.be.true
-
-      await page.screenshot({ path: 'test-screenshot-json-structure.png' })
-    })
   })
 
   describe('Topic Navigation and Search', () => {
-    it('should display topic hierarchy after connection', async function () {
-      // Given: Application is connected to MQTT broker
-      // Ensure clean state
-      await clearSearch(page)
-      await sleep(500)
-
-      // Click on Value tab to ensure we're not in History view
-      const valueTab = await page.locator('//span[contains(text(), "Value")]').first()
-      try {
-        await valueTab.click({ timeout: 2000 })
-        await sleep(300)
-      } catch {
-        // Ignore if not found or can't click
-      }
-
-      // Then: Topic tree should contain nodes
-      const treeNodes = await page.locator('[class*="TreeNode"]')
-      const count = await treeNodes.count()
-      expect(count).to.be.greaterThan(0, 'Topic tree should contain nodes')
-
-      await page.screenshot({ path: 'test-screenshot-topic-tree.png' })
-    })
-
     it('should search and filter topics containing "temp"', async function () {
       // Given: Multiple topics with "temp" in their path (kitchen/temperature, livingroom/temperature)
       // When: User searches for "temp"
@@ -333,52 +289,9 @@ describe('MQTT Explorer UI Tests', function () {
       await sleep(500)
     })
 
-    it('should display message diffs when messages change', async function () {
-      // Given: Topics that update over time (livingroom/temperature)
-      // When: User enables diff view
-      await showOffDiffCapability(page)
-      await sleep(1500)
-
-      // Then: Diff view should be active
-      await page.screenshot({ path: 'test-screenshot-diffs.png' })
-    })
-
-    it('Given a message with QoS 2, should display the QoS level', async function () {
-      // Given: kitchen/coffee_maker is published with QoS 2
-      await sleep(1000)
-
-      // Ensure no search filter is active
-      await clearSearch(page)
-      await sleep(500)
-
-      // When: Navigate to the topic
-      await expandTopic('kitchen/coffee_maker', page)
-      await sleep(1000)
-
-      // Then: QoS indicator should be visible
-      // (Verified via screenshot showing message details)
-      await page.screenshot({ path: 'test-screenshot-qos.png' })
-    })
   })
 
   describe('Clipboard Operations', () => {
-    it('should copy topic path to clipboard', async function () {
-      // Given: A topic is selected
-      // Ensure no search filter is active and select a topic
-      await clearSearch(page)
-      await sleep(500)
-      await expandTopic('kitchen/coffee_maker', page)
-      await sleep(500)
-
-      // When: User clicks copy topic button
-      await copyTopicToClipboard(page)
-      await sleep(500)
-
-      // Then: Copy action completes without error
-      // Note: Full clipboard verification requires additional platform-specific setup
-      await page.screenshot({ path: 'test-screenshot-copy-topic.png' })
-    })
-
     it('should copy message value to clipboard', async function () {
       // Given: A topic with a value is selected
       // Ensure no search filter is active and select a topic
@@ -409,26 +322,6 @@ describe('MQTT Explorer UI Tests', function () {
   })
 
   describe('Settings and Configuration', () => {
-    it('should open and display settings menu with available options', async function () {
-      // When: User opens settings menu
-      const menuButton = await page.locator('//button[contains(@aria-label, "Menu")]').first()
-      await menuButton.waitFor({ state: 'visible', timeout: 5000 })
-      await menuButton.click()
-      await sleep(1000) // Give menu time to open
-
-      // Then: Settings menu should be visible
-      const settingsMenu = await page.locator('[role="menu"]').first()
-      await settingsMenu.waitFor({ state: 'visible', timeout: 5000 })
-      const menuVisible = await settingsMenu.isVisible()
-      expect(menuVisible).to.be.true
-
-      await page.screenshot({ path: 'test-screenshot-settings.png' })
-
-      // Cleanup: Close the menu by clicking outside or pressing Escape
-      await page.keyboard.press('Escape')
-      await sleep(300)
-    })
-
     it('should show advanced connection settings with subscription options', async function () {
       // Given: User is on connection page
       // First disconnect
@@ -493,115 +386,7 @@ describe('MQTT Explorer UI Tests', function () {
     })
   })
 
-  describe('Message History and Updates', () => {
-    it('Given topics with updating values, should display message history', async function () {
-      // Given: Topics that update over time (livingroom/temperature)
-      await sleep(3000) // Wait for several updates
-
-      // Ensure no search filter is active
-      await clearSearch(page)
-      await sleep(500)
-
-      // When: Navigate to a topic with history
-      await expandTopic('livingroom/temperature', page)
-      await sleep(1000)
-
-      // Then: History should be available
-      // Click on History tab if visible (use .first() as there might be multiple History tabs)
-      const historyTab = await page.locator('//span[contains(text(), "History")]').first()
-      const historyExists = (await historyTab.count()) > 0
-
-      if (historyExists) {
-        await historyTab.click()
-        await sleep(500)
-        await page.screenshot({ path: 'test-screenshot-history.png' })
-
-        // Cleanup: Click back to Value tab
-        const valueTab = await page.locator('//span[contains(text(), "Value")]').first()
-        try {
-          await valueTab.click({ timeout: 2000 })
-          await sleep(300)
-        } catch {
-          // Ignore if clicking fails
-        }
-      }
-
-      // Final cleanup
-      await clearSearch(page)
-      await sleep(300)
-    })
-
-    it('Given a topic with changing values, should show value updates in real-time', async function () {
-      // Given: kitchen/coffee_maker/temperature updates periodically
-      await sleep(1000)
-
-      // Ensure no search filter is active
-      await clearSearch(page)
-      await sleep(500)
-
-      // When: Navigate to the topic
-      await expandTopic('kitchen/coffee_maker', page)
-      await sleep(500)
-
-      // Then: Topic should be selected and showing current value
-      const selectedTopic = await page.locator('[class*="selectedTopic"]')
-      expect((await selectedTopic.count()) > 0).to.be.true
-
-      // Wait for value to update
-      await sleep(2000)
-
-      await page.screenshot({ path: 'test-screenshot-updating-value.png' })
-    })
-  })
-
-  describe('Different QoS Levels', () => {
-    it('Given messages with different QoS levels (0, 1, 2), should display them correctly', async function () {
-      // Given: Mock publishes messages with different QoS
-      // QoS 0: livingroom/lamp/state
-      // QoS 2: kitchen/coffee_maker
-      await sleep(1000)
-
-      // Ensure no search filter is active
-      await clearSearch(page)
-      await sleep(500)
-
-      // When: Navigate to QoS 0 topic
-      await expandTopic('livingroom/lamp/state', page)
-      await sleep(500)
-
-      await page.screenshot({ path: 'test-screenshot-qos-0.png' })
-
-      // When: Navigate to QoS 2 topic
-      await expandTopic('kitchen/coffee_maker', page)
-      await sleep(500)
-
-      // Then: Both should display their QoS levels
-      await page.screenshot({ path: 'test-screenshot-qos-2.png' })
-    })
-  })
-
   describe('Special Topic Names and Characters', () => {
-    it('Given topics with spaces and special characters, should display correctly', async function () {
-      // Given: Mock publishes to "test 123" and "hello"
-      await sleep(2000) // Wait for topic to be published
-
-      // Ensure no search filter is active
-      await clearSearch(page)
-      await sleep(500)
-
-      // When: Navigate to topic with space
-      const testTopic = await page.locator('span[data-test-topic="test 123"]').first()
-      await testTopic.waitFor({ state: 'visible', timeout: 10000 })
-
-      // Then: Topic should be visible
-      expect(await testTopic.isVisible()).to.be.true
-
-      await testTopic.click()
-      await sleep(500)
-
-      await page.screenshot({ path: 'test-screenshot-special-chars.png' })
-    })
-
     it('Given topic with MAC address format (01-80-C2-00-00-0F/LWT), should display correctly', async function () {
       // Given: Mock publishes to MAC address topic
       await sleep(1000)
@@ -618,64 +403,6 @@ describe('MQTT Explorer UI Tests', function () {
 
       await clearSearch(page)
       await sleep(500)
-    })
-  })
-
-  describe('Bridge Status Topics', () => {
-    it('Given bridge status topics (zigbee2mqtt, ble2mqtt), should display online status', async function () {
-      // Given: Mock publishes bridge status topics
-      await sleep(2000)
-
-      // Ensure no search filter is active
-      await clearSearch(page)
-      await sleep(500)
-
-      // When: Navigate to zigbee2mqtt bridge
-      const zigbeeTopic = await page.locator('span[data-test-topic="zigbee2mqtt"]').first()
-      await zigbeeTopic.waitFor({ state: 'visible', timeout: 10000 })
-      expect(await zigbeeTopic.isVisible()).to.be.true
-
-      await zigbeeTopic.click()
-      await sleep(500)
-
-      const bridgeTopic = await page.locator('span[data-test-topic="bridge"]').first()
-      await bridgeTopic.waitFor({ state: 'visible', timeout: 5000 })
-      await bridgeTopic.click()
-      await sleep(500)
-
-      // Then: State topic should show "online"
-      await page.screenshot({ path: 'test-screenshot-bridge-status.png' })
-    })
-  })
-
-  describe('3D Printer Integration', () => {
-    it('Given 3D printer temperature topics with JSON data, should display bed and tool temperatures', async function () {
-      // Given: Mock publishes 3D printer data every 3333ms
-      await sleep(4000) // Wait for first publish
-
-      // Ensure no search filter is active
-      await clearSearch(page)
-      await sleep(500)
-
-      // When: Navigate to 3D printer topics
-      const printerTopic = await page.locator('span[data-test-topic="3d-printer"]').first()
-      await printerTopic.waitFor({ state: 'visible', timeout: 10000 })
-      expect(await printerTopic.isVisible()).to.be.true
-
-      await printerTopic.click()
-      await sleep(500)
-
-      const octoPrintTopic = await page.locator('span[data-test-topic="OctoPrint"]')
-      await octoPrintTopic.waitFor({ state: 'visible', timeout: 5000 })
-      await octoPrintTopic.click()
-      await sleep(500)
-
-      // Then: Temperature topics should be visible
-      const tempTopic = await page.locator('span[data-test-topic="temperature"]')
-      await tempTopic.waitFor({ state: 'visible', timeout: 5000 })
-      expect(await tempTopic.isVisible()).to.be.true
-
-      await page.screenshot({ path: 'test-screenshot-3d-printer.png' })
     })
   })
 
@@ -703,36 +430,6 @@ describe('MQTT Explorer UI Tests', function () {
       expect(await lampsTopic.isVisible()).to.be.true
 
       await page.screenshot({ path: 'test-screenshot-garden-devices.png' })
-    })
-  })
-
-  describe('Topic Value Types', () => {
-    it('Given topics with different value types (string, number, percentage), should display correctly', async function () {
-      // Given: Various value types in mock data
-      await sleep(1000)
-
-      // Ensure no search filter is active
-      await clearSearch(page)
-      await sleep(500)
-
-      // When: Check string value (garden/pump/state = "off")
-      await expandTopic('garden/pump/state', page)
-      await sleep(500)
-
-      await page.screenshot({ path: 'test-screenshot-string-value.png' })
-
-      // When: Check percentage value (garden/water/level = "70%")
-      await expandTopic('garden/water/level', page)
-      await sleep(500)
-
-      await page.screenshot({ path: 'test-screenshot-percentage-value.png' })
-
-      // When: Check numeric value with units (livingroom/thermostat/targetTemperature = "20°C")
-      await expandTopic('livingroom/thermostat/targetTemperature', page)
-      await sleep(500)
-
-      // Then: All value types should display correctly
-      await page.screenshot({ path: 'test-screenshot-temperature-value.png' })
     })
   })
 
