@@ -15,5 +15,5 @@ mqtt-explorer-mcp-screenshot.png
 screenshot-mcp-*.png
 test-mcp-introspection.js
 
-# UI test artifacts
+/data
 test-screenshot-*.png

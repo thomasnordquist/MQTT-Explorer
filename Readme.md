@@ -18,7 +18,21 @@ Downloads can be found at the link above.
 This page is dedicated to its development.
 Pull-Requests and error reports are welcome.
 
+## Quick Start with GitHub Codespaces
+
+The fastest way to start developing is with GitHub Codespaces:
+
+1. Click the green "Code" button above
+2. Select "Codespaces" tab
+3. Click "Create codespace on [branch]"
+4. Wait for the environment to set up (includes Node.js and MQTT broker)
+5. Run `yarn dev:server` to start development
+
+The devcontainer includes a pre-configured MQTT broker and all development tools. See [.devcontainer/README.md](.devcontainer/README.md) for details.
+
 ## Run from sources
+
+### Desktop Application (Electron)
 
 ```bash
 npm install -g yarn
@@ -27,7 +41,22 @@ yarn build
 yarn start
 ```
 
+### Browser Mode (Web Application)
+
+MQTT Explorer can also run as a web application served by a Node.js server:
+
+```bash
+npm install -g yarn
+yarn
+yarn build:server
+yarn start:server
+```
+
+Then open your browser to `http://localhost:3000`. For more details, see [BROWSER_MODE.md](BROWSER_MODE.md).
+
 ## Develop
+
+### Desktop Application
 
 Launch Application
 
@@ -35,6 +64,16 @@ Launch Application
 npm install -g yarn
 yarn
 yarn dev
+```
+
+### Browser Mode
+
+Launch in development mode with hot reload:
+
+```bash
+npm install -g yarn
+yarn
+yarn dev:server
 ```
 
 The `app` directory contains all the rendering logic, the `backend` directory currently contains the models, tests, connection management, `src` contains all the electron bindings. [mqttjs](https://github.com/mqttjs/MQTT.js) is used to facilitate communication to MQTT brokers.

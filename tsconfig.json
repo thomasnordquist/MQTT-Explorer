@@ -17,6 +17,8 @@
   },
   "include": [
     "src/electron.ts",
+    "src/server.ts",
+    "src/AuthManager.ts",
     "src/spec/electron.ts",
     "src/spec/demoVideo.ts",
     "src/spec/leakTest.ts",

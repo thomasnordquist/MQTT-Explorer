@@ -19,7 +19,8 @@ import {
 import { shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
 import { registerCrashReporter } from './registerCrashReporter'
 import { makeOpenDialogRpc, makeSaveDialogRpc } from '../events/OpenDialogRequest'
-import { backendRpc, getAppVersion, writeToFile, readFromFile } from '../events'
+import { backendRpc, backendEvents, getAppVersion, writeToFile, readFromFile } from '../events'
+import { RpcEvents } from '../events/EventsV2'
 
 registerCrashReporter()
 
@@ -49,21 +50,35 @@ app.whenReady().then(() => {
   backendRpc.on(getAppVersion, async () => app.getVersion())
 
   backendRpc.on(writeToFile, async ({ filePath, data, encoding }) => {
-    await fsPromise.writeFile(filePath, Buffer.from(data, 'base64'), { encoding })
+    await fsPromise.writeFile(filePath, Buffer.from(data, 'base64'), { encoding: encoding as BufferEncoding })
   })
 
   backendRpc.on(readFromFile, async ({ filePath, encoding }) => {
-    return fsPromise.readFile(filePath, { encoding })
+    if (encoding) {
+      const content = await fsPromise.readFile(filePath, { encoding: encoding as BufferEncoding })
+      return Buffer.from(content)
+    }
+    return fsPromise.readFile(filePath)
+  })
+
+  // Certificate upload handler - works for both Electron and browser mode via IPC
+  backendRpc.on(RpcEvents.uploadCertificate, async ({ filename, data }) => {
+    // In Electron, we just return the data as-is since it's already read
+    // The client will use it directly
+    return {
+      name: filename,
+      data,
+    }
   })
 })
 
 autoUpdater.logger = log
 log.info('App starting...')
 
-const connectionManager = new ConnectionManager()
+const connectionManager = new ConnectionManager(backendEvents)
 connectionManager.manageConnections()
 
-const configStorage = new ConfigStorage(path.join(app.getPath('userData'), 'settings.json'))
+const configStorage = new ConfigStorage(path.join(app.getPath('userData'), 'settings.json'), backendRpc)
 configStorage.init()
 
 // Keep a global reference of the window object, if you don't, the window will
