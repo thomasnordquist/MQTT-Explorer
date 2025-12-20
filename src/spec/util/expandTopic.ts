@@ -21,8 +21,8 @@ export async function expandTopic(path: string, browser: Page) {
       // Click to expand (if not the last topic)
       await clickOn(locator)
 
-      // Give time for UI to expand and show children
-      await new Promise(resolve => setTimeout(resolve, 500))
+      // Reduced delay for UI to expand - 200ms is sufficient for most cases
+      await new Promise(resolve => setTimeout(resolve, 200))
     } catch (error) {
       console.error(`Failed to find topic: ${topic}`, error)
       throw new Error(`Could not find topic "${topic}" in path "${path}"`)

@@ -60,8 +60,8 @@ describe('MQTT Explorer UI Tests', function () {
     console.log('Waiting for application window...')
     page = await electronApp.firstWindow({ timeout: 10000 })
 
-    // Wait for the connection form to be ready
-    await page.locator('//label[contains(text(), "Username")]/..//input').waitFor({ timeout: 5000 })
+    // Wait for the connection form to be ready (Host field exists in Electron, Username only in browser)
+    await page.locator('//label[contains(text(), "Host")]/..//input').waitFor({ timeout: 5000 })
 
     console.log('Application ready for testing')
   })
