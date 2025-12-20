@@ -29,7 +29,7 @@ class Demo extends React.Component<{ classes: any }, State> {
 
   /**
    * Cubic bezier easing function for natural-looking mouse movement
-   * Uses control points (0.25, 0.1) and (0.25, 1.0) for a smooth ease-in-out curve
+   * Uses control points (0.25, 0.75) for a smooth ease-in-out curve
    */
   private cubicBezier(t: number, p0: number, p1: number, p2: number, p3: number): number {
     const u = 1 - t
@@ -45,9 +45,9 @@ class Demo extends React.Component<{ classes: any }, State> {
     return this.cubicBezier(t, 0, 0.25, 0.75, 1)
   }
 
-  private moveCloser(steps: number = 0) {
+  private moveCloser() {
     const elapsed = Date.now() - this.state.startTime
-    const progress = Math.min(elapsed / this.state.duration, 1)
+    const progress = Math.min(elapsed / (this.state.duration || 1), 1)
 
     // Apply easing function for smooth, human-like movement timing
     const easedProgress = this.easeInOutCubic(progress)
@@ -65,7 +65,7 @@ class Demo extends React.Component<{ classes: any }, State> {
     const dy = endY - startY
     const distance = Math.sqrt(dx * dx + dy * dy)
 
-    // Arc height is proportional to distance (max 20% of distance)
+    // Arc height is proportional to distance (20% of distance, capped at 50px max)
     const arcHeight = Math.min(distance * 0.2, 50)
 
     // Calculate perpendicular offset for the control point
@@ -92,7 +92,7 @@ class Demo extends React.Component<{ classes: any }, State> {
     // Continue animation if not complete
     if (progress < 1) {
       this.timer = setTimeout(() => {
-        this.moveCloser(steps + 1)
+        this.moveCloser()
       }, this.frameInterval)
     } else {
       this.timer && clearTimeout(this.timer)
