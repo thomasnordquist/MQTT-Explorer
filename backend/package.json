@@ -4,10 +4,10 @@
   "description": "",
   "main": "build/index.js",
   "scripts": {
-    "test": "cd .. && NODE_PATH=./node_modules TS_NODE_PROJECT=./backend/tsconfig.json ./backend/node_modules/.bin/mocha --require ts-node/register --require source-map-support/register --recursive ./backend/src/*/**/*.spec.ts",
+    "test": "NODE_PATH=../node_modules TS_NODE_PROJECT=./tsconfig.json mocha --require ts-node/register --require source-map-support/register --recursive ./src/*/**/*.spec.ts",
     "build": "tsc",
-    "test-inspect": "cd .. && NODE_PATH=./node_modules TS_NODE_PROJECT=./backend/tsconfig.json ./backend/node_modules/.bin/mocha --inspect-brk --require ts-node/register --require source-map-support/register --recursive ./backend/src/*/**/*.spec.ts",
-    "coverage": "cd .. && NODE_PATH=./node_modules TS_NODE_PROJECT=./backend/tsconfig.json ./backend/node_modules/.bin/nyc mocha --require ts-node/register --require source-map-support/register --recursive ./backend/src/*/**/*.spec.ts",
+    "test-inspect": "NODE_PATH=../node_modules TS_NODE_PROJECT=./tsconfig.json mocha --inspect-brk --require ts-node/register --require source-map-support/register --recursive ./src/*/**/*.spec.ts",
+    "coverage": "NODE_PATH=../node_modules TS_NODE_PROJECT=./tsconfig.json nyc mocha --require ts-node/register --require source-map-support/register --recursive ./src/*/**/*.spec.ts",
     "debug": "ts-node --inspect ./src/index.ts"
   },
   "engines": {
