@@ -46,7 +46,7 @@ describe('MQTT Explorer UI Tests', function () {
    * Setup: Start MQTT broker mock and launch Electron app
    */
   before(async function () {
-    this.timeout(30000)
+    this.timeout(90000) // Increased timeout for slow CI environments
 
     console.log('Starting MQTT mock broker...')
     await mockMqtt()
@@ -55,13 +55,14 @@ describe('MQTT Explorer UI Tests', function () {
     console.log('Launching Electron application...')
     electronApp = await electron.launch({
       args: [`${__dirname}/../../..`, '--runningUiTestOnCi', '--no-sandbox', '--disable-dev-shm-usage'],
+      timeout: 60000, // Give Electron more time to launch
     })
 
     console.log('Waiting for application window...')
-    page = await electronApp.firstWindow({ timeout: 10000 })
+    page = await electronApp.firstWindow({ timeout: 30000 })
 
     // Wait for the connection form to be ready (Host field exists in Electron, Username only in browser)
-    await page.locator('//label[contains(text(), "Host")]/..//input').waitFor({ timeout: 5000 })
+    await page.locator('//label[contains(text(), "Host")]/..//input').waitFor({ timeout: 10000 })
 
     console.log('Application ready for testing')
   })
