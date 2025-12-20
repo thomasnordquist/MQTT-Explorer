@@ -8,28 +8,28 @@ export async function expandTopic(path: string, browser: Page) {
   // Expand each level of the topic tree one at a time
   // Strategy: Click on each topic level individually, relying on the fact that
   // after clicking a parent, its children become visible and we can find the next level
-  for (let i = 0; i < topics.length; i++) {
+  for (let i = 0; i < topics.length; i += 1) {
     const topicName = topics[i]
     const currentPath = topics.slice(0, i + 1)
-    
+
     console.log(`Expanding level ${i + 1}/${topics.length}: ${topicName}`)
 
     // Find the topic by its data-test-topic attribute
     // After expanding previous levels, the current level should be visible
     const selector = `span[data-test-topic='${topicName}']`
-    
+
     console.log(`Using selector: ${selector}`)
 
     // Get all matching elements (there may be multiple topics with the same name)
     const allMatches = browser.locator(selector)
-    
+
     // Count how many matches we have
     const count = await allMatches.count()
     console.log(`Found ${count} elements matching '${topicName}'`)
 
     // Find the first visible match
     let locator = null
-    for (let j = 0; j < count; j++) {
+    for (let j = 0; j < count; j += 1) {
       const candidate = allMatches.nth(j)
       try {
         await candidate.waitFor({ state: 'visible', timeout: 1000 })

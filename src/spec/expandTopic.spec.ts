@@ -104,7 +104,7 @@ describe('expandTopic UI Helper - Isolated Test', function () {
       // Then: Both kitchen and lamp should be visible
       const kitchenTopic = await page.locator('span[data-test-topic="kitchen"]')
       const lampTopic = await page.locator('span[data-test-topic="lamp"]')
-      
+
       expect(await kitchenTopic.isVisible()).to.be.true
       expect(await lampTopic.isVisible()).to.be.true
 
@@ -135,7 +135,7 @@ describe('expandTopic UI Helper - Isolated Test', function () {
       const kitchenTopic = await page.locator('span[data-test-topic="kitchen"]')
       const lampTopic = await page.locator('span[data-test-topic="lamp"]')
       const stateTopic = await page.locator('span[data-test-topic="state"]')
-      
+
       expect(await kitchenTopic.isVisible()).to.be.true
       expect(await lampTopic.isVisible()).to.be.true
       expect(await stateTopic.isVisible()).to.be.true
@@ -167,7 +167,7 @@ describe('expandTopic UI Helper - Isolated Test', function () {
       // We verify this by checking that after clicking, we're in the livingroom branch
       const livingroomTopic = await page.locator('span[data-test-topic="livingroom"]')
       const lampTopic = await page.locator('span[data-test-topic="lamp"]')
-      
+
       expect(await livingroomTopic.isVisible()).to.be.true
       expect(await lampTopic.isVisible()).to.be.true
 

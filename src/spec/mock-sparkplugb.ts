@@ -22,7 +22,7 @@ export interface MockSparkplugClient {
   stop: () => void
 }
 
-let sample = (function () {
+const sample = (function () {
   let config = {
       serverUrl: 'tcp://127.0.0.1:1883',
       username: '',
@@ -169,12 +169,12 @@ let sample = (function () {
       // Create node command handler
       // spell-checker: disable-next-line
       sparkplugClient.on('ncmd', function (payload: UPayload) {
-        let timestamp = payload.timestamp,
+        const timestamp = payload.timestamp,
           metrics = payload.metrics
 
         if (metrics !== undefined && metrics !== null) {
           for (let i = 0; i < metrics.length; i++) {
-            let metric = metrics[i]
+            const metric = metrics[i]
             if (metric.name == 'Node Control/Rebirth' && metric.value) {
               console.log("Received 'Rebirth' command")
               // Publish Node BIRTH certificate
@@ -200,7 +200,7 @@ let sample = (function () {
         // Loop over the metrics and store them in a map
         if (metrics !== undefined && metrics !== null) {
           for (let i = 0; i < metrics.length; i++) {
-            let metric = metrics[i]
+            const metric = metrics[i]
             if (metric.name !== undefined && metric.name !== null) {
               inboundMetricMap[metric.name] = metric.value
             }
