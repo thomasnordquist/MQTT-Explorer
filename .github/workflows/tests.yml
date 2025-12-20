@@ -18,7 +18,45 @@ jobs:
         run: yarn build
       - name: Test
         run: yarn test
-      - name: UI-Test
+
+  ui-tests:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/thomasnordquist/mqtt-explorer-ui-tests:latest
+      volumes:
+        - ./:/app
+      options: --user root
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Packages
+        run: yarn install --frozen-lockfile
+      - name: Build
+        run: yarn build
+      - name: Run UI Tests
+        run: ./scripts/runUiTests.sh
+      - name: Upload Test Screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-test-screenshots
+          path: |
+            test-screenshot-*.png
+          retention-days: 30
+
+  demo-video:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/thomasnordquist/mqtt-explorer-ui-tests:latest
+      volumes:
+        - ./:/app
+      options: --user root
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Packages
+        run: yarn install --frozen-lockfile
+      - name: Build
+        run: yarn build
+      - name: Generate Demo Video
         run: yarn ui-test
       - name: Post-processing
         run: ./scripts/prepareVideo.sh

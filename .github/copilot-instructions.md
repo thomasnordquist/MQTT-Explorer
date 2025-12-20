@@ -58,6 +58,94 @@ electron . --enable-mcp-introspection --remote-debugging-port=9223
 3. **Include screenshots** - Visual verification is required for UI changes
 4. **Handle asynchronous operations properly** - This is an MQTT message queue tool
 
+### Best Practices for UI Tests
+
+#### 1. Use Given-When-Then Pattern
+Structure tests with clear Given-When-Then comments to make them readable:
+
+```typescript
+it('Given a JSON message sent to topic foo/bar/baz, the tree should display nested topics', async function () {
+  // Given: Mock MQTT publishes JSON to foo/bar/baz
+  // When: We wait for the topic to appear in the tree
+  // Then: Topic hierarchy should be visible (foo -> bar -> baz)
+})
+```
+
+#### 2. Wait for Elements, Don't Use Fixed Delays
+Prefer `waitFor` over `sleep` whenever possible:
+
+```typescript
+// ✓ Good: Wait for specific element
+const topic = await page.locator('span[data-test-topic="kitchen"]')
+await topic.waitFor({ state: 'visible', timeout: 5000 })
+
+// ✗ Bad: Fixed delay without verification
+await sleep(5000)
+```
+
+#### 3. Use Meaningful Assertions
+Every test should have explicit assertions that verify the expected state:
+
+```typescript
+// ✓ Good: Explicit assertion with meaningful message
+const treeNodes = await page.locator('[class*="TreeNode"]')
+const count = await treeNodes.count()
+expect(count).to.be.greaterThan(0, 'Topic tree should contain nodes')
+
+// ✗ Bad: No assertion, only screenshot
+await page.screenshot({ path: 'test.png' })
+```
+
+#### 4. Test Data-Driven Scenarios
+Write tests that describe the data flow:
+
+```typescript
+it('Given messages sent to livingroom/lamp/state and livingroom/lamp/brightness, both should appear under livingroom/lamp', async function () {
+  // Test implementation verifies the specific data flow
+})
+```
+
+#### 5. Use Data Test Attributes
+Leverage `data-test-*` attributes for reliable selectors:
+
+```typescript
+// ✓ Good: Use data-test attributes
+const topic = await page.locator('span[data-test-topic="kitchen"]')
+
+// ⚠ Acceptable: Use role/text when data attributes aren't available
+const button = await page.locator('//button/span[contains(text(),"Connect")]')
+
+// ✗ Bad: Rely on CSS classes that may change
+const topic = await page.locator('.MuiTreeItem-label')
+```
+
+#### 6. Verify Multiple Aspects
+Test should verify both state and UI:
+
+```typescript
+// Verify the action completed
+const isVisible = await disconnectButton.isVisible()
+expect(isVisible).to.be.true
+
+// Capture screenshot for visual verification
+await page.screenshot({ path: 'test-screenshot-connection.png' })
+```
+
+#### 7. Handle MQTT Asynchronous Nature
+Account for message propagation time:
+
+```typescript
+// Publish message
+await mockClient.publish('topic/name', 'value')
+
+// Wait for UI to update
+await page.locator(`text="value"`).waitFor({ timeout: 5000 })
+
+// Verify state
+const value = await page.textContent('.message-value')
+expect(value).toBe('value')
+```
+
 ### Handling MQTT Asynchronous Operations
 
 MQTT is inherently asynchronous. When writing tests:

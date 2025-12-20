@@ -80,28 +80,35 @@ The `app` directory contains all the rendering logic, the `backend` directory cu
 
 ## Automated Tests
 
-To achieve a reliable product automated tests run regularly on travis.
+To achieve a reliable product automated tests run regularly on CI.
 
-- Data model
-- MQTT integration
-- UI-Tests (The demo is a recorded ui test)
+- **Data model tests**: `yarn test:backend`
+- **App tests**: `yarn test:app`
+- **UI test suite**: `yarn test:ui` (independent, deterministic tests)
+- **Demo video**: `yarn ui-test` (UI test recording for documentation)
 
-## Run UI-tests
+### Run UI Test Suite
 
-A [mosquitto](https://mosquitto.org/) MQTT broker is required to run the ui-tests.
-
-Run tests with
+The UI test suite validates core functionality through automated browser tests. Each test is independent and deterministic.
 
 ```bash
-# Run chromedriver in a separate terminal session
-./node_modules/.bin/chromedriver --url-base=wd/hub --port=9515 --verbose
+# Run with automated setup (recommended)
+./scripts/runUiTests.sh
+
+# Or run directly (requires manual MQTT broker setup)
+yarn build
+yarn test:ui
 ```
 
-Compile and execute tests
+See [docs/UI-TEST-SUITE.md](docs/UI-TEST-SUITE.md) for more details.
+
+### Run Demo Video Generation
+
+A [mosquitto](https://mosquitto.org/) MQTT broker is required to generate the demo video.
 
 ```bash
-npm run build
-node dist/src/spec/webdriverio.js
+yarn build
+yarn ui-test
 ```
 
 ## Create a release

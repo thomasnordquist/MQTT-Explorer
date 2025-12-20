@@ -15,5 +15,5 @@ mqtt-explorer-mcp-screenshot.png
 screenshot-mcp-*.png
 test-mcp-introspection.js
 
-# Server data directory
 /data
+test-screenshot-*.png
