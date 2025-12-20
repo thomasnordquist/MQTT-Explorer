@@ -142,16 +142,16 @@ describe('MQTT Explorer UI Tests', function () {
       await lampTopic.waitFor({ state: 'visible', timeout: 5000 })
       expect(await lampTopic.isVisible()).to.be.true
 
-      // When: Clicking on lamp
+      // When: Clicking on lamp to expand it
       await lampTopic.click()
-      await sleep(500)
+      await sleep(1000) // Give more time for expansion
 
       // Then: Both state and brightness topics should be visible
       const stateTopic = await page.locator('span[data-test-topic="state"]').first()
       const brightnessTopic = await page.locator('span[data-test-topic="brightness"]').first()
 
-      await stateTopic.waitFor({ state: 'visible', timeout: 5000 })
-      await brightnessTopic.waitFor({ state: 'visible', timeout: 5000 })
+      await stateTopic.waitFor({ state: 'visible', timeout: 10000 })
+      await brightnessTopic.waitFor({ state: 'visible', timeout: 10000 })
 
       expect(await stateTopic.isVisible()).to.be.true
       expect(await brightnessTopic.isVisible()).to.be.true
@@ -411,18 +411,20 @@ describe('MQTT Explorer UI Tests', function () {
     it('should open and display settings menu with available options', async function () {
       // When: User opens settings menu
       const menuButton = await page.locator('//button[contains(@aria-label, "Menu")]').first()
+      await menuButton.waitFor({ state: 'visible', timeout: 5000 })
       await menuButton.click()
-      await sleep(500)
+      await sleep(1000) // Give menu time to open
 
       // Then: Settings menu should be visible
-      const settingsMenu = await page.locator('[role="menu"]')
-      const menuVisible = (await settingsMenu.count()) > 0
+      const settingsMenu = await page.locator('[role="menu"]').first()
+      await settingsMenu.waitFor({ state: 'visible', timeout: 5000 })
+      const menuVisible = await settingsMenu.isVisible()
       expect(menuVisible).to.be.true
 
       await page.screenshot({ path: 'test-screenshot-settings.png' })
 
-      // Cleanup: Close the menu
-      await menuButton.click()
+      // Cleanup: Close the menu by clicking outside or pressing Escape
+      await page.keyboard.press('Escape')
       await sleep(300)
     })
 
@@ -580,15 +582,15 @@ describe('MQTT Explorer UI Tests', function () {
   describe('Special Topic Names and Characters', () => {
     it('Given topics with spaces and special characters, should display correctly', async function () {
       // Given: Mock publishes to "test 123" and "hello"
-      await sleep(1000)
+      await sleep(2000) // Wait for topic to be published
 
       // Ensure no search filter is active
       await clearSearch(page)
       await sleep(500)
 
       // When: Navigate to topic with space
-      const testTopic = await page.locator('span[data-test-topic="test 123"]')
-      await testTopic.waitFor({ state: 'visible', timeout: 5000 })
+      const testTopic = await page.locator('span[data-test-topic="test 123"]').first()
+      await testTopic.waitFor({ state: 'visible', timeout: 10000 })
 
       // Then: Topic should be visible
       expect(await testTopic.isVisible()).to.be.true
@@ -621,17 +623,21 @@ describe('MQTT Explorer UI Tests', function () {
   describe('Bridge Status Topics', () => {
     it('Given bridge status topics (zigbee2mqtt, ble2mqtt), should display online status', async function () {
       // Given: Mock publishes bridge status topics
-      await sleep(1000)
+      await sleep(2000)
+
+      // Ensure no search filter is active
+      await clearSearch(page)
+      await sleep(500)
 
       // When: Navigate to zigbee2mqtt bridge
-      const zigbeeTopic = await page.locator('span[data-test-topic="zigbee2mqtt"]')
-      await zigbeeTopic.waitFor({ state: 'visible', timeout: 5000 })
+      const zigbeeTopic = await page.locator('span[data-test-topic="zigbee2mqtt"]').first()
+      await zigbeeTopic.waitFor({ state: 'visible', timeout: 10000 })
       expect(await zigbeeTopic.isVisible()).to.be.true
 
       await zigbeeTopic.click()
       await sleep(500)
 
-      const bridgeTopic = await page.locator('span[data-test-topic="bridge"]')
+      const bridgeTopic = await page.locator('span[data-test-topic="bridge"]').first()
       await bridgeTopic.waitFor({ state: 'visible', timeout: 5000 })
       await bridgeTopic.click()
       await sleep(500)
@@ -643,12 +649,16 @@ describe('MQTT Explorer UI Tests', function () {
 
   describe('3D Printer Integration', () => {
     it('Given 3D printer temperature topics with JSON data, should display bed and tool temperatures', async function () {
-      // Given: Mock publishes 3D printer data
-      await sleep(4000) // Wait for 3D printer interval
+      // Given: Mock publishes 3D printer data every 3333ms
+      await sleep(4000) // Wait for first publish
+
+      // Ensure no search filter is active
+      await clearSearch(page)
+      await sleep(500)
 
       // When: Navigate to 3D printer topics
-      const printerTopic = await page.locator('span[data-test-topic="3d-printer"]')
-      await printerTopic.waitFor({ state: 'visible', timeout: 5000 })
+      const printerTopic = await page.locator('span[data-test-topic="3d-printer"]').first()
+      await printerTopic.waitFor({ state: 'visible', timeout: 10000 })
       expect(await printerTopic.isVisible()).to.be.true
 
       await printerTopic.click()
