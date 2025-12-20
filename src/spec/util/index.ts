@@ -50,7 +50,6 @@ export async function moveToCenterOfElement(element: Locator) {
   // Wait for element to be visible and attached before getting bounding box
   await element.waitFor({ state: 'visible', timeout: 30000 })
 
-  // @ts-ignore
   const boundingBox = await element.boundingBox()
 
   if (!boundingBox) {
