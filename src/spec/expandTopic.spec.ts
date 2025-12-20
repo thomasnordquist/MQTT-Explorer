@@ -17,6 +17,9 @@ import type { MqttClient } from 'mqtt'
  * 4. Differentiates between topics with the same name in different branches
  */
 // tslint:disable:only-arrow-functions ter-prefer-arrow-callback no-unused-expression
+// Disabled rules:
+// - only-arrow-functions, ter-prefer-arrow-callback: Mocha test style uses traditional functions for proper `this` binding
+// - no-unused-expression: Chai assertions like `expect(x).to.be.true` are expressions
 describe('expandTopic UI Helper - Isolated Test', function () {
   this.timeout(90000)
 

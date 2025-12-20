@@ -1,5 +1,8 @@
 import { clickOn } from './'
-import { Page } from 'playwright'
+import { Page, Locator } from 'playwright'
+
+// Time to wait after clicking a topic for the tree to expand and render children
+const TREE_EXPANSION_DELAY_MS = 500
 
 export async function expandTopic(path: string, browser: Page) {
   const topics = path.split('/')
@@ -28,7 +31,7 @@ export async function expandTopic(path: string, browser: Page) {
     console.log(`Found ${count} elements matching '${topicName}'`)
 
     // Find the first visible match
-    let locator = null
+    let locator: Locator | null = null
     for (let j = 0; j < count; j += 1) {
       const candidate = allMatches.nth(j)
       try {
@@ -55,7 +58,7 @@ export async function expandTopic(path: string, browser: Page) {
 
       // Give the UI time to expand and render child topics
       // This is important for MQTT async operations and tree rendering
-      await new Promise(resolve => setTimeout(resolve, 500))
+      await new Promise(resolve => setTimeout(resolve, TREE_EXPANSION_DELAY_MS))
     } catch (error) {
       console.error(`Failed to click topic "${topicName}" in path "${currentPath.join('/')}"`, error)
       throw new Error(`Could not click topic "${topicName}" in path "${currentPath.join('/')}"`)
