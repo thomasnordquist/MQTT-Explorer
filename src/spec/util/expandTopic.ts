@@ -5,6 +5,9 @@ import { Page, Locator } from 'playwright'
 // Increased to 1000ms to handle sequential test execution where UI might be slower
 const TREE_EXPANSION_DELAY_MS = 1000
 
+// Additional wait time to ensure child topics are rendered after expansion
+const CHILD_RENDER_DELAY_MS = 500
+
 export async function expandTopic(path: string, browser: Page) {
   const topics = path.split('/')
   console.log('expandTopic', path)
@@ -15,6 +18,7 @@ export async function expandTopic(path: string, browser: Page) {
   for (let i = 0; i < topics.length; i += 1) {
     const topicName = topics[i]
     const currentPath = topics.slice(0, i + 1)
+    const nextTopicName = i < topics.length - 1 ? topics[i + 1] : null
 
     console.log(`Expanding level ${i + 1}/${topics.length}: ${topicName}`)
 
@@ -55,12 +59,34 @@ export async function expandTopic(path: string, browser: Page) {
     try {
       console.log(`Found and clicking topic: ${topicName}`)
 
+      // Scroll the element into view to ensure it's clickable
+      await locator.scrollIntoViewIfNeeded()
+      await new Promise(resolve => setTimeout(resolve, 200))
+
       // Click to expand/select this level
       await clickOn(locator)
 
       // Give the UI time to expand and render child topics
       // This is important for MQTT async operations and tree rendering
       await new Promise(resolve => setTimeout(resolve, TREE_EXPANSION_DELAY_MS))
+
+      // If this is not the last topic in the path, verify that children rendered
+      if (nextTopicName) {
+        console.log(`Waiting for children of '${topicName}' to render...`)
+        await new Promise(resolve => setTimeout(resolve, CHILD_RENDER_DELAY_MS))
+        
+        // Check if the next topic is now visible
+        const nextSelector = `span[data-test-topic='${nextTopicName}']`
+        const nextMatches = browser.locator(nextSelector)
+        const nextCount = await nextMatches.count()
+        console.log(`After expanding '${topicName}', found ${nextCount} elements for next topic '${nextTopicName}'`)
+        
+        // If we don't find the next topic, wait a bit longer
+        if (nextCount === 0) {
+          console.log(`No children found yet, waiting additional time...`)
+          await new Promise(resolve => setTimeout(resolve, TREE_EXPANSION_DELAY_MS))
+        }
+      }
     } catch (error) {
       console.error(`Failed to click topic "${topicName}" in path "${currentPath.join('/')}"`, error)
       throw new Error(`Could not click topic "${topicName}" in path "${currentPath.join('/')}"`)

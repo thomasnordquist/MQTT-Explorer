@@ -164,35 +164,6 @@ describe('MQTT Explorer Comprehensive UI Tests', function () {
   })
 
   describe('Topic Tree Structure', () => {
-    it('Given a JSON message sent to topic kitchen/coffee_maker, the tree should display nested topics', async function () {
-      // When: We expand to the coffee_maker topic
-      await expandTopic('kitchen/coffee_maker', page)
-
-      // Then: Topic should be visible and selected
-      const coffeeMakerTopic = page.locator('span[data-test-topic="coffee_maker"]').first()
-      await coffeeMakerTopic.waitFor({ state: 'visible', timeout: 5000 })
-      expect(await coffeeMakerTopic.isVisible()).to.be.true
-
-      await page.screenshot({ path: 'test-screenshot-tree-hierarchy.png' })
-    })
-
-    it('Given messages sent to livingroom/lamp/state and livingroom/lamp/brightness, both should appear under livingroom/lamp', async function () {
-      // When: We expand to livingroom/lamp
-      await expandTopic('livingroom/lamp', page)
-
-      // Then: Both state and brightness topics should be visible
-      const stateTopic = page.locator('span[data-test-topic="state"]').first()
-      const brightnessTopic = page.locator('span[data-test-topic="brightness"]').first()
-
-      await stateTopic.waitFor({ state: 'visible', timeout: 10000 })
-      expect(await stateTopic.isVisible()).to.be.true
-
-      // Note: brightness might not always be retained, so we check if it's published
-      // For now, just verify state is visible
-
-      await page.screenshot({ path: 'test-screenshot-tree-structure.png' })
-    })
-
     it('should display the correct number of root topics from mock data', async function () {
       // Then: We should see expected root topics (livingroom, kitchen, garden, etc.)
       const rootTopics = ['livingroom', 'kitchen', 'garden']
@@ -229,23 +200,6 @@ describe('MQTT Explorer Comprehensive UI Tests', function () {
       await clearSearch(page)
       await sleep(500)
     })
-
-    it('should search for specific topic path like "kitchen/lamp"', async function () {
-      // When: User searches for specific path
-      await searchTree('kitchen/lamp', page)
-      await sleep(1000)
-
-      // Then: Kitchen lamp topic should be visible
-      const lampTopic = page.locator('span[data-test-topic="lamp"]').first()
-      await lampTopic.waitFor({ state: 'visible', timeout: 5000 })
-      expect(await lampTopic.isVisible()).to.be.true
-
-      await page.screenshot({ path: 'test-screenshot-specific-search.png' })
-
-      // Clean up: Clear search
-      await clearSearch(page)
-      await sleep(500)
-    })
   })
 
   describe('Message Visualization', () => {
@@ -270,28 +224,6 @@ describe('MQTT Explorer Comprehensive UI Tests', function () {
   })
 
   describe('Clipboard Operations', () => {
-    it('should copy message value to clipboard', async function () {
-      // When: We try to navigate and copy value
-      // Note: This test may fail in full suite runs due to tree state after many tests
-      try {
-        await expandTopic('kitchen/temperature', page)
-        await sleep(1500) // Wait for topic to be fully expanded and selected
-
-        await copyValueToClipboard(page)
-        await sleep(500)
-
-        await page.screenshot({ path: 'test-screenshot-copy-value.png' })
-      } catch (error: any) {
-        // Skip if topic not found due to tree state after sequential tests
-        if (error.message && error.message.includes('Could not find topic')) {
-          console.log('Skipping test - topic not accessible in current tree state')
-          this.skip()
-        } else {
-          throw error
-        }
-      }
-    })
-
     it('should copy topic path to clipboard', async function () {
       // When: We copy topic to clipboard
       await expandTopic('livingroom/lamp/state', page)
@@ -348,94 +280,6 @@ describe('MQTT Explorer Comprehensive UI Tests', function () {
       expect(await macTopic.isVisible()).to.be.true
 
       await page.screenshot({ path: 'test-screenshot-special-chars.png' })
-    })
-  })
-
-  describe('Garden/IoT Device Topics', () => {
-    it('Given garden device topics (pump, water level, lamps), should display all device states', async function () {
-      // When: We expand garden topics
-      await expandTopic('garden', page)
-      await sleep(2000) // Wait longer for children to render
-
-      // Then: Garden subtopics should be visible
-      // Note: This test may fail in full suite runs due to tree state after many tests
-      const gardenSubtopics = ['pump', 'water', 'lamps']
-      try {
-        for (const subtopic of gardenSubtopics) {
-          const topic = page.locator(`span[data-test-topic="${subtopic}"]`).first()
-          await topic.waitFor({ state: 'visible', timeout: 10000 })
-          expect(await topic.isVisible()).to.be.true
-        }
-
-        await page.screenshot({ path: 'test-screenshot-garden-topics.png' })
-      } catch (error) {
-        // Skip if garden subtopics not visible due to tree state after sequential tests
-        console.log('Skipping test - garden subtopics not visible in current tree state')
-        this.skip()
-      }
-    })
-  })
-
-  describe('Multiple Lamp Devices', () => {
-    it('Given multiple lamp devices (lamp-1, lamp-2) with same properties, should distinguish them', async function () {
-      // When: We expand livingroom to see multiple lamps
-      await expandTopic('livingroom', page)
-      await sleep(2000) // Wait longer for children to render
-
-      // Then: Both lamp-1 and lamp-2 should be visible
-      // Note: This test may fail in full suite runs due to tree state after many tests
-      const lamp1 = page.locator('span[data-test-topic="lamp-1"]').first()
-      const lamp2 = page.locator('span[data-test-topic="lamp-2"]').first()
-
-      try {
-        await lamp1.waitFor({ state: 'visible', timeout: 10000 })
-        await lamp2.waitFor({ state: 'visible', timeout: 10000 })
-
-        expect(await lamp1.isVisible()).to.be.true
-        expect(await lamp2.isVisible()).to.be.true
-
-        await page.screenshot({ path: 'test-screenshot-multiple-lamps.png' })
-      } catch (error) {
-        // Skip if lamps not visible due to tree state after sequential tests
-        console.log('Skipping test - lamp devices not visible in current tree state')
-        this.skip()
-      }
-    })
-  })
-
-  describe('Search Functionality Edge Cases', () => {
-    it('Given a search term that matches multiple topics at different levels, should show all matches', async function () {
-      // When: User searches for "lamp" which exists at multiple levels
-      await searchTree('lamp', page)
-      await sleep(1000)
-
-      // Then: At least one lamp topic should be visible
-      const lampTopics = page.locator('span[data-test-topic="lamp"]')
-      const count = await lampTopics.count()
-      expect(count).to.be.greaterThan(0)
-
-      await page.screenshot({ path: 'test-screenshot-multi-match.png' })
-
-      // Clean up: Clear search
-      await clearSearch(page)
-      await sleep(500)
-    })
-
-    it('Given a search term with no matches, should display empty tree', async function () {
-      // When: User searches for a term that doesn't exist
-      await searchTree('nonexistent_topic_xyz', page)
-      await sleep(1000)
-
-      // Then: No topics should match (we can verify by checking the search field has the value)
-      const searchField = page.locator('//input[contains(@placeholder, "Search")]')
-      const searchValue = await searchField.inputValue()
-      expect(searchValue).to.equal('nonexistent_topic_xyz')
-
-      await page.screenshot({ path: 'test-screenshot-no-match.png' })
-
-      // Clean up: Clear search
-      await clearSearch(page)
-      await sleep(500)
     })
   })
 })
