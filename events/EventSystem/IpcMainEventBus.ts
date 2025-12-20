@@ -26,11 +26,11 @@ export class IpcMainEventBus implements EventBusInterface {
           this.clients.delete(sender.id)
           
           // Clean up owned connections
-          for (const [connectionId, webContentsId] of this.connectionOwners.entries()) {
+          Array.from(this.connectionOwners.entries()).forEach(([connectionId, webContentsId]) => {
             if (webContentsId === sender.id) {
               this.connectionOwners.delete(connectionId)
             }
-          }
+          })
         })
       }
       
