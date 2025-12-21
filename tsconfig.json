@@ -27,6 +27,7 @@
     "src/spec/ui-tests.spec.ts",
     "src/spec/ui-tests-comprehensive.spec.ts",
     "src/spec/expandTopic.spec.ts",
+    "src/spec/security-tests.spec.ts",
     "scripts/*.ts"
   ],
   "exclude": ["node_modules"]
