@@ -449,3 +449,5 @@ yarn package-with-docker
 - **Linting**: All code changes must pass `yarn lint`
 - **MQTT library**: Communication handled via [mqttjs](https://github.com/mqttjs/MQTT.js)
 - **Workspace structure**: Separate package.json files for root, app, and backend
+- Provide screenshots in each PR to show that the application still works, if the PR is about a feature the screenshot should depict the feature if possible.
+- Resolve all errors during build, especially typescript and webpack builds.
