@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { default as AceEditor } from 'react-ace'
-import { Theme, withTheme } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import 'ace-builds'
 import 'ace-builds/webpack-resolver'
 import 'ace-builds/src-noconflict/mode-json'
@@ -13,11 +13,11 @@ import 'react-ace'
 
 function Editor(props: {
   editorMode: string
-  theme: Theme
   value: string | undefined
   onChange: (value: string) => void
   editorRef: React.Ref<AceEditor>
 }) {
+  const theme = useTheme()
   const editorOptions = {
     showLineNumbers: false,
     tabSize: 2,
@@ -28,7 +28,7 @@ function Editor(props: {
       ref={props.editorRef}
       style={{}}
       mode={props.editorMode}
-      theme={props.theme.palette.mode === 'dark' ? 'monokai' : 'dawn'}
+      theme={theme.palette.mode === 'dark' ? 'monokai' : 'dawn'}
       name="UNIQUE_ID_OF_DIV"
       width="100%"
       height="200px"
@@ -45,4 +45,4 @@ function Editor(props: {
   )
 }
 
-export default withTheme(Editor)
+export default Editor

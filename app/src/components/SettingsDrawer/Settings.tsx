@@ -71,7 +71,7 @@ const styles = (theme: Theme) => ({
   },
   author: {
     margin: 'auto 8px 8px auto',
-    color: theme.palette.text.hint,
+    color: theme.palette.text.secondary,
     cursor: 'pointer' as 'pointer',
   },
 })

@@ -129,7 +129,7 @@ const styles = (theme: Theme) => ({
     overflow: 'hidden' as 'hidden',
     whiteSpace: 'nowrap' as 'nowrap',
     textOverflow: 'ellipsis' as 'ellipsis',
-    color: theme.palette.text.hint,
+    color: theme.palette.text.secondary,
   },
   button: {
     marginTop: theme.spacing(3),

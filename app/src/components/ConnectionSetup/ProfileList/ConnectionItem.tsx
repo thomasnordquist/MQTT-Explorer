@@ -63,7 +63,7 @@ export const connectionItemStyle = (theme: Theme) => ({
     textOverflow: 'ellipsis' as 'ellipsis',
     whiteSpace: 'nowrap' as 'nowrap',
     overflow: 'hidden' as 'hidden',
-    color: theme.palette.text.hint,
+    color: theme.palette.text.secondary,
     fontSize: '0.7em',
   },
 })

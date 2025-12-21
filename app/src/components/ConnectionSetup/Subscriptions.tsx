@@ -14,7 +14,7 @@ import {
   Theme,
 } from '@mui/material'
 import { bindActionCreators } from 'redux'
-import { withStyles } from '@material-ui/styles'
+import { withStyles } from '@mui/styles'
 import { connect } from 'react-redux'
 
 function Subscriptions(props: {
