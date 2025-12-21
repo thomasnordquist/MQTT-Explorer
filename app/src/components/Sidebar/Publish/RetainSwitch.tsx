@@ -1,6 +1,6 @@
 import QosSelect from './QosPublishOption'
 import React from 'react'
-import { Checkbox, FormControlLabel, Tooltip } from '@material-ui/core'
+import { Checkbox, FormControlLabel, Tooltip } from '@mui/material'
 import { publishActions } from '../../../actions'
 import { bindActionCreators } from 'redux'
 import { AppState } from '../../../reducers'

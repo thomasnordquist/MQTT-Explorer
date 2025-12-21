@@ -4,11 +4,11 @@ import NumberFormatter from '../helper/NumberFormatter'
 import React, { memo, useCallback } from 'react'
 import TooltipComponent from './TooltipComponent'
 import { default as ReactResizeDetector } from 'react-resize-detector'
-import { emphasize } from '@material-ui/core/styles'
+import { emphasize } from '@mui/material/styles'
 import { mapCurveType } from './mapCurveType'
 import { PlotCurveTypes } from '../../reducers/Charts'
 import { Point, Tooltip } from './Model'
-import { Theme, withTheme } from '@material-ui/core'
+import { Theme, withTheme } from '@mui/material'
 import { useCustomXDomain } from './effects/useCustomXDomain'
 import { useCustomYDomain } from './effects/useCustomYDomain'
 import 'react-vis/dist/style.css'
@@ -51,7 +51,7 @@ export default withTheme(
     }, [])
 
     const paletteColor =
-      props.theme.palette.type === 'light' ? props.theme.palette.secondary.dark : props.theme.palette.primary.light
+      props.theme.palette.mode === 'light' ? props.theme.palette.secondary.dark : props.theme.palette.primary.light
     const color = props.color ? props.color : paletteColor
 
     const highlightSelectedPoint = useCallback(

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import Delete from '@material-ui/icons/Delete'
+import Delete from '@mui/icons-material/Delete'
 import { connectionManagerActions } from '../../actions'
 import { ConnectionOptions } from '../../model/ConnectionOptions'
 import {
@@ -12,7 +12,7 @@ import {
   TableBody,
   Paper,
   Theme,
-} from '@material-ui/core'
+} from '@mui/material'
 import { bindActionCreators } from 'redux'
 import { withStyles } from '@material-ui/styles'
 import { connect } from 'react-redux'

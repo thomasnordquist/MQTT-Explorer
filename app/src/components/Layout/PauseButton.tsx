@@ -1,13 +1,14 @@
 import * as React from 'react'
 import * as q from '../../../../backend/src/Model'
 import CustomIconButton from '../helper/CustomIconButton'
-import Pause from '@material-ui/icons/PauseCircleFilled'
-import Resume from '@material-ui/icons/PlayArrow'
+import Pause from '@mui/icons-material/PauseCircleFilled'
+import Resume from '@mui/icons-material/PlayArrow'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { treeActions } from '../../actions'
-import { withStyles, Theme } from '@material-ui/core/styles'
+import { withStyles } from '@mui/styles'
+import { Theme } from '@mui/material/styles'
 
 const styles = (theme: Theme) => ({
   icon: {

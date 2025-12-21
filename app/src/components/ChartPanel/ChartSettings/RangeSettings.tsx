@@ -1,6 +1,6 @@
 import React, { useCallback, useState, ChangeEvent, MouseEvent, useRef, useEffect, useMemo } from 'react'
 import { ChartParameters } from '../../../reducers/Charts'
-import { Menu, TextField, Typography } from '@material-ui/core'
+import { Menu, TextField, Typography } from '@mui/material'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { chartActions } from '../../../actions'

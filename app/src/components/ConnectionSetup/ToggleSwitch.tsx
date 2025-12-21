@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormControlLabel, Switch } from '@material-ui/core'
+import { FormControlLabel, Switch } from '@mui/material'
 
 export function ToggleSwitch(props: { value: boolean; classes: any; toggle: () => void; label: string }) {
   const { classes, value, toggle, label } = props

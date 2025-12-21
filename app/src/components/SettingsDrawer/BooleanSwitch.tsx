@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { InputLabel, Switch, Theme, Tooltip } from '@material-ui/core'
-import { withStyles } from '@material-ui/styles'
+import { InputLabel, Switch, Theme, Tooltip } from '@mui/material'
+import { withStyles } from '@mui/styles'
 const sha1 = require('sha1')
 
 function BooleanSwitch(props: { title: string; value: boolean; tooltip: string; action: () => void; classes: any }) {

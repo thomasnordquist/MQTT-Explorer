@@ -1,7 +1,8 @@
 import React from 'react'
 import * as q from '../../../../../backend/src/Model'
-import Button from '@material-ui/core/Button'
-import { withStyles, Theme } from '@material-ui/core/styles'
+import Button from '@mui/material/Button'
+import { withStyles } from '@mui/styles'
+import { Theme } from '@mui/material/styles'
 import { treeActions } from '../../../actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -39,8 +40,8 @@ class Topic extends React.PureComponent<Props, {}> {
         <Button
           onClick={() => this.props.actions.selectTopic(edge!.target)}
           size="small"
-          variant={theme.palette.type === 'light' ? 'contained' : undefined}
-          color={theme.palette.type === 'light' ? 'primary' : 'secondary'}
+          variant={theme.palette.mode === 'light' ? 'contained' : undefined}
+          color={theme.palette.mode === 'light' ? 'primary' : 'secondary'}
           className={this.props.classes.button}
           key={edge!.hash()}
         >

@@ -1,9 +1,10 @@
 import * as React from 'react'
 import PersistentStorage from '../utils/PersistentStorage'
-import SentimentDissatisfied from '@material-ui/icons/SentimentDissatisfied'
-import Warning from '@material-ui/icons/Warning'
-import { Theme, withStyles } from '@material-ui/core/styles'
-import { Button, Modal, Paper, Toolbar, Typography } from '@material-ui/core'
+import SentimentDissatisfied from '@mui/icons-material/SentimentDissatisfied'
+import Warning from '@mui/icons-material/Warning'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
+import { Button, Modal, Paper, Toolbar, Typography } from '@mui/material'
 
 interface State {
   error?: Error

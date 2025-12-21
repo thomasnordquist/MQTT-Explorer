@@ -1,6 +1,6 @@
 import * as q from '../../../../../backend/src/Model'
 import CustomIconButton from '../../helper/CustomIconButton'
-import Delete from '@material-ui/icons/Delete'
+import Delete from '@mui/icons-material/Delete'
 import React from 'react'
 
 export const TopicDeleteButton = (props: {

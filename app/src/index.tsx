@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import * as ReactDOM from 'react-dom/client'
 import App from './components/App'
 import Demo from './components/Demo'
 import reducers, { AppState } from './reducers'
@@ -7,7 +7,7 @@ import { thunk as reduxThunk } from 'redux-thunk'
 import { applyMiddleware, compose, createStore } from 'redux'
 import { batchDispatchMiddleware } from 'redux-batched-actions'
 import { connect, Provider } from 'react-redux'
-import { ThemeProvider } from '@material-ui/styles'
+import { ThemeProvider } from '@mui/material/styles'
 import './utils/tracking'
 import { themes } from './theme'
 import { BrowserAuthWrapper } from './components/BrowserAuthWrapper'
@@ -32,11 +32,11 @@ const mapStateToProps = (state: AppState) => {
 
 const Application = connect(mapStateToProps)(ApplicationRenderer)
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById('app')!)
+root.render(
   <Provider store={store}>
     <BrowserAuthWrapper>
       <Application />
     </BrowserAuthWrapper>
-  </Provider>,
-  document.getElementById('app')
+  </Provider>
 )

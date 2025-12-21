@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
-import { fade } from '@material-ui/core/styles'
-import { Fade, Grow, Paper, Popper, Theme, Typography, withTheme } from '@material-ui/core'
+import { fade } from '@mui/material/styles'
+import { Fade, Grow, Paper, Popper, Theme, Typography, withTheme } from '@mui/material'
 import { Tooltip } from './Model'
 
 function TooltipComponent(props: { tooltip?: Tooltip; theme: Theme }) {
@@ -26,7 +26,7 @@ function TooltipComponent(props: { tooltip?: Tooltip; theme: Theme }) {
                 padding: '4px',
                 marginTop: '-12px',
                 backgroundColor: fade(
-                  props.theme.palette.type === 'light'
+                  props.theme.palette.mode === 'light'
                     ? props.theme.palette.background.paper
                     : props.theme.palette.background.default,
                   0.7

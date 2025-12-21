@@ -1,13 +1,14 @@
 import * as q from '../../../../backend/src/Model'
 import * as React from 'react'
-import ShowChart from '@material-ui/icons/ShowChart'
+import ShowChart from '@mui/icons-material/ShowChart'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { chartActions } from '../../actions'
 import { ChartParameters } from '../../reducers/Charts'
 import { ChartWithTreeNode } from './ChartWithTreeNode'
 import { connect } from 'react-redux'
-import { Grid, Theme, Typography, withStyles } from '@material-ui/core'
+import { Grid, Typography, withStyles } from '@mui/styles'
+import { Theme } from '@mui/material/styles'
 import { List } from 'immutable'
 const { TransitionGroup, CSSTransition } = require('react-transition-group/esm')
 

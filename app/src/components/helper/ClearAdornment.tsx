@@ -1,7 +1,7 @@
 import * as React from 'react'
-import Clear from '@material-ui/icons/Clear'
-import { IconButton, Theme } from '@material-ui/core'
-import { withTheme } from '@material-ui/core/styles'
+import Clear from '@mui/icons-material/Clear'
+import { IconButton, Theme } from '@mui/material'
+import { withTheme } from '@mui/material/styles'
 
 interface Props {
   value?: string

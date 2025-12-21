@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { default as AceEditor } from 'react-ace'
-import { Theme, withTheme } from '@material-ui/core'
+import { Theme, withTheme } from '@mui/material'
 import 'ace-builds'
 import 'ace-builds/webpack-resolver'
 import 'ace-builds/src-noconflict/mode-json'
@@ -28,7 +28,7 @@ function Editor(props: {
       ref={props.editorRef}
       style={{}}
       mode={props.editorMode}
-      theme={props.theme.palette.type === 'dark' ? 'monokai' : 'dawn'}
+      theme={props.theme.palette.mode === 'dark' ? 'monokai' : 'dawn'}
       name="UNIQUE_ID_OF_DIV"
       width="100%"
       height="200px"

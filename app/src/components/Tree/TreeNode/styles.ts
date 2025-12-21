@@ -1,5 +1,5 @@
-import { blueGrey } from '@material-ui/core/colors'
-import { Theme } from '@material-ui/core/styles'
+import { blueGrey } from '@mui/material/colors'
+import { Theme } from '@mui/material/styles'
 
 export const styles = (theme: Theme) => {
   return {
@@ -37,7 +37,7 @@ export const styles = (theme: Theme) => {
       marginLeft: theme.spacing(1.5),
     },
     selected: {
-      backgroundColor: (theme.palette.type === 'light' ? blueGrey[300] : theme.palette.primary.main) + ' !important',
+      backgroundColor: (theme.palette.mode === 'light' ? blueGrey[300] : theme.palette.primary.main) + ' !important',
     },
     hover: {},
     title: {
@@ -49,7 +49,7 @@ export const styles = (theme: Theme) => {
       padding: '1px 4px 0 4px',
       margin: '1px 0px',
       '&:hover': {
-        backgroundColor: theme.palette.type === 'light' ? blueGrey[100] : theme.palette.primary.light,
+        backgroundColor: theme.palette.mode === 'light' ? blueGrey[100] : theme.palette.primary.light,
       },
     },
   }

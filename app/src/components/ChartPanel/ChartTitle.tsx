@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { ChartParameters } from '../../reducers/Charts'
-import { Typography, Theme, withStyles } from '@material-ui/core'
+import { Typography, withStyles } from '@mui/styles'
+import { Theme } from '@mui/material/styles'
 
 function ChartTitle(props: { parameters: ChartParameters; classes: any }) {
   const { classes, parameters } = props

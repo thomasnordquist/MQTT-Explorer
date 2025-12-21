@@ -1,13 +1,14 @@
 import * as React from 'react'
 import CertificateFileSelection from './CertificateFileSelection'
 import BrowserCertificateFileSelection from './BrowserCertificateFileSelection'
-import Undo from '@material-ui/icons/Undo'
+import Undo from '@mui/icons-material/Undo'
 import { bindActionCreators } from 'redux'
-import { Button, Grid } from '@material-ui/core'
+import { Button, Grid } from '@mui/material'
 import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
 import { ConnectionOptions } from '../../model/ConnectionOptions'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 
 // Check if we're in browser mode
 const isBrowserMode =

@@ -1,11 +1,12 @@
 import * as React from 'react'
-import DeviceHubOutlined from '@material-ui/icons/DeviceHubOutlined'
+import DeviceHubOutlined from '@mui/icons-material/DeviceHubOutlined'
 import { AppState } from '../../reducers'
 import { connect } from 'react-redux'
 import { ConnectionHealth } from '../../reducers/Connection'
-import { green, orange, red } from '@material-ui/core/colors'
-import { withStyles, Theme } from '@material-ui/core/styles'
-import { Tooltip } from '@material-ui/core'
+import { green, orange, red } from '@mui/material/colors'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
+import { Tooltip } from '@mui/material'
 
 const styles = (theme: Theme) => ({
   offline: {
