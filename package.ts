@@ -120,10 +120,12 @@ async function buildWithOptions(options: builder.CliOptions, buildInfo: BuildInf
 
     // Set different entitlements for MAS vs DMG builds
     if (buildInfo.package === 'mas') {
+      // MAS builds use the same sandboxed entitlements for parent and child processes
       dotProp.set(packageJson, 'build.mac.entitlements', 'res/entitlements.mas.plist')
       dotProp.set(packageJson, 'build.mac.entitlementsInherit', 'res/entitlements.mas.plist')
     } else {
       // DMG builds use different entitlements for notarization
+      // Parent app has network permissions, child processes have minimal permissions
       dotProp.set(packageJson, 'build.mac.entitlements', 'res/entitlements.mac.plist')
       dotProp.set(packageJson, 'build.mac.entitlementsInherit', 'res/entitlements.mac.inherit.plist')
     }
