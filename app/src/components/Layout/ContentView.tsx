@@ -1,6 +1,6 @@
 import * as React from 'react'
 import ChartPanel from '../ChartPanel'
-import ReactSplitPane from 'react-split-pane'
+import ReactSplitPaneImport from 'react-split-pane'
 import Tree from '../Tree'
 import { AppState } from '../../reducers'
 import { ChartParameters } from '../../reducers/Charts'
@@ -8,6 +8,9 @@ import { connect } from 'react-redux'
 import { List } from 'immutable'
 import { Sidebar } from '../Sidebar'
 import { useResizeDetector } from 'react-resize-detector'
+
+// Type cast to any to work around React 18 compatibility issues with react-split-pane 0.1.x
+const ReactSplitPane = ReactSplitPaneImport as any
 
 interface Props {
   heightProperty: any
