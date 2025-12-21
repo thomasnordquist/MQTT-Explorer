@@ -64,8 +64,10 @@ docker run -d \
   -e MQTT_EXPLORER_USERNAME=admin \
   -e MQTT_EXPLORER_PASSWORD=your_secure_password \
   -v mqtt-explorer-data:/app/data \
-  ghcr.io/thomasnordquist/mqtt-explorer-browser:latest
+  ghcr.io/thomasnordquist/mqtt-explorer:latest
 ```
+
+Supports multiple platforms: amd64, arm64 (Raspberry Pi 3/4/5), arm/v7 (Raspberry Pi 2/3).
 
 For complete Docker documentation, see [DOCKER.md](DOCKER.md).
 

@@ -19,9 +19,12 @@ This workflow builds and publishes a Docker image for the browser mode.
 - Schedule: Runs every two weeks (1st and 15th of each month at 2:00 AM UTC)
 - Manual trigger via workflow_dispatch
 
-**Platforms**: linux/amd64
+**Platforms**: 
+- linux/amd64 (x86-64)
+- linux/arm64 (Raspberry Pi 3/4/5, Apple Silicon)
+- linux/arm/v7 (Raspberry Pi 2/3)
 
-**Image Registry**: GitHub Container Registry (ghcr.io)
+**Image Registry**: GitHub Container Registry (ghcr.io/thomasnordquist/mqtt-explorer)
 
 **Tags**:
 - `latest` - Latest build from master branch
@@ -41,7 +44,8 @@ This workflow builds and publishes a Docker image for the browser mode.
 
 **Image Features**:
 - Multi-stage build for minimal size
-- Alpine Linux base (~200MB final image)
+- Alpine Linux base with Node.js 24 (~200MB final image)
+- Multi-platform support (amd64, arm64, arm/v7)
 - Non-root user (UID 1001)
 - Health check endpoint
 - Proper signal handling with dumb-init
@@ -136,15 +140,18 @@ Example:
 ### Docker Browser Mode
 
 ```bash
-# Build the image locally
-docker build -f Dockerfile.browser -t mqtt-explorer-browser:local .
+# Build the image locally (for your platform)
+docker build -f Dockerfile.browser -t mqtt-explorer:local .
+
+# Build for specific platform (e.g., Raspberry Pi)
+docker buildx build --platform linux/arm64 -f Dockerfile.browser -t mqtt-explorer:local-arm64 .
 
 # Run the container
 docker run -d \
   -p 3000:3000 \
   -e MQTT_EXPLORER_USERNAME=test \
   -e MQTT_EXPLORER_PASSWORD=test123 \
-  mqtt-explorer-browser:local
+  mqtt-explorer:local
 
 # Test the server
 curl http://localhost:3000

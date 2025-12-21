@@ -9,7 +9,7 @@ Docker image for running MQTT Explorer in browser mode.
 Pull and run the latest image from GitHub Container Registry:
 
 ```bash
-docker pull ghcr.io/thomasnordquist/mqtt-explorer-browser:latest
+docker pull ghcr.io/thomasnordquist/mqtt-explorer:latest
 
 docker run -d \
   -p 3000:3000 \
@@ -17,7 +17,7 @@ docker run -d \
   -e MQTT_EXPLORER_PASSWORD=your_secure_password \
   -v mqtt-explorer-data:/app/data \
   --name mqtt-explorer \
-  ghcr.io/thomasnordquist/mqtt-explorer-browser:latest
+  ghcr.io/thomasnordquist/mqtt-explorer:latest
 ```
 
 Access the application at `http://localhost:3000`
@@ -31,7 +31,7 @@ version: '3.8'
 
 services:
   mqtt-explorer:
-    image: ghcr.io/thomasnordquist/mqtt-explorer-browser:latest
+    image: ghcr.io/thomasnordquist/mqtt-explorer:latest
     ports:
       - "3000:3000"
     environment:
@@ -175,6 +175,13 @@ docker run -v /path/to/host/data:/app/data ...
 - `master-<sha>` - Specific commit from master
 - `beta-<sha>` - Specific commit from beta
 - `release-<sha>` - Specific commit from release
+
+## Supported Platforms
+
+The Docker image is built for multiple architectures:
+- `linux/amd64` - x86-64 (standard PCs, servers)
+- `linux/arm64` - ARM 64-bit (Raspberry Pi 3/4/5, Apple Silicon)
+- `linux/arm/v7` - ARM 32-bit (Raspberry Pi 2/3)
 
 ## License
 

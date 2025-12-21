@@ -1,6 +1,6 @@
 # Multi-stage build for MQTT Explorer Browser Mode
 # Stage 1: Build
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /build
 
@@ -19,7 +19,7 @@ COPY . .
 RUN yarn build:server
 
 # Stage 2: Production
-FROM node:20-alpine
+FROM node:24-alpine
 
 # Install dumb-init to handle signals properly
 RUN apk add --no-cache dumb-init
