@@ -1,4 +1,4 @@
-const { crashReporter } = require('electron')
+import { crashReporter } from 'electron'
 
 export function registerCrashReporter() {
   crashReporter.start({

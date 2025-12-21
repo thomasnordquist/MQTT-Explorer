@@ -1,17 +1,18 @@
-import compareVersions from 'compare-versions'
+import { compareVersions } from 'compare-versions'
 import electron from 'electron'
 import React from 'react'
 import axios from 'axios'
-import Close from '@material-ui/icons/Close'
-import CloudDownload from '@material-ui/icons/CloudDownload'
+import Close from '@mui/icons-material/Close'
+import CloudDownload from '@mui/icons-material/CloudDownload'
 import { AppState } from '../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { green } from '@material-ui/core/colors'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { green } from '@mui/material/colors'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 import { updateNotifierActions } from '../actions'
 
-import { Button, IconButton, Modal, Paper, Snackbar, SnackbarContent, Typography } from '@material-ui/core'
+import { Button, IconButton, Modal, Paper, Snackbar, SnackbarContent, Typography } from '@mui/material'
 import { rendererRpc, getAppVersion } from '../../../events'
 
 interface Props {
@@ -83,7 +84,7 @@ class UpdateNotifier extends React.PureComponent<Props, State> {
     return res.data as Array<GithubRelease>
   }
 
-  private onCloseNotification = (event: React.SyntheticEvent<any>, reason: string) => {
+  private onCloseNotification = (event: any, reason: any) => {
     if (reason === 'clickaway') {
       return
     }

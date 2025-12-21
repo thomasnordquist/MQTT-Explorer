@@ -1,12 +1,13 @@
 import React, { useCallback, useState, useRef } from 'react'
 import ClearAdornment from '../helper/ClearAdornment'
-import Search from '@material-ui/icons/Search'
+import Search from '@mui/icons-material/Search'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { InputBase } from '@material-ui/core'
+import { InputBase } from '@mui/material'
 import { settingsActions } from '../../actions'
-import { fade, Theme, withStyles } from '@material-ui/core/styles'
+import { alpha as fade, Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 import { useGlobalKeyEventHandler } from '../../effects/useGlobalKeyEventHandler'
 import { KeyCodes } from '../../utils/KeyCodes'
 
@@ -142,4 +143,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SearchBar))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SearchBar) as any)

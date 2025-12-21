@@ -1,5 +1,5 @@
-import { createMuiTheme } from '@material-ui/core'
-import { amber } from '@material-ui/core/colors'
+import { createTheme } from '@mui/material/styles'
+import { amber } from '@mui/material/colors'
 
 const baseTheme = {
   typography: {
@@ -12,17 +12,17 @@ const baseTheme = {
   },
 }
 
-const darkTheme = createMuiTheme({
+const darkTheme = createTheme({
   ...(baseTheme as any),
   palette: {
-    type: 'dark',
+    mode: 'dark',
   },
 })
 
-const lightTheme = createMuiTheme({
+const lightTheme = createTheme({
   ...(baseTheme as any),
   palette: {
-    type: 'light',
+    mode: 'light',
     background: {
       default: '#fafafa',
     },

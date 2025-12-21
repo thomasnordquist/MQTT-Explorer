@@ -3,9 +3,10 @@ import React, { useMemo } from 'react'
 import { AppState } from '../../reducers'
 import { Base64Message } from '../../../../backend/src/Model/Base64Message'
 import { connect } from 'react-redux'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 import { TopicViewModel } from '../../model/TopicViewModel'
-import { Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
 import { usePollingToFetchTreeNode } from '../helper/usePollingToFetchTreeNode'
 import { useUpdateComponentWhenNodeUpdates } from '../helper/useUpdateComponentWhenNodeUpdates'
 const abbreviate = require('number-abbreviate')
@@ -19,7 +20,7 @@ const styles = (theme: Theme) => ({
   container: {
     width: '100%',
     height: '224px',
-    backgroundColor: theme.palette.type === 'dark' ? 'rebeccapurple' : '#ebebeb',
+    backgroundColor: theme.palette.mode === 'dark' ? 'rebeccapurple' : '#ebebeb',
     marginBottom: 0,
     padding: '8px',
   },

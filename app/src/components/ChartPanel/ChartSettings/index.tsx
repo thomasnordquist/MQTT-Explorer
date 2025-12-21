@@ -1,17 +1,17 @@
-import BarChart from '@material-ui/icons/BarChart'
-import Clear from '@material-ui/icons/Refresh'
-import ColorLens from '@material-ui/icons/ColorLens'
+import BarChart from '@mui/icons-material/BarChart'
+import Clear from '@mui/icons-material/Refresh'
+import ColorLens from '@mui/icons-material/ColorLens'
 import ColorSettings from './ColorSettings'
 import InterpolationSettings from './InterpolationSettings'
 import MoveUp from './MoveUp'
-import MultilineChart from '@material-ui/icons/MultilineChart'
+import MultilineChart from '@mui/icons-material/MultilineChart'
 import RangeSettings from './RangeSettings'
 import React, { memo } from 'react'
 import Size from './Size'
-import Sort from '@material-ui/icons/Sort'
+import Sort from '@mui/icons-material/Sort'
 import TimeRangeSettings from './TimeRangeSettings'
 import { ChartParameters } from '../../../reducers/Charts'
-import { Menu, MenuItem, ListItemIcon, Typography } from '@material-ui/core'
+import { Menu, MenuItem, ListItemIcon, Typography } from '@mui/material'
 
 function ChartSettings(props: {
   open: boolean

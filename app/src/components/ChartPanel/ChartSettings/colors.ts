@@ -12,7 +12,7 @@ import {
   yellow,
   brown,
   blueGrey,
-} from '@material-ui/core/colors'
+} from '@mui/material/colors'
 
 export function colors() {
   function colorToInt(color: string): [number, number, number] {

@@ -1,8 +1,8 @@
 import { CodeBlockColors, CodeBlockColorsBraceMonokai } from '../CodeBlockColors'
-import { Theme } from '@material-ui/core'
+import { Theme } from '@mui/material'
 
 export const style = (theme: Theme) => {
-  const codeBlockColors = theme.palette.type === 'light' ? CodeBlockColors : CodeBlockColorsBraceMonokai
+  const codeBlockColors = theme.palette.mode === 'light' ? CodeBlockColors : CodeBlockColorsBraceMonokai
   const codeBaseStyle = {
     font: "12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
     display: 'inline-grid' as 'inline-grid',

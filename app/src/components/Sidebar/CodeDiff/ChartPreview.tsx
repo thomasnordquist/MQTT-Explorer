@@ -1,11 +1,11 @@
 import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
-import ShowChart from '@material-ui/icons/ShowChart'
+import ShowChart from '@mui/icons-material/ShowChart'
 import TopicPlot from '../../TopicPlot'
 import { bindActionCreators } from 'redux'
 import { chartActions } from '../../../actions'
 import { connect } from 'react-redux'
-import { Fade, Paper, Popper, Tooltip } from '@material-ui/core'
+import { Fade, Paper, Popper, Tooltip } from '@mui/material'
 import { JsonPropertyLocation } from '../../../../../backend/src/JsonAstParser'
 
 interface Props {

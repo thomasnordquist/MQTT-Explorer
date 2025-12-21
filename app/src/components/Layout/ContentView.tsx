@@ -7,7 +7,7 @@ import { ChartParameters } from '../../reducers/Charts'
 import { connect } from 'react-redux'
 import { List } from 'immutable'
 import { Sidebar } from '../Sidebar'
-import ReactResizeDetector from 'react-resize-detector'
+import { useResizeDetector } from 'react-resize-detector'
 
 interface Props {
   heightProperty: any
@@ -21,11 +21,23 @@ function ContentView(props: Props) {
   const [sidebarWidth, setSidebarWidth] = React.useState<string | number>('40%')
   const [detectedHeight, setDetectedHeight] = React.useState(0)
   const [detectedSidebarWidth, setDetectedSidebarWidth] = React.useState(0)
-  const detectSize = React.useCallback((width, newHeight) => {
+  
+  const { height: resizeHeight, ref: heightRef } = useResizeDetector()
+  const { width: resizeWidth, ref: widthRef } = useResizeDetector()
+  
+  React.useEffect(() => {
+    if (resizeHeight) setDetectedHeight(resizeHeight)
+  }, [resizeHeight])
+  
+  React.useEffect(() => {
+    if (resizeWidth) setDetectedSidebarWidth(resizeWidth)
+  }, [resizeWidth])
+  
+  const detectSize = React.useCallback((width: any, newHeight: any) => {
     setDetectedHeight(newHeight)
   }, [])
 
-  const detectSidebarSize = React.useCallback(width => {
+  const detectSidebarSize = React.useCallback((width: any) => {
     setDetectedSidebarWidth(width)
   }, [])
 
@@ -85,15 +97,13 @@ function ContentView(props: Props) {
             >
               <Tree />
               {/** Passing height constraints via flex options down */}
-              <div style={{ flex: 1, display: 'flex', height: '100%', width: '100%' }}>
+              <div ref={heightRef} style={{ flex: 1, display: 'flex', height: '100%', width: '100%' }}>
                 {/** Resize detector must not be in the scroll zone, it needs to detect actual available size */}
-                <ReactResizeDetector handleHeight={true} onResize={detectSize} />
                 <ChartPanel />
               </div>
             </ReactSplitPane>
           </span>
-          <div style={{ height: '100%' }}>
-            <ReactResizeDetector handleWidth={true} onResize={detectSidebarSize} />
+          <div ref={widthRef} style={{ height: '100%' }}>
             <div
               className={props.paneDefaults}
               style={{ minWidth: '250px', height: '100%', overflowY: 'auto', overflowX: 'hidden' }}

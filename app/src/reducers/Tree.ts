@@ -52,7 +52,7 @@ const setPaused =
   }
 
 const actions: {
-  [s: string]: (state: TreeState, action: ReduxAction) => TreeState
+  [s: string]: any
 } = {
   TREE_SHOW_TREE: showTree,
   TREE_SELECT_TOPIC: selectTopic,

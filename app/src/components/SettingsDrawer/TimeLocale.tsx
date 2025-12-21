@@ -3,9 +3,9 @@ import DateFormatter from '../helper/DateFormatter'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Input, InputLabel, MenuItem, Select, Theme } from '@material-ui/core'
+import { Input, InputLabel, MenuItem, Select, Theme } from '@mui/material'
 import { settingsActions } from '../../actions'
-import { withStyles } from '@material-ui/styles'
+import { withStyles } from '@mui/styles'
 
 function importAll(r: any) {
   r.keys().forEach(r)
@@ -38,7 +38,7 @@ function TimeLocaleSettings(props: Props) {
     </MenuItem>
   ))
 
-  function updateLocale(e: React.ChangeEvent<{ value: unknown }>) {
+  function updateLocale(e: any) {
     const locale = e.target.value ? String(e.target.value) : ''
     actions.settings.setTimeLocale(locale)
   }
