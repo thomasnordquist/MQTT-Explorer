@@ -146,6 +146,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
+          cache: 'yarn'
 
       - name: Install test dependencies
         run: yarn install --frozen-lockfile
@@ -154,14 +155,16 @@ jobs:
         run: |
           docker run -d \
             --name mqtt-explorer-browser-test \
-            --network host \
+            -p 3001:3000 \
             -e MQTT_EXPLORER_USERNAME=test \
             -e MQTT_EXPLORER_PASSWORD=test123 \
             -e PORT=3000 \
             mqtt-explorer:test
           
           # Wait for server to be ready
-          timeout 60 bash -c 'until curl -f http://localhost:3000; do sleep 1; done'
+          echo "Waiting for Docker container to be ready..."
+          timeout 60 bash -c 'until curl -f http://localhost:3001; do sleep 1; done'
+          echo "Docker container is ready"
 
       - name: Run browser test suite
         run: |
