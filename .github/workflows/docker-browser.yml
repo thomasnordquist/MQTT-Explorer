@@ -71,7 +71,7 @@ jobs:
           platforms: linux/amd64
           push: false
           load: true
-          tags: mqtt-explorer-browser:test
+          tags: mqtt-explorer:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -84,7 +84,7 @@ jobs:
             -e MQTT_EXPLORER_USERNAME=test \
             -e MQTT_EXPLORER_PASSWORD=test123 \
             -e PORT=3000 \
-            mqtt-explorer-browser:test
+            mqtt-explorer:test
 
           # Wait for server to be ready (max 60 seconds)
           echo "Waiting for server to start..."

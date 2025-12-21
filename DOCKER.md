@@ -85,7 +85,7 @@ docker run -v mqtt-explorer-data:/app/data ...
 Build the Docker image locally:
 
 ```bash
-docker build -f Dockerfile.browser -t mqtt-explorer-browser:local .
+docker build -f Dockerfile.browser -t mqtt-explorer:local .
 ```
 
 Run the locally built image:
@@ -95,7 +95,7 @@ docker run -d \
   -p 3000:3000 \
   -e MQTT_EXPLORER_USERNAME=admin \
   -e MQTT_EXPLORER_PASSWORD=secret \
-  mqtt-explorer-browser:local
+  mqtt-explorer:local
 ```
 
 ## Health Check
