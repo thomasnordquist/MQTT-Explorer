@@ -142,6 +142,42 @@ jobs:
           docker stop mqtt-explorer-test || true
           docker rm mqtt-explorer-test || true
 
+      - name: Setup Node.js for testing
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install test dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Start Docker container for browser tests
+        run: |
+          docker run -d \
+            --name mqtt-explorer-browser-test \
+            --network host \
+            -e MQTT_EXPLORER_USERNAME=test \
+            -e MQTT_EXPLORER_PASSWORD=test123 \
+            -e PORT=3000 \
+            mqtt-explorer:test
+          
+          # Wait for server to be ready
+          timeout 60 bash -c 'until curl -f http://localhost:3000; do sleep 1; done'
+
+      - name: Run browser test suite
+        run: |
+          yarn test:app
+          yarn test:backend
+        env:
+          MQTT_EXPLORER_USERNAME: test
+          MQTT_EXPLORER_PASSWORD: test123
+
+      - name: Clean up browser test container
+        if: always()
+        run: |
+          docker logs mqtt-explorer-browser-test || true
+          docker stop mqtt-explorer-browser-test || true
+          docker rm mqtt-explorer-browser-test || true
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
