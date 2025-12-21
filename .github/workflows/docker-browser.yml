@@ -30,6 +30,18 @@ jobs:
       packages: write
       id-token: write
 
+    services:
+      # MQTT broker for testing
+      mosquitto:
+        image: eclipse-mosquitto:2
+        ports:
+          - 1883:1883
+        options: >-
+          --health-cmd "mosquitto_sub -t '$SYS/#' -C 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -145,11 +157,20 @@ jobs:
           echo "**Image size**: ${SIZE_MB} MB (${SIZE_BYTES} bytes)" >> $GITHUB_STEP_SUMMARY
           echo "Image size: ${SIZE_MB} MB"
 
-      - name: Start Docker container for frontend tests
+      - name: Setup Node.js for browser tests
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'yarn'
+
+      - name: Install dependencies for browser tests
+        run: yarn install --frozen-lockfile
+
+      - name: Start Docker container for browser tests
         run: |
           docker run -d \
-            --name mqtt-explorer-frontend-test \
-            -p 3001:3000 \
+            --name mqtt-explorer-browser-test \
+            --network host \
             -e MQTT_EXPLORER_USERNAME=test \
             -e MQTT_EXPLORER_PASSWORD=test123 \
             -e PORT=3000 \
@@ -157,45 +178,23 @@ jobs:
           
           # Wait for server to be ready
           echo "Waiting for Docker container to be ready..."
-          timeout 60 bash -c 'until curl -f http://localhost:3001; do sleep 1; done'
+          timeout 60 bash -c 'until curl -f http://localhost:3000; do sleep 1; done'
           echo "Docker container is ready"
 
-      - name: Test frontend against running server
+      - name: Run browser test suite
         run: |
-          # Test that the HTML is served correctly
-          echo "Testing frontend is served..."
-          response=$(curl -s http://localhost:3001)
-          
-          # Check for key frontend elements
-          if echo "$response" | grep -q "MQTT Explorer"; then
-            echo "✓ Page title found"
-          else
-            echo "✗ Page title not found"
-            exit 1
-          fi
-          
-          if echo "$response" | grep -q "app.bundle.js"; then
-            echo "✓ App bundle script found"
-          else
-            echo "✗ App bundle script not found"
-            exit 1
-          fi
-          
-          if echo "$response" | grep -q "vendors.bundle.js"; then
-            echo "✓ Vendor bundle script found"
-          else
-            echo "✗ Vendor bundle script not found"
-            exit 1
-          fi
-          
-          echo "✓ All frontend tests passed"
+          yarn test:browser
+        env:
+          MQTT_EXPLORER_USERNAME: test
+          MQTT_EXPLORER_PASSWORD: test123
+          BROWSER_MODE_URL: http://localhost:3000
 
-      - name: Clean up frontend test container
+      - name: Clean up browser test container
         if: always()
         run: |
-          docker logs mqtt-explorer-frontend-test || true
-          docker stop mqtt-explorer-frontend-test || true
-          docker rm mqtt-explorer-frontend-test || true
+          docker logs mqtt-explorer-browser-test || true
+          docker stop mqtt-explorer-browser-test || true
+          docker rm mqtt-explorer-browser-test || true
 
       - name: Build and push Docker image
         id: build

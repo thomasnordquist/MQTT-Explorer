@@ -13,6 +13,8 @@
     "test": "yarn test:app && yarn test:backend",
     "test:app": "cd app && yarn test",
     "test:backend": "cd backend && yarn test",
+    "test:electron": "tsc && mocha --require source-map-support/register dist/src/spec/ui-tests.spec.js",
+    "test:browser": "tsc && mocha --require source-map-support/register dist/src/spec/ui-tests.spec.js",
     "test:ui": "tsc && mocha --require source-map-support/register dist/src/spec/ui-tests.spec.js",
     "test:mcp": "tsc && node dist/src/spec/testMcpIntrospection.js",
     "install": "cd app && yarn && cd ..",
