@@ -1,14 +1,15 @@
 import * as React from 'react'
 import BooleanSwitch from './BooleanSwitch'
 import BrokerStatistics from './BrokerStatistics'
-import ChevronRight from '@material-ui/icons/ChevronRight'
+import ChevronRight from '@mui/icons-material/ChevronRight'
 import TimeLocale from './TimeLocale'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { globalActions, settingsActions } from '../../actions'
 import { shell } from 'electron'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 import { TopicOrder } from '../../reducers/Settings'
 
 import {
@@ -21,7 +22,7 @@ import {
   Select,
   Typography,
   Tooltip,
-} from '@material-ui/core'
+} from '@mui/material'
 
 export const autoExpandLimitSet = [
   {
@@ -70,7 +71,7 @@ const styles = (theme: Theme) => ({
   },
   author: {
     margin: 'auto 8px 8px auto',
-    color: theme.palette.text.hint,
+    color: theme.palette.text.secondary,
     cursor: 'pointer' as 'pointer',
   },
 })

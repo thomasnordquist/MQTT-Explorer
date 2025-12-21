@@ -74,16 +74,16 @@ export async function expandTopic(path: string, browser: Page) {
       if (nextTopicName) {
         console.log(`Waiting for children of '${topicName}' to render...`)
         await new Promise(resolve => setTimeout(resolve, CHILD_RENDER_DELAY_MS))
-        
+
         // Check if the next topic is now visible
         const nextSelector = `span[data-test-topic='${nextTopicName}']`
         const nextMatches = browser.locator(nextSelector)
         const nextCount = await nextMatches.count()
         console.log(`After expanding '${topicName}', found ${nextCount} elements for next topic '${nextTopicName}'`)
-        
+
         // If we don't find the next topic, wait a bit longer
         if (nextCount === 0) {
-          console.log(`No children found yet, waiting additional time...`)
+          console.log('No children found yet, waiting additional time...')
           await new Promise(resolve => setTimeout(resolve, TREE_EXPANSION_DELAY_MS))
         }
       }

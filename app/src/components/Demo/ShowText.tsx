@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Theme, withStyles } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 import Key from './Key'
 
 interface State {

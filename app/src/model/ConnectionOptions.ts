@@ -1,7 +1,7 @@
 import { MqttOptions } from '../../../backend/src/DataSource'
 import { v4 } from 'uuid'
 import { Subscription } from '../../../backend/src/DataSource/MqttSource'
-const sha1 = require('sha1')
+import sha1 from 'sha1'
 
 export interface CertificateParameters {
   name: string

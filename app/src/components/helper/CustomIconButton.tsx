@@ -1,12 +1,14 @@
 import * as React from 'react'
-import { IconButton, Tooltip } from '@material-ui/core'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { IconButton, Tooltip } from '@mui/material'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 
 interface Props {
   onClick: any
   tooltip: string
   classes: any
   style?: React.CSSProperties
+  children?: React.ReactNode
 }
 
 const styles = (theme: Theme) => ({

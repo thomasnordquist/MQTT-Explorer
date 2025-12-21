@@ -1,18 +1,19 @@
 import * as React from 'react'
 import CertificateFileSelection from './CertificateFileSelection'
 import BrowserCertificateFileSelection from './BrowserCertificateFileSelection'
-import Undo from '@material-ui/icons/Undo'
+import Undo from '@mui/icons-material/Undo'
 import { bindActionCreators } from 'redux'
-import { Button, Grid } from '@material-ui/core'
+import { Button, Grid } from '@mui/material'
 import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
 import { ConnectionOptions } from '../../model/ConnectionOptions'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 
 // Check if we're in browser mode
 const isBrowserMode =
   typeof window !== 'undefined' && (typeof process === 'undefined' || process.env?.BROWSER_MODE === 'true')
-const CertSelector = isBrowserMode ? BrowserCertificateFileSelection : CertificateFileSelection
+const CertSelector: any = isBrowserMode ? BrowserCertificateFileSelection : CertificateFileSelection
 
 interface Props {
   connection: ConnectionOptions
@@ -110,4 +111,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(undefined, mapDispatchToProps)(withStyles(styles)(Certificates))
+export default connect(undefined, mapDispatchToProps)(withStyles(styles)(Certificates) as any)

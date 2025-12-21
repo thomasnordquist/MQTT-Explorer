@@ -1,10 +1,10 @@
-#!./node_modules/.bin/ts-node
+#!/usr/bin/env tsx
 import * as fs from 'fs'
 import { exec } from './util'
 import { Scene, SceneNames } from '../src/spec/SceneBuilder'
 
-// tslint:disable-next-line
-const concat = require('ffmpeg-concat')
+// @ts-ignore - ffmpeg-concat doesn't have type definitions
+import concat from 'ffmpeg-concat'
 
 async function cutScenes(scenes: Array<Scene>) {
   for (const scene of scenes) {
