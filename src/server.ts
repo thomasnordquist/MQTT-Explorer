@@ -87,10 +87,10 @@ async function startServer() {
       },
       hsts: isProduction
         ? {
-          maxAge: 31536000,
-          includeSubDomains: true,
-          preload: true,
-        }
+            maxAge: 31536000,
+            includeSubDomains: true,
+            preload: true,
+          }
         : false,
     })
   )
@@ -107,17 +107,18 @@ async function startServer() {
   const server = http.createServer(app)
 
   // Determine allowed origins for CORS
-  const corsOrigin = ALLOWED_ORIGINS[0] === '*' && isProduction
-    ? false // In production, require explicit origins
-    : ALLOWED_ORIGINS[0] === '*'
-    ? '*'
-    : (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-      if (!origin || ALLOWED_ORIGINS.includes(origin)) {
-          callback(null, true)
-        } else {
-          callback(new Error('Not allowed by CORS'))
-        }
-    }
+  const corsOrigin =
+    ALLOWED_ORIGINS[0] === '*' && isProduction
+      ? false // In production, require explicit origins
+      : ALLOWED_ORIGINS[0] === '*'
+        ? '*'
+        : (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+            if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+              callback(null, true)
+            } else {
+              callback(new Error('Not allowed by CORS'))
+            }
+          }
 
   const io = new Server(server, {
     cors: {

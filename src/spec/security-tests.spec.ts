@@ -18,7 +18,7 @@ describe('Security Tests', () => {
         const basename = path.basename(testCase)
         // Our sanitization should reject these patterns
         const hasDotDot = basename.includes('..')
-        // Note: path.basename on Windows paths may keep .. 
+        // Note: path.basename on Windows paths may keep ..
         // This is why we need additional sanitization beyond basename
         expect(testCase).to.include('..') // Original path should contain ..
       })
@@ -44,12 +44,7 @@ describe('Security Tests', () => {
     })
 
     it('should allow safe filenames', () => {
-      const safeFilenames = [
-        'document.txt',
-        'certificate.pem',
-        'config.json',
-        'data-file-123.csv',
-      ]
+      const safeFilenames = ['document.txt', 'certificate.pem', 'config.json', 'data-file-123.csv']
 
       safeFilenames.forEach(filename => {
         expect(filename).to.match(/^[a-zA-Z0-9._-]+$/)
@@ -218,7 +213,7 @@ describe('Security Tests', () => {
     it('should handle file operation errors safely', () => {
       const errorMessages = {
         generic: 'Failed to write file',
-        detailed: 'ENOENT: no such file or directory, open \'/etc/passwd\'',
+        detailed: "ENOENT: no such file or directory, open '/etc/passwd'",
       }
 
       // Production should use generic messages
@@ -233,11 +228,7 @@ describe('Security Tests', () => {
 
   describe('Data Sanitization', () => {
     it('should sanitize path separators', () => {
-      const maliciousPaths = [
-        'file/path/traversal.txt',
-        'file\\windows\\path.txt',
-        'mixed/path\\separators.txt',
-      ]
+      const maliciousPaths = ['file/path/traversal.txt', 'file\\windows\\path.txt', 'mixed/path\\separators.txt']
 
       maliciousPaths.forEach(maliciousPath => {
         const sanitized = maliciousPath.replace(/[/\\]/g, '')
