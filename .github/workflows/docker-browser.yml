@@ -188,6 +188,8 @@ jobs:
           MQTT_EXPLORER_USERNAME: test
           MQTT_EXPLORER_PASSWORD: test123
           BROWSER_MODE_URL: http://localhost:3000
+          MQTT_BROKER_HOST: localhost
+          MQTT_BROKER_PORT: 1883
 
       - name: Clean up browser test container
         if: always()

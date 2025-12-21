@@ -32,7 +32,7 @@ import type { MqttClient } from 'mqtt'
  * - Handle MQTT asynchronous operations properly
  *
  * Prerequisites:
- * - MQTT broker running on localhost:1883
+ * - MQTT broker running (default: localhost:1883, configurable via MQTT_BROKER_HOST and MQTT_BROKER_PORT)
  * - Application built with `yarn build`
  */
 // tslint:disable:only-arrow-functions ter-prefer-arrow-callback no-unused-expression
@@ -125,8 +125,10 @@ describe('MQTT Explorer Comprehensive UI Tests', function () {
     page = await electronApp.firstWindow({ timeout: 30000 })
     await page.locator('//label[contains(text(), "Host")]/..//input').waitFor({ timeout: 10000 })
 
-    console.log('Connecting to MQTT broker...')
-    await connectTo('127.0.0.1', page)
+    // Use MQTT_BROKER_HOST from environment, default to localhost
+    const brokerHost = process.env.MQTT_BROKER_HOST || '127.0.0.1'
+    console.log(`Connecting to MQTT broker at ${brokerHost}...`)
+    await connectTo(brokerHost, page)
     await sleep(3000) // Give time for all topics to load
 
     // Start Sparkplug client after connection
