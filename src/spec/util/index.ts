@@ -92,6 +92,8 @@ export async function clickOn(
 
   await moveToCenterOfElement(element)
   await element.hover()
+  // Trigger click visualization
+  await runJavascript('window.demo.clickMouse && window.demo.clickMouse();', element.page())
   await element.click({ delay, button, force, clickCount: clicks })
   await sleep(50)
 }
