@@ -1,9 +1,9 @@
 import DateFormatter from '../helper/DateFormatter'
 import NoData from './NoData'
 import NumberFormatter from '../helper/NumberFormatter'
-import React, { memo, useCallback } from 'react'
+import React, { memo, useCallback, useRef, useEffect } from 'react'
 import TooltipComponent from './TooltipComponent'
-import { default as ReactResizeDetector } from 'react-resize-detector'
+import { useResizeDetector } from 'react-resize-detector'
 import { emphasize, useTheme } from '@mui/material/styles'
 import { mapCurveType } from './mapCurveType'
 import { PlotCurveTypes } from '../../reducers/Charts'
@@ -24,9 +24,8 @@ export interface Props {
 
 export default memo((props: Props) => {
   const theme = useTheme()
-  const [width, setWidth] = React.useState(300)
   const [tooltip, setTooltip] = React.useState<Tooltip | undefined>()
-  const detectResize = React.useCallback((newWidth: any) => setWidth(newWidth), [])
+  const { width = 300, ref } = useResizeDetector()
 
   const hintFormatter = React.useCallback(
     (point: any) => [
@@ -71,10 +70,10 @@ export default memo((props: Props) => {
   const dummyData = [{ x: -2, y: -2 }]
   return (
     <div>
-      <div style={{ height: '150px', width: '100%', position: 'relative' }}>
+      <div ref={ref} style={{ height: '150px', width: '100%', position: 'relative' }}>
         {data.length === 0 ? <NoData /> : null}
         <XYPlot
-          width={width}
+          width={width || 300}
           height={180}
           yDomain={hasData ? yDomain : dummyDomain}
           xDomain={hasData ? xDomain : dummyDomain}
@@ -95,7 +94,6 @@ export default memo((props: Props) => {
             <TooltipComponent tooltip={tooltip} />
           </Hint>
         </XYPlot>
-        <ReactResizeDetector handleWidth={true} onResize={detectResize} />
       </div>
     </div>
   )

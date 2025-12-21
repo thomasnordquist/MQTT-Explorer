@@ -1,4 +1,5 @@
 import ConnectionItem from './ConnectionItem'
+const ConnectionItemAny = ConnectionItem as any
 import React from 'react'
 import { AddButton } from './AddButton'
 import { AppState } from '../../../reducers'
@@ -50,7 +51,7 @@ function ProfileList(props: Props) {
     <List style={{ height: '100%' }} component="nav" subheader={createConnectionButton}>
       <div className={classes.list}>
         {Object.values(connections).map(connection => (
-          <ConnectionItem connection={connection} key={connection.id} selected={selected === connection.id} />
+          <ConnectionItemAny connection={connection} key={connection.id} selected={selected === connection.id} />
         ))}
       </div>
     </List>
@@ -78,4 +79,4 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProfileList))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProfileList) as any)

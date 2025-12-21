@@ -46,7 +46,7 @@ export const TopicTypeButton = (props: { node?: q.TreeNode<any> }) => {
     [open]
   )
 
-  const handleClose = useCallback((event: React.MouseEvent<Document, MouseEvent>) => {
+  const handleClose = useCallback((event: any) => {
     if (anchorEl && anchorEl.contains(event.target as HTMLElement)) {
       return
     }

@@ -137,4 +137,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(undefined, mapDispatchToProps)(withStyles(styles)(BrowserCertificateFileSelection))
+export default connect(undefined, mapDispatchToProps)(withStyles(styles)(BrowserCertificateFileSelection) as any)

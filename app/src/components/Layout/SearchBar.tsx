@@ -143,4 +143,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SearchBar))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SearchBar) as any)

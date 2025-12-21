@@ -1,6 +1,7 @@
 import * as React from 'react'
 import CloudOff from '@mui/icons-material/CloudOff'
 import ConnectionHealthIndicator from '../helper/ConnectionHealthIndicator'
+const ConnectionHealthIndicatorAny = ConnectionHealthIndicator as any
 import Menu from '@mui/icons-material/Menu'
 import PauseButton from './PauseButton'
 import SearchBar from './SearchBar'
@@ -76,12 +77,12 @@ class TitleBar extends React.PureComponent<Props, {}> {
           <PauseButton />
           <Button
             className={classes.disconnect}
-            classes={{ label: classes.disconnectLabel }}
+            sx={{ color: 'primary.contrastText' }}
             onClick={actions.connection.disconnect}
           >
             Disconnect <CloudOff className={classes.disconnectIcon} />
           </Button>
-          <ConnectionHealthIndicator withBackground={true} />
+          <ConnectionHealthIndicatorAny withBackground={true} />
         </Toolbar>
       </AppBar>
     )

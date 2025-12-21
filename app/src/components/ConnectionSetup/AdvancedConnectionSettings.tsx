@@ -13,6 +13,7 @@ import { Button, Grid, TextField, Tooltip } from '@mui/material'
 import { QosSelect } from '../QosSelect'
 import { QoS } from '../../../../backend/src/DataSource/MqttSource'
 import Subscriptions from './Subscriptions'
+const SubscriptionsAny = Subscriptions as any
 
 interface Props {
   connection: ConnectionOptions
@@ -69,7 +70,7 @@ const ConnectionSettings = memo(function ConnectionSettings(props: Props) {
             </Button>
           </Grid>
           <Grid item={true} xs={12} style={{ padding: 0 }}>
-            <Subscriptions connection={props.connection} />
+            <SubscriptionsAny connection={props.connection} />
           </Grid>
           <Grid item={true} xs={7} className={classes.gridPadding}>
             <TextField
@@ -130,4 +131,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(undefined, mapDispatchToProps)(withStyles(styles)(ConnectionSettings))
+export default connect(undefined, mapDispatchToProps)(withStyles(styles)(ConnectionSettings) as any)

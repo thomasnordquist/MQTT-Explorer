@@ -1,5 +1,6 @@
 import * as React from 'react'
 import ConnectionSettings from './ConnectionSettings'
+const ConnectionSettingsAny = ConnectionSettings as any
 import ProfileList from './ProfileList'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
@@ -10,7 +11,9 @@ import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
 import { Modal, Paper, Toolbar, Typography, Collapse } from '@mui/material'
 import AdvancedConnectionSettings from './AdvancedConnectionSettings'
+const AdvancedConnectionSettingsAny = AdvancedConnectionSettings as any
 import Certificates from './Certificates'
+const CertificatesAny = Certificates as any
 
 interface Props {
   actions: any
@@ -35,13 +38,13 @@ class ConnectionSetup extends React.PureComponent<Props, {}> {
     return (
       <div>
         <Collapse in={!showAdvancedSettings && !showCertificateSettings}>
-          <ConnectionSettings connection={connection} />
+          <ConnectionSettingsAny connection={connection} />
         </Collapse>
         <Collapse in={showAdvancedSettings && !showCertificateSettings}>
-          <AdvancedConnectionSettings connection={connection} />
+          <AdvancedConnectionSettingsAny connection={connection} />
         </Collapse>
         <Collapse in={showCertificateSettings}>
-          <Certificates connection={connection} />
+          <CertificatesAny connection={connection} />
         </Collapse>
       </div>
     )
@@ -135,4 +138,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ConnectionSetup))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ConnectionSetup) as any)

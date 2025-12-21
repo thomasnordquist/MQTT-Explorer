@@ -17,7 +17,7 @@ export function LoginDialog(props: LoginDialogProps) {
   }
 
   return (
-    <Dialog open={props.open} disableEscapeKeyDown disableBackdropClick>
+    <Dialog open={props.open} disableEscapeKeyDown onClose={(event, reason) => { if (reason !== 'backdropClick') { /* Allow closing only via escape if needed */ } }}>
       <form onSubmit={handleSubmit}>
         <DialogTitle>Login to MQTT Explorer</DialogTitle>
         <DialogContent>

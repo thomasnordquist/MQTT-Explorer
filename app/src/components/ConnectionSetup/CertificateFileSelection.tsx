@@ -79,4 +79,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(undefined, mapDispatchToProps)(withStyles(styles)(CertificateFileSelection))
+export default connect(undefined, mapDispatchToProps)(withStyles(styles)(CertificateFileSelection) as any)

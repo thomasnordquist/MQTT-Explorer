@@ -38,7 +38,7 @@ function TimeLocaleSettings(props: Props) {
     </MenuItem>
   ))
 
-  function updateLocale(e: React.ChangeEvent<{ value: unknown }>) {
+  function updateLocale(e: any) {
     const locale = e.target.value ? String(e.target.value) : ''
     actions.settings.setTimeLocale(locale)
   }

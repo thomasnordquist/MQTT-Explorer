@@ -67,4 +67,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(withStyles(styles, { withTheme: true })(Topic))
+export default connect(null, mapDispatchToProps)(withStyles(styles, { withTheme: true })(Topic) as any)

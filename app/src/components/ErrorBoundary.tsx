@@ -12,6 +12,7 @@ interface State {
 
 interface Props {
   classes: any
+  children?: React.ReactNode
 }
 
 class ErrorBoundary extends React.PureComponent<Props, State> {

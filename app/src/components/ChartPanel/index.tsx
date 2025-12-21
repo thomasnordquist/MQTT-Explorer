@@ -128,4 +128,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ChartPanel))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ChartPanel) as any)

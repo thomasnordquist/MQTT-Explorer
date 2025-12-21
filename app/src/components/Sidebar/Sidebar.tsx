@@ -2,6 +2,7 @@ import * as q from '../../../../backend/src/Model'
 import React, { useState, useEffect, useCallback } from 'react'
 import NodeStats from './NodeStats'
 import ValuePanel from './ValueRenderer/ValuePanel'
+const ValuePanelAny = ValuePanel as any
 import { AppState } from '../../reducers'
 import { AccordionDetails } from '@mui/material'
 import { bindActionCreators } from 'redux'
@@ -57,7 +58,7 @@ function Sidebar(props: Props) {
     <div id="Sidebar" className={classes.drawer}>
       <div>
         <TopicPanel node={node} />
-        <ValuePanel lastUpdate={node ? node.lastUpdate : 0} />
+        <ValuePanelAny lastUpdate={node ? node.lastUpdate : 0} />
         <Panel>
           <span>Publish</span>
           <Publish connectionId={props.connectionId} />

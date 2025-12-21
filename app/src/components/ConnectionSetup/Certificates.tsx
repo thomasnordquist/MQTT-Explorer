@@ -13,7 +13,7 @@ import { withStyles } from '@mui/styles'
 // Check if we're in browser mode
 const isBrowserMode =
   typeof window !== 'undefined' && (typeof process === 'undefined' || process.env?.BROWSER_MODE === 'true')
-const CertSelector = isBrowserMode ? BrowserCertificateFileSelection : CertificateFileSelection
+const CertSelector: any = isBrowserMode ? BrowserCertificateFileSelection : CertificateFileSelection
 
 interface Props {
   connection: ConnectionOptions
@@ -111,4 +111,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(undefined, mapDispatchToProps)(withStyles(styles)(Certificates))
+export default connect(undefined, mapDispatchToProps)(withStyles(styles)(Certificates) as any)

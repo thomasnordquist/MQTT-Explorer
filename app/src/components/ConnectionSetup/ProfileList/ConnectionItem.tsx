@@ -68,4 +68,4 @@ export const connectionItemStyle = (theme: Theme) => ({
   },
 })
 
-export default connect(null, mapDispatchToProps)(withStyles(connectionItemStyle)(ConnectionItem))
+export default connect(null, mapDispatchToProps)(withStyles(connectionItemStyle)(ConnectionItem) as any)

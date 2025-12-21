@@ -87,4 +87,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(undefined, mapDispatchToProps)(withStyles(styles)(Subscriptions))
+export default connect(undefined, mapDispatchToProps)(withStyles(styles)(Subscriptions) as any)

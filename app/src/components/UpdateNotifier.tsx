@@ -84,7 +84,7 @@ class UpdateNotifier extends React.PureComponent<Props, State> {
     return res.data as Array<GithubRelease>
   }
 
-  private onCloseNotification = (event: React.SyntheticEvent<any>, reason: string) => {
+  private onCloseNotification = (event: any, reason: any) => {
     if (reason === 'clickaway') {
       return
     }

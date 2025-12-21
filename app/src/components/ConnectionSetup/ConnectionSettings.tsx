@@ -286,4 +286,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ConnectionSettings))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ConnectionSettings) as any)

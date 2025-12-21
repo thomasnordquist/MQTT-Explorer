@@ -75,4 +75,4 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ActionButtons))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ActionButtons) as any)
