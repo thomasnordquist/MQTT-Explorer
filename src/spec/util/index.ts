@@ -109,8 +109,11 @@ export async function clickOn(
   // Ensure element is visible before trying to interact
   await element.waitFor({ state: 'visible', timeout: 30000 })
 
-  await moveToCenterOfElement(element)
-  await element.hover()
+  // Skip hover when force is true (used when modal backdrop might intercept)
+  if (!force) {
+    await moveToCenterOfElement(element)
+    await element.hover()
+  }
   await element.click({ delay, button, force, clickCount: clicks })
   await sleep(50)
 }
