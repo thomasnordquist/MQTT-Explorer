@@ -75,7 +75,7 @@ function ContentView(props: Props) {
           split="vertical"
           minSize={0}
           size={sidebarWidth}
-          onChange={setSidebarWidth}
+          onChange={(size: number) => setSidebarWidth(size)}
           onDragFinished={closeSidebarCompletelyIfItSitsOnTheEdge}
           allowResize={true}
           style={{ height: '100%' }}
@@ -92,7 +92,7 @@ function ContentView(props: Props) {
               style={{ height: 'calc(100vh - 64px)' }}
               pane1Style={{ maxHeight: '100%' }}
               pane2Style={{ borderTop: '1px solid #999', display: 'flex' }}
-              onChange={setHeight}
+              onChange={(size: number) => setHeight(size)}
               onDragFinished={closeDrawerCompletelyIfItSitsOnTheEdge}
             >
               <Tree />
