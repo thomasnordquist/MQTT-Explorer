@@ -4,15 +4,81 @@
 
 MQTT Explorer is an Electron-based desktop application for exploring MQTT brokers. It provides a comprehensive UI for connecting to MQTT brokers, browsing topics, and analyzing message flows.
 
+## Git Commit and PR Guidelines
+
+### Commit Messages
+
+**ALWAYS** use semantic commit message format:
+
+```
+<type>: <description>
+
+[optional body]
+
+[optional footer]
+```
+
+**Required types:**
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation only changes
+- `style:` - Code style changes (formatting, semicolons, etc.)
+- `refactor:` - Code refactoring without changing functionality
+- `perf:` - Performance improvements
+- `test:` - Adding or updating tests
+- `build:` - Changes to build system or dependencies
+- `ci:` - Changes to CI configuration files and scripts
+- `chore:` - Other changes that don't modify src or test files
+
+**Examples:**
+```bash
+feat: add support for MQTT 5.0 protocol
+fix: resolve connection timeout issue with SSL/TLS
+docs: update installation instructions for Node.js 24
+test: add unit tests for message parsing
+```
+
+### Pull Request Titles
+
+**ALWAYS** use the same semantic format for PR titles:
+
+```
+<type>: <concise description>
+```
+
+**Examples:**
+- `feat: add WebSocket support for browser mode`
+- `fix: prevent memory leak in topic tree rendering`
+- `docs: improve agent instructions clarity`
+
+## Working Principles
+
+### Be Thorough and Complete
+
+1. **Always validate your changes** - Run tests, linters, and builds to ensure nothing breaks
+2. **Deliver complete solutions** - Don't leave partial implementations or half-fixed bugs
+3. **Test edge cases** - Consider and handle error conditions, edge cases, and failure scenarios
+4. **Verify the fix works** - Manually test the functionality you changed, take screenshots for UI changes
+5. **Follow through** - If a test fails, debug and fix it; don't leave broken tests behind
+
+### Quality Standards
+
+- **Completeness**: Ensure all aspects of the issue are addressed
+- **Correctness**: Verify changes work as expected through testing
+- **Consistency**: Follow existing code patterns and conventions
+- **Clarity**: Write clear code with meaningful variable/function names
+- **Minimal changes**: Make surgical, focused changes that solve the problem without unnecessary refactoring
+
 ## Technology Stack
 
-- **Frontend**: React 16.x with Material-UI
+- **Frontend**: React 18.x with Material-UI v5/v6
 - **Backend**: Node.js with TypeScript
-- **Desktop Framework**: Electron 29.x
-- **MQTT Client**: [mqttjs](https://github.com/mqttjs/MQTT.js) v4.x
+- **Desktop Framework**: Electron 39.x
+- **MQTT Client**: [mqttjs](https://github.com/mqttjs/MQTT.js) v5.x
 - **State Management**: Redux with redux-thunk
 - **Build Tools**: webpack, TypeScript compiler
-- **Testing**: Mocha + Chai for unit tests, Playwright for MCP introspection tests
+- **Testing**: Mocha + Chai for unit tests, Playwright for browser mode tests
+- **Node.js**: Version 24 or higher required
 
 ## Project Setup
 
@@ -48,6 +114,8 @@ electron . --enable-mcp-introspection
 # Or with custom port
 electron . --enable-mcp-introspection --remote-debugging-port=9223
 ```
+
+See `mcp.json` in the repository root for MCP configuration.
 
 ## Writing Tests
 
@@ -243,11 +311,11 @@ ps aux | grep mosquitto | grep -v grep | awk '{print $2}' | xargs kill -9 2>/dev
 
 ## MCP Introspection Testing
 
-The project supports MCP (Model Context Protocol) for automated testing with Playwright:
+The project supports MCP (Model Context Protocol) for automated testing:
 
-- Use `yarn test:mcp` to run automated UI tests
-- Tests launch the app with remote debugging enabled on port 9222
-- Connect to `http://localhost:9222` via Chrome DevTools Protocol
+- Run tests: `yarn test:mcp`
+- Configuration: `mcp.json` in repository root
+- Tests launch the app with remote debugging on port 9222
 
 ## Project Structure
 
@@ -362,9 +430,10 @@ yarn package-with-docker
 
 ### Release Workflow
 
-- **Beta releases**: Create PR to `beta` branch with "feat:" or "fix:" commits
-- **Production releases**: Create PR to `release` branch with "feat:" or "fix:" commits
-- Semantic release automatically handles versioning and changelog
+- **Semantic commits required**: All commits must use semantic format (`feat:`, `fix:`, etc.)
+- **Beta releases**: Create PR to `beta` branch with semantic commits
+- **Production releases**: Create PR to `release` branch with semantic commits
+- Semantic-release automatically handles versioning and changelog based on commit messages
 - Builds are created for Windows, macOS, and Linux
 
 ### Build Artifacts
@@ -375,9 +444,8 @@ yarn package-with-docker
 
 ## Important Notes
 
-- Always run `yarn build` before starting the application
-- The app uses Electron (see `package.json` for version)
-- MQTT communication is handled via [mqttjs](https://github.com/mqttjs/MQTT.js)
-- All code changes should pass linting (`yarn lint`)
-- Node.js version requirement: >= 20
-- The project uses workspace-like structure with separate package.json files for app and backend
+- **Always build first**: Run `yarn build` before starting the application
+- **Node.js requirement**: Version 24 or higher
+- **Linting**: All code changes must pass `yarn lint`
+- **MQTT library**: Communication handled via [mqttjs](https://github.com/mqttjs/MQTT.js)
+- **Workspace structure**: Separate package.json files for root, app, and backend
