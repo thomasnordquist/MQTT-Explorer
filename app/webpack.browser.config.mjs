@@ -19,7 +19,7 @@ export default {
     path: `${__dirname}/build`,
   },
   optimization: {
-    minimize: false,
+    minimize: true,
     splitChunks: {
       chunks: 'all',
       minSize: 30000,
@@ -29,7 +29,7 @@ export default {
       automaticNameDelimiter: '~',
       cacheGroups: {
         vendors: {
-          test: /[\\/]node_modules[\\/](react|react-dom|@material-ui|popper\.js|react|react-redux|prop-types|jss|redux|scheduler|react-transition-group)[\\/]/,
+          test: /[\\/]node_modules[\\/](react|react-dom|@mui|@emotion|popper\.js|react-redux|prop-types|jss|redux|scheduler|react-transition-group)[\\/]/,
           name: 'vendors',
           chunks: 'all',
           priority: -10,
