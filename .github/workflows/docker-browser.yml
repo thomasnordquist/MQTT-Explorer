@@ -15,6 +15,8 @@ on:
       - 'package.json'
       - 'yarn.lock'
       - '.github/workflows/docker-browser.yml'
+      - 'tsconfig.json'
+      - 'events/**'
   schedule:
     # Run every two weeks (1st and 15th of each month) at 2:00 AM UTC
     - cron: '0 2 1,15 * *'
@@ -208,6 +210,7 @@ jobs:
           docker rm mqtt-explorer-frontend-test || true
 
       - name: Build and push Docker image
+        id: build
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -223,5 +226,5 @@ jobs:
         uses: actions/attest-build-provenance@v1
         with:
           subject-name: ghcr.io/${{ github.repository }}
-          subject-digest: ${{ steps.meta.outputs.digest }}
+          subject-digest: ${{ steps.build.outputs.digest }}
           push-to-registry: true

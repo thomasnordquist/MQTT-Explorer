@@ -35,12 +35,15 @@ This workflow builds and publishes a Docker image for the browser mode.
 
 **Steps**:
 1. Build Docker image with multi-stage build
-2. Run container with test credentials
-3. Test basic startup and health check
+2. Test basic startup with test credentials
+3. Test health check
 4. Verify HTTP response
 5. Test data directory creation
-6. Push image to GitHub Container Registry
-7. Generate build attestation for supply chain security
+6. Check Docker image size
+7. Start container for frontend tests
+8. Test frontend bundles (app.bundle.js, vendors.bundle.js)
+9. Push image to GitHub Container Registry
+10. Generate build attestation for supply chain security
 
 **Image Features**:
 - Multi-stage build for minimal size

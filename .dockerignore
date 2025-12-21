@@ -50,7 +50,6 @@ appveyor.yml
 # Misc
 res
 scripts
-events
 docker
 icon.xcf
 greenkeeper.json
