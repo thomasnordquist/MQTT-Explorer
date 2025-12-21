@@ -6,8 +6,8 @@
   "scripts": {
     "build": "webpack --mode production",
     "dev": "node_modules/.bin/webpack-dev-server --mode development --progress",
-    "test": "cross-env TS_NODE_PROJECT=test/tsconfig.json yarn mochatest",
-    "mochatest": "mocha --require ts-node/register --require source-map-support/register --recursive src/*/**/*.spec.ts"
+    "test": "mocha --require tsx --require source-map-support/register --recursive src/*/**/*.spec.ts",
+    "mochatest": "mocha --require tsx --require source-map-support/register --recursive src/*/**/*.spec.ts"
   },
   "engines": {
     "node": ">=24"

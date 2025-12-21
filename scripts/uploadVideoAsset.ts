@@ -1,4 +1,4 @@
-#!node_modules/.bin/ts-node
+#!/usr/bin/env tsx
 import axios from 'axios'
 import * as fs from 'fs'
 import * as path from 'path'

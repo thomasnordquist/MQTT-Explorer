@@ -1,4 +1,4 @@
-#!./node_modules/.bin/ts-node
+#!/usr/bin/env tsx
 import * as fs from 'fs'
 import { exec } from './util'
 import { Scene, SceneNames } from '../src/spec/SceneBuilder'

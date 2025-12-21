@@ -16,12 +16,6 @@
     "sourceMap": true,
     "esModuleInterop": true
   },
-  "ts-node": {
-    "compilerOptions": {
-      "module": "commonjs"
-    },
-    "transpileOnly": true
-  },
   "includes": [
     "src/**/*.ts"
   ],
