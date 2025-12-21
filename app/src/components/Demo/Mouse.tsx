@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Theme, withStyles } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 const cursor = require('./cursor.png')
 
 interface State {
@@ -74,7 +75,7 @@ const style = (theme: Theme) => ({
     height: '32px',
     position: 'fixed' as 'fixed',
     zIndex: 1000000,
-    filter: theme.palette.type === 'light' ? undefined : 'invert(100%)',
+    filter: theme.palette.mode === 'light' ? undefined : 'invert(100%)',
     pointerEvents: 'none' as 'none',
   },
 })

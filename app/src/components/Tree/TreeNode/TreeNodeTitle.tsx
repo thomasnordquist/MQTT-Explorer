@@ -1,6 +1,7 @@
 import * as q from '../../../../../backend/src/Model'
 import React, { memo } from 'react'
-import { Theme, withStyles } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 import { TopicViewModel } from '../../../model/TopicViewModel'
 import { useDecoder } from '../../hooks/useDecoder'
 
@@ -94,7 +95,7 @@ const styles = (theme: Theme) => ({
     overflow: 'hidden' as 'hidden',
   },
   expander: {
-    color: theme.palette.type === 'light' ? '#222' : '#eee',
+    color: theme.palette.mode === 'light' ? '#222' : '#eee',
     cursor: 'pointer' as 'pointer',
     paddingRight: theme.spacing(0.25),
     userSelect: 'none' as 'none',

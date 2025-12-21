@@ -8,8 +8,8 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceRoot": "src/",
-    "target": "ES2017",
-    "lib": ["ES2017", "dom"],
+    "target": "ES2020",
+    "lib": ["ES2020", "dom"],
     "sourceMap": true,
     "types": ["node"],
     "skipLibCheck": true,
@@ -25,6 +25,8 @@
     "src/spec/leakTest.ts",
     "src/spec/testMcpIntrospection.ts",
     "src/spec/ui-tests.spec.ts",
+    "src/spec/ui-tests-comprehensive.spec.ts",
+    "src/spec/expandTopic.spec.ts",
     "scripts/*.ts"
   ],
   "exclude": ["node_modules"]

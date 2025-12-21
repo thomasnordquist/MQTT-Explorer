@@ -4,12 +4,12 @@
     "noImplicitAny": true,
     "strictNullChecks": true,
     "strict": true,
-    "lib": ["es2019", "dom"],
+    "lib": ["ES2020", "dom"],
     "moduleResolution": "node",
     "outDir": "./build/",
     "sourceMap": true,
     "module": "esnext",
-    "target": "ES2017",
+    "target": "ES2020",
     "jsx": "react",
     "paths": {
       "react": ["./node_modules/@types/react"]

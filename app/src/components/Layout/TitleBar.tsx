@@ -1,15 +1,17 @@
 import * as React from 'react'
-import CloudOff from '@material-ui/icons/CloudOff'
+import CloudOff from '@mui/icons-material/CloudOff'
 import ConnectionHealthIndicator from '../helper/ConnectionHealthIndicator'
-import Menu from '@material-ui/icons/Menu'
+const ConnectionHealthIndicatorAny = ConnectionHealthIndicator as any
+import Menu from '@mui/icons-material/Menu'
 import PauseButton from './PauseButton'
 import SearchBar from './SearchBar'
-import { AppBar, Button, IconButton, Toolbar, Typography } from '@material-ui/core'
+import { AppBar, Button, IconButton, Toolbar, Typography } from '@mui/material'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { connectionActions, globalActions, settingsActions } from '../../actions'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 
 const styles = (theme: Theme) => ({
   title: {
@@ -75,12 +77,12 @@ class TitleBar extends React.PureComponent<Props, {}> {
           <PauseButton />
           <Button
             className={classes.disconnect}
-            classes={{ label: classes.disconnectLabel }}
+            sx={{ color: 'primary.contrastText' }}
             onClick={actions.connection.disconnect}
           >
             Disconnect <CloudOff className={classes.disconnectIcon} />
           </Button>
-          <ConnectionHealthIndicator withBackground={true} />
+          <ConnectionHealthIndicatorAny withBackground={true} />
         </Toolbar>
       </AppBar>
     )

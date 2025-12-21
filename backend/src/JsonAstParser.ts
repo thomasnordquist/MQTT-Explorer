@@ -1,4 +1,4 @@
-const parse = require('json-to-ast')
+import parse from 'json-to-ast'
 
 export interface JsonPropertyLocation {
   path: string

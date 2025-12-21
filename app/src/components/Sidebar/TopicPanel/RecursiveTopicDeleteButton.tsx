@@ -1,8 +1,8 @@
 import * as q from '../../../../../backend/src/Model'
 import CustomIconButton from '../../helper/CustomIconButton'
-import Delete from '@material-ui/icons/Delete'
+import Delete from '@mui/icons-material/Delete'
 import React, { useCallback } from 'react'
-import { Badge } from '@material-ui/core'
+import { Badge } from '@mui/material'
 
 export const RecursiveTopicDeleteButton = (props: {
   node?: q.TreeNode<any>

@@ -1,10 +1,10 @@
 import * as React from 'react'
-import ArrowUpward from '@material-ui/icons/ArrowUpward'
+import ArrowUpward from '@mui/icons-material/ArrowUpward'
 import { bindActionCreators } from 'redux'
 import { chartActions } from '../../../actions'
 import { ChartParameters } from '../../../reducers/Charts'
 import { connect } from 'react-redux'
-import { MenuItem, Typography, ListItemIcon } from '@material-ui/core'
+import { MenuItem, Typography, ListItemIcon } from '@mui/material'
 
 function MoveUp(props: { actions: { chart: typeof chartActions }; chart: ChartParameters; close: () => void }) {
   const moveUp = React.useCallback(() => {

@@ -4,7 +4,8 @@ import TreeNodeSubnodes from './TreeNodeSubnodes'
 import TreeNodeTitle from './TreeNodeTitle'
 import { SettingsState } from '../../../reducers/Settings'
 import { styles } from './styles'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 import { TopicViewModel } from '../../../model/TopicViewModel'
 import { treeActions } from '../../../actions'
 import { useAnimationToIndicateTopicUpdate } from './effects/useAnimationToIndicateTopicUpdate'
@@ -35,7 +36,7 @@ function TreeNodeComponent(props: Props) {
   const deleteTopicCallback = useDeleteKeyCallback(treeNode, actions)
   useViewModelSubscriptions(treeNode, nodeRef, setSelected, setCollapsedOverride)
   const animationClass =
-    props.theme.palette.type === 'light' ? props.classes.animationLight : props.classes.animationDark
+    props.theme.palette.mode === 'light' ? props.classes.animationLight : props.classes.animationDark
 
   useAnimationToIndicateTopicUpdate(
     nodeRef,

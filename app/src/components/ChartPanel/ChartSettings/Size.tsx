@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
 import { ChartParameters } from '../../../reducers/Charts'
-import { Menu, MenuItem, TextField, Typography } from '@material-ui/core'
+import { Menu, MenuItem, TextField, Typography } from '@mui/material'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { chartActions } from '../../../actions'

@@ -1,13 +1,13 @@
 import * as diff from 'diff'
 import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
-import Add from '@material-ui/icons/Add'
+import Add from '@mui/icons-material/Add'
 import ChartPreview from './ChartPreview'
-import Remove from '@material-ui/icons/Remove'
+import Remove from '@mui/icons-material/Remove'
 import { JsonPropertyLocation } from '../../../../../backend/src/JsonAstParser'
 import { lineChangeStyle, trimNewlineRight } from './util'
-import { Theme } from '@material-ui/core'
-import { withStyles } from '@material-ui/styles'
+import { Theme } from '@mui/material'
+import { withStyles } from '@mui/styles'
 
 interface Props {
   changes: Array<diff.Change>

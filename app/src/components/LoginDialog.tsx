@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography } from '@material-ui/core'
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography } from '@mui/material'
 
 interface LoginDialogProps {
   open: boolean
@@ -17,7 +17,7 @@ export function LoginDialog(props: LoginDialogProps) {
   }
 
   return (
-    <Dialog open={props.open} disableEscapeKeyDown disableBackdropClick>
+    <Dialog open={props.open} disableEscapeKeyDown onClose={(event, reason) => { if (reason !== 'backdropClick') { /* Allow closing only via escape if needed */ } }}>
       <form onSubmit={handleSubmit}>
         <DialogTitle>Login to MQTT Explorer</DialogTitle>
         <DialogContent>

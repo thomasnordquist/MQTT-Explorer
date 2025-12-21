@@ -1,4 +1,5 @@
 import ConnectionItem from './ConnectionItem'
+const ConnectionItemAny = ConnectionItem as any
 import React from 'react'
 import { AddButton } from './AddButton'
 import { AppState } from '../../../reducers'
@@ -7,8 +8,9 @@ import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../../actions'
 import { ConnectionOptions } from '../../../model/ConnectionOptions'
 import { KeyCodes } from '../../../utils/KeyCodes'
-import { List } from '@material-ui/core'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { List } from '@mui/material'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 import { useGlobalKeyEventHandler } from '../../../effects/useGlobalKeyEventHandler'
 
 interface Props {
@@ -49,7 +51,7 @@ function ProfileList(props: Props) {
     <List style={{ height: '100%' }} component="nav" subheader={createConnectionButton}>
       <div className={classes.list}>
         {Object.values(connections).map(connection => (
-          <ConnectionItem connection={connection} key={connection.id} selected={selected === connection.id} />
+          <ConnectionItemAny connection={connection} key={connection.id} selected={selected === connection.id} />
         ))}
       </div>
     </List>
@@ -77,4 +79,4 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProfileList))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProfileList) as any)

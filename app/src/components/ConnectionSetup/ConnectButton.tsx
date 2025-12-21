@@ -1,7 +1,7 @@
 import ConnectionHealthIndicator from '../helper/ConnectionHealthIndicator'
-import PowerSettingsNew from '@material-ui/icons/PowerSettingsNew'
+import PowerSettingsNew from '@mui/icons-material/PowerSettingsNew'
 import React from 'react'
-import { Button } from '@material-ui/core'
+import { Button } from '@mui/material'
 
 function ConnectButton(props: { connecting: boolean; classes: any; toggle: () => void }) {
   const { classes, toggle, connecting } = props
