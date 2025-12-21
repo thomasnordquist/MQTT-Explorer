@@ -38,10 +38,29 @@ export async function setInputText(input: Locator, text: string, browser: Page) 
 }
 
 export async function setTextInInput(name: string, text: string, browser: Page) {
-  const input = await browser.locator(`//label[contains(text(), "${name}")]/..//input`)
-  await clickOn(input, 1)
-  await browser.locator(`//label[contains(text(), "${name}")]/..//input`)
+  // Material-UI v5 TextField renders label inside the component
+  // Try multiple locator strategies to find the input
+  const selectors = [
+    `//label[contains(text(), "${name}")]/..//input`,
+    `//div[contains(@class, 'MuiTextField')]//label[contains(text(), "${name}")]/..//input`,
+    `//input[@name="${name.toLowerCase()}"]`,
+  ]
+  
+  let input: Locator | null = null
+  for (const selector of selectors) {
+    const locator = browser.locator(selector)
+    const count = await locator.count()
+    if (count > 0) {
+      input = locator.first()
+      break
+    }
+  }
+  
+  if (!input) {
+    throw new Error(`Could not find input for label "${name}"`)
+  }
 
+  await clickOn(input, 1)
   await deleteTextWithBackspaces(input)
   await input.fill(text)
 }
