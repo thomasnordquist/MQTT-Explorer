@@ -52,9 +52,7 @@
       "gatekeeperAssess": false,
       "publish": [
         "github"
-      ],
-      "entitlements": "res/entitlements.mas.plist",
-      "entitlementsInherit": "res/entitlements.mac.inherit.plist"
+      ]
     },
     "linux": {
       "category": "Development",
