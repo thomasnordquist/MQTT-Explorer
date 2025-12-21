@@ -32,15 +32,20 @@ export async function connectTo(host: string, browser: Page) {
   const isConnected = await disconnectButton.count() > 0
   console.log('Is connected:', isConnected)
   
-  // Wait for the modal to close - increase timeout and make it optional
+  // Wait for the modal to close - in Material-UI v5, the modal is detached when closed
   try {
-    await browser.waitForSelector('.MuiModal-root', { state: 'hidden', timeout: 15000 })
+    await browser.waitForSelector('.MuiModal-root', { state: 'detached', timeout: 15000 })
     console.log('Modal closed successfully')
   } catch (error) {
-    console.log('Modal did not close automatically, attempting to close manually...')
-    // If connected but modal didn't close, press Escape
-    await browser.keyboard.press('Escape')
-    await browser.waitForTimeout(1000)
+    console.log('Modal did not close within timeout, checking if still visible...')
+    const modalVisible = await browser.locator('.MuiModal-root').count() > 0
+    if (modalVisible) {
+      console.log('Modal is still visible, pressing Escape to close...')
+      await browser.keyboard.press('Escape')
+      await browser.waitForTimeout(1000)
+    } else {
+      console.log('Modal is not in DOM (already closed)')
+    }
   }
   
   await browser.screenshot({ path: 'screen3-modal-closed.png' })
