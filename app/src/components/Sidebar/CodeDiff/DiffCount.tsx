@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Theme } from '@material-ui/core'
-import { withStyles } from '@material-ui/styles'
+import { Theme } from '@mui/material'
+import { withStyles } from '@mui/styles'
 
 interface Props {
   changes: Array<Diff.Change>

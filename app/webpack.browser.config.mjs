@@ -1,9 +1,14 @@
 // Browser-specific webpack configuration
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const webpack = require('webpack')
-const path = require('path')
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import webpack from 'webpack'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+export default {
   entry: {
     app: './src/index.tsx',
     bugtracking: './src/utils/bugtracking.ts',
@@ -50,16 +55,16 @@ module.exports = {
     extensions: ['.ts', '.mjs', '.m.js', '.tsx', '.js', '.json'],
     modules: ['node_modules', path.resolve(__dirname, 'node_modules')],
     alias: {
-      electron: require.resolve('./src/mocks/electron.ts'),
+      electron: path.resolve(__dirname, './src/mocks/electron.ts'),
     },
     fallback: {
       // Browser fallbacks for Node.js modules
-      path: require.resolve('path-browserify'),
+      path: 'path-browserify',
       fs: false,
       crypto: false,
-      url: require.resolve('url/'),
-      os: require.resolve('os-browserify/browser'),
-      events: require.resolve('events/'),
+      url: 'url/',
+      os: 'os-browserify/browser',
+      events: 'events/',
     },
   },
   module: {
@@ -93,8 +98,8 @@ module.exports = {
       'process.env.BROWSER_MODE': JSON.stringify('true'),
     }),
     new webpack.NormalModuleReplacementPlugin(/EventSystem[\\/]EventBus$/, resource => {
-      console.log('Replacing EventBus:', resource.request);
-      resource.request = resource.request.replace(/EventBus$/, 'BrowserEventBus');
+      console.log('Replacing EventBus:', resource.request)
+      resource.request = resource.request.replace(/EventBus$/, 'BrowserEventBus')
     }),
   ],
   externals: {},

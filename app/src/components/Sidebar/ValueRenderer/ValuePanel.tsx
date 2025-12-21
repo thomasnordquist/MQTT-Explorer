@@ -9,7 +9,9 @@ import React, { useCallback } from 'react'
 import ValueRenderer from './ValueRenderer'
 import { AppState } from '../../../reducers'
 import { bindActionCreators } from 'redux'
-import { Theme, Typography, withStyles } from '@material-ui/core'
+import { Typography } from '@mui/material'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 import { connect } from 'react-redux'
 import { sidebarActions } from '../../../actions'
 import DeleteSelectedTopicButton from './DeleteSelectedTopicButton'
@@ -143,4 +145,4 @@ const styles = (theme: Theme) => ({
 })
 
 // @ts-ignore
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ValuePanel))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ValuePanel) as any)

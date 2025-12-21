@@ -3,6 +3,7 @@ import Copy from '../../helper/Copy'
 import Panel from '../Panel'
 import React, { useMemo, useCallback } from 'react'
 import Topic from './Topic'
+const TopicAny = Topic as any
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { RecursiveTopicDeleteButton } from './RecursiveTopicDeleteButton'
@@ -31,7 +32,7 @@ const TopicPanel = (props: { node?: q.TreeNode<any>; actions: typeof sidebarActi
           <RecursiveTopicDeleteButton node={node} deleteTopicAction={deleteTopic} />
           <TopicTypeButton node={node} />
         </span>
-        <Topic node={node} />
+        <TopicAny node={node} />
       </Panel>
     ),
     [node, node?.childTopicCount()]

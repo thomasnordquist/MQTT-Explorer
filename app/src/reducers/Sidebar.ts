@@ -21,7 +21,7 @@ export enum ActionTypes {
 export type SidebarState = Record<SidebarModel>
 
 const actions: {
-  [s: string]: (state: SidebarState, action: ReduxAction) => SidebarState
+  [s: string]: any
 } = {
   SIDEBAR_SET_COMPARE_MESSAGE: setCompareMessage,
   SIDEBAR_RESET_STORE: resetStore,

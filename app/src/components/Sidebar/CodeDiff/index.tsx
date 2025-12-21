@@ -8,7 +8,8 @@ import { isPlottable, lineChangeStyle, trimNewlineRight } from './util'
 import { JsonPropertyLocation, literalsMappedByLines } from '../../../../../backend/src/JsonAstParser'
 import { selectTextWithCtrlA } from '../../../utils/handleTextSelectWithCtrlA'
 import { style } from './style'
-import { withStyles, Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
+import { withStyles } from '@mui/styles'
 import 'prismjs/components/prism-json'
 
 interface Props {

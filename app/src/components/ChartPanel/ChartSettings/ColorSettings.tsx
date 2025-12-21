@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import { chartActions } from '../../../actions'
 import { ChartParameters } from '../../../reducers/Charts'
 import { connect } from 'react-redux'
-import { Menu, MenuItem } from '@material-ui/core'
+import { Menu, MenuItem } from '@mui/material'
 import { colors as createColors } from './colors'
 
 function chartParametersForColor(chart: ChartParameters, color?: string) {

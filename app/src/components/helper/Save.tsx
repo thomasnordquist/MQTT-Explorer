@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import Check from '@material-ui/icons/Check'
+import Check from '@mui/icons-material/Check'
 import CustomIconButton from './CustomIconButton'
 
-import { SaveAlt } from '@material-ui/icons'
+import { SaveAlt } from '@mui/icons-material'
 import { bindActionCreators } from 'redux'
 import { rendererRpc, writeToFile } from '../../../../events'
 import { makeSaveDialogRpc } from '../../../../events/OpenDialogRequest'

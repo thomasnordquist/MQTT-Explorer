@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:24
 
 RUN DEBIAN_FRONTEND="noninteractive" apt-get update \
   && apt-get install -y --no-install-recommends ca-certificates nano ffmpeg xvfb git-core tmux locales mosquitto x11vnc

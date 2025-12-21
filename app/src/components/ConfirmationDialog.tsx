@@ -1,6 +1,6 @@
 import React, { useRef, useCallback, memo } from 'react'
 import { ConfirmationRequest } from '../reducers/Global'
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@material-ui/core'
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material'
 import { KeyCodes } from '../utils/KeyCodes'
 
 function ConfirmationDialog(props: { confirmationRequests: Array<ConfirmationRequest> }) {
