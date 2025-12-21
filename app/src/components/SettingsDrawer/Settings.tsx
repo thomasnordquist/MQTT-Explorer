@@ -20,6 +20,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  SelectChangeEvent,
   Typography,
   Tooltip,
 } from '@mui/material'
@@ -168,7 +169,7 @@ class Settings extends React.PureComponent<Props, {}> {
     )
   }
 
-  private onChangeAutoExpand = (e: React.ChangeEvent<{ value: unknown }>) => {
+  private onChangeAutoExpand = (e: SelectChangeEvent<number>) => {
     this.props.actions.settings.setAutoExpandLimit(parseInt(String(e.target.value), 10))
   }
 
@@ -200,7 +201,7 @@ class Settings extends React.PureComponent<Props, {}> {
     )
   }
 
-  private onChangeSorting = (e: React.ChangeEvent<{ value: unknown }>) => {
+  private onChangeSorting = (e: SelectChangeEvent<TopicOrder>) => {
     this.props.actions.settings.setTopicOrder(e.target.value as TopicOrder)
   }
 
