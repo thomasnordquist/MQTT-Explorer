@@ -1,5 +1,7 @@
 import { expect } from 'chai'
 import * as path from 'path'
+import * as bcrypt from 'bcryptjs'
+import * as crypto from 'crypto'
 
 describe('Security Tests', () => {
   describe('Path Sanitization', () => {
@@ -110,7 +112,6 @@ describe('Security Tests', () => {
     })
 
     it('should use secure password hashing', () => {
-      const bcrypt = require('bcryptjs')
       const password = 'testPassword123'
       const hash = bcrypt.hashSync(password, 10)
 
@@ -126,7 +127,6 @@ describe('Security Tests', () => {
     })
 
     it('should use constant-time comparison for strings', () => {
-      const crypto = require('crypto')
       const str1 = 'testuser'
       const str2 = 'testuser'
       const str3 = 'wronguser'
