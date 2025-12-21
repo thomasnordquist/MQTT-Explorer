@@ -116,6 +116,10 @@ yarn ui-test
 Create a PR to `release` branch.
 There needs to be a "feat: some new feature" or "fix: some bugfix" commit for a new release to be created
 
+### macOS Notarization
+
+macOS builds are automatically notarized during the release process. To set up notarization credentials, see [NOTARIZATION.md](NOTARIZATION.md).
+
 ## Create a beta release
 
 Create a PR to `beta` branch. A "feat" or "fix" commit is necessary to create a new version.
