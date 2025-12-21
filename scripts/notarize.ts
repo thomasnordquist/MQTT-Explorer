@@ -1,5 +1,4 @@
 import { notarize } from '@electron/notarize'
-import * as fs from 'fs'
 import * as path from 'path'
 
 interface Context {
