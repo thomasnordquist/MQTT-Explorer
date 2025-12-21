@@ -22,37 +22,18 @@ COPY app ./app
 # Build the application (compiles TypeScript and webpack bundles)
 RUN yarn build:server
 
-# Stage 2: Dependency analyzer - extract only runtime deps
+# Stage 2: Production dependencies
 FROM node:24-alpine AS deps
 
 WORKDIR /deps
 
-# Copy package files
-COPY package.json yarn.lock ./
+# Copy only package files
+COPY --from=builder /build/package.json /build/yarn.lock ./
 
-# Create a minimal package.json with only runtime dependencies
-# These are the deps actually needed by the compiled server code
-RUN cat package.json | \
-    node -e "const fs=require('fs'); \
-    const pkg=JSON.parse(fs.readFileSync('/dev/stdin','utf8')); \
-    const runtime={express:pkg.dependencies.express, \
-    'socket.io':pkg.dependencies['socket.io'], \
-    bcryptjs:pkg.dependencies.bcryptjs, \
-    uuid:pkg.dependencies.uuid, \
-    'fs-extra':pkg.dependencies['fs-extra'], \
-    lowdb:pkg.dependencies.lowdb, \
-    mqtt:pkg.dependencies.mqtt, \
-    protobufjs:pkg.dependencies.protobufjs, \
-    sha1:pkg.dependencies.sha1, \
-    debug:pkg.dependencies.debug, \
-    'js-base64':pkg.dependencies['js-base64']}; \
-    fs.writeFileSync('runtime-package.json', JSON.stringify({name:'mqtt-explorer-server',version:pkg.version,private:true,dependencies:runtime},null,2));" && \
-    cat runtime-package.json
-
-# Install ONLY runtime dependencies
-RUN mv runtime-package.json package.json && \
-    yarn install --production --frozen-lockfile --network-timeout 100000 && \
-    yarn cache clean
+# Install ONLY production dependencies
+RUN yarn install --production --frozen-lockfile --network-timeout 100000 && \
+    yarn cache clean && \
+    rm -rf /tmp/*
 
 # Stage 3: Production
 FROM node:24-alpine
