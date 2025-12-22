@@ -19,9 +19,9 @@ export default {
   resolve: {
     ...baseConfig.resolve,
     modules: [
-      'node_modules',
-      path.resolve(__dirname, 'node_modules'),
+      path.resolve(__dirname, 'node_modules'), // App-level node_modules (priority for browser deps)
       path.resolve(__dirname, '..', 'node_modules'), // Root-level node_modules
+      'node_modules',
     ],
     alias: {
       electron: path.resolve(__dirname, './src/mocks/electron.ts'),
@@ -39,8 +39,10 @@ export default {
 
   // Browser-specific plugins
   plugins: [
-    ...baseConfig.plugins,
+    // Replace base config's DefinePlugin with one that includes both NODE_ENV and BROWSER_MODE
+    ...baseConfig.plugins.filter(plugin => !(plugin instanceof webpack.DefinePlugin)),
     new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
       'process.env.BROWSER_MODE': JSON.stringify('true'),
     }),
     new webpack.NormalModuleReplacementPlugin(/EventSystem[\\/]EventBus$/, resource => {
