@@ -1,17 +1,202 @@
 {
-    "env": {
-        "browser": true,
-        "commonjs": true,
-        "es6": true
-    },
-    "extends": "eslint:recommended",
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
-    },
-    "parserOptions": {
-        "ecmaVersion": 2018
-    },
-    "rules": {
+  "root": true,
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
     }
+  },
+  "extends": [
+    "airbnb-base",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/typescript"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "import"
+  ],
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true
+      },
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
+  "rules": {
+    "@typescript-eslint/semi": ["error", "never"],
+    "semi": "off",
+    "max-len": ["error", { "code": 200 }],
+    "@typescript-eslint/explicit-member-accessibility": "off",
+    "no-else-return": "off",
+    "indent": "off",
+    "@typescript-eslint/indent": ["error", 2],
+    "import/prefer-default-export": "off",
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "variable",
+        "format": ["camelCase", "PascalCase", "UPPER_CASE"],
+        "leadingUnderscore": "allow"
+      },
+      {
+        "selector": "function",
+        "format": ["camelCase", "PascalCase"]
+      },
+      {
+        "selector": "typeLike",
+        "format": ["PascalCase"]
+      }
+    ],
+    "@typescript-eslint/comma-dangle": ["error", {
+      "arrays": "always-multiline",
+      "objects": "always-multiline",
+      "imports": "always-multiline",
+      "exports": "always-multiline",
+      "functions": "never"
+    }],
+    "comma-dangle": "off",
+    "arrow-parens": ["error", "as-needed"],
+    "import/no-extraneous-dependencies": ["error", {
+      "devDependencies": true,
+      "optionalDependencies": true,
+      "peerDependencies": false
+    }],
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-unused-expressions": ["error", {
+      "allowShortCircuit": true,
+      "allowTernary": true
+    }],
+    "object-shorthand": "off",
+    "prefer-template": "off",
+    "no-plusplus": "off",
+    "class-methods-use-this": "off",
+    "consistent-return": "off",
+    "@typescript-eslint/lines-between-class-members": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "error",
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "import/no-cycle": "warn",
+    "import/no-relative-packages": "off",
+    "operator-linebreak": "off",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "prefer-destructuring": "off",
+    "arrow-body-style": "off",
+    "import/order": ["error", {
+      "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
+      "newlines-between": "never"
+    }],
+    "object-curly-newline": "off",
+    "import/no-named-default": "off"
+  },
+  "overrides": [
+    {
+      "files": ["src/**/*.ts", "scripts/**/*.ts", "events/**/*.ts"],
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      },
+      "extends": [
+        "airbnb-base",
+        "airbnb-typescript/base"
+      ],
+      "rules": {
+        "@typescript-eslint/semi": ["error", "never"],
+        "semi": "off",
+        "max-len": ["error", { "code": 200 }]
+      }
+    },
+    {
+      "files": ["app/**/*.ts", "app/**/*.tsx"],
+      "parserOptions": {
+        "project": "./app/tsconfig.json"
+      },
+      "extends": [
+        "airbnb-base",
+        "airbnb-typescript/base"
+      ],
+      "rules": {
+        "@typescript-eslint/semi": ["error", "never"],
+        "semi": "off",
+        "max-len": ["error", { "code": 200 }]
+      }
+    },
+    {
+      "files": ["app/**/*.tsx"],
+      "parserOptions": {
+        "project": "./app/tsconfig.json"
+      },
+      "extends": [
+        "airbnb",
+        "airbnb-typescript",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended"
+      ],
+      "plugins": [
+        "react",
+        "react-hooks",
+        "jsx-a11y"
+      ],
+      "settings": {
+        "react": {
+          "version": "detect"
+        }
+      },
+      "rules": {
+        "@typescript-eslint/semi": ["error", "never"],
+        "semi": "off",
+        "max-len": ["error", { "code": 200 }],
+        "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
+        "react/prop-types": "off",
+        "react/react-in-jsx-scope": "off",
+        "react/jsx-props-no-spreading": "off",
+        "jsx-a11y/click-events-have-key-events": "off",
+        "jsx-a11y/no-static-element-interactions": "off"
+      }
+    },
+    {
+      "files": ["backend/**/*.ts"],
+      "parserOptions": {
+        "project": "./backend/tsconfig.json"
+      },
+      "extends": [
+        "airbnb-base",
+        "airbnb-typescript/base"
+      ],
+      "rules": {
+        "@typescript-eslint/semi": ["error", "never"],
+        "semi": "off",
+        "max-len": ["error", { "code": 200 }]
+      }
+    },
+    {
+      "files": ["*.spec.ts", "*.spec.tsx", "**/__tests__/**"],
+      "rules": {
+        "@typescript-eslint/no-unused-expressions": "off",
+        "import/no-extraneous-dependencies": "off"
+      }
+    }
+  ]
 }

@@ -1,0 +1,8 @@
+node_modules
+build
+dist
+app/build
+*.js
+!scripts/*.js
+!*.config.js
+!*.config.mjs
