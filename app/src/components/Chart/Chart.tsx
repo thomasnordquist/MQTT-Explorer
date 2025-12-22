@@ -1,8 +1,7 @@
-import '../../react-vis-compat' // React 19 compatibility shim for react-vis
 import DateFormatter from '../helper/DateFormatter'
 import NoData from './NoData'
 import NumberFormatter from '../helper/NumberFormatter'
-import React, { memo, useCallback, useRef, useEffect } from 'react'
+import React, { memo, useCallback, useMemo } from 'react'
 import TooltipComponent from './TooltipComponent'
 import { useResizeDetector } from 'react-resize-detector'
 import { emphasize, useTheme } from '@mui/material/styles'
@@ -11,8 +10,7 @@ import { PlotCurveTypes } from '../../reducers/Charts'
 import { Point, Tooltip } from './Model'
 import { useCustomXDomain } from './effects/useCustomXDomain'
 import { useCustomYDomain } from './effects/useCustomYDomain'
-import 'react-vis/dist/style.css'
-const { XYPlot, LineMarkSeries, YAxis, HorizontalGridLines, Hint } = require('react-vis')
+import { XYChart, AnimatedAxis, AnimatedGrid, AnimatedLineSeries, AnimatedGlyphSeries } from '@visx/xychart'
 const abbreviate = require('number-abbreviate')
 
 export interface Props {
@@ -26,6 +24,7 @@ export interface Props {
 export default memo((props: Props) => {
   const theme = useTheme()
   const [tooltip, setTooltip] = React.useState<Tooltip | undefined>()
+  const [hoveredPoint, setHoveredPoint] = React.useState<Point | undefined>()
   const { width = 300, ref } = useResizeDetector()
 
   const hintFormatter = React.useCallback(
@@ -39,14 +38,19 @@ export default memo((props: Props) => {
 
   const onMouseLeave = React.useCallback(() => {
     setTooltip(undefined)
+    setHoveredPoint(undefined)
   }, [])
 
-  const showTooltip = React.useCallback((point: Point, something: { event: MouseEvent }) => {
-    if (!something) {
-      return
-    }
-    setTooltip({ point, value: hintFormatter(point), element: something.event.target as any })
-  }, [])
+  const showTooltip = React.useCallback(
+    (point: Point, event: React.PointerEvent) => {
+      if (!event) {
+        return
+      }
+      setHoveredPoint(point)
+      setTooltip({ point, value: hintFormatter(point), element: event.target as any })
+    },
+    [hintFormatter]
+  )
 
   const paletteColor =
     theme.palette.mode === 'light' ? theme.palette.secondary.dark : theme.palette.primary.light
@@ -54,10 +58,10 @@ export default memo((props: Props) => {
 
   const highlightSelectedPoint = useCallback(
     (point: Point) => {
-      const highlight = tooltip && tooltip.point.x === point.x && tooltip.point.y === point.y
+      const highlight = hoveredPoint && hoveredPoint.x === point.x && hoveredPoint.y === point.y
       return highlight ? emphasize(color, 0.8) : color
     },
-    [tooltip, color]
+    [hoveredPoint, color]
   )
 
   const formatYAxis = useCallback((num: number) => abbreviate(num), [])
@@ -67,34 +71,65 @@ export default memo((props: Props) => {
 
   const data = props.data
   const hasData = data.length > 0
-  const dummyDomain = [-1, 1]
+  const dummyDomain: [number, number] = [-1, 1]
   const dummyData = [{ x: -2, y: -2 }]
+
+  const accessors = useMemo(
+    () => ({
+      xAccessor: (d: Point) => d.x,
+      yAccessor: (d: Point) => d.y,
+    }),
+    []
+  )
+
   return (
     <div>
       <div ref={ref} style={{ height: '150px', width: '100%', position: 'relative' }}>
         {data.length === 0 ? <NoData /> : null}
-        <XYPlot
+        <XYChart
           width={width || 300}
           height={180}
-          yDomain={hasData ? yDomain : dummyDomain}
-          xDomain={hasData ? xDomain : dummyDomain}
-          onMouseLeave={onMouseLeave}
+          xScale={{ type: 'linear', domain: hasData && xDomain ? xDomain : dummyDomain }}
+          yScale={{ type: 'linear', domain: hasData ? yDomain : dummyDomain }}
+          onPointerOut={onMouseLeave}
         >
-          <HorizontalGridLines />
-          <YAxis width={45} tickFormat={formatYAxis} />
-          <LineMarkSeries
-            color={color}
-            colorType="literal"
-            getColor={highlightSelectedPoint}
-            onValueMouseOver={showTooltip}
-            size={3}
+          <AnimatedGrid rows={true} columns={false} />
+          <AnimatedAxis orientation="left" tickFormat={formatYAxis} />
+          <AnimatedLineSeries
+            dataKey="line"
             data={hasData ? data : dummyData}
+            {...accessors}
+            stroke={color}
             curve={mapCurveType(props.interpolation)}
+            onPointerMove={(datum) => {
+              if (datum && datum.datum) {
+                const point = datum.datum as Point
+                const syntheticEvent = { target: datum.svgPoint } as any
+                showTooltip(point, syntheticEvent)
+              }
+            }}
           />
-          <Hint value={{ x: 0, y: 0 }} style={{ pointerEvents: 'none' }}>
-            <TooltipComponent tooltip={tooltip} />
-          </Hint>
-        </XYPlot>
+          <AnimatedGlyphSeries
+            dataKey="points"
+            data={hasData ? data : dummyData}
+            {...accessors}
+            renderGlyph={(glyphProps) => {
+              const point = glyphProps.datum as Point
+              const pointColor = highlightSelectedPoint(point)
+              return (
+                <circle
+                  cx={glyphProps.x}
+                  cy={glyphProps.y}
+                  r={3}
+                  fill={pointColor}
+                  onPointerMove={(e) => showTooltip(point, e as any)}
+                />
+              )
+            }}
+          />
+        </XYChart>
+        {/* Custom tooltip outside of visx to maintain exact same appearance */}
+        <TooltipComponent tooltip={tooltip} />
       </div>
     </div>
   )
