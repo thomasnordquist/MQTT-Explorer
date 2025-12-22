@@ -19,7 +19,7 @@ COPY app/package.json ./app/
 COPY backend/package.json ./backend/
 
 # Install dependencies
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile --network-timeout 100000
 
 # Copy source code
 COPY . .
