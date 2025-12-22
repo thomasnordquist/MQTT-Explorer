@@ -35,7 +35,7 @@
     "lint:tslint:fix": "tslint -p ./ --fix",
     "lint:spellcheck": "cspell -e ./build -e \"node_modules\" \"**/*.ts{x,}\"",
     "build": "tsc && cd app && yarn run build && cd ..",
-    "build:server": "npx tsc && cd app && npx webpack --config webpack.browser.config.mjs --mode production && cd ..",
+    "build:server": "npx tsc && (cd app && npx webpack --config webpack.browser.config.mjs --mode production)",
     "prepare-release": "tsx scripts/prepare-release.ts",
     "package": "tsx package.ts",
     "ui-test": "./scripts/uiTests.sh",
