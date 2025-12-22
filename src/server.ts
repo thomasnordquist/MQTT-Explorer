@@ -1,9 +1,11 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import * as http from 'http'
 import * as path from 'path'
 import { Server } from 'socket.io'
 import { promises as fsPromise } from 'fs'
-import { Request, Response } from 'express'
+import helmet from 'helmet'
+import rateLimit from 'express-rate-limit'
+import { body, validationResult } from 'express-validator'
 import { AuthManager } from './AuthManager'
 import { ConnectionManager } from '../backend/src/index'
 import ConfigStorage from '../backend/src/ConfigStorage'
@@ -15,6 +17,53 @@ import { RpcEvents } from '../events/EventsV2'
 
 const PORT = process.env.PORT || 3000
 const CREDENTIALS_PATH = path.join(process.cwd(), 'data', 'credentials.json')
+const MAX_FILE_SIZE = 16 * 1024 * 1024 // 16MB limit for file uploads
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['*']
+const isProduction = process.env.NODE_ENV === 'production'
+
+/**
+ * Validates and sanitizes file paths to prevent path traversal attacks
+ * @param filename The filename to validate
+ * @returns Sanitized filename or throws error if invalid
+ */
+function sanitizeFilename(filename: string): string {
+  if (!filename || typeof filename !== 'string') {
+    throw new Error('Invalid filename')
+  }
+
+  // Remove any path separators and null bytes
+  const sanitized = filename.replace(/[/\\]/g, '').replace(/\0/g, '')
+
+  // Check for directory traversal patterns
+  if (sanitized.includes('..') || sanitized.startsWith('.')) {
+    throw new Error('Invalid filename: directory traversal not allowed')
+  }
+
+  // Ensure filename is not empty after sanitization
+  if (!sanitized || sanitized.length === 0) {
+    throw new Error('Invalid filename: empty after sanitization')
+  }
+
+  // Limit filename length
+  if (sanitized.length > 255) {
+    throw new Error('Filename too long')
+  }
+
+  return sanitized
+}
+
+/**
+ * Validates that a path is within an allowed directory
+ * @param targetPath The path to validate
+ * @param allowedDir The allowed base directory
+ * @returns True if path is safe, false otherwise
+ */
+async function isPathSafe(targetPath: string, allowedDir: string): Promise<boolean> {
+  const fs = await import('fs')
+  const realTargetPath = await fs.promises.realpath(targetPath).catch(() => targetPath)
+  const realAllowedDir = await fs.promises.realpath(allowedDir).catch(() => allowedDir)
+  return realTargetPath.startsWith(realAllowedDir)
+}
 
 async function startServer() {
   // Initialize authentication
@@ -23,32 +72,136 @@ async function startServer() {
 
   // Create Express app
   const app = express()
+
+  // Apply security headers with helmet
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // unsafe-eval required for webpack runtime
+          styleSrc: ["'self'", "'unsafe-inline'"], // Required for Material-UI
+          connectSrc: ["'self'", 'ws:', 'wss:'], // Allow WebSocket connections
+          imgSrc: ["'self'", 'data:', 'blob:'],
+        },
+      },
+      hsts: isProduction
+        ? {
+            maxAge: 31536000,
+            includeSubDomains: true,
+            preload: true,
+          }
+        : false,
+    })
+  )
+
+  // Rate limiting for authentication attempts
+  const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // Limit each IP to 5 requests per windowMs
+    message: 'Too many authentication attempts, please try again later',
+    standardHeaders: true,
+    legacyHeaders: false,
+  })
+
   const server = http.createServer(app)
+
+  // Determine allowed origins for CORS
+  const corsOrigin =
+    ALLOWED_ORIGINS[0] === '*' && isProduction
+      ? false // In production, require explicit origins
+      : ALLOWED_ORIGINS[0] === '*'
+        ? '*'
+        : (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+            if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+              callback(null, true)
+            } else {
+              callback(new Error('Not allowed by CORS'))
+            }
+          }
+
   const io = new Server(server, {
     cors: {
-      origin: '*',
+      origin: corsOrigin,
       methods: ['GET', 'POST'],
+      credentials: true,
     },
     allowEIO3: true, // Allow Engine.IO v3 clients (backwards compatibility)
     transports: ['websocket', 'polling'], // Support both transports
     pingTimeout: 60000, // Increase ping timeout
     pingInterval: 25000, // Ping interval
+    maxHttpBufferSize: MAX_FILE_SIZE, // Limit message size
   })
+
+  // Track failed authentication attempts per IP with exponential back-off
+  const failedAttempts = new Map<string, { count: number; lastAttempt: number }>()
+
+  /**
+   * Calculate exponential back-off wait time based on failed attempts
+   * @param attemptCount Number of failed attempts
+   * @returns Wait time in milliseconds
+   */
+  function calculateBackoffTime(attemptCount: number): number {
+    // Progressive back-off with longer delays
+    // Attempt 1: 5 seconds
+    // Attempt 2: 10 seconds
+    // Attempt 3: 30 seconds
+    // Attempt 4: 60 seconds (1 minute)
+    // Attempt 5: 120 seconds (2 minutes)
+    // Attempt 6: 300 seconds (5 minutes)
+    // Attempt 7+: 900 seconds (15 minutes, capped)
+    const backoffSequence = [5, 10, 30, 60, 120, 300, 900]
+    const index = Math.min(attemptCount - 1, backoffSequence.length - 1)
+    return backoffSequence[index] * 1000
+  }
 
   // Authentication middleware for Socket.io
   io.use(async (socket, next) => {
     const { username, password } = socket.handshake.auth
+    const clientIp = socket.handshake.address
+
+    // Check rate limiting per IP
+    const now = Date.now()
+    const attempts = failedAttempts.get(clientIp) || { count: 0, lastAttempt: 0 }
+
+    // Calculate back-off time based on previous failed attempts
+    if (attempts.count > 0) {
+      const backoffTime = calculateBackoffTime(attempts.count)
+      const timeSinceLastAttempt = now - attempts.lastAttempt
+      const remainingWaitTime = backoffTime - timeSinceLastAttempt
+
+      if (remainingWaitTime > 0) {
+        const secondsRemaining = Math.ceil(remainingWaitTime / 1000)
+        return next(new Error(`Too many failed authentication attempts. Please wait ${secondsRemaining} seconds before trying again.`))
+      }
+    }
 
     if (!username || !password) {
+      attempts.count++
+      attempts.lastAttempt = now
+      failedAttempts.set(clientIp, attempts)
       return next(new Error('Authentication required'))
     }
 
     const isValid = await authManager.verifyCredentials(username, password)
     if (!isValid) {
-      return next(new Error('Invalid credentials'))
+      attempts.count++
+      attempts.lastAttempt = now
+      failedAttempts.set(clientIp, attempts)
+      
+      // Calculate next wait time for informational purposes
+      const nextBackoff = calculateBackoffTime(attempts.count)
+      const nextWaitSeconds = Math.ceil(nextBackoff / 1000)
+      
+      return next(new Error(`Invalid credentials. Next attempt allowed in ${nextWaitSeconds} seconds.`))
     }
 
-    console.log('Client authenticated:', username)
+    // Reset failed attempts on successful auth
+    failedAttempts.delete(clientIp)
+
+    if (!isProduction) {
+      console.log('Client authenticated:', username)
+    }
     next()
   })
 
@@ -91,53 +244,101 @@ async function startServer() {
   backendRpc.on(writeToFile, async ({ filePath, data, encoding }) => {
     // In browser mode, we store files in the server's data directory
     const dataDir = path.join(process.cwd(), 'data', 'uploads')
-    const safePath = path.join(dataDir, path.basename(filePath))
 
     try {
+      // Validate filename to prevent path traversal
+      const sanitizedFilename = sanitizeFilename(path.basename(filePath))
+      const safePath = path.join(dataDir, sanitizedFilename)
+
+      // Ensure data directory exists
       await fsPromise.mkdir(dataDir, { recursive: true })
+
+      // Verify the final path is within the allowed directory
+      if (!(await isPathSafe(safePath, dataDir))) {
+        throw new Error('Invalid file path')
+      }
+
+      // Validate data size
+      const dataBuffer = Buffer.from(data, 'base64')
+      if (dataBuffer.length > MAX_FILE_SIZE) {
+        throw new Error(`File size exceeds maximum allowed size of ${MAX_FILE_SIZE} bytes`)
+      }
+
+      // Write file
       if (encoding) {
-        await fsPromise.writeFile(safePath, Buffer.from(data, 'base64'), { encoding: encoding as BufferEncoding })
+        await fsPromise.writeFile(safePath, dataBuffer, { encoding: encoding as BufferEncoding })
       } else {
-        await fsPromise.writeFile(safePath, Buffer.from(data, 'base64'))
+        await fsPromise.writeFile(safePath, dataBuffer)
       }
     } catch (error) {
-      console.error('Error writing file:', error)
-      throw error
+      console.error('Error writing file:', error instanceof Error ? error.message : 'Unknown error')
+      throw new Error('Failed to write file')
     }
   })
 
   backendRpc.on(readFromFile, async ({ filePath, encoding }) => {
     // In browser mode, files are read from the server's data directory
     const dataDir = path.join(process.cwd(), 'data', 'uploads')
-    const safePath = path.join(dataDir, path.basename(filePath))
 
     try {
+      // Validate filename to prevent path traversal
+      const sanitizedFilename = sanitizeFilename(path.basename(filePath))
+      const safePath = path.join(dataDir, sanitizedFilename)
+
+      // Verify the final path is within the allowed directory
+      if (!(await isPathSafe(safePath, dataDir))) {
+        throw new Error('Invalid file path')
+      }
+
+      // Read file
       if (encoding) {
         const content = await fsPromise.readFile(safePath, { encoding: encoding as BufferEncoding })
         return Buffer.from(content)
       }
       return await fsPromise.readFile(safePath)
     } catch (error) {
-      console.error('Error reading file:', error)
-      throw error
+      console.error('Error reading file:', error instanceof Error ? error.message : 'Unknown error')
+      throw new Error('Failed to read file')
     }
   })
 
   // Certificate upload handler - via IPC for consistency
   backendRpc.on(RpcEvents.uploadCertificate, async ({ filename, data }) => {
-    // Store certificate on server for browser mode
-    const dataDir = path.join(process.cwd(), 'data', 'certificates')
-    await fsPromise.mkdir(dataDir, { recursive: true })
+    try {
+      // Validate filename to prevent path traversal
+      const sanitizedFilename = sanitizeFilename(filename)
 
-    const safePath = path.join(dataDir, path.basename(filename))
-    await fsPromise.writeFile(safePath, Buffer.from(data, 'base64'))
+      // Validate data size
+      const dataBuffer = Buffer.from(data, 'base64')
+      if (dataBuffer.length > MAX_FILE_SIZE) {
+        throw new Error(`Certificate size exceeds maximum allowed size of ${MAX_FILE_SIZE} bytes`)
+      }
 
-    console.log('Certificate uploaded:', filename)
+      // Store certificate on server for browser mode
+      const dataDir = path.join(process.cwd(), 'data', 'certificates')
+      await fsPromise.mkdir(dataDir, { recursive: true })
 
-    // Return the certificate data for client to use
-    return {
-      name: filename,
-      data,
+      const safePath = path.join(dataDir, sanitizedFilename)
+
+      // Verify the final path is within the allowed directory
+      if (!(await isPathSafe(safePath, dataDir))) {
+        throw new Error('Invalid certificate path')
+      }
+
+      await fsPromise.writeFile(safePath, dataBuffer)
+
+      if (!isProduction) {
+        console.log('Certificate uploaded:', sanitizedFilename)
+      }
+
+      // Return the certificate data for client to use
+      return {
+        name: sanitizedFilename,
+        data,
+      }
+    } catch (error) {
+      console.error('Error uploading certificate:', error instanceof Error ? error.message : 'Unknown error')
+      throw new Error('Failed to upload certificate')
     }
   })
 

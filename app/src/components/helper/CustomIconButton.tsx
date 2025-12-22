@@ -9,6 +9,7 @@ interface Props {
   classes: any
   style?: React.CSSProperties
   children?: React.ReactNode
+  'data-testid'?: string
 }
 
 const styles = (theme: Theme) => ({
@@ -38,7 +39,12 @@ class CustomIconButton extends React.PureComponent<Props, {}> {
 
   public render() {
     return (
-      <IconButton className={this.props.classes.button} style={this.props.style} onClick={this.onClick}>
+      <IconButton 
+        className={this.props.classes.button} 
+        style={this.props.style} 
+        onClick={this.onClick}
+        data-testid={this.props['data-testid']}
+      >
         <Tooltip title={this.props.tooltip} classes={{ popper: this.props.classes.tooltip }}>
           <span className={this.props.classes.label}>{this.props.children}</span>
         </Tooltip>

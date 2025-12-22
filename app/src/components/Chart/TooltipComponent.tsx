@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
-import { alpha as fade } from '@mui/material/styles'
-import { Fade, Grow, Paper, Popper, Typography, useTheme } from '@mui/material'
+import { alpha as fade, useTheme } from '@mui/material/styles'
+import { Fade, Grow, Paper, Popper, Typography } from '@mui/material'
 import { Tooltip } from './Model'
 
 function TooltipComponent(props: { tooltip?: Tooltip }) {

@@ -1,13 +1,21 @@
-import { Socket } from 'socket.io-client'
 import { CallbackStore } from './CallbackStore'
 import { EventBusInterface } from './EventBusInterface'
 import { Event } from '../Events'
 
+// Generic socket interface that socket.io-client's Socket implements
+// This avoids direct dependency on socket.io-client package
+export interface SocketLike {
+  on(event: string, callback: (...args: any[]) => void): any
+  off(event: string, callback: (...args: any[]) => void): any
+  removeAllListeners(event: string): any
+  emit(event: string, ...args: any[]): any
+}
+
 export class SocketIOClientEventBus implements EventBusInterface {
-  private socket: Socket
+  private socket: SocketLike
   private callbacks: Array<CallbackStore> = []
 
-  constructor(socket: Socket) {
+  constructor(socket: SocketLike) {
     this.socket = socket
   }
 

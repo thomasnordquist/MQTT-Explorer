@@ -16,15 +16,33 @@ export async function createTestMock(): Promise<mqtt.MqttClient> {
     return mqttClient
   }
 
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
+    console.log('Connecting to MQTT broker at mqtt://127.0.0.1:1883...')
     const client = mqtt.connect('mqtt://127.0.0.1:1883', {
       username: '',
       password: '',
+      connectTimeout: 10000,
+      reconnectPeriod: 0, // Disable reconnect in tests
     })
+    
     client.once('connect', () => {
+      console.log('Successfully connected to MQTT broker')
       mqttClient = client
       resolve(client)
     })
+    
+    client.once('error', (err) => {
+      console.error('MQTT connection error:', err.message)
+      reject(new Error(`Failed to connect to MQTT broker: ${err.message}`))
+    })
+    
+    // Timeout after 15 seconds
+    setTimeout(() => {
+      if (!mqttClient) {
+        console.error('MQTT connection timeout - broker may not be running')
+        reject(new Error('MQTT connection timeout after 15 seconds. Ensure Mosquitto is running on localhost:1883'))
+      }
+    }, 15000)
   })
 }
 

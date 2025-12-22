@@ -1,453 +1,207 @@
 # GitHub Copilot Agent Instructions for MQTT Explorer
 
-## Overview
+## Debugging Browser Mode
 
-MQTT Explorer is an Electron-based desktop application for exploring MQTT brokers. It provides a comprehensive UI for connecting to MQTT brokers, browsing topics, and analyzing message flows.
+### Prerequisites
+- Node.js 24 or higher
+- Yarn package manager
+- Running Mosquitto MQTT broker (for testing)
 
-## Git Commit and PR Guidelines
+### Development Mode (with Hot Reload)
 
-### Commit Messages
+1. **Set credentials (required):**
+   ```bash
+   export MQTT_EXPLORER_USERNAME=admin
+   export MQTT_EXPLORER_PASSWORD=your_password
+   ```
 
-**ALWAYS** use semantic commit message format:
+2. **Start development servers:**
+   ```bash
+   yarn dev:server
+   ```
+   This runs two servers in parallel:
+   - Backend server on http://localhost:3000 (serves API, WebSocket, authentication)
+   - Webpack dev server on http://localhost:8080 (serves frontend with hot reload)
 
-```
-<type>: <description>
+3. **Access the application:**
+   - Navigate to http://localhost:8080 (NOT :3000)
+   - Webpack dev server proxies API/WebSocket requests to backend on port 3000
+   - Hot reload enabled - changes to React components update automatically
 
-[optional body]
+### Production Mode (Production Build)
 
-[optional footer]
-```
+1. **Build the browser version:**
+   ```bash
+   yarn build:server
+   ```
+   This compiles TypeScript and builds the optimized webpack bundle
 
-**Required types:**
-- `feat:` - New feature
-- `fix:` - Bug fix
-- `docs:` - Documentation only changes
-- `style:` - Code style changes (formatting, semicolons, etc.)
-- `refactor:` - Code refactoring without changing functionality
-- `perf:` - Performance improvements
-- `test:` - Adding or updating tests
-- `build:` - Changes to build system or dependencies
-- `ci:` - Changes to CI configuration files and scripts
-- `chore:` - Other changes that don't modify src or test files
+2. **Start the server:**
+   ```bash
+   # Set credentials (required) - these are for the browser login page
+   export MQTT_EXPLORER_USERNAME=admin
+   export MQTT_EXPLORER_PASSWORD=your_password
+   
+   # Start server
+   yarn start:server
+   # OR: node dist/src/server.js
+   ```
+   Server will run on http://localhost:3000 (serves both frontend and backend)
 
-**Examples:**
+3. **Login to the application:**
+   - Navigate to http://localhost:3000
+   - Enter the username and password you set in the environment variables
+   - Click "LOGIN" button
+   - After successful login, the main application will load
+   - The MQTT Connection modal will appear where you can configure broker connections
+
+### Debugging with Browser DevTools
+
+1. **Open browser DevTools:**
+   - Navigate to http://localhost:3000
+   - Press F12 or right-click → Inspect
+   
+2. **Check Console tab:**
+   - Look for JavaScript errors
+   - CSP (Content Security Policy) errors indicate security header issues
+   - Network errors indicate API/WebSocket connection issues
+
+3. **Check Network tab:**
+   - Verify static assets load correctly (JS bundles, CSS)
+   - Check WebSocket connection status
+   - Monitor API calls for authentication issues
+
+4. **Common Issues:**
+
+   **Blank page / CSP errors:**
+   - Symptom: Console shows `EvalError: ... violates Content Security Policy`
+   - Cause: webpack runtime requires `unsafe-eval` for code splitting
+   - Fix: Add `'unsafe-eval'` to `scriptSrc` in `src/server.ts` helmet config
+   
+   **Authentication loop:**
+   - Symptom: Login dialog keeps reappearing
+   - Cause: WebSocket authentication failing
+   - Debug: Check browser Network tab → WS → Messages
+   - Check: Server logs for authentication errors
+   
+   **Theme errors:**
+   - Symptom: App loads but styling is broken
+   - Cause: Material-UI theme not loading correctly
+   - Check: Console for theme-related errors
+   - Verify: Both ThemeProvider and LegacyThemeProvider in `app/src/index.tsx`
+   
+   **Expected console warnings (non-fatal):**
+   - React 18 type warnings with Material-UI v5 components (dozens of "Failed prop type" warnings)
+   - `TypeError: Cannot read properties of undefined (reading 'on')` from IpcRendererEventBus - this is expected in browser mode as there's no Electron IPC
+   - MUI locale warnings for `en-US` - expected, app uses available locales
+   - `componentWillReceiveProps` deprecation warnings - from legacy TreeComponent
+   - ACE editor autocomplete warnings - expected, features not imported
+   - CSP worker violation for ACE editor - known issue, editor still functions
+   
+   These warnings don't prevent the application from functioning correctly.
+
+### Using Playwright for Automated Testing
+
 ```bash
-feat: add support for MQTT 5.0 protocol
-fix: resolve connection timeout issue with SSL/TLS
-docs: update installation instructions for Node.js 24
-test: add unit tests for message parsing
-```
-
-### Pull Request Titles
-
-**ALWAYS** use the same semantic format for PR titles:
-
-```
-<type>: <concise description>
-```
-
-**Examples:**
-- `feat: add WebSocket support for browser mode`
-- `fix: prevent memory leak in topic tree rendering`
-- `docs: improve agent instructions clarity`
-
-## Working Principles
-
-### Be Thorough and Complete
-
-1. **Always validate your changes** - Run tests, linters, and builds to ensure nothing breaks
-2. **Deliver complete solutions** - Don't leave partial implementations or half-fixed bugs
-3. **Test edge cases** - Consider and handle error conditions, edge cases, and failure scenarios
-4. **Verify the fix works** - Manually test the functionality you changed, take screenshots for UI changes
-5. **Follow through** - If a test fails, debug and fix it; don't leave broken tests behind
-
-### Quality Standards
-
-- **Completeness**: Ensure all aspects of the issue are addressed
-- **Correctness**: Verify changes work as expected through testing
-- **Consistency**: Follow existing code patterns and conventions
-- **Clarity**: Write clear code with meaningful variable/function names
-- **Minimal changes**: Make surgical, focused changes that solve the problem without unnecessary refactoring
-
-## Technology Stack
-
-- **Frontend**: React 18.x with Material-UI v5/v6
-- **Backend**: Node.js with TypeScript
-- **Desktop Framework**: Electron 39.x
-- **MQTT Client**: [mqttjs](https://github.com/mqttjs/MQTT.js) v5.x
-- **State Management**: Redux with redux-thunk
-- **Build Tools**: webpack, TypeScript compiler
-- **Testing**: Mocha + Chai for unit tests, Playwright for browser mode tests
-- **Node.js**: Version 24 or higher required
-
-## Project Setup
-
-### Building and Running
-
-```bash
-# Install dependencies
-yarn install
-
-# Build the project
-yarn build
-
-# Set password for browser testing
+# Start server in background
 export MQTT_EXPLORER_USERNAME=admin
-export MQTT_EXPLORER_PASSWORD=secretpassword
+export MQTT_EXPLORER_PASSWORD=test123
+node dist/src/server.js &
 
-# Start the application
-yarn start
-
-# Start in development mode
-yarn dev
+# Use Playwright browser tool (in Copilot agent context)
+playwright-browser_navigate http://localhost:3000
+playwright-browser_take_screenshot --filename debug.png
+playwright-browser_console_messages  # Check for errors
 ```
 
-### Running with MCP Introspection (for testing)
+### Expected UI Flow
 
-```bash
-# Build first
-yarn build
-
-# Start with MCP introspection enabled
-electron . --enable-mcp-introspection
-
-# Or with custom port
-electron . --enable-mcp-introspection --remote-debugging-port=9223
-```
-
-See `mcp.json` in the repository root for MCP configuration.
-
-## Writing Tests
-
-### Requirements for All Tests
-
-1. **Tests MUST be deterministic** - They should produce the same results every time they run
-2. **Tests MUST be independent** - Each test should be able to run in isolation without depending on other tests
-3. **Include screenshots** - Visual verification is required for UI changes
-4. **Handle asynchronous operations properly** - This is an MQTT message queue tool
-
-### Best Practices for UI Tests
-
-#### 1. Use Given-When-Then Pattern
-Structure tests with clear Given-When-Then comments to make them readable:
-
-```typescript
-it('Given a JSON message sent to topic foo/bar/baz, the tree should display nested topics', async function () {
-  // Given: Mock MQTT publishes JSON to foo/bar/baz
-  // When: We wait for the topic to appear in the tree
-  // Then: Topic hierarchy should be visible (foo -> bar -> baz)
-})
-```
-
-#### 2. Wait for Elements, Don't Use Fixed Delays
-Prefer `waitFor` over `sleep` whenever possible:
-
-```typescript
-// ✓ Good: Wait for specific element
-const topic = await page.locator('span[data-test-topic="kitchen"]')
-await topic.waitFor({ state: 'visible', timeout: 5000 })
-
-// ✗ Bad: Fixed delay without verification
-await sleep(5000)
-```
-
-#### 3. Use Meaningful Assertions
-Every test should have explicit assertions that verify the expected state:
-
-```typescript
-// ✓ Good: Explicit assertion with meaningful message
-const treeNodes = await page.locator('[class*="TreeNode"]')
-const count = await treeNodes.count()
-expect(count).to.be.greaterThan(0, 'Topic tree should contain nodes')
-
-// ✗ Bad: No assertion, only screenshot
-await page.screenshot({ path: 'test.png' })
-```
-
-#### 4. Test Data-Driven Scenarios
-Write tests that describe the data flow:
-
-```typescript
-it('Given messages sent to livingroom/lamp/state and livingroom/lamp/brightness, both should appear under livingroom/lamp', async function () {
-  // Test implementation verifies the specific data flow
-})
-```
-
-#### 5. Use Data Test Attributes
-Leverage `data-test-*` attributes for reliable selectors:
-
-```typescript
-// ✓ Good: Use data-test attributes
-const topic = await page.locator('span[data-test-topic="kitchen"]')
-
-// ⚠ Acceptable: Use role/text when data attributes aren't available
-const button = await page.locator('//button/span[contains(text(),"Connect")]')
-
-// ✗ Bad: Rely on CSS classes that may change
-const topic = await page.locator('.MuiTreeItem-label')
-```
-
-#### 6. Verify Multiple Aspects
-Test should verify both state and UI:
-
-```typescript
-// Verify the action completed
-const isVisible = await disconnectButton.isVisible()
-expect(isVisible).to.be.true
-
-// Capture screenshot for visual verification
-await page.screenshot({ path: 'test-screenshot-connection.png' })
-```
-
-#### 7. Handle MQTT Asynchronous Nature
-Account for message propagation time:
-
-```typescript
-// Publish message
-await mockClient.publish('topic/name', 'value')
-
-// Wait for UI to update
-await page.locator(`text="value"`).waitFor({ timeout: 5000 })
-
-// Verify state
-const value = await page.textContent('.message-value')
-expect(value).toBe('value')
-```
-
-### Handling MQTT Asynchronous Operations
-
-MQTT is inherently asynchronous. When writing tests:
-
-- **Wait for message propagation**: Use proper wait strategies (e.g., `await page.waitForSelector()`, `await sleep()`)
-- **Don't assume immediate updates**: Messages take time to send, receive, and update the UI
-- **Use event-based waiting**: Wait for specific UI elements or state changes rather than fixed timeouts when possible
-- **Account for network latency**: MQTT broker communication involves network round trips
-
-### Example Test Pattern
-
-```typescript
-// 1. Perform action (e.g., publish message)
-await publishMessage(topic, payload)
-
-// 2. Wait for UI to update (not just arbitrary sleep)
-await page.waitForSelector(`text="${expectedValue}"`, { timeout: 5000 })
-
-// 3. Verify state
-const value = await page.textContent('.message-value')
-expect(value).toBe(expectedValue)
-
-// 4. Take screenshot for verification
-await page.screenshot({ path: 'test-result.png' })
-```
-
-### Running Tests
-
-```bash
-# Run all tests
-yarn test
-
-# Run specific test suites
-yarn test:app
-yarn test:backend
-yarn test:mcp
-
-# Run linters
-yarn lint
-yarn lint:fix
-```
-
-### Running UI Tests (yarn test:ui)
-
-The UI tests require specific setup in the test environment:
-
-**Prerequisites:**
-1. **Xvfb (X Virtual Framebuffer)** - Required for headless Electron testing
-   ```bash
-   # Start Xvfb on display :99
-   Xvfb :99 -screen 0 1024x720x24 -ac &
-   export DISPLAY=:99
-   ```
-
-2. **Mosquitto MQTT Broker** - Required for MQTT message testing
-   ```bash
-   # Install mosquitto
-   sudo apt-get install -y mosquitto mosquitto-clients
+1. **Login Page** (https://github.com/user-attachments/assets/383305e1-2169-433c-a668-5a05da0c343a)
+   - Enter username and password from environment variables
+   - Click "LOGIN" button
    
-   # Start mosquitto service
-   sudo systemctl start mosquitto
+2. **Main Application After Login** (https://github.com/user-attachments/assets/cc4d665f-2665-4289-b2fc-dc4986f9ab5b)
+   - Application loads with sidebar, topic tree, value panel, and publish panel
+   - MQTT Connection modal appears automatically for first-time setup
+   - Configure broker connection (host, port, credentials, etc.)
+   - Click "CONNECT" to establish MQTT connection
    
-   # Verify it's running on port 1883
-   sudo systemctl status mosquitto
-   ```
+3. **Application Features:**
+   - Topic tree on the left shows MQTT topic hierarchy
+   - Value panel shows selected topic's message content
+   - Publish panel allows sending MQTT messages
+   - Charts panel for numeric value visualization
+   - Settings drawer for app configuration
 
-3. **@types/node** - Required for TypeScript compilation
+### Debugging WebSocket Connection
+
+1. **Check server logs:**
    ```bash
-   yarn add -D @types/node
+   node dist/src/server.js 2>&1 | tee server.log
    ```
 
-**Running UI Tests:**
-```bash
-# Build the application first
-yarn build
+2. **Check browser WebSocket:**
+   - DevTools → Network → WS tab
+   - Look for socket.io connection
+   - Check Messages tab for authentication handshake
 
-# Run UI tests with proper display
-DISPLAY=:99 yarn test:ui
+3. **Common WebSocket issues:**
+   - CORS errors: Check `ALLOWED_ORIGINS` environment variable
+   - Authentication errors: Verify credentials in sessionStorage
+   - Connection refused: Server not running or port blocked
+
+### Development vs Production
+
+**Development mode:**
+```bash
+yarn dev:server
+# Runs webpack-dev-server with hot reload
+# More verbose error messages
+# Source maps enabled
 ```
 
-**Common Issues:**
-- **"Timeout exceeded" in before hook**: Mosquitto is not running or not accessible on port 1883
-- **"Cannot find type definition file for 'node'"**: Run `yarn add -D @types/node`
-- **Electron fails to launch**: Xvfb is not running or DISPLAY variable not set
-- **Tests hang**: Check if old Electron/mosquitto processes are still running and kill them
-
-**Environment Cleanup:**
+**Production mode:**
 ```bash
-# Kill old Electron processes
-ps aux | grep electron | grep -v grep | awk '{print $2}' | xargs kill -9 2>/dev/null
-
-# Kill old mosquitto processes (if running custom instance)
-ps aux | grep mosquitto | grep -v grep | awk '{print $2}' | xargs kill -9 2>/dev/null
+NODE_ENV=production yarn build:server
+NODE_ENV=production node dist/src/server.js
+# Minified bundles
+# Generic error messages (security)
+# HSTS enabled
 ```
-
-## MCP Introspection Testing
-
-The project supports MCP (Model Context Protocol) for automated testing:
-
-- Run tests: `yarn test:mcp`
-- Configuration: `mcp.json` in repository root
-- Tests launch the app with remote debugging on port 9222
-
-## Project Structure
-
-- `app/` - Frontend React application
-- `backend/` - Backend models, tests, and connection management
-- `src/` - Electron main process and bindings
-- `src/spec/` - Test specifications including MCP introspection tests
-
-## Code Style and Formatting
-
-### Linting
-
-The project uses TSLint with Airbnb config and Prettier for code formatting:
-
-```bash
-# Run all linters
-yarn lint
-
-# Run linters individually
-yarn lint:prettier    # Check Prettier formatting
-yarn lint:tslint      # Check TSLint rules
-yarn lint:spellcheck  # Check spelling in code
-
-# Auto-fix issues
-yarn lint:fix         # Fix TSLint and Prettier issues
-yarn lint:tslint:fix  # Fix TSLint issues only
-yarn lint:prettier:fix # Fix Prettier issues only
-```
-
-### Code Style Rules
-
-- **Semicolons**: Never use semicolons (enforced by TSLint and Prettier)
-- **Quotes**: Single quotes for strings
-- **Indentation**: 2 spaces
-- **Line length**: Maximum 120 characters (Prettier) / 200 characters (TSLint)
-- **Arrow functions**: No parentheses for single parameters (`x => x + 1`)
-- **Trailing commas**: Required for multiline objects and arrays (ES5 compatible)
-
-### TypeScript Guidelines
-
-- Enable strict null checks and no implicit any
-- Use TypeScript interfaces for data structures
-- Prefer `const` over `let`, avoid `var`
-- Use type inference when possible, explicit types when clarity is needed
-
-## Dependency Management
-
-### Adding Dependencies
-
-```bash
-# Add to root project
-yarn add <package-name>
-
-# Add to app (frontend)
-cd app && yarn add <package-name>
-
-# Add to backend
-cd backend && yarn add <package-name>
-
-# Add dev dependencies
-yarn add -D <package-name>
-```
-
-### Important Dependency Notes
-
-- Main dependencies are in the root `package.json`
-- Frontend React app has its own dependencies in `app/package.json`
-- Backend models and logic have dependencies in `backend/package.json`
-- Always use `--frozen-lockfile` in CI to ensure reproducible builds
-- Run `yarn install` after pulling changes that modify `yarn.lock`
-
-## Debugging
-
-### Development Mode
-
-```bash
-# Start with hot reload for frontend
-yarn dev
-
-# This runs two processes in parallel:
-# 1. webpack-dev-server for the React app (port varies)
-# 2. Electron in development mode with the --development flag
-```
-
-### Debugging TypeScript
-
-- Source maps are enabled in `tsconfig.json`
-- Use `ts-node` for running TypeScript files directly
-- Backend tests can be debugged with: `cd backend && yarn test-inspect`
-
-### Common Issues
-
-- **Build fails**: Clear `dist/` and `app/build/` directories, then rebuild
-- **Electron won't start**: Ensure `yarn build` completed successfully
-- **Tests fail**: Check if MQTT broker (mosquitto) is running for integration tests
-- **UI not updating**: In dev mode, ensure webpack-dev-server is running
-
-## Deployment and Packaging
-
-### Creating Releases
-
-```bash
-# Prepare release (updates version, changelog)
-yarn prepare-release
-
-# Package the application for distribution
-yarn package
-
-# Package with Docker (for consistent builds)
-yarn package-with-docker
-```
-
-### Release Workflow
-
-- **Semantic commits required**: All commits must use semantic format (`feat:`, `fix:`, etc.)
-- **Beta releases**: Create PR to `beta` branch with semantic commits
-- **Production releases**: Create PR to `release` branch with semantic commits
-- Semantic-release automatically handles versioning and changelog based on commit messages
-- Builds are created for Windows, macOS, and Linux
 
 ### Build Artifacts
 
-- Output directory: `build/`
-- Supported formats: DMG (macOS), EXE/NSIS (Windows), AppImage/Snap (Linux), AppX (Windows Store)
-- Code signing is configured via `res/` directory certificates and provisioning profiles
+After `yarn build:server`, check:
+- `dist/src/server.js` - Compiled server code
+- `app/build/*.js` - Webpack bundles
+- `app/build/index.html` - Entry point HTML
 
-## Important Notes
+### Troubleshooting Checklist
 
-- **Always build first**: Run `yarn build` before starting the application
-- **Node.js requirement**: Version 24 or higher
-- **Linting**: All code changes must pass `yarn lint`
-- **MQTT library**: Communication handled via [mqttjs](https://github.com/mqttjs/MQTT.js)
-- **Workspace structure**: Separate package.json files for root, app, and backend
-- Provide screenshots in each PR to show that the application still works, if the PR is about a feature the screenshot should depict the feature if possible.
-- Resolve all errors during build, especially typescript and webpack builds.
+- [ ] Node.js version >=24
+- [ ] `yarn install` completed without errors  
+- [ ] TypeScript compilation successful (`npx tsc`)
+- [ ] Webpack build successful (check `app/build/` directory)
+- [ ] Server starts without errors
+- [ ] Can access http://localhost:3000
+- [ ] Login dialog appears
+- [ ] No CSP errors in console
+- [ ] WebSocket connects successfully
+- [ ] App renders after login
+
+### Security Considerations
+
+When debugging, be aware that:
+- `unsafe-eval` in CSP is required for webpack but reduces security
+- Credentials should never be hardcoded (use environment variables)
+- In production, use HTTPS with a reverse proxy (nginx/Apache)
+- Rate limiting is active (5 auth attempts per 15 min per IP)
+- File upload size limit is 16MB
+
+### Related Files
+
+- `src/server.ts` - Express server with security middleware
+- `app/webpack.browser.config.mjs` - Browser-specific webpack config  
+- `app/src/browserEventBus.ts` - Socket.io client for browser mode
+- `app/src/components/BrowserAuthWrapper.tsx` - Authentication dialog
+- `app/src/index.tsx` - React app entry point with theme providers
