@@ -50,6 +50,7 @@ function ChartPanel(props: Props) {
   const chartsInView = props.charts.count()
 
   const [spacing, setSpacing] = React.useState(spacingForChartCount(chartsInView))
+  const nodeRefsMap = React.useRef<Map<string, React.RefObject<HTMLDivElement>>>(new Map())
 
   React.useEffect(() => {
     props.actions.chart.loadCharts()
@@ -65,11 +66,34 @@ function ChartPanel(props: Props) {
     }
   }, [chartsInView])
 
+  // Clean up refs for removed charts
+  React.useEffect(() => {
+    const currentKeys = new Set(
+      props.charts.map(chart => `${chart.topic}-${chart.dotPath || ''}`).toArray()
+    )
+    const refsToDelete: string[] = []
+    
+    nodeRefsMap.current.forEach((_, key) => {
+      if (!currentKeys.has(key)) {
+        refsToDelete.push(key)
+      }
+    })
+    
+    refsToDelete.forEach(key => nodeRefsMap.current.delete(key))
+  }, [props.charts])
+
   const charts = props.charts.map(chartParameters => {
-    const nodeRef = React.createRef<HTMLDivElement>()
+    const key = `${chartParameters.topic}-${chartParameters.dotPath || ''}`
+    
+    // Get or create a ref for this specific chart
+    if (!nodeRefsMap.current.has(key)) {
+      nodeRefsMap.current.set(key, React.createRef<HTMLDivElement>())
+    }
+    const nodeRef = nodeRefsMap.current.get(key)!
+    
     return (
       <CSSTransition
-        key={`${chartParameters.topic}-${chartParameters.dotPath || ''}`}
+        key={key}
         timeout={{ enter: 500, exit: 500 }}
         classNames="example"
         nodeRef={nodeRef}
