@@ -21,6 +21,8 @@ export interface Props {
   color?: string
 }
 
+const CHART_HEIGHT = 150
+
 export default memo((props: Props) => {
   const theme = useTheme()
   const [tooltip, setTooltip] = React.useState<Tooltip | undefined>()
@@ -85,12 +87,12 @@ export default memo((props: Props) => {
 
   return (
     <div>
-      <div ref={ref} style={{ height: '150px', width: '100%', position: 'relative' }}>
+      <div ref={ref} style={{ height: `${CHART_HEIGHT}px`, width: '100%', position: 'relative' }}>
         {data.length === 0 ? <NoData /> : null}
         <div ref={chartContainerRef}>
           <XYChart
             width={width || 300}
-            height={150}
+            height={CHART_HEIGHT}
             margin={{ top: 10, right: 10, bottom: 30, left: 50 }}
             xScale={{ type: 'linear', domain: hasData ? (xDomain ?? dummyDomain) : dummyDomain }}
             yScale={{ type: 'linear', domain: hasData ? yDomain : dummyDomain }}
@@ -125,7 +127,6 @@ export default memo((props: Props) => {
                     cy={glyphProps.y}
                     r={3}
                     fill={pointColor}
-                    stroke={pointColor}
                   />
                 )
               }}
