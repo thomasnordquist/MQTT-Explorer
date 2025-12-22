@@ -1,20 +1,13 @@
-import ConnectButton from './ConnectButton'
 import React, { useCallback, useState } from 'react'
 import Save from '@mui/icons-material/Save'
 import Delete from '@mui/icons-material/Delete'
 import Settings from '@mui/icons-material/Settings'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
-import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { connectionActions, connectionManagerActions } from '../../actions'
-import { ConnectionOptions, toMqttConnection } from '../../model/ConnectionOptions'
-import { KeyCodes } from '../../utils/KeyCodes'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
-import { ToggleSwitch } from './ToggleSwitch'
-import { useGlobalKeyEventHandler } from '../../effects/useGlobalKeyEventHandler'
 import {
   Button,
   FormControl,
@@ -26,6 +19,13 @@ import {
   MenuItem,
   TextField,
 } from '@mui/material'
+import { AppState } from '../../reducers'
+import { connectionActions, connectionManagerActions } from '../../actions'
+import { ConnectionOptions, toMqttConnection } from '../../model/ConnectionOptions'
+import { KeyCodes } from '../../utils/KeyCodes'
+import { ToggleSwitch } from './ToggleSwitch'
+import { useGlobalKeyEventHandler } from '../../effects/useGlobalKeyEventHandler'
+import ConnectButton from './ConnectButton'
 
 interface Props {
   connection: ConnectionOptions
@@ -70,7 +70,7 @@ function ConnectionSettings(props: Props) {
 
   function renderBasePathInput() {
     return (
-      <Grid item={true} xs={4}>
+      <Grid item xs={4}>
         <TextField
           label="Basepath"
           className={props.classes.textField}
@@ -101,13 +101,14 @@ function ConnectionSettings(props: Props) {
 
     const protocolItems = protocols.map((value: string) => (
       <MenuItem key={value} value={value}>
-        {value}://
+        {value}
+        ://
       </MenuItem>
     ))
 
     return (
       <TextField
-        select={true}
+        select
         label="Protocol"
         className={classes.textField}
         value={connection.protocol}
@@ -120,7 +121,7 @@ function ConnectionSettings(props: Props) {
   }
 
   const updateProtocol = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value
+    const { value } = event.target
     updateConnection('protocol', value)
     if (event.target.value === 'mqtt') {
       updateConnection('basePath', undefined)
@@ -155,11 +156,11 @@ function ConnectionSettings(props: Props) {
 
   return (
     <div>
-      <form className={classes.container} noValidate={true} autoComplete="off">
-        <Grid container={true} spacing={3}>
-          <Grid item={true} xs={5}>
+      <form className={classes.container} noValidate autoComplete="off">
+        <Grid container spacing={3}>
+          <Grid item xs={5}>
             <TextField
-              autoFocus={true}
+              autoFocus
               label="Name"
               className={classes.textField}
               value={connection.name}
@@ -167,7 +168,7 @@ function ConnectionSettings(props: Props) {
               margin="normal"
             />
           </Grid>
-          <Grid item={true} xs={4}>
+          <Grid item xs={4}>
             <ToggleSwitch
               label="Validate certificate"
               classes={classes}
@@ -175,13 +176,13 @@ function ConnectionSettings(props: Props) {
               toggle={toggleCertValidation}
             />
           </Grid>
-          <Grid item={true} xs={3}>
+          <Grid item xs={3}>
             <ToggleSwitch label="Encryption (tls)" classes={classes} value={connection.encryption} toggle={toggleTls} />
           </Grid>
-          <Grid item={true} xs={2}>
+          <Grid item xs={2}>
             {renderProtocols()}
           </Grid>
-          <Grid item={true} xs={7}>
+          <Grid item xs={7}>
             <TextField
               label="Host"
               className={classes.textField}
@@ -190,7 +191,7 @@ function ConnectionSettings(props: Props) {
               margin="normal"
             />
           </Grid>
-          <Grid item={true} xs={3}>
+          <Grid item xs={3}>
             <TextField
               label="Port"
               className={classes.textField}
@@ -200,7 +201,7 @@ function ConnectionSettings(props: Props) {
             />
           </Grid>
           {requiresBasePath() ? renderBasePathInput() : null}
-          <Grid item={true} xs={requiresBasePath() ? 4 : 6}>
+          <Grid item xs={requiresBasePath() ? 4 : 6}>
             <TextField
               label="Username"
               className={classes.textField}
@@ -209,7 +210,7 @@ function ConnectionSettings(props: Props) {
               margin="normal"
             />
           </Grid>
-          <Grid item={true} xs={requiresBasePath() ? 4 : 6}>
+          <Grid item xs={requiresBasePath() ? 4 : 6}>
             <FormControl className={`${classes.textField} ${classes.inputFormControl}`}>
               <InputLabel htmlFor="adornment-password">Password</InputLabel>
               <Input
@@ -230,7 +231,9 @@ function ConnectionSettings(props: Props) {
               className={classes.button}
               onClick={() => props.managerActions.deleteConnection(props.connection.id)}
             >
-              Delete <Delete />
+              Delete
+              {' '}
+              <Delete />
             </Button>
             <Button
               variant="contained"
@@ -238,7 +241,9 @@ function ConnectionSettings(props: Props) {
               onClick={props.managerActions.toggleAdvancedSettings}
               data-testid="advanced-button"
             >
-              <Settings /> Advanced
+              <Settings />
+              {' '}
+              Advanced
             </Button>
           </div>
           <div style={{ float: 'right' }}>
@@ -248,7 +253,9 @@ function ConnectionSettings(props: Props) {
               className={classes.button}
               onClick={props.managerActions.saveConnectionSettings}
             >
-              <Save /> Save
+              <Save />
+              {' '}
+              Save
             </Button>
             <ConnectButton toggle={toggleConnect} connecting={props.connecting} classes={classes} />
           </div>
@@ -258,19 +265,15 @@ function ConnectionSettings(props: Props) {
   )
 }
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    connected: state.connection.connected,
-    connecting: state.connection.connecting,
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  connected: state.connection.connected,
+  connecting: state.connection.connecting,
+})
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: bindActionCreators(connectionActions, dispatch),
-    managerActions: bindActionCreators(connectionManagerActions, dispatch),
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: bindActionCreators(connectionActions, dispatch),
+  managerActions: bindActionCreators(connectionManagerActions, dispatch),
+})
 
 const styles = (theme: Theme) => ({
   textField: {

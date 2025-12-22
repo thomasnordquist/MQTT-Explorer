@@ -1,9 +1,9 @@
 import React, { memo } from 'react'
 import { bindActionCreators } from 'redux'
-import { chartActions } from '../../../actions'
-import { ChartParameters } from '../../../reducers/Charts'
 import { connect } from 'react-redux'
 import { Menu, MenuItem } from '@mui/material'
+import { chartActions } from '../../../actions'
+import { ChartParameters } from '../../../reducers/Charts'
 import { colors as createColors } from './colors'
 
 function chartParametersForColor(chart: ChartParameters, color?: string) {
@@ -27,20 +27,20 @@ function ColorSettings(props: {
 }) {
   const setColor = React.useCallback(
     (color?: string) => props.actions.chart.updateChart(chartParametersForColor(props.chart, color)),
-    [props.chart]
+    [props.chart],
   )
 
-  const menuItems = React.useMemo(() => {
-    return colors.map(color => (
-      <MenuItem
-        style={{ minWidth: '8em', minHeight: '36px', backgroundColor: color, textAlign: 'center' }}
-        key={color}
-        onClick={() => setColor(color)}
-      >
-        {props.chart.color === color ? 'X' : ''}
-      </MenuItem>
-    ))
-  }, [colors, props.chart])
+  const menuItems = React.useMemo(() => colors.map((color) => (
+    <MenuItem
+      style={{
+        minWidth: '8em', minHeight: '36px', backgroundColor: color, textAlign: 'center',
+      }}
+      key={color}
+      onClick={() => setColor(color)}
+    >
+      {props.chart.color === color ? 'X' : ''}
+    </MenuItem>
+  )), [colors, props.chart])
 
   return (
     <Menu anchorEl={props.anchorEl} open={props.open} onClose={props.close}>
@@ -57,12 +57,10 @@ function ColorSettings(props: {
   )
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: {
-      chart: bindActionCreators(chartActions, dispatch),
-    },
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: {
+    chart: bindActionCreators(chartActions, dispatch),
+  },
+})
 
 export default connect(undefined, mapDispatchToProps)(memo(ColorSettings))

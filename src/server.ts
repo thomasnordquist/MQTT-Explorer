@@ -6,9 +6,9 @@ import { promises as fsPromise } from 'fs'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import { body, validationResult } from 'express-validator'
+import { ConnectionManager } from 'mqtt-explorer-backend/src/index'
+import ConfigStorage from 'mqtt-explorer-backend/src/ConfigStorage'
 import { AuthManager } from './AuthManager'
-import { ConnectionManager } from '../backend/src/index'
-import ConfigStorage from '../backend/src/ConfigStorage'
 import { SocketIOServerEventBus } from '../events/EventSystem/SocketIOServerEventBus'
 import { Rpc } from '../events/EventSystem/Rpc'
 import { makeOpenDialogRpc, makeSaveDialogRpc } from '../events/OpenDialogRequest'
@@ -87,12 +87,12 @@ async function startServer() {
       },
       hsts: isProduction
         ? {
-            maxAge: 31536000,
-            includeSubDomains: true,
-            preload: true,
-          }
+          maxAge: 31536000,
+          includeSubDomains: true,
+          preload: true,
+        }
         : false,
-    })
+    }),
   )
 
   // Rate limiting for authentication attempts
@@ -107,18 +107,17 @@ async function startServer() {
   const server = http.createServer(app)
 
   // Determine allowed origins for CORS
-  const corsOrigin =
-    ALLOWED_ORIGINS[0] === '*' && isProduction
-      ? false // In production, require explicit origins
-      : ALLOWED_ORIGINS[0] === '*'
-        ? '*'
-        : (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-            if (!origin || ALLOWED_ORIGINS.includes(origin)) {
-              callback(null, true)
-            } else {
-              callback(new Error('Not allowed by CORS'))
-            }
-          }
+  const corsOrigin = ALLOWED_ORIGINS[0] === '*' && isProduction
+    ? false // In production, require explicit origins
+    : ALLOWED_ORIGINS[0] === '*'
+      ? '*'
+      : (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+        if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+          callback(null, true)
+        } else {
+          callback(new Error('Not allowed by CORS'))
+        }
+      }
 
   const io = new Server(server, {
     cors: {
@@ -163,7 +162,7 @@ async function startServer() {
         console.log('Client connected without authentication (auth disabled)')
       }
       // Mark socket as auth-disabled for later identification
-      ;(socket as any).authDisabled = true
+      (socket as any).authDisabled = true
       return next()
     }
 
@@ -198,11 +197,11 @@ async function startServer() {
       attempts.count++
       attempts.lastAttempt = now
       failedAttempts.set(clientIp, attempts)
-      
+
       // Calculate next wait time for informational purposes
       const nextBackoff = calculateBackoffTime(attempts.count)
       const nextWaitSeconds = Math.ceil(nextBackoff / 1000)
-      
+
       return next(new Error(`Invalid credentials. Next attempt allowed in ${nextWaitSeconds} seconds.`))
     }
 
@@ -220,7 +219,7 @@ async function startServer() {
     // Inform client about auth status
     const authDisabled = (socket as any).authDisabled === true
     socket.emit('auth-status', { authDisabled })
-    
+
     if (!isProduction) {
       console.log(`Client connected, auth disabled: ${authDisabled}`)
     }
@@ -239,16 +238,14 @@ async function startServer() {
   configStorage.init()
 
   // Setup RPC handlers for file operations
-  backendRpc.on(makeOpenDialogRpc(), async request => {
+  backendRpc.on(makeOpenDialogRpc(), async (request) =>
     // In browser mode, file selection is handled client-side via upload
     // Return empty result as this will be handled differently
-    return { canceled: true, filePaths: [] }
-  })
+    ({ canceled: true, filePaths: [] }))
 
-  backendRpc.on(makeSaveDialogRpc(), async request => {
+  backendRpc.on(makeSaveDialogRpc(), async (request) =>
     // In browser mode, file saving is handled client-side via download
-    return { canceled: true, filePath: '' }
-  })
+    ({ canceled: true, filePath: '' }))
 
   backendRpc.on(getAppVersion, async () => {
     // Return version from package.json
@@ -393,7 +390,7 @@ async function startServer() {
   })
 }
 
-startServer().catch(error => {
+startServer().catch((error) => {
   console.error('Failed to start server:', error)
   process.exit(1)
 })

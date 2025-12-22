@@ -3,13 +3,13 @@ import Code from '@mui/icons-material/Code'
 import Reorder from '@mui/icons-material/Reorder'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import { settingsActions } from '../../../actions'
 import { Tooltip } from '@mui/material'
 import { withStyles } from '@mui/styles'
 import { Theme } from '@mui/material/styles'
 import { bindActionCreators } from 'redux'
-import { AppState } from '../../../reducers'
 import { connect } from 'react-redux'
+import { AppState } from '../../../reducers'
+import { settingsActions } from '../../../actions'
 import { ValueRendererDisplayMode } from '../../../reducers/Settings'
 
 function ActionButtons(props: {
@@ -24,14 +24,14 @@ function ActionButtons(props: {
       }
       props.actions.settings.setValueDisplayMode(value)
     },
-    [props.actions.settings.setValueDisplayMode]
+    [props.actions.settings.setValueDisplayMode],
   )
 
   return (
     <ToggleButtonGroup
       id="valueRendererDisplayMode"
       value={props.valueRendererDisplayMode}
-      exclusive={true}
+      exclusive
       onChange={handleValue}
     >
       <ToggleButton className={props.classes.toggleButton} value="diff" id="valueRendererDisplayMode-diff">
@@ -61,18 +61,14 @@ const styles = (theme: Theme) => ({
   },
 })
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: {
-      settings: bindActionCreators(settingsActions, dispatch),
-    },
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: {
+    settings: bindActionCreators(settingsActions, dispatch),
+  },
+})
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    valueRendererDisplayMode: state.settings.get('valueRendererDisplayMode'),
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  valueRendererDisplayMode: state.settings.get('valueRendererDisplayMode'),
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ActionButtons) as any)

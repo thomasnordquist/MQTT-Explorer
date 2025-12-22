@@ -1,5 +1,5 @@
-import { createReducer } from './lib'
 import { Record } from 'immutable'
+import { createReducer } from './lib'
 
 export enum TopicOrder {
   none = 'none',
@@ -23,14 +23,14 @@ export interface SettingsStateModel {
 export type SettingsState = Record<SettingsStateModel>
 
 export type Actions = SetAutoExpandLimitAction &
-  DidLoadSettingsAction &
-  SetTopicOrderAction &
-  FilterTopicsAction &
-  ToggleHighlightTopicUpdatesAction &
-  SetValueRendererDisplayModeAction &
-  SetTheme &
-  SetSelectTopicWithMouseOverAction &
-  SetTimeLocale
+DidLoadSettingsAction &
+SetTopicOrderAction &
+FilterTopicsAction &
+ToggleHighlightTopicUpdatesAction &
+SetValueRendererDisplayModeAction &
+SetTheme &
+SetSelectTopicWithMouseOverAction &
+SetTimeLocale
 
 export enum ActionTypes {
   SETTINGS_SET_AUTO_EXPAND_LIMIT = 'SETTINGS_SET_AUTO_EXPAND_LIMIT',
@@ -56,9 +56,7 @@ const initialState = Record<SettingsStateModel>({
   topicFilter: undefined,
 })
 
-const setTheme = (theme: 'light' | 'dark') => (state: SettingsState) => {
-  return state.set('theme', theme)
-}
+const setTheme = (theme: 'light' | 'dark') => (state: SettingsState) => state.set('theme', theme)
 
 const reducerActions: {
   [s: string]: (state: SettingsState, action: Actions) => SettingsState

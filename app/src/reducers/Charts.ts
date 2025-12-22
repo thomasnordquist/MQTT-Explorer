@@ -1,5 +1,5 @@
-import { createReducer } from './lib'
 import { Record, List } from 'immutable'
+import { createReducer } from './lib'
 import MoveUp from '../components/ChartPanel/ChartSettings/MoveUp'
 
 export type PlotCurveTypes = 'curve' | 'linear' | 'cubic_basis_spline' | 'step_after' | 'step_before'
@@ -81,7 +81,7 @@ function addChart(state: ChartsState, action: AddChart) {
 
 function moveUp(state: ChartsState, action: MoveUp) {
   const charts = state.get('charts')
-  const idx = charts.findIndex(chart => chart.topic === action.topic && chart.dotPath === action.dotPath)
+  const idx = charts.findIndex((chart) => chart.topic === action.topic && chart.dotPath === action.dotPath)
   const item = charts.get(idx)
   const previousItem = charts.get(idx - 1)
 
@@ -95,7 +95,7 @@ function moveUp(state: ChartsState, action: MoveUp) {
 
 function updateChart(state: ChartsState, action: UpdateChart) {
   const charts = state.get('charts')
-  const chartIdx = charts.findIndex(chart => chart.topic === action.topic && chart.dotPath === action.dotPath)
+  const chartIdx = charts.findIndex((chart) => chart.topic === action.topic && chart.dotPath === action.dotPath)
   const chart = charts.get(chartIdx)
 
   return state.set('charts', chart ? charts.set(chartIdx, { ...chart, ...action.parameters }) : charts)
@@ -103,7 +103,7 @@ function updateChart(state: ChartsState, action: UpdateChart) {
 
 function removeChart(state: ChartsState, action: RemoveChart) {
   const charts = state.get('charts')
-  const newCharts = charts.filter(chart => chart.topic !== action.chart.topic || chart.dotPath !== action.chart.dotPath)
+  const newCharts = charts.filter((chart) => chart.topic !== action.chart.topic || chart.dotPath !== action.chart.dotPath)
   return state.set('charts', newCharts)
 }
 

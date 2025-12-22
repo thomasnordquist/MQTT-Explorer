@@ -1,4 +1,5 @@
 import { PlotCurveTypes } from '../../reducers/Charts'
+
 export function mapCurveType(type: PlotCurveTypes | undefined) {
   switch (type) {
     case 'curve':

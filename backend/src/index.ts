@@ -1,5 +1,3 @@
-import { Base64Message } from './Model/Base64Message'
-import { DataSource, MqttSource } from './DataSource'
 import {
   AddMqttConnection,
   MqttMessage,
@@ -8,11 +6,14 @@ import {
   makeConnectionStateEvent,
   makePublishEvent,
   removeConnection,
-} from '../../events'
-import { EventBusInterface } from '../../events/EventSystem/EventBusInterface'
+} from 'MQTT-Explorer/events/events'
+import { EventBusInterface } from 'MQTT-Explorer/events/EventSystem/EventBusInterface'
+import { Base64Message } from './Model/Base64Message'
+import { DataSource, MqttSource } from './DataSource'
 
 export class ConnectionManager {
   private connections: { [s: string]: DataSource<any> } = {}
+
   private backendEvents: EventBusInterface
 
   constructor(backendEvents: EventBusInterface) {
@@ -27,12 +28,12 @@ export class ConnectionManager {
       this.removeConnection(connectionId)
     }
 
-    const options = event.options
+    const { options } = event
     const connection = new MqttSource()
     this.connections[connectionId] = connection
 
     const connectionStateEvent = makeConnectionStateEvent(connectionId)
-    connection.stateMachine.onUpdate.subscribe(state => {
+    connection.stateMachine.onUpdate.subscribe((state) => {
       this.backendEvents.emit(connectionStateEvent, state)
     })
 
@@ -82,6 +83,6 @@ export class ConnectionManager {
   }
 
   public closeAllConnections() {
-    Object.keys(this.connections).forEach(connectionId => this.removeConnection(connectionId))
+    Object.keys(this.connections).forEach((connectionId) => this.removeConnection(connectionId))
   }
 }

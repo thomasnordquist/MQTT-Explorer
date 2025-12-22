@@ -1,4 +1,4 @@
-import { Base64Message } from '../../../backend/src/Model/Base64Message'
+import { Base64Message } from 'mqtt-explorer-backend/src/Model/Base64Message'
 import { DecoderEnvelope } from './DecoderEnvelope'
 
 export interface MessageDecoder<T = string> {

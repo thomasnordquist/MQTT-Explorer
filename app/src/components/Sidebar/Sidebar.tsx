@@ -1,19 +1,20 @@
-import * as q from '../../../../backend/src/Model'
 import React, { useState, useEffect, useCallback } from 'react'
-import NodeStats from './NodeStats'
-import ValuePanel from './ValueRenderer/ValuePanel'
-const ValuePanelAny = ValuePanel as any
-import { AppState } from '../../reducers'
 import { AccordionDetails } from '@mui/material'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { settingsActions, sidebarActions } from '../../actions'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
+import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import NodeStats from './NodeStats'
+import { settingsActions, sidebarActions } from '../../actions'
+import { AppState } from '../../reducers'
+import ValuePanel from './ValueRenderer/ValuePanel'
 import { TopicViewModel } from '../../model/TopicViewModel'
 import TopicPanel from './TopicPanel/TopicPanel'
 import Panel from './Panel'
 import { usePollingToFetchTreeNode } from '../helper/usePollingToFetchTreeNode'
+
+const ValuePanelAny = ValuePanel as any
 
 const throttle = require('lodash.throttle')
 
@@ -34,7 +35,7 @@ function useUpdateNodeWhenNodeReceivesUpdates(node?: q.TreeNode<any>) {
     throttle(() => {
       setLastUpdate(node ? node.lastUpdate : 0)
     }, 300),
-    [node]
+    [node],
   )
 
   useEffect(() => {
@@ -82,16 +83,14 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: bindActionCreators(sidebarActions, dispatch),
-    settingsActions: bindActionCreators(settingsActions, dispatch),
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: bindActionCreators(sidebarActions, dispatch),
+  settingsActions: bindActionCreators(settingsActions, dispatch),
+})
 
 const styles = (theme: Theme) => ({
   drawer: {
-    display: 'block' as 'block',
+    display: 'block' as const,
   },
   details: {
     padding: '0px 16px 8px 8px',

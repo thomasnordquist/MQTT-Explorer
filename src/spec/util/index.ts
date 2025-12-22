@@ -10,7 +10,7 @@ export function setFast() {
 }
 
 export function sleep(ms: number, required = false) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     if (required) {
       setTimeout(resolve, ms)
     } else {
@@ -45,7 +45,7 @@ export async function setTextInInput(name: string, text: string, browser: Page) 
     `//div[contains(@class, 'MuiTextField')]//label[contains(text(), "${name}")]/..//input`,
     `//input[@name="${name.toLowerCase()}"]`,
   ]
-  
+
   let input: Locator | null = null
   for (const selector of selectors) {
     const locator = browser.locator(selector)
@@ -55,7 +55,7 @@ export async function setTextInInput(name: string, text: string, browser: Page) 
       break
     }
   }
-  
+
   if (!input) {
     throw new Error(`Could not find input for label "${name}"`)
   }
@@ -75,7 +75,9 @@ export async function moveToCenterOfElement(element: Locator) {
     throw new Error('Could not get bounding box for element')
   }
 
-  const { x, y, width, height } = boundingBox
+  const {
+    x, y, width, height,
+  } = boundingBox
 
   const targetX = x + width / 2
   const targetY = y + height / 2
@@ -97,7 +99,7 @@ export async function moveToCenterOfElement(element: Locator) {
 export async function runJavascript(js: string, browser: Page) {
   // there is probably a safer way to do this.. do not use eval...
   // tslint:disable-next-line no-eval
-  return browser.evaluate(script => eval(script), js)
+  return browser.evaluate((script) => eval(script), js)
 }
 
 export async function clickOnHistory(browser: Page) {
@@ -110,7 +112,7 @@ export async function clickOn(
   clicks = 1,
   delay = 0,
   button: 'left' | 'right' | 'middle' = 'left',
-  force = false
+  force = false,
 ) {
   // Ensure element is visible before trying to interact
   await element.waitFor({ state: 'visible', timeout: 30000 })
@@ -126,7 +128,9 @@ export async function clickOn(
       console.log('Custom mouse movement failed, proceeding with direct click')
     }
   }
-  await element.click({ delay, button, force, clickCount: clicks })
+  await element.click({
+    delay, button, force, clickCount: clicks,
+  })
   await sleep(50)
 }
 
@@ -141,7 +145,7 @@ export async function showText(
   duration: number = 0,
   browser: Page,
   location: 'top' | 'bottom' | 'middle' = 'bottom',
-  keys = []
+  keys = [],
 ) {
   const js = `window.demo.showMessage('${text}', '${location}', ${duration});`
 
@@ -175,7 +179,7 @@ export async function showKeys(
   duration: number = 0,
   browser: Page,
   location: 'top' | 'bottom' | 'middle' = 'bottom',
-  keys: Array<string> = []
+  keys: Array<string> = [],
 ) {
   const js = `window.demo.showMessage('${text}', '${location}', ${duration}, ${JSON.stringify(keys)});`
 

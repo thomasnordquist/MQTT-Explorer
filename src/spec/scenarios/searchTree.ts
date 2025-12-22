@@ -1,5 +1,7 @@
 import { Page } from 'playwright'
-import { clickOn, deleteTextWithBackspaces, showText, sleep, writeText } from '../util'
+import {
+  clickOn, deleteTextWithBackspaces, showText, sleep, writeText,
+} from '../util'
 
 export async function searchTree(text: string, browser: Page) {
   const searchField = await browser.locator('//input[contains(@placeholder, "Search")]')

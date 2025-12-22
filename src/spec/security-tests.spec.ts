@@ -13,7 +13,7 @@ describe('Security Tests', () => {
         '....//....//etc/passwd',
       ]
 
-      testCases.forEach(testCase => {
+      testCases.forEach((testCase) => {
         // path.basename removes directories but may still leave .. in some cases
         const basename = path.basename(testCase)
         // Our sanitization should reject these patterns
@@ -32,7 +32,7 @@ describe('Security Tests', () => {
 
     it('should reject empty filenames', () => {
       const emptyNames = ['', ' ', '\t', '\n']
-      emptyNames.forEach(name => {
+      emptyNames.forEach((name) => {
         const trimmed = name.trim()
         expect(trimmed.length).to.equal(0)
       })
@@ -46,7 +46,7 @@ describe('Security Tests', () => {
     it('should allow safe filenames', () => {
       const safeFilenames = ['document.txt', 'certificate.pem', 'config.json', 'data-file-123.csv']
 
-      safeFilenames.forEach(filename => {
+      safeFilenames.forEach((filename) => {
         expect(filename).to.match(/^[a-zA-Z0-9._-]+$/)
         expect(filename.length).to.be.lessThan(256)
       })
@@ -230,7 +230,7 @@ describe('Security Tests', () => {
     it('should sanitize path separators', () => {
       const maliciousPaths = ['file/path/traversal.txt', 'file\\windows\\path.txt', 'mixed/path\\separators.txt']
 
-      maliciousPaths.forEach(maliciousPath => {
+      maliciousPaths.forEach((maliciousPath) => {
         const sanitized = maliciousPath.replace(/[/\\]/g, '')
         expect(sanitized).to.not.include('/')
         expect(sanitized).to.not.include('\\')
@@ -244,7 +244,7 @@ describe('Security Tests', () => {
         'file<script>.txt', // HTML injection attempt
       ]
 
-      specialChars.forEach(name => {
+      specialChars.forEach((name) => {
         // Should be sanitized or rejected
         expect(name).to.exist // Placeholder for actual sanitization logic
       })

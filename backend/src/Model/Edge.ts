@@ -1,12 +1,14 @@
-import { Destroyable } from './Destroyable'
-import { Hashable, TreeNode } from './'
 import sha1 from 'sha1'
+import { Destroyable } from './Destroyable'
+import { Hashable, TreeNode } from '.'
 
 export class Edge<ViewModel extends Destroyable> implements Hashable {
   public name: string
 
   public target!: TreeNode<ViewModel>
+
   public source?: TreeNode<ViewModel> | undefined
+
   private cachedHash?: string
 
   constructor(name: string) {

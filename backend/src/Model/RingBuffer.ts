@@ -4,11 +4,17 @@ export interface MemoryConsumptionExpressedByLength {
 
 export class RingBuffer<T extends MemoryConsumptionExpressedByLength> {
   public capacity: number
+
   public maxItems: number
+
   public compactionFactor: number
+
   protected items: Array<T> = []
+
   protected start: number = 0
+
   protected end: number = 0
+
   private usage: number = 0
 
   constructor(capacity: number, maxItems = Infinity, compactionFactor: number = 10, ringBuffer?: RingBuffer<T>) {

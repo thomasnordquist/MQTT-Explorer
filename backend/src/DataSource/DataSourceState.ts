@@ -1,4 +1,4 @@
-import { EventDispatcher } from '../../../events'
+import { EventDispatcher } from 'MQTT-Explorer/events/events'
 
 export interface DataSourceState {
   connecting: boolean
@@ -8,6 +8,7 @@ export interface DataSourceState {
 
 export class DataSourceStateMachine {
   public onUpdate = new EventDispatcher<DataSourceState>()
+
   private state: DataSourceState = {
     error: undefined,
     connected: false,

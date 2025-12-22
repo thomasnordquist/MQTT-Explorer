@@ -1,4 +1,4 @@
-import * as q from '../../backend/src/Model'
+import * as q from 'mqtt-explorer-backend/src/Model/Model'
 import { SettingsState, TopicOrder } from './reducers/Settings'
 import { TopicViewModel } from './model/TopicViewModel'
 
@@ -9,7 +9,7 @@ export function sortedNodes(settings: SettingsState, treeNode: q.TreeNode<any>):
   if (topicOrder === TopicOrder.abc) {
     edges.sort((a, b) => a.name.localeCompare(b.name))
   }
-  const nodes = edges.map(edge => edge.target)
+  const nodes = edges.map((edge) => edge.target)
   if (topicOrder === TopicOrder.messages) {
     nodes.sort((a, b) => b.leafMessageCount() - a.leafMessageCount())
   }

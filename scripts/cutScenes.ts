@@ -1,10 +1,10 @@
 #!/usr/bin/env tsx
 import * as fs from 'fs'
+import concat from 'ffmpeg-concat'
 import { exec } from './util'
 import { Scene, SceneNames } from '../src/spec/SceneBuilder'
 
 // @ts-ignore - ffmpeg-concat doesn't have type definitions
-import concat from 'ffmpeg-concat'
 
 async function cutScenes(scenes: Array<Scene>) {
   for (const scene of scenes) {
@@ -15,7 +15,7 @@ async function cutScenes(scenes: Array<Scene>) {
 
     await exec(
       'ffmpeg',
-      `-i app2.mp4 -ss ${scene.start / 1000} -t ${scene.duration / 1000} ${scene.name}.mp4`.split(' ')
+      `-i app2.mp4 -ss ${scene.start / 1000} -t ${scene.duration / 1000} ${scene.name}.mp4`.split(' '),
     )
   }
 }
@@ -24,6 +24,7 @@ type Transistions = 'none' | 'pixelize' | 'cube' | 'directionalWarp' | 'hexagona
 
 class TransitionBuilder {
   private scenes: Array<string> = []
+
   private transitions: Array<string> = []
 
   public startWith(scene: SceneNames): TransitionBuilder {
@@ -40,8 +41,8 @@ class TransitionBuilder {
   public buildOptions(outputFile: string) {
     return {
       output: outputFile,
-      videos: this.scenes.map(s => `${s}.mp4`),
-      transitions: this.transitions.map(name => ({
+      videos: this.scenes.map((s) => `${s}.mp4`),
+      transitions: this.transitions.map((name) => ({
         name: name !== 'none' ? name : 'fade',
         duration: name !== 'none' ? 1000 : 10,
       })),

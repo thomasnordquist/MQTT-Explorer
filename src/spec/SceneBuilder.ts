@@ -24,6 +24,7 @@ export type SceneNames =
 
 export class SceneBuilder {
   public scenes: Array<Scene> = []
+
   public offset = Date.now()
 
   public async record(name: SceneNames, callback: () => Promise<any>): Promise<any> {

@@ -1,17 +1,10 @@
 import * as React from 'react'
-import BooleanSwitch from './BooleanSwitch'
-import BrokerStatistics from './BrokerStatistics'
 import ChevronRight from '@mui/icons-material/ChevronRight'
-import TimeLocale from './TimeLocale'
-import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { globalActions, settingsActions } from '../../actions'
 import { shell } from 'electron'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
-import { TopicOrder } from '../../reducers/Settings'
-
 import {
   Divider,
   Drawer,
@@ -24,6 +17,13 @@ import {
   Typography,
   Tooltip,
 } from '@mui/material'
+import { TopicOrder } from '../../reducers/Settings'
+
+import { globalActions, settingsActions } from '../../actions'
+import { AppState } from '../../reducers'
+import TimeLocale from './TimeLocale'
+import BrokerStatistics from './BrokerStatistics'
+import BooleanSwitch from './BooleanSwitch'
 
 export const autoExpandLimitSet = [
   {
@@ -56,7 +56,7 @@ const styles = (theme: Theme) => ({
   drawer: {
     backgroundColor: theme.palette.background.default,
     flexShrink: 0,
-    userSelect: 'none' as 'none',
+    userSelect: 'none' as const,
   },
   paper: {
     width: '300px',
@@ -73,7 +73,7 @@ const styles = (theme: Theme) => ({
   author: {
     margin: 'auto 8px 8px auto',
     color: theme.palette.text.secondary,
-    cursor: 'pointer' as 'pointer',
+    cursor: 'pointer' as const,
   },
 })
 
@@ -146,7 +146,7 @@ class Settings extends React.PureComponent<Props, {}> {
   private renderAutoExpand() {
     const { classes, autoExpandLimit } = this.props
 
-    const limits = autoExpandLimitSet.map(limit => (
+    const limits = autoExpandLimitSet.map((limit) => (
       <MenuItem key={limit.limit} value={limit.limit}>
         {limit.limit < 10000 && limit.limit > 0 ? `≤ ${limit.limit} topics` : limit.name}
       </MenuItem>
@@ -186,7 +186,7 @@ class Settings extends React.PureComponent<Props, {}> {
           value={topicOrder}
           onChange={this.onChangeSorting}
           input={<Input name="node-order" id="node-order-label-placeholder" />}
-          displayEmpty={true}
+          displayEmpty
           name="node-order"
           className={classes.input}
           style={{ flex: '1' }}
@@ -238,24 +238,20 @@ class Settings extends React.PureComponent<Props, {}> {
   }
 }
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    autoExpandLimit: state.settings.get('autoExpandLimit'),
-    topicOrder: state.settings.get('topicOrder'),
-    visible: state.globalState.get('settingsVisible'),
-    highlightTopicUpdates: state.settings.get('highlightTopicUpdates'),
-    selectTopicWithMouseOver: state.settings.get('selectTopicWithMouseOver'),
-    theme: state.settings.get('theme'),
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  autoExpandLimit: state.settings.get('autoExpandLimit'),
+  topicOrder: state.settings.get('topicOrder'),
+  visible: state.globalState.get('settingsVisible'),
+  highlightTopicUpdates: state.settings.get('highlightTopicUpdates'),
+  selectTopicWithMouseOver: state.settings.get('selectTopicWithMouseOver'),
+  theme: state.settings.get('theme'),
+})
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: {
-      settings: bindActionCreators(settingsActions, dispatch),
-      global: bindActionCreators(globalActions, dispatch),
-    },
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: {
+    settings: bindActionCreators(settingsActions, dispatch),
+    global: bindActionCreators(globalActions, dispatch),
+  },
+})
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Settings))

@@ -1,13 +1,13 @@
 import React, { useCallback, useState, useRef } from 'react'
-import ClearAdornment from '../helper/ClearAdornment'
 import Search from '@mui/icons-material/Search'
-import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { InputBase } from '@mui/material'
-import { settingsActions } from '../../actions'
 import { alpha as fade, Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
+import { settingsActions } from '../../actions'
+import { AppState } from '../../reducers'
+import ClearAdornment from '../helper/ClearAdornment'
 import { useGlobalKeyEventHandler } from '../../effects/useGlobalKeyEventHandler'
 import { KeyCodes } from '../../utils/KeyCodes'
 
@@ -19,7 +19,9 @@ function SearchBar(props: {
     settings: typeof settingsActions
   }
 }) {
-  const { actions, classes, hasConnection, topicFilter } = props
+  const {
+    actions, classes, hasConnection, topicFilter,
+  } = props
 
   const [hasFocus, setHasFocus] = useState(false)
   const inputRef = useRef<HTMLInputElement>()
@@ -34,22 +36,21 @@ function SearchBar(props: {
     actions.settings.filterTopics(event.target.value)
   }, [])
 
-  useGlobalKeyEventHandler(undefined, event => {
+  useGlobalKeyEventHandler(undefined, (event) => {
     const isCharacter = event.key.length === 1
     const isModifierKey = event.metaKey || event.ctrlKey
     const isAllowedControlCharacter = event.keyCode === KeyCodes.backspace || event.keyCode === KeyCodes.delete
     const tagNameBlacklist = ['INPUT', 'TEXTAREA', 'RADIO', 'CHECKBOX', 'OPTION', 'FORM']
 
-    const tagElementIsNotBlacklisted =
-      document.activeElement && tagNameBlacklist.indexOf(document.activeElement.tagName) === -1
+    const tagElementIsNotBlacklisted = document.activeElement && tagNameBlacklist.indexOf(document.activeElement.tagName) === -1
 
     if (
-      (isCharacter || isAllowedControlCharacter) &&
-      !isModifierKey &&
-      !event.defaultPrevented &&
-      !hasFocus &&
-      tagElementIsNotBlacklisted &&
-      hasConnection
+      (isCharacter || isAllowedControlCharacter)
+      && !isModifierKey
+      && !event.defaultPrevented
+      && !hasFocus
+      && tagElementIsNotBlacklisted
+      && hasConnection
     ) {
       // Focus input field, no preventDefault the event will reach the input element after it has been focussed
       inputRef.current && inputRef.current.focus()
@@ -70,35 +71,31 @@ function SearchBar(props: {
         }}
         onChange={onFilterChange}
         placeholder="Search…"
-        endAdornment={
+        endAdornment={(
           <div style={{ width: '24px', paddingRight: '8px' }}>
             <ClearAdornment variant="primary" action={clearFilter} value={topicFilter} />
           </div>
-        }
+        )}
         classes={{ root: classes.inputRoot, input: classes.inputInput }}
       />
     </div>
   )
 }
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    topicFilter: state.settings.get('topicFilter'),
-    hasConnection: Boolean(state.connection.connectionId),
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  topicFilter: state.settings.get('topicFilter'),
+  hasConnection: Boolean(state.connection.connectionId),
+})
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: {
-      settings: bindActionCreators(settingsActions, dispatch),
-    },
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: {
+    settings: bindActionCreators(settingsActions, dispatch),
+  },
+})
 
 const styles = (theme: Theme) => ({
   search: {
-    position: 'relative' as 'relative',
+    position: 'relative' as const,
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
     '&:hover': {
@@ -113,24 +110,24 @@ const styles = (theme: Theme) => ({
       maxWidth: '30%',
 
       marginLeft: theme.spacing(4),
-      width: 'auto' as 'auto',
+      width: 'auto' as const,
     },
     [theme.breakpoints.up(750)]: {
       marginLeft: theme.spacing(4),
-      width: 'auto' as 'auto',
+      width: 'auto' as const,
     },
   },
   searchIcon: {
     width: theme.spacing(6),
     height: '100%',
-    position: 'absolute' as 'absolute',
-    pointerEvents: 'none' as 'none',
-    display: 'flex' as 'flex',
-    alignItems: 'center' as 'center',
-    justifyContent: 'center' as 'center',
+    position: 'absolute' as const,
+    pointerEvents: 'none' as const,
+    display: 'flex' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
   },
   inputRoot: {
-    color: 'inherit' as 'inherit',
+    color: 'inherit' as const,
     width: '100%',
   },
   inputInput: {

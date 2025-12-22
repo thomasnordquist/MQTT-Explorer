@@ -1,11 +1,13 @@
 import * as React from 'react'
-import DateFormatter from '../helper/DateFormatter'
-import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Input, InputLabel, MenuItem, Select, Theme } from '@mui/material'
-import { settingsActions } from '../../actions'
+import {
+  Input, InputLabel, MenuItem, Select, Theme,
+} from '@mui/material'
 import { withStyles } from '@mui/styles'
+import { settingsActions } from '../../actions'
+import { AppState } from '../../reducers'
+import DateFormatter from '../helper/DateFormatter'
 
 function importAll(r: any) {
   r.keys().forEach(r)
@@ -30,7 +32,11 @@ function TimeLocaleSettings(props: Props) {
   const localeMenuItems = locales.map((l: string) => (
     <MenuItem key={l} value={l}>
       <div>
-        Locale: <b>{l}</b>, Format:{' '}
+        Locale:
+        {' '}
+        <b>{l}</b>
+        , Format:
+        {' '}
         <b>
           <DateFormatter date={date} overrideLocale={l} />
         </b>
@@ -54,7 +60,7 @@ function TimeLocaleSettings(props: Props) {
         input={<Input name="time-locale" id="time-locale-label-placeholder" />}
         name="time-locale"
         className={classes.input}
-        renderValue={v => <span>{String(v)}</span>}
+        renderValue={(v) => <span>{String(v)}</span>}
         style={{ flex: '1' }}
       >
         {localeMenuItems}
@@ -63,19 +69,15 @@ function TimeLocaleSettings(props: Props) {
   )
 }
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    timeLocale: state.settings.get('timeLocale'),
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  timeLocale: state.settings.get('timeLocale'),
+})
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: {
-      settings: bindActionCreators(settingsActions, dispatch),
-    },
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: {
+    settings: bindActionCreators(settingsActions, dispatch),
+  },
+})
 
 const styles = (theme: Theme) => ({
   input: {

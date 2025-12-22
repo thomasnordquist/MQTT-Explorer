@@ -1,7 +1,7 @@
-import * as q from '../../../../../backend/src/Model'
 import React, { memo } from 'react'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
+import * as q from 'mqtt-explorer-backend/src/Model/Model'
 import { TopicViewModel } from '../../../model/TopicViewModel'
 import { useDecoder } from '../../hooks/useDecoder'
 
@@ -15,7 +15,7 @@ export interface TreeNodeProps extends React.HTMLAttributes<HTMLElement> {
   classes: any
 }
 
-export const TreeNodeTitle = (props: TreeNodeProps) => {
+export function TreeNodeTitle(props: TreeNodeProps) {
   const decodeMessage = useDecoder(props.treeNode)
 
   function renderSourceEdge() {
@@ -42,7 +42,9 @@ export const TreeNodeTitle = (props: TreeNodeProps) => {
     return props.treeNode.message && props.treeNode.message.payload && props.treeNode.message.length > 0 ? (
       <span key="value" className={props.classes.value}>
         {' '}
-        = {truncatedMessage()}
+        =
+        {' '}
+        {truncatedMessage()}
       </span>
     ) : null
   }
@@ -67,9 +69,11 @@ export const TreeNodeTitle = (props: TreeNodeProps) => {
     const messages = props.treeNode.leafMessageCount()
     const topicCount = props.treeNode.childTopicCount()
     return (
-      <span key="metadata" className={props.classes.collapsedSubnodes}>{` (${topicCount} ${
-        topicCount === 1 ? 'topic' : 'topics'
-      }, ${messages} ${messages === 1 ? 'message' : 'messages'})`}</span>
+      <span key="metadata" className={props.classes.collapsedSubnodes}>
+        {` (${topicCount} ${
+          topicCount === 1 ? 'topic' : 'topics'
+        }, ${messages} ${messages === 1 ? 'message' : 'messages'})`}
+      </span>
     )
   }
 
@@ -85,24 +89,24 @@ export const TreeNodeTitle = (props: TreeNodeProps) => {
 
 const styles = (theme: Theme) => ({
   value: {
-    whiteSpace: 'nowrap' as 'nowrap',
-    overflow: 'hidden' as 'hidden',
-    textOverflow: 'ellipsis' as 'ellipsis',
+    whiteSpace: 'nowrap' as const,
+    overflow: 'hidden' as const,
+    textOverflow: 'ellipsis' as const,
     padding: '0',
   },
   sourceEdge: {
-    fontWeight: 'bold' as 'bold',
-    overflow: 'hidden' as 'hidden',
+    fontWeight: 'bold' as const,
+    overflow: 'hidden' as const,
   },
   expander: {
     color: theme.palette.mode === 'light' ? '#222' : '#eee',
-    cursor: 'pointer' as 'pointer',
+    cursor: 'pointer' as const,
     paddingRight: theme.spacing(0.25),
-    userSelect: 'none' as 'none',
+    userSelect: 'none' as const,
   },
   collapsedSubnodes: {
     color: theme.palette.text.secondary,
-    userSelect: 'none' as 'none',
+    userSelect: 'none' as const,
   },
 })
 

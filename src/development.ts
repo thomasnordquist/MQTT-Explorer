@@ -11,7 +11,7 @@ export async function waitForDevServer() {
       response = await axios.get('http://localhost:8080')
     } catch {
       console.log('Waiting for dev server')
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
     }
   }
 }
@@ -26,19 +26,19 @@ export function loadDevTools() {
 }
 
 export function isDev() {
-  return Boolean(process.argv.find(arg => arg === '--development'))
+  return Boolean(process.argv.find((arg) => arg === '--development'))
 }
 
 export function runningUiTestOnCi() {
-  return Boolean(process.argv.find(arg => arg === '--runningUiTestOnCi'))
+  return Boolean(process.argv.find((arg) => arg === '--runningUiTestOnCi'))
 }
 
 export function enableMcpIntrospection() {
-  return Boolean(process.argv.find(arg => arg === '--enable-mcp-introspection'))
+  return Boolean(process.argv.find((arg) => arg === '--enable-mcp-introspection'))
 }
 
 export function getRemoteDebuggingPort() {
-  const portArg = process.argv.find(arg => arg.startsWith('--remote-debugging-port='))
+  const portArg = process.argv.find((arg) => arg.startsWith('--remote-debugging-port='))
   if (portArg) {
     const parts = portArg.split('=')
     if (parts.length === 2 && parts[1]) {

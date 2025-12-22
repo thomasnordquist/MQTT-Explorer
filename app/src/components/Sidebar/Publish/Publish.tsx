@@ -1,19 +1,21 @@
-import Editor from './Editor'
 import { AttachFileOutlined, FormatAlignLeft } from '@mui/icons-material'
-import Message from './Model/Message'
 import Navigation from '@mui/icons-material/Navigation'
-import PublishHistory from './PublishHistory'
-import React, { useCallback, useMemo, useState, useRef, memo } from 'react'
-import RetainSwitch from './RetainSwitch'
-import TopicInput from './TopicInput'
-import { AppState } from '../../../reducers'
+import React, {
+  useCallback, useMemo, useState, useRef, memo,
+} from 'react'
 import { bindActionCreators } from 'redux'
 import { Button, Fab, Tooltip } from '@mui/material'
 import { connect } from 'react-redux'
+import { default as AceEditor } from 'react-ace'
+import Editor from './Editor'
+import Message from './Model/Message'
+import PublishHistory from './PublishHistory'
+import RetainSwitch from './RetainSwitch'
+import TopicInput from './TopicInput'
+import { AppState } from '../../../reducers'
 import { EditorModeSelect } from './EditorModeSelect'
 import { globalActions, publishActions } from '../../../actions'
 import { KeyCodes } from '../../../utils/KeyCodes'
-import { default as AceEditor } from 'react-ace'
 
 interface Props {
   connectionId?: string
@@ -30,11 +32,11 @@ function useHistory(): [Array<Message>, (topic: string, payload?: string) => voi
   const amendToHistory = useCallback(
     (topic: string, payload?: string) => {
       // Remove duplicates
-      let filteredHistory = history.filter(e => e.payload !== payload || e.topic !== topic)
+      let filteredHistory = history.filter((e) => e.payload !== payload || e.topic !== topic)
       filteredHistory = filteredHistory.slice(-7)
       setHistory([...filteredHistory, { topic, payload, sent: new Date() }])
     },
-    [history]
+    [history],
   )
 
   return [history, amendToHistory]
@@ -56,7 +58,7 @@ function Publish(props: Props) {
     props.actions.publish(props.connectionId)
 
     const topic = props.topic || ''
-    const payload = props.payload
+    const { payload } = props
     if (props.connectionId && topic) {
       amendToHistory(topic, payload)
     }
@@ -70,7 +72,7 @@ function Publish(props: Props) {
         publish()
       }
     },
-    [publish]
+    [publish],
   )
 
   return useMemo(
@@ -97,18 +99,18 @@ function Publish(props: Props) {
         <PublishHistory history={history} />
       </div>
     ),
-    [props.payload, props.editorMode, history, handleSubmit, publish]
+    [props.payload, props.editorMode, history, handleSubmit, publish],
   )
 }
 
-const EditorMode = memo(function EditorMode(props: {
+const EditorMode = memo((props: {
   payload?: string
   editorMode: string
   focusEditor: () => void
   actions: typeof publishActions
   globalActions: typeof globalActions
   publish: () => void
-}) {
+}) => {
   const updatePayload = props.actions.setPayload
 
   const updateMode = useCallback((e: React.ChangeEvent<{}>, value: string) => {
@@ -144,11 +146,11 @@ const EditorMode = memo(function EditorMode(props: {
   )
 })
 
-const FormatJsonButton = React.memo(function FormatJsonButton(props: {
+const FormatJsonButton = React.memo((props: {
   editorMode: string
   focusEditor: () => void
   formatJson: () => void
-}) {
+}) => {
   if (props.editorMode !== 'json') {
     return null
   }
@@ -167,27 +169,25 @@ const FormatJsonButton = React.memo(function FormatJsonButton(props: {
   )
 })
 
-const OpenFileButton = React.memo(function OpenFileButton(props: { editorMode: string; openFile: () => void }) {
-  return (
-    <Tooltip title="Open file">
-      <Fab
-        style={{ width: '36px', height: '36px', margin: '0 8px' }}
-        onClick={props.openFile}
-        id="sidebar-publish-open-file"
-      >
-        <AttachFileOutlined style={{ fontSize: '20px' }} />
-      </Fab>
-    </Tooltip>
-  )
-})
+const OpenFileButton = React.memo((props: { editorMode: string; openFile: () => void }) => (
+  <Tooltip title="Open file">
+    <Fab
+      style={{ width: '36px', height: '36px', margin: '0 8px' }}
+      onClick={props.openFile}
+      id="sidebar-publish-open-file"
+    >
+      <AttachFileOutlined style={{ fontSize: '20px' }} />
+    </Fab>
+  </Tooltip>
+))
 
-const PublishButton = memo(function PublishButton(props: { publish: () => void; focusEditor: () => void }) {
+const PublishButton = memo((props: { publish: () => void; focusEditor: () => void }) => {
   const handleClickPublish = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation()
       props.publish()
     },
-    [props.publish]
+    [props.publish],
   )
 
   return (
@@ -199,25 +199,23 @@ const PublishButton = memo(function PublishButton(props: { publish: () => void; 
       onFocus={props.focusEditor}
       id="publish-button"
     >
-      <Navigation style={{ marginRight: '8px' }} /> Publish
+      <Navigation style={{ marginRight: '8px' }} />
+      {' '}
+      Publish
     </Button>
   )
 })
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: bindActionCreators(publishActions, dispatch),
-    globalActions: bindActionCreators(globalActions, dispatch),
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: bindActionCreators(publishActions, dispatch),
+  globalActions: bindActionCreators(globalActions, dispatch),
+})
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    topic: state.publish.manualTopic,
-    payload: state.publish.payload,
-    editorMode: state.publish.editorMode,
-    retain: state.publish.retain,
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  topic: state.publish.manualTopic,
+  payload: state.publish.payload,
+  editorMode: state.publish.editorMode,
+  retain: state.publish.retain,
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Publish)

@@ -2,12 +2,14 @@ import FileAsync from 'lowdb/adapters/FileAsync'
 import fs from 'fs-extra'
 import lowdb from 'lowdb'
 import path from 'path'
-import { Rpc } from '../../events/EventSystem/Rpc'
-import { storageClearEvent, storageLoadEvent, storageStoreEvent } from '../../events/StorageEvents'
+import { Rpc } from 'MQTT-Explorer/events/EventSystem/Rpc'
+import { storageClearEvent, storageLoadEvent, storageStoreEvent } from 'MQTT-Explorer/events/StorageEvents'
 
 export default class ConfigStorage {
   private file: string
+
   private database: any
+
   private rpc: Rpc
 
   constructor(file: string, rpc: Rpc) {
@@ -29,13 +31,12 @@ export default class ConfigStorage {
   }
 
   public async init() {
-    this.rpc.on(storageStoreEvent, async event => {
+    this.rpc.on(storageStoreEvent, async (event) => {
       const db = await this.getDb()
       await db.set(event.store, event.data).write()
-      return
     })
 
-    this.rpc.on(storageLoadEvent, async event => {
+    this.rpc.on(storageLoadEvent, async (event) => {
       const db = await this.getDb()
       const data = await db.get(event.store).value()
       return {
@@ -44,7 +45,7 @@ export default class ConfigStorage {
       }
     })
 
-    this.rpc.on(storageClearEvent, async event => {
+    this.rpc.on(storageClearEvent, async (event) => {
       const db = await this.getDb()
       const keys = await db.keys().value()
       for (const key of keys) {

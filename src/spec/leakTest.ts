@@ -2,7 +2,9 @@ import * as os from 'os'
 import { ElectronApplication, _electron as electron } from 'playwright'
 
 import mockMqtt, { stopUpdates as stopMqttUpdates } from './mock-mqtt'
-import { ClassNameMapping, countInstancesOf, createFakeMousePointer, getHeapDump, setFast, sleep } from './util'
+import {
+  ClassNameMapping, countInstancesOf, createFakeMousePointer, getHeapDump, setFast, sleep,
+} from './util'
 import { clearSearch, searchTree } from './scenarios/searchTree'
 import { connectTo } from './scenarios/connect'
 import { reconnect } from './scenarios/reconnect'
@@ -64,7 +66,7 @@ async function doStuff() {
 async function waitForGarbageCollectorToDetermineLeak(
   browser: any,
   initialTreeOccurrences: number,
-  initialNodeOccurrences: number
+  initialNodeOccurrences: number,
 ) {
   let delta = -1
   let lastTreeOccurrences = -1
@@ -79,15 +81,15 @@ async function waitForGarbageCollectorToDetermineLeak(
     const currentNodeOccurrences = await countInstancesOf(heapDump, ClassNameMapping.TreeNode)
     // Temporary "leaks" are expected due to React Fibers memoization
     if (
-      Math.abs(initialTreeOccurrences - currentTreeOccurrences) > 1 ||
-      Math.abs(currentNodeOccurrences - initialNodeOccurrences) > 8
+      Math.abs(initialTreeOccurrences - currentTreeOccurrences) > 1
+      || Math.abs(currentNodeOccurrences - initialNodeOccurrences) > 8
     ) {
       console.error(
         'Possible leak detected',
         initialTreeOccurrences,
         currentTreeOccurrences,
         initialNodeOccurrences,
-        currentNodeOccurrences
+        currentNodeOccurrences,
       )
       leak = true
     } else {

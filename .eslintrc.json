@@ -110,7 +110,22 @@
       "newlines-between": "never"
     }],
     "object-curly-newline": "off",
-    "import/no-named-default": "off"
+    "import/no-named-default": "off",
+    "no-console": "off",
+    "func-names": "off",
+    "no-await-in-loop": "off",
+    "no-restricted-syntax": "off",
+    "import/prefer-default-export": "off",
+    "no-continue": "off",
+    "no-promise-executor-return": "off",
+    "no-eval": "warn",
+    "@typescript-eslint/default-param-last": "off",
+    "radix": "off",
+    "no-param-reassign": "off",
+    "no-underscore-dangle": "off",
+    "no-restricted-globals": "off",
+    "@typescript-eslint/no-useless-constructor": "off",
+    "@typescript-eslint/ban-types": "warn"
   },
   "overrides": [
     {
@@ -173,7 +188,16 @@
         "react/react-in-jsx-scope": "off",
         "react/jsx-props-no-spreading": "off",
         "jsx-a11y/click-events-have-key-events": "off",
-        "jsx-a11y/no-static-element-interactions": "off"
+        "jsx-a11y/no-static-element-interactions": "off",
+        "react/destructuring-assignment": "off",
+        "react/no-access-state-in-setstate": "off",
+        "react/sort-comp": "off",
+        "react/no-unused-state": "warn",
+        "react/state-in-constructor": "off",
+        "react/static-property-placement": "off",
+        "react/no-array-index-key": "warn",
+        "react/display-name": "off",
+        "react-compiler/react-compiler": "off"
       }
     },
     {

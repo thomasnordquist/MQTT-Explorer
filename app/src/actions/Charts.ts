@@ -1,7 +1,7 @@
+import { Dispatch } from 'redux'
 import { Action, ActionTypes, ChartParameters } from '../reducers/Charts'
 import { AppState } from '../reducers'
 import { default as persistentStorage, StorageIdentifier } from '../utils/PersistentStorage'
-import { Dispatch } from 'redux'
 import { showError, showNotification } from './Global'
 
 interface ConnectionViewState {
@@ -16,7 +16,7 @@ const connectionViewStateIdentifier: StorageIdentifier<ConnectionViewStateDictio
 }
 
 export const loadCharts = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
-  const connectionId = getState().connection.connectionId
+  const { connectionId } = getState().connection
   if (!connectionId) {
     return
   }
@@ -40,7 +40,7 @@ export const loadCharts = () => async (dispatch: Dispatch<any>, getState: () => 
 }
 
 export const saveCharts = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
-  const connectionId = getState().connection.connectionId
+  const { connectionId } = getState().connection
   if (!connectionId) {
     return
   }
@@ -60,59 +60,53 @@ export const saveCharts = () => async (dispatch: Dispatch<any>, getState: () => 
   }
 }
 
-export const addChart =
-  (chartParameters: ChartParameters) => async (dispatch: Dispatch<any>, getState: () => AppState) => {
-    const chartExists = Boolean(
-      getState()
-        .charts.get('charts')
-        .find(chart => chart.topic === chartParameters.topic && chart.dotPath === chartParameters.dotPath)
-    )
-    if (chartExists) {
-      dispatch(showNotification('Already added'))
-      return
-    }
-
-    dispatch({
-      type: ActionTypes.CHARTS_ADD,
-      chart: chartParameters,
-    })
-    dispatch(saveCharts())
-    dispatch(showNotification('Added to chart panel'))
+export const addChart = (chartParameters: ChartParameters) => async (dispatch: Dispatch<any>, getState: () => AppState) => {
+  const chartExists = Boolean(
+    getState()
+      .charts.get('charts')
+      .find((chart) => chart.topic === chartParameters.topic && chart.dotPath === chartParameters.dotPath),
+  )
+  if (chartExists) {
+    dispatch(showNotification('Already added'))
+    return
   }
 
-export const updateChart =
-  (chartParameters: ChartParameters) => async (dispatch: Dispatch<any>, getState: () => AppState) => {
-    dispatch({
-      type: ActionTypes.CHARTS_UPDATE,
-      topic: chartParameters.topic,
-      dotPath: chartParameters.dotPath,
-      parameters: chartParameters,
-    })
-    dispatch(saveCharts())
-  }
-
-export const removeChart =
-  (chartParameters: ChartParameters) => async (dispatch: Dispatch<any>, getState: () => AppState) => {
-    dispatch({
-      chart: chartParameters,
-      type: ActionTypes.CHARTS_REMOVE,
-    })
-    dispatch(saveCharts())
-  }
-
-export const moveChartUp =
-  (parameters: { topic: string; dotPath?: string }) => async (dispatch: Dispatch<any>, getState: () => AppState) => {
-    dispatch({
-      topic: parameters.topic,
-      dotPath: parameters.dotPath,
-      type: ActionTypes.CHARTS_MOVE_UP,
-    })
-    dispatch(saveCharts())
-  }
-
-export const setCharts = (charts: Array<ChartParameters>): Action => {
-  return {
-    charts,
-    type: ActionTypes.CHARTS_SET,
-  }
+  dispatch({
+    type: ActionTypes.CHARTS_ADD,
+    chart: chartParameters,
+  })
+  dispatch(saveCharts())
+  dispatch(showNotification('Added to chart panel'))
 }
+
+export const updateChart = (chartParameters: ChartParameters) => async (dispatch: Dispatch<any>, getState: () => AppState) => {
+  dispatch({
+    type: ActionTypes.CHARTS_UPDATE,
+    topic: chartParameters.topic,
+    dotPath: chartParameters.dotPath,
+    parameters: chartParameters,
+  })
+  dispatch(saveCharts())
+}
+
+export const removeChart = (chartParameters: ChartParameters) => async (dispatch: Dispatch<any>, getState: () => AppState) => {
+  dispatch({
+    chart: chartParameters,
+    type: ActionTypes.CHARTS_REMOVE,
+  })
+  dispatch(saveCharts())
+}
+
+export const moveChartUp = (parameters: { topic: string; dotPath?: string }) => async (dispatch: Dispatch<any>, getState: () => AppState) => {
+  dispatch({
+    topic: parameters.topic,
+    dotPath: parameters.dotPath,
+    type: ActionTypes.CHARTS_MOVE_UP,
+  })
+  dispatch(saveCharts())
+}
+
+export const setCharts = (charts: Array<ChartParameters>): Action => ({
+  charts,
+  type: ActionTypes.CHARTS_SET,
+})

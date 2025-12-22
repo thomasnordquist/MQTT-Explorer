@@ -1,5 +1,5 @@
-import { clickOn } from './'
 import { Page, Locator } from 'playwright'
+import { clickOn } from '.'
 
 // Time to wait after clicking a topic for the tree to expand and render children
 // Increased to 1000ms to handle sequential test execution where UI might be slower
@@ -61,19 +61,19 @@ export async function expandTopic(path: string, browser: Page) {
 
       // Scroll the element into view to ensure it's clickable
       await locator.scrollIntoViewIfNeeded()
-      await new Promise(resolve => setTimeout(resolve, 200))
+      await new Promise((resolve) => setTimeout(resolve, 200))
 
       // Click to expand/select this level
       await clickOn(locator)
 
       // Give the UI time to expand and render child topics
       // This is important for MQTT async operations and tree rendering
-      await new Promise(resolve => setTimeout(resolve, TREE_EXPANSION_DELAY_MS))
+      await new Promise((resolve) => setTimeout(resolve, TREE_EXPANSION_DELAY_MS))
 
       // If this is not the last topic in the path, verify that children rendered
       if (nextTopicName) {
         console.log(`Waiting for children of '${topicName}' to render...`)
-        await new Promise(resolve => setTimeout(resolve, CHILD_RENDER_DELAY_MS))
+        await new Promise((resolve) => setTimeout(resolve, CHILD_RENDER_DELAY_MS))
 
         // Check if the next topic is now visible
         const nextSelector = `span[data-test-topic='${nextTopicName}']`
@@ -84,7 +84,7 @@ export async function expandTopic(path: string, browser: Page) {
         // If we don't find the next topic, wait a bit longer
         if (nextCount === 0) {
           console.log('No children found yet, waiting additional time...')
-          await new Promise(resolve => setTimeout(resolve, TREE_EXPANSION_DELAY_MS))
+          await new Promise((resolve) => setTimeout(resolve, TREE_EXPANSION_DELAY_MS))
         }
       }
     } catch (error) {

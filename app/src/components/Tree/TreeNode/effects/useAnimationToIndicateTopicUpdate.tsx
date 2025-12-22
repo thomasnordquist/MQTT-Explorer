@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+
 const inViewport = require('in-viewport')
 
 export function useAnimationToIndicateTopicUpdate(
@@ -7,7 +8,7 @@ export function useAnimationToIndicateTopicUpdate(
   className: string,
   selected: boolean,
   selectionLastUpdate: number,
-  shouldAnimate: boolean
+  shouldAnimate: boolean,
 ) {
   useEffect(() => {
     const selectionDidChange = Date.now() - selectionLastUpdate < 500
@@ -21,11 +22,10 @@ export function useAnimationToIndicateTopicUpdate(
         ref.current && ref.current.classList.add(className)
 
         timeout = setTimeout(
-          () =>
-            (animationFrame = requestAnimationFrame(() => {
-              ref.current && ref.current.classList.remove(className)
-            })),
-          500
+          () => (animationFrame = requestAnimationFrame(() => {
+            ref.current && ref.current.classList.remove(className)
+          })),
+          500,
         )
       })
 

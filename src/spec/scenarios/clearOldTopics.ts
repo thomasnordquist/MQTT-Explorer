@@ -1,5 +1,7 @@
 import { Page } from 'playwright'
-import { clickOn, expandTopic, moveToCenterOfElement, sleep, writeText } from '../util'
+import {
+  clickOn, expandTopic, moveToCenterOfElement, sleep, writeText,
+} from '../util'
 
 export async function clearOldTopics(browser: Page) {
   const topics = ['hello', 'test 123']

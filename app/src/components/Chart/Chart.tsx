@@ -1,18 +1,23 @@
 import '../../react-vis-compat' // React 19 compatibility shim for react-vis
+import React, {
+  memo, useCallback, useRef, useEffect,
+} from 'react'
+import { useResizeDetector } from 'react-resize-detector'
+import { emphasize, useTheme } from '@mui/material/styles'
 import DateFormatter from '../helper/DateFormatter'
 import NoData from './NoData'
 import NumberFormatter from '../helper/NumberFormatter'
-import React, { memo, useCallback, useRef, useEffect } from 'react'
 import TooltipComponent from './TooltipComponent'
-import { useResizeDetector } from 'react-resize-detector'
-import { emphasize, useTheme } from '@mui/material/styles'
 import { mapCurveType } from './mapCurveType'
 import { PlotCurveTypes } from '../../reducers/Charts'
 import { Point, Tooltip } from './Model'
 import { useCustomXDomain } from './effects/useCustomXDomain'
 import { useCustomYDomain } from './effects/useCustomYDomain'
 import 'react-vis/dist/style.css'
-const { XYPlot, LineMarkSeries, YAxis, HorizontalGridLines, Hint } = require('react-vis')
+
+const {
+  XYPlot, LineMarkSeries, YAxis, HorizontalGridLines, Hint,
+} = require('react-vis')
 const abbreviate = require('number-abbreviate')
 
 export interface Props {
@@ -30,11 +35,11 @@ export default memo((props: Props) => {
 
   const hintFormatter = React.useCallback(
     (point: any) => [
-      { title: <b>Time</b>, value: <DateFormatter timeFirst={true} date={new Date(point.x)} /> },
+      { title: <b>Time</b>, value: <DateFormatter timeFirst date={new Date(point.x)} /> },
       { title: <b>Value</b>, value: <NumberFormatter value={point.y} /> },
       { title: <b>Raw</b>, value: <span>{point.y}</span> },
     ],
-    []
+    [],
   )
 
   const onMouseLeave = React.useCallback(() => {
@@ -48,8 +53,7 @@ export default memo((props: Props) => {
     setTooltip({ point, value: hintFormatter(point), element: something.event.target as any })
   }, [])
 
-  const paletteColor =
-    theme.palette.mode === 'light' ? theme.palette.secondary.dark : theme.palette.primary.light
+  const paletteColor = theme.palette.mode === 'light' ? theme.palette.secondary.dark : theme.palette.primary.light
   const color = props.color ? props.color : paletteColor
 
   const highlightSelectedPoint = useCallback(
@@ -57,7 +61,7 @@ export default memo((props: Props) => {
       const highlight = tooltip && tooltip.point.x === point.x && tooltip.point.y === point.y
       return highlight ? emphasize(color, 0.8) : color
     },
-    [tooltip, color]
+    [tooltip, color],
   )
 
   const formatYAxis = useCallback((num: number) => abbreviate(num), [])
@@ -65,7 +69,7 @@ export default memo((props: Props) => {
   const xDomain = useCustomXDomain(props)
   const yDomain = useCustomYDomain(props)
 
-  const data = props.data
+  const { data } = props
   const hasData = data.length > 0
   const dummyDomain = [-1, 1]
   const dummyData = [{ x: -2, y: -2 }]

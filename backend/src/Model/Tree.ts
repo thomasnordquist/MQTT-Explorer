@@ -1,21 +1,32 @@
+import {
+  EventDispatcher, makeConnectionMessageEvent, MqttMessage, EventBusInterface,
+} from 'MQTT-Explorer/events/events'
 import { ChangeBuffer } from './ChangeBuffer'
 import { Destroyable } from './Destroyable'
-import { EventDispatcher, makeConnectionMessageEvent, MqttMessage, EventBusInterface } from '../../../events'
-import { TreeNode } from './'
+import { TreeNode } from '.'
 import { TreeNodeFactory } from './TreeNodeFactory'
 
 export class Tree<ViewModel extends Destroyable> extends TreeNode<ViewModel> {
   public connectionId?: string
+
   public updateSource?: EventBusInterface
+
   public nodeFilter?: (node: TreeNode<ViewModel>) => boolean
+
   private subscriptionEvent?: any
+
   public isTree = true
+
   private cachedHash = `${Math.random()}`
+
   private unmergedMessages: ChangeBuffer = new ChangeBuffer()
+
   public didUpdate = new EventDispatcher<void>()
 
   public updateInterval: any
+
   private paused: boolean = false
+
   private applyChangesHasCompleted = true
 
   constructor() {
@@ -31,7 +42,7 @@ export class Tree<ViewModel extends Destroyable> extends TreeNode<ViewModel> {
       if (!this.paused && this.applyChangesHasCompleted) {
         this.applyChangesHasCompleted = false
         if ((window as any).requestIdleCallback) {
-           (window as any).requestIdleCallback(() => this.applyUnmergedChanges(), { timeout: 500 })
+          (window as any).requestIdleCallback(() => this.applyUnmergedChanges(), { timeout: 500 })
         } else {
           this.applyUnmergedChanges()
         }
@@ -50,7 +61,7 @@ export class Tree<ViewModel extends Destroyable> extends TreeNode<ViewModel> {
   public updateWithConnection(
     emitter: EventBusInterface,
     connectionId: string,
-    nodeFilter?: (node: TreeNode<ViewModel>) => boolean
+    nodeFilter?: (node: TreeNode<ViewModel>) => boolean,
   ) {
     this.updateSource = emitter
     this.connectionId = connectionId
@@ -74,7 +85,7 @@ export class Tree<ViewModel extends Destroyable> extends TreeNode<ViewModel> {
   }
 
   public applyUnmergedChanges() {
-    this.unmergedMessages.popAll().forEach(bufferedItem => {
+    this.unmergedMessages.popAll().forEach((bufferedItem) => {
       const node = TreeNodeFactory.fromMessage<ViewModel>(bufferedItem.message, bufferedItem.received)
 
       if (!this.nodeFilter || this.nodeFilter(node)) {

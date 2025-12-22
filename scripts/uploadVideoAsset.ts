@@ -8,7 +8,7 @@ const githubToken = process.env.GH_TOKEN
 
 async function tagUrl(tag: string): Promise<string | undefined> {
   const response = await axios.get(
-    `https://api.github.com/repos/thomasnordquist/mqtt-explorer/releases?access_token=${githubToken}`
+    `https://api.github.com/repos/thomasnordquist/mqtt-explorer/releases?access_token=${githubToken}`,
   )
   const tagRelease = response.data.find((release: any) => release.tag_name === tag)
 

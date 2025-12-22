@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { ListItem, Typography } from '@mui/material'
-import { toMqttConnection, ConnectionOptions } from '../../../model/ConnectionOptions'
 import { withStyles } from '@mui/styles'
 import { Theme } from '@mui/material/styles'
 import { bindActionCreators } from 'redux'
+import { toMqttConnection, ConnectionOptions } from '../../../model/ConnectionOptions'
 import { connectionActions, connectionManagerActions } from '../../../actions'
 
 export interface Props {
@@ -17,7 +17,7 @@ export interface Props {
   classes: any
 }
 
-const ConnectionItem = (props: Props) => {
+function ConnectionItem(props: Props) {
   const connect = useCallback(() => {
     const mqttOptions = toMqttConnection(props.connection)
     if (mqttOptions) {
@@ -28,7 +28,7 @@ const ConnectionItem = (props: Props) => {
   const connection = props.connection.host && toMqttConnection(props.connection)
   return (
     <ListItem
-      button={true}
+      button
       selected={props.selected}
       style={{ display: 'block' }}
       onClick={() => props.actions.connectionManager.selectConnection(props.connection.id)}
@@ -43,26 +43,24 @@ const ConnectionItem = (props: Props) => {
   )
 }
 
-export const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: {
-      connection: bindActionCreators(connectionActions, dispatch),
-      connectionManager: bindActionCreators(connectionManagerActions, dispatch),
-    },
-  }
-}
+export const mapDispatchToProps = (dispatch: any) => ({
+  actions: {
+    connection: bindActionCreators(connectionActions, dispatch),
+    connectionManager: bindActionCreators(connectionManagerActions, dispatch),
+  },
+})
 export const connectionItemStyle = (theme: Theme) => ({
   name: {
     width: '100%',
-    textOverflow: 'ellipsis' as 'ellipsis',
-    whiteSpace: 'nowrap' as 'nowrap',
-    overflow: 'hidden' as 'hidden',
+    textOverflow: 'ellipsis' as const,
+    whiteSpace: 'nowrap' as const,
+    overflow: 'hidden' as const,
   },
   details: {
     width: '100%',
-    textOverflow: 'ellipsis' as 'ellipsis',
-    whiteSpace: 'nowrap' as 'nowrap',
-    overflow: 'hidden' as 'hidden',
+    textOverflow: 'ellipsis' as const,
+    whiteSpace: 'nowrap' as const,
+    overflow: 'hidden' as const,
     color: theme.palette.text.secondary,
     fontSize: '0.7em',
   },

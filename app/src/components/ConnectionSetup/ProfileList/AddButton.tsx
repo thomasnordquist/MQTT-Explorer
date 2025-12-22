@@ -15,12 +15,10 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export const AddButton = withStyles(styles)((props: { classes: any; action: any }) => {
-  return (
-    <span id="addProfileButton" style={{ marginRight: '12px' }}>
-      <Fab size="small" color="secondary" aria-label="Add" className={props.classes.addButton} onClick={props.action}>
-        <Add className={props.classes.addIcon} />
-      </Fab>
-    </span>
-  )
-})
+export const AddButton = withStyles(styles)((props: { classes: any; action: any }) => (
+  <span id="addProfileButton" style={{ marginRight: '12px' }}>
+    <Fab size="small" color="secondary" aria-label="Add" className={props.classes.addButton} onClick={props.action}>
+      <Add className={props.classes.addIcon} />
+    </Fab>
+  </span>
+))

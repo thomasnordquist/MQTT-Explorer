@@ -1,19 +1,20 @@
+import CssBaseline from '@mui/material/CssBaseline'
+import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 import ConfirmationDialog from './ConfirmationDialog'
 import ConnectionSetup from './ConnectionSetup/ConnectionSetup'
-import CssBaseline from '@mui/material/CssBaseline'
 import ErrorBoundary from './ErrorBoundary'
 import Notification from './Layout/Notification'
-import React from 'react'
 import TitleBar from './Layout/TitleBar'
 import UpdateNotifier from './UpdateNotifier'
 import { AppState } from '../reducers'
-import { bindActionCreators } from 'redux'
 import { ConfirmationRequest } from '../reducers/Global'
-import { connect } from 'react-redux'
 import { globalActions, settingsActions } from '../actions'
-import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
-;(window as any).global = window
+
+(window as any).global = window
 
 const Settings = React.lazy(() => import('./SettingsDrawer/Settings'))
 const ContentView = React.lazy(() => import('./Layout/ContentView'))
@@ -62,7 +63,9 @@ class App extends React.PureComponent<Props, {}> {
 
   public render() {
     const { settingsVisible } = this.props
-    const { content, contentShift, centerContent, paneDefaults, heightProperty } = this.props.classes
+    const {
+      content, contentShift, centerContent, paneDefaults, heightProperty,
+    } = this.props.classes
 
     if (this.props.launching) {
       return null
@@ -76,7 +79,7 @@ class App extends React.PureComponent<Props, {}> {
         <ErrorBoundary>
           <ConfirmationDialog confirmationRequests={this.props.confirmationRequests} />
           {this.renderNotification()}
-          <React.Suspense fallback={<div></div>}>
+          <React.Suspense fallback={<div />}>
             <Settings {...anyProps} />
           </React.Suspense>
           <div className={centerContent}>
@@ -84,7 +87,7 @@ class App extends React.PureComponent<Props, {}> {
               <TitleBar />
             </div>
             <div className={settingsVisible ? contentShift : content}>
-              <React.Suspense fallback={<div></div>}>
+              <React.Suspense fallback={<div />}>
                 <ContentView
                   heightProperty={heightProperty}
                   connectionId={this.props.connectionId}
@@ -115,12 +118,12 @@ const styles = (theme: Theme) => {
     paneDefaults: {
       backgroundColor: theme.palette.background.default,
       color: theme.palette.text.primary,
-      display: 'block' as 'block',
+      display: 'block' as const,
       height: 'calc(100vh - 64px)',
     },
     centerContent: {
       width: '100vw',
-      overflow: 'hidden' as 'hidden',
+      overflow: 'hidden' as const,
     },
     content: {
       ...contentBaseStyle,
@@ -142,23 +145,19 @@ const styles = (theme: Theme) => {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: bindActionCreators(globalActions, dispatch),
-    settingsActions: bindActionCreators(settingsActions, dispatch),
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: bindActionCreators(globalActions, dispatch),
+  settingsActions: bindActionCreators(settingsActions, dispatch),
+})
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    settingsVisible: state.globalState.get('settingsVisible'),
-    connectionId: state.connection.connectionId,
-    error: state.globalState.get('error'),
-    notification: state.globalState.get('notification'),
-    highlightTopicUpdates: state.settings.get('highlightTopicUpdates'),
-    launching: state.globalState.get('launching'),
-    confirmationRequests: state.globalState.get('confirmationRequests'),
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  settingsVisible: state.globalState.get('settingsVisible'),
+  connectionId: state.connection.connectionId,
+  error: state.globalState.get('error'),
+  notification: state.globalState.get('notification'),
+  highlightTopicUpdates: state.settings.get('highlightTopicUpdates'),
+  launching: state.globalState.get('launching'),
+  confirmationRequests: state.globalState.get('confirmationRequests'),
+})
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(App))

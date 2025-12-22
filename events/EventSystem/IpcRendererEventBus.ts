@@ -1,10 +1,11 @@
+import { IpcRenderer } from 'electron'
 import { CallbackStore } from './CallbackStore'
 import { EventBusInterface } from './EventBusInterface'
 import { Event } from '../Events'
-import { IpcRenderer } from 'electron'
 
 export class IpcRendererEventBus implements EventBusInterface {
   private ipc: IpcRenderer
+
   private callbacks: Array<CallbackStore> = []
 
   constructor(ipc: IpcRenderer) {
@@ -28,12 +29,12 @@ export class IpcRendererEventBus implements EventBusInterface {
   }
 
   public unsubscribe<MessageType>(event: Event<MessageType>, callback: any) {
-    const item = this.callbacks.find(store => store.callback === callback)
+    const item = this.callbacks.find((store) => store.callback === callback)
     if (!item) {
       return
     }
     this.ipc.removeListener(event.topic, item.wrappedCallback)
-    this.callbacks = this.callbacks.filter(a => a !== item)
+    this.callbacks = this.callbacks.filter((a) => a !== item)
   }
 
   public emit<MessageType>(event: Event<MessageType>, msg: MessageType) {

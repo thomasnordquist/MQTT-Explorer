@@ -1,8 +1,9 @@
-import { Base64Message } from '../../../backend/src/Model/Base64Message'
-import { Decoder } from '../../../backend/src/Model/Decoder'
 import { get } from 'sparkplug-payload'
+import { Base64Message } from 'mqtt-explorer-backend/src/Model/Base64Message'
+import { Decoder } from 'mqtt-explorer-backend/src/Model/Decoder'
 import { MessageDecoder } from './MessageDecoder'
-var sparkplug = get('spBv1.0')
+
+const sparkplug = get('spBv1.0')
 
 export const SparkplugDecoder: MessageDecoder = {
   formats: ['Sparkplug'],
@@ -14,8 +15,8 @@ export const SparkplugDecoder: MessageDecoder = {
       const message = Base64Message.fromString(
         JSON.stringify(
           // @ts-ignore
-          sparkplug.decodePayload(new Uint8Array(input.toBuffer()))
-        )
+          sparkplug.decodePayload(new Uint8Array(input.toBuffer())),
+        ),
       )
       return { message, decoder: Decoder.SPARKPLUG }
     } catch {

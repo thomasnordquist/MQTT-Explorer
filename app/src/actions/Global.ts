@@ -1,5 +1,5 @@
-import { ActionTypes, ConfirmationRequest } from '../reducers/Global'
 import { Dispatch } from 'redux'
+import { ActionTypes, ConfirmationRequest } from '../reducers/Global'
 
 export const showError = (error?: string | unknown) => ({
   error,
@@ -21,29 +21,25 @@ export const toggleSettingsVisibility = () => (dispatch: Dispatch<any>) => {
   })
 }
 
-export const requestConfirmation = (title: string, inquiry: string) => (dispatch: Dispatch<any>) => {
-  return new Promise(resolve => {
-    const confirmationRequest = {
-      title,
-      inquiry,
-      callback: (confirmed: boolean) => {
-        resolve(confirmed)
-        dispatch(removeConfirmationRequest(confirmationRequest))
-      },
-    }
+export const requestConfirmation = (title: string, inquiry: string) => (dispatch: Dispatch<any>) => new Promise((resolve) => {
+  const confirmationRequest = {
+    title,
+    inquiry,
+    callback: (confirmed: boolean) => {
+      resolve(confirmed)
+      dispatch(removeConfirmationRequest(confirmationRequest))
+    },
+  }
 
-    dispatch({
-      confirmationRequest,
-      type: ActionTypes.requestConfirmation,
-    })
+  dispatch({
+    confirmationRequest,
+    type: ActionTypes.requestConfirmation,
   })
-}
+})
 
-export const removeConfirmationRequest = (confirmationRequest: ConfirmationRequest) => (dispatch: Dispatch<any>) => {
-  return new Promise((resolve, reject) => {
-    dispatch({
-      confirmationRequest,
-      type: ActionTypes.removeConfirmationRequest,
-    })
+export const removeConfirmationRequest = (confirmationRequest: ConfirmationRequest) => (dispatch: Dispatch<any>) => new Promise((resolve, reject) => {
+  dispatch({
+    confirmationRequest,
+    type: ActionTypes.removeConfirmationRequest,
   })
-}
+})

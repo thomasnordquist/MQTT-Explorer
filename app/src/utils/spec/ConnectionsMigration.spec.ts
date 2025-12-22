@@ -4,7 +4,7 @@ import { connectionsMigrator } from '../../actions/migrations/Connection'
 
 describe('ConnectionsMigrator', () => {
   it('applies migrations', () => {
-    let connections: any = {
+    const connections: any = {
       '763b2e5c-c1ed-4c9b-ac9a-0970b3be29a7': {
         certValidation: true,
         clientId: 'mqtt-explorer-2783f48c',
@@ -31,7 +31,7 @@ describe('ConnectionsMigrator', () => {
       },
     }
 
-    let migratedConnections: any = {
+    const migratedConnections: any = {
       '763b2e5c-c1ed-4c9b-ac9a-0970b3be29a7': {
         configVersion: 1,
         certValidation: true,

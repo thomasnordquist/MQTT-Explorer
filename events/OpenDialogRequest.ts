@@ -1,4 +1,6 @@
-import { OpenDialogOptions, OpenDialogReturnValue, SaveDialogOptions, SaveDialogReturnValue } from 'electron'
+import {
+  OpenDialogOptions, OpenDialogReturnValue, SaveDialogOptions, SaveDialogReturnValue,
+} from 'electron'
 import { RpcEvent } from './EventSystem/Rpc'
 
 // Legacy functions - use RpcEvents from EventsV2.ts for new code

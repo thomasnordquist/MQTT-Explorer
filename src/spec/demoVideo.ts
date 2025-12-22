@@ -8,7 +8,9 @@ import mockMqtt, { stop as stopMqtt } from './mock-mqtt'
 import { default as MockSparkplug } from './mock-sparkplugb'
 import { clearOldTopics } from './scenarios/clearOldTopics'
 import { clearSearch, searchTree } from './scenarios/searchTree'
-import { clickOnHistory, createFakeMousePointer, hideText, showText, sleep } from './util'
+import {
+  clickOnHistory, createFakeMousePointer, hideText, showText, sleep,
+} from './util'
 import { connectTo } from './scenarios/connect'
 import { copyTopicToClipboard } from './scenarios/copyTopicToClipboard'
 import { copyValueToClipboard } from './scenarios/copyValueToClipboard'
@@ -42,7 +44,7 @@ setTimeout(
     console.error('Timeout reached')
     process.exit(1)
   },
-  60 * 10 * 1000
+  60 * 10 * 1000,
 )
 
 const runningUiTestOnCi = os.platform() === 'darwin' ? [] : ['--runningUiTestOnCi']

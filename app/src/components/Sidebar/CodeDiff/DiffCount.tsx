@@ -9,9 +9,9 @@ interface Props {
 }
 
 function changeAmount(props: Props) {
-  const additions = props.changes.map(change => (change.added === true ? change.count || 0 : 0)).reduce((a, b) => a + b)
+  const additions = props.changes.map((change) => (change.added === true ? change.count || 0 : 0)).reduce((a, b) => a + b)
   const deletions = props.changes
-    .map(change => (change.removed === true ? change.count || 0 : 0))
+    .map((change) => (change.removed === true ? change.count || 0 : 0))
     .reduce((a, b) => a + b)
   if (additions === 0 && deletions === 0) {
     return null
@@ -20,13 +20,28 @@ function changeAmount(props: Props) {
   return (
     <span style={{ display: 'block', textAlign: 'right' }}>
       <span>
-        Comparing with <b>{props.nameOfCompareMessage}</b> message:&nbsp;
+        Comparing with
+        {' '}
+        <b>{props.nameOfCompareMessage}</b>
+        {' '}
+        message:&nbsp;
         <span className={props.classes.additions}>
-          + {additions} line{additions === 1 ? '' : 's'}
+          +
+          {' '}
+          {additions}
+          {' '}
+          line
+          {additions === 1 ? '' : 's'}
         </span>
-        ,{' '}
+        ,
+        {' '}
         <span className={props.classes.deletions}>
-          - {deletions} line{deletions === 1 ? '' : 's'}
+          -
+          {' '}
+          {deletions}
+          {' '}
+          line
+          {deletions === 1 ? '' : 's'}
         </span>
       </span>
     </span>
