@@ -60,7 +60,7 @@ function ChartPreview(props: Props) {
   )
 
   return (
-    <span>
+    <>
       <span data-test-type="ShowChart" data-test={props.literal.path} style={{ display: 'inline-block' }}>
         {addChartToPanelButton}
       </span>
@@ -75,7 +75,7 @@ function ChartPreview(props: Props) {
           </Paper>
         </Fade>
       </Popper>
-    </span>
+    </>
   )
 }
 
