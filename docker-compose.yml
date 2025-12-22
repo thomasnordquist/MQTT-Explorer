@@ -19,6 +19,3 @@ services:
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
     restart: unless-stopped
-
-volumes:
-  mosquitto-data:
