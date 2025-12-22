@@ -26,6 +26,7 @@ export default memo((props: Props) => {
   const [tooltip, setTooltip] = React.useState<Tooltip | undefined>()
   const [hoveredPoint, setHoveredPoint] = React.useState<Point | undefined>()
   const { width = 300, ref } = useResizeDetector()
+  const chartContainerRef = React.useRef<HTMLDivElement>(null)
 
   const hintFormatter = React.useCallback(
     (point: any) => [
@@ -42,12 +43,12 @@ export default memo((props: Props) => {
   }, [])
 
   const showTooltip = React.useCallback(
-    (point: Point, element: EventTarget | null) => {
-      if (!element) {
+    (point: Point) => {
+      if (!chartContainerRef.current) {
         return
       }
       setHoveredPoint(point)
-      setTooltip({ point, value: hintFormatter(point), element: element as Element })
+      setTooltip({ point, value: hintFormatter(point), element: chartContainerRef.current })
     },
     [hintFormatter]
   )
@@ -86,47 +87,48 @@ export default memo((props: Props) => {
     <div>
       <div ref={ref} style={{ height: '150px', width: '100%', position: 'relative' }}>
         {data.length === 0 ? <NoData /> : null}
-        <XYChart
-          width={width || 300}
-          height={180}
-          xScale={{ type: 'linear', domain: hasData && xDomain ? xDomain : dummyDomain }}
-          yScale={{ type: 'linear', domain: hasData ? yDomain : dummyDomain }}
-          onPointerOut={onMouseLeave}
-        >
-          <AnimatedGrid rows={true} columns={false} />
-          <AnimatedAxis orientation="left" tickFormat={formatYAxis} />
-          <AnimatedLineSeries
-            dataKey="line"
-            data={hasData ? data : dummyData}
-            {...accessors}
-            stroke={color}
-            curve={mapCurveType(props.interpolation)}
-            onPointerMove={(datum) => {
-              if (datum && datum.datum && datum.svgPoint) {
-                const point = datum.datum as Point
-                showTooltip(point, datum.svgPoint)
-              }
-            }}
-          />
-          <AnimatedGlyphSeries
-            dataKey="points"
-            data={hasData ? data : dummyData}
-            {...accessors}
-            renderGlyph={(glyphProps) => {
-              const point = glyphProps.datum as Point
-              const pointColor = highlightSelectedPoint(point)
-              return (
-                <circle
-                  cx={glyphProps.x}
-                  cy={glyphProps.y}
-                  r={3}
-                  fill={pointColor}
-                  onPointerMove={(e) => showTooltip(point, e.target)}
-                />
-              )
-            }}
-          />
-        </XYChart>
+        <div ref={chartContainerRef}>
+          <XYChart
+            width={width || 300}
+            height={180}
+            xScale={{ type: 'linear', domain: hasData ? (xDomain || dummyDomain) : dummyDomain }}
+            yScale={{ type: 'linear', domain: hasData ? yDomain : dummyDomain }}
+            onPointerOut={onMouseLeave}
+          >
+            <AnimatedGrid rows={true} columns={false} />
+            <AnimatedAxis orientation="left" tickFormat={formatYAxis} />
+            <AnimatedLineSeries
+              dataKey="line"
+              data={hasData ? data : dummyData}
+              {...accessors}
+              stroke={color}
+              curve={mapCurveType(props.interpolation)}
+              onPointerMove={(datum) => {
+                if (datum && datum.datum) {
+                  const point = datum.datum as Point
+                  showTooltip(point)
+                }
+              }}
+            />
+            <AnimatedGlyphSeries
+              dataKey="points"
+              data={hasData ? data : dummyData}
+              {...accessors}
+              renderGlyph={(glyphProps) => {
+                const point = glyphProps.datum as Point
+                const pointColor = highlightSelectedPoint(point)
+                return (
+                  <circle
+                    cx={glyphProps.x}
+                    cy={glyphProps.y}
+                    r={3}
+                    fill={pointColor}
+                  />
+                )
+              }}
+            />
+          </XYChart>
+        </div>
         {/* Custom tooltip outside of visx to maintain exact same appearance */}
         <TooltipComponent tooltip={tooltip} />
       </div>
