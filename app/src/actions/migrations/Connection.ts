@@ -68,6 +68,20 @@ let migrations: Migration[] = [
       }
     },
   },
+  // Add order field for connection ordering
+  {
+    from: 1,
+    apply: (connection: ConnectionOptions): ConnectionOptions => {
+      if (connection.order !== undefined) {
+        return connection
+      }
+      // Use a timestamp-based order for existing connections
+      return {
+        ...connection,
+        order: Date.now() + Math.random(),
+      }
+    },
+  },
 ]
 
 const connectionMigrator = new ConfigMigrator(migrations)

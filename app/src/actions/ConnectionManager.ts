@@ -147,6 +147,12 @@ export const toggleCertificateSettings = (): Action => ({
   type: ActionTypes.CONNECTION_MANAGER_TOGGLE_CERTIFICATE_SETTINGS,
 })
 
+export const moveConnection = (connectionId: string, direction: 'up' | 'down'): Action => ({
+  connectionId,
+  direction,
+  type: ActionTypes.CONNECTION_MANAGER_MOVE_CONNECTION,
+})
+
 export const deleteConnection = (connectionId: string) => (dispatch: Dispatch<any>, getState: () => AppState) => {
   const connectionIds = Object.keys(getState().connectionManager.connections)
   const connectionIdLocation = connectionIds.indexOf(connectionId)

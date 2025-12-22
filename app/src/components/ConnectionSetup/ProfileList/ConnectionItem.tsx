@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
-import { ListItem, Typography } from '@mui/material'
+import { ListItem, Typography, IconButton, Box } from '@mui/material'
+import { ArrowUpward, ArrowDownward } from '@mui/icons-material'
 import { toMqttConnection, ConnectionOptions } from '../../../model/ConnectionOptions'
 import { withStyles } from '@mui/styles'
 import { Theme } from '@mui/material/styles'
@@ -25,20 +26,40 @@ const ConnectionItem = (props: Props) => {
     }
   }, [props.connection, props])
 
+  const handleMoveUp = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    props.actions.connectionManager.moveConnection(props.connection.id, 'up')
+  }
+
+  const handleMoveDown = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    props.actions.connectionManager.moveConnection(props.connection.id, 'down')
+  }
+
   const connection = props.connection.host && toMqttConnection(props.connection)
   return (
     <ListItem
       button={true}
       selected={props.selected}
-      style={{ display: 'block' }}
+      style={{ display: 'flex', alignItems: 'center', padding: '8px 8px 8px 16px' }}
       onClick={() => props.actions.connectionManager.selectConnection(props.connection.id)}
       onDoubleClick={() => {
         props.actions.connectionManager.selectConnection(props.connection.id)
         connect()
       }}
     >
-      <Typography className={props.classes.name}>{props.connection.name || 'mqtt broker'}</Typography>
-      <Typography className={props.classes.details}>{connection && connection.url}</Typography>
+      <Box style={{ flex: 1, overflow: 'hidden' }}>
+        <Typography className={props.classes.name}>{props.connection.name || 'mqtt broker'}</Typography>
+        <Typography className={props.classes.details}>{connection && connection.url}</Typography>
+      </Box>
+      <Box style={{ display: 'flex', flexDirection: 'column', marginLeft: '4px' }}>
+        <IconButton size="small" onClick={handleMoveUp} style={{ padding: '2px' }}>
+          <ArrowUpward fontSize="small" />
+        </IconButton>
+        <IconButton size="small" onClick={handleMoveDown} style={{ padding: '2px' }}>
+          <ArrowDownward fontSize="small" />
+        </IconButton>
+      </Box>
     </ListItem>
   )
 }
