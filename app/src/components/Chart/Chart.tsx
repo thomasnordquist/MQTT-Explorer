@@ -1,3 +1,4 @@
+import '../../react-vis-compat' // React 19 compatibility shim for react-vis
 import DateFormatter from '../helper/DateFormatter'
 import NoData from './NoData'
 import NumberFormatter from '../helper/NumberFormatter'

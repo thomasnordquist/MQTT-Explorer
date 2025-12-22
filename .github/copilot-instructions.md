@@ -1,5 +1,61 @@
 # GitHub Copilot Agent Instructions for MQTT Explorer
 
+## Test Suites
+
+MQTT Explorer has several test suites to ensure code quality and reliability:
+
+### Unit Tests
+
+**App tests** - Frontend component and logic tests:
+```bash
+yarn test:app
+# Or: cd app && yarn test
+```
+
+**Backend tests** - Data model and business logic tests:
+```bash
+yarn test:backend
+# Or: cd backend && yarn test
+```
+
+**Run all unit tests**:
+```bash
+yarn test
+```
+
+### Integration Tests
+
+**UI test suite** - Independent, deterministic browser tests:
+```bash
+yarn test:ui
+# Requires: yarn build
+```
+
+**Demo video generation** - UI test recording with video capture:
+```bash
+yarn test:demo-video
+# Requires: Xvfb, mosquitto broker, tmux, ffmpeg
+# For development: Use ./scripts/uiTests.sh for full video recording setup
+```
+
+**MCP introspection tests** - Model Context Protocol tests:
+```bash
+yarn test:mcp
+```
+
+**Run all tests** (unit + demo-video):
+```bash
+yarn test:all
+```
+
+### CI/CD Test Execution
+
+In CI environments, tests run in isolated containers with all dependencies pre-installed:
+- `test` job: Runs unit tests (app + backend)
+- `ui-tests` job: Runs UI test suite with screenshots
+- `demo-video` job: Generates demo video with full recording setup
+- `test-browser` job: Runs browser mode smoke tests
+
 ## Debugging Browser Mode
 
 ### Prerequisites

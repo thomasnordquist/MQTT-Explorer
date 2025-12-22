@@ -101,12 +101,51 @@ The `app` directory contains all the rendering logic, the `backend` directory cu
 
 ## Automated Tests
 
-To achieve a reliable product automated tests run regularly on CI.
+MQTT Explorer uses multiple test suites to ensure reliability and quality:
 
-- **Data model tests**: `yarn test:backend`
-- **App tests**: `yarn test:app`
-- **UI test suite**: `yarn test:ui` (independent, deterministic tests)
-- **Demo video**: `yarn ui-test` (UI test recording for documentation)
+### Unit Tests
+
+**App tests** - Frontend component and logic tests:
+```bash
+yarn test:app
+```
+
+**Backend tests** - Data model and business logic tests:
+```bash
+yarn test:backend
+```
+
+**Run all unit tests**:
+```bash
+yarn test
+```
+
+### Integration & UI Tests
+
+**UI test suite** - Independent, deterministic browser tests:
+```bash
+yarn build
+yarn test:ui
+```
+
+**Demo video generation** - UI test recording for documentation:
+```bash
+yarn build
+yarn test:demo-video
+```
+Note: Requires Xvfb, mosquitto broker, tmux, and ffmpeg. For full video recording setup, use `./scripts/uiTests.sh`.
+
+**MCP introspection tests** - Model Context Protocol validation:
+```bash
+yarn build
+yarn test:mcp
+```
+
+**Run all tests** (unit tests + demo video):
+```bash
+yarn build
+yarn test:all
+```
 
 ### Run UI Test Suite
 
@@ -125,12 +164,26 @@ See [docs/UI-TEST-SUITE.md](docs/UI-TEST-SUITE.md) for more details.
 
 ### Run Demo Video Generation
 
-A [mosquitto](https://mosquitto.org/) MQTT broker is required to generate the demo video.
+The demo video is used for documentation and showcases key features. It requires additional dependencies:
 
 ```bash
 yarn build
-yarn ui-test
+yarn test:demo-video
 ```
+
+**Requirements:**
+- mosquitto MQTT broker
+- Xvfb (virtual framebuffer)
+- tmux (terminal multiplexer)
+- ffmpeg (video encoding)
+
+**For full video recording with post-processing:**
+```bash
+yarn build
+./scripts/uiTests.sh
+```
+
+This script handles Xvfb setup, mosquitto startup, video recording, and cleanup.
 
 ## Create a release
 
