@@ -14,7 +14,7 @@
     "test:all": "yarn test:app && yarn test:backend && yarn test:demo-video",
     "test:app": "cd app && yarn test",
     "test:backend": "cd backend && yarn test",
-    "test:demo-video": "./scripts/uiTests.sh",
+    "test:demo-video": "npx tsc && node dist/src/spec/demoVideo.js",
     "test:ui": "tsc && mocha --require source-map-support/register dist/src/spec/ui-tests.spec.js",
     "test:ui:vnc": "tsc && ./scripts/uiTestsWithVnc.sh",
     "test:mcp": "tsc && node dist/src/spec/testMcpIntrospection.js",
