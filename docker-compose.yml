@@ -1,0 +1,24 @@
+services:
+  mqtt-explorer:
+    image: ghcr.io/thomasnordquist/mqtt-explorer:dev
+    ports:
+      - "3000:3000"
+    environment:
+      - MQTT_EXPLORER_USERNAME=demo
+      - MQTT_EXPLORER_PASSWORD=demo
+      - NODE_ENV=production
+    depends_on:
+      - mosquitto
+    restart: unless-stopped
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    restart: unless-stopped
+
+volumes:
+  mosquitto-data:

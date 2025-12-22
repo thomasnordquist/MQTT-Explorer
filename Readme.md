@@ -18,6 +18,51 @@ Downloads can be found at the link above.
 This page is dedicated to its development.
 Pull-Requests and error reports are welcome.
 
+## Try it out
+
+### One-Click Demo with Gitpod
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/thomasnordquist/MQTT-Explorer)
+
+Launch a fully configured development environment with one click. Gitpod provides a browser-based instance with all dependencies pre-installed and the MQTT Explorer web UI running on port 3000.
+
+**Demo credentials:** `demo` / `demo` (ephemeral, for demonstration only)
+
+### Quick Local Demo with Docker
+
+Run the latest browser version instantly with Docker:
+
+```bash
+# Quick one-liner
+./run-demo.sh
+
+# Or manually:
+docker run --rm -p 3000:3000 \
+  -e MQTT_EXPLORER_USERNAME=demo \
+  -e MQTT_EXPLORER_PASSWORD=demo \
+  ghcr.io/thomasnordquist/mqtt-explorer:dev
+```
+
+Then open http://localhost:3000 and log in with `demo` / `demo`.
+
+### Local Demo with MQTT Broker (docker-compose)
+
+For a complete local setup including a Mosquitto MQTT broker:
+
+```bash
+docker-compose up
+```
+
+This starts:
+- MQTT Explorer web UI on http://localhost:3000
+- Mosquitto MQTT broker on port 1883 (MQTT) and 9001 (WebSocket)
+
+Connect to `mosquitto:1883` from within MQTT Explorer to explore topics.
+
+**Security Note:** Demo credentials (`demo`/`demo`) are for local testing only. For production deployments, always set secure credentials via `MQTT_EXPLORER_USERNAME` and `MQTT_EXPLORER_PASSWORD` environment variables and use HTTPS. See [BROWSER_MODE.md](BROWSER_MODE.md) for security best practices.
+
+**Container Registry:** Docker images are automatically built and published to GitHub Container Registry (ghcr.io) on every push to the `master` or `main` branch with the `:dev` tag. Images are also tagged with the commit SHA for version tracking.
+
 ## Quick Start with GitHub Codespaces
 
 The fastest way to start developing is with GitHub Codespaces:

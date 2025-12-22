@@ -1,0 +1,26 @@
+image: gitpod/workspace-full:latest
+
+tasks:
+  - name: Install & Build
+    init: |
+      # Install dependencies
+      yarn install
+      # Build the server
+      yarn build:server
+    command: |
+      # Set demo credentials
+      export MQTT_EXPLORER_USERNAME=demo
+      export MQTT_EXPLORER_PASSWORD=demo
+      # Start the server
+      yarn start:server
+
+ports:
+  - port: 3000
+    onOpen: open-preview
+    visibility: public
+    description: MQTT Explorer Web UI
+
+vscode:
+  extensions:
+    - dbaeumer.vscode-eslint
+    - esbenp.prettier-vscode
