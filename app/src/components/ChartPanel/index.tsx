@@ -46,6 +46,10 @@ function mapWidth(width: 'big' | 'medium' | 'small' | undefined, calculatedSpaci
   }
 }
 
+
+// Helper function to generate unique keys for charts
+const getChartKey = (chart: ChartParameters) => `${chart.topic}-${chart.dotPath || ''}`
+
 function ChartPanel(props: Props) {
   const chartsInView = props.charts.count()
 
@@ -68,9 +72,7 @@ function ChartPanel(props: Props) {
 
   // Clean up refs for removed charts
   React.useEffect(() => {
-    const currentKeys = new Set(
-      props.charts.map(chart => `${chart.topic}-${chart.dotPath || ''}`).toArray()
-    )
+    const currentKeys = new Set(props.charts.map(getChartKey).toArray())
     const refsToDelete: string[] = []
     
     nodeRefsMap.current.forEach((_, key) => {
@@ -83,7 +85,7 @@ function ChartPanel(props: Props) {
   }, [props.charts])
 
   const charts = props.charts.map(chartParameters => {
-    const key = `${chartParameters.topic}-${chartParameters.dotPath || ''}`
+    const key = getChartKey(chartParameters)
     
     // Get or create a ref for this specific chart
     if (!nodeRefsMap.current.has(key)) {
