@@ -4,6 +4,9 @@ FROM node:24-alpine AS builder
 
 WORKDIR /build
 
+# Install git (required for git-based dependencies like @electron/node-gyp)
+RUN apk add --no-cache git
+
 # Copy package files for dependency installation
 COPY package.json yarn.lock ./
 COPY app/package.json ./app/
