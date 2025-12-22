@@ -10,7 +10,7 @@
     "sourceMap": true,
     "module": "esnext",
     "target": "ES2020",
-    "jsx": "react",
+    "jsx": "react-jsx",
     "paths": {
       "react": ["./node_modules/@types/react"]
     },
