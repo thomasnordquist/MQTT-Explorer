@@ -41,25 +41,28 @@ function ChartPreview(props: Props) {
 
   const addChartToPanelButton = hasEnoughDataToDisplayDiagrams ? (
     <Tooltip title="Add to chart panel">
-      <ShowChart
+      <span
         ref={chartIconRef}
-        className={props.classes.icon}
+        data-test-type="ShowChart"
+        data-test={props.literal.path}
         onMouseEnter={mouseOver}
         onMouseLeave={mouseOut}
         onClick={onClick}
-        data-test-type="ShowChart"
-        data-test={props.literal.path}
-      />
+        style={{ cursor: 'pointer', display: 'inline-flex' }}
+      >
+        <ShowChart className={props.classes.icon} />
+      </span>
     </Tooltip>
   ) : (
     <Tooltip title="Add to chart panel, not enough data for preview">
-      <ShowChart
-        onClick={onClick}
-        className={props.classes.icon}
-        style={{ color: '#aaa' }}
+      <span
         data-test-type="ShowChart"
         data-test={props.literal.path}
-      />
+        onClick={onClick}
+        style={{ cursor: 'pointer', display: 'inline-flex' }}
+      >
+        <ShowChart className={props.classes.icon} style={{ color: '#aaa' }} />
+      </span>
     </Tooltip>
   )
 
