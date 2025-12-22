@@ -1,14 +1,15 @@
 // Browser-specific EventBus implementation using Socket.io
+// This file contains the socket.io-client dependency which belongs in the app layer
 import io, { Socket } from 'socket.io-client'
-import { SocketIOClientEventBus } from './SocketIOClientEventBus'
-import { Rpc } from './Rpc'
+import { SocketIOClientEventBus } from '../../events/EventSystem/SocketIOClientEventBus'
+import { Rpc } from '../../events/EventSystem/Rpc'
 
 // Get auth from sessionStorage or use empty (will show login dialog)
 let username = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('mqtt-explorer-username') || '' : ''
 let password = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('mqtt-explorer-password') || '' : ''
 
 // Connect to the server (same origin in browser mode)
-const socket = io({
+const socket: Socket = io({
   auth: {
     username,
     password,

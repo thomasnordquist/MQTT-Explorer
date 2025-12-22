@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { LoginDialog } from './LoginDialog'
-import { updateSocketAuth, connectSocket } from '../../../events/EventSystem/BrowserEventBus'
+import { updateSocketAuth, connectSocket } from '../browserEventBus'
 import { isBrowserMode } from '../utils/browserMode'
 
 interface BrowserAuthWrapperProps {

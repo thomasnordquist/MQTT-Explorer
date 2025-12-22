@@ -45,8 +45,10 @@ export default {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
       'process.env.BROWSER_MODE': JSON.stringify('true'),
     }),
-    new webpack.NormalModuleReplacementPlugin(/EventSystem[\\/]EventBus$/, resource => {
-      resource.request = resource.request.replace(/EventBus$/, 'BrowserEventBus')
+    // Replace EventSystem/EventBus with app-level browserEventBus
+    new webpack.NormalModuleReplacementPlugin(/events[\\/]EventSystem[\\/]EventBus$/, resource => {
+      // Point to the app-level browser event bus
+      resource.request = path.resolve(__dirname, 'src', 'browserEventBus.ts')
     }),
   ],
 
