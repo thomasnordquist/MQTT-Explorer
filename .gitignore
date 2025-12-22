@@ -18,3 +18,5 @@ test-mcp-introspection.js
 /data
 test-screenshot-*.png
 test-expand-*.png
+
+app/.webpack-cache

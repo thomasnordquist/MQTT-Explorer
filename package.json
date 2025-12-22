@@ -14,6 +14,7 @@
     "test:app": "cd app && yarn test",
     "test:backend": "cd backend && yarn test",
     "test:ui": "tsc && mocha --require source-map-support/register dist/src/spec/ui-tests.spec.js",
+    "test:ui:vnc": "tsc && ./scripts/uiTestsWithVnc.sh",
     "test:mcp": "tsc && node dist/src/spec/testMcpIntrospection.js",
     "install": "cd app && yarn && cd ..",
     "dev": "npm-run-all --parallel dev:*",

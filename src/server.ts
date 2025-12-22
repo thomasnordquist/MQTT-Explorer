@@ -133,8 +133,27 @@ async function startServer() {
     maxHttpBufferSize: MAX_FILE_SIZE, // Limit message size
   })
 
-  // Track failed authentication attempts per IP
+  // Track failed authentication attempts per IP with exponential back-off
   const failedAttempts = new Map<string, { count: number; lastAttempt: number }>()
+
+  /**
+   * Calculate exponential back-off wait time based on failed attempts
+   * @param attemptCount Number of failed attempts
+   * @returns Wait time in milliseconds
+   */
+  function calculateBackoffTime(attemptCount: number): number {
+    // Progressive back-off with longer delays
+    // Attempt 1: 5 seconds
+    // Attempt 2: 10 seconds
+    // Attempt 3: 30 seconds
+    // Attempt 4: 60 seconds (1 minute)
+    // Attempt 5: 120 seconds (2 minutes)
+    // Attempt 6: 300 seconds (5 minutes)
+    // Attempt 7+: 900 seconds (15 minutes, capped)
+    const backoffSequence = [5, 10, 30, 60, 120, 300, 900]
+    const index = Math.min(attemptCount - 1, backoffSequence.length - 1)
+    return backoffSequence[index] * 1000
+  }
 
   // Authentication middleware for Socket.io
   io.use(async (socket, next) => {
@@ -145,14 +164,16 @@ async function startServer() {
     const now = Date.now()
     const attempts = failedAttempts.get(clientIp) || { count: 0, lastAttempt: 0 }
 
-    // Reset counter if 15 minutes have passed
-    if (now - attempts.lastAttempt > 15 * 60 * 1000) {
-      attempts.count = 0
-    }
+    // Calculate back-off time based on previous failed attempts
+    if (attempts.count > 0) {
+      const backoffTime = calculateBackoffTime(attempts.count)
+      const timeSinceLastAttempt = now - attempts.lastAttempt
+      const remainingWaitTime = backoffTime - timeSinceLastAttempt
 
-    // Block if too many failed attempts
-    if (attempts.count >= 5) {
-      return next(new Error('Too many failed authentication attempts'))
+      if (remainingWaitTime > 0) {
+        const secondsRemaining = Math.ceil(remainingWaitTime / 1000)
+        return next(new Error(`Too many failed authentication attempts. Please wait ${secondsRemaining} seconds before trying again.`))
+      }
     }
 
     if (!username || !password) {
@@ -167,7 +188,12 @@ async function startServer() {
       attempts.count++
       attempts.lastAttempt = now
       failedAttempts.set(clientIp, attempts)
-      return next(new Error('Invalid credentials'))
+      
+      // Calculate next wait time for informational purposes
+      const nextBackoff = calculateBackoffTime(attempts.count)
+      const nextWaitSeconds = Math.ceil(nextBackoff / 1000)
+      
+      return next(new Error(`Invalid credentials. Next attempt allowed in ${nextWaitSeconds} seconds.`))
     }
 
     // Reset failed attempts on successful auth

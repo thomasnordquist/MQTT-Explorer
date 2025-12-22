@@ -89,6 +89,7 @@ test: add unit tests for message parsing
 yarn install
 
 # Build the project
+
 yarn build
 
 # Set password for browser testing

@@ -4,7 +4,7 @@ services:
   app:
     image: mcr.microsoft.com/devcontainers/javascript-node:24
     volumes:
-      - ../..:/workspace:cached
+      - ..:/workspaces/MQTT-Explorer:cached
     command: sleep infinity
     network_mode: service:mosquitto
     environment:
@@ -14,8 +14,10 @@ services:
   mosquitto:
     image: eclipse-mosquitto:2
     ports:
-      - "1883:1883"
-      - "3000:3000"
-      - "8080:8080"
+      - '1883:1883'
+      - '3000:3000'
+      - '8080:8080'
+      - '5900:5900'
+      - '6080:6080'
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro

@@ -1,17 +1,18 @@
 import * as React from 'react'
 import { LoginDialog } from './LoginDialog'
+import { updateSocketAuth, connectSocket } from '../../../events/EventSystem/BrowserEventBus'
+import { isBrowserMode } from '../utils/browserMode'
 
 interface BrowserAuthWrapperProps {
   children: React.ReactNode
 }
 
-const isBrowserMode =
-  typeof window !== 'undefined' && (typeof process === 'undefined' || process.env?.BROWSER_MODE === 'true')
-
 export function BrowserAuthWrapper(props: BrowserAuthWrapperProps) {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false)
   const [loginError, setLoginError] = React.useState<string | undefined>()
-  const [showLogin, setShowLogin] = React.useState(false)
+  const [showLogin, setShowLogin] = React.useState(isBrowserMode) // Show login initially in browser mode
+  const [waitTimeSeconds, setWaitTimeSeconds] = React.useState<number | undefined>()
+  const [isConnecting, setIsConnecting] = React.useState(false)
 
   React.useEffect(() => {
     if (!isBrowserMode) {
@@ -20,34 +21,86 @@ export function BrowserAuthWrapper(props: BrowserAuthWrapperProps) {
       return
     }
 
+    // Listen for successful authentication from socket
+    const handleAuthSuccess = (event: CustomEvent) => {
+      console.log('Authentication successful')
+      setIsAuthenticated(true)
+      setShowLogin(false)
+      setLoginError(undefined)
+      setWaitTimeSeconds(undefined)
+      setIsConnecting(false)
+    }
+
+    // Listen for authentication errors from socket
+    const handleAuthError = (event: CustomEvent) => {
+      const errorMessage = event.detail?.message || 'Authentication failed'
+      console.error('Authentication error:', errorMessage)
+      
+      // Clear authentication state
+      setIsAuthenticated(false)
+      setShowLogin(true)
+      setIsConnecting(false)
+      
+      // Extract wait time from error message (e.g., "Please wait 30 seconds")
+      const waitTimeMatch = errorMessage.match(/(\d+)\s+seconds?/)
+      if (waitTimeMatch) {
+        const seconds = parseInt(waitTimeMatch[1], 10)
+        // Add a few seconds margin to the countdown
+        setWaitTimeSeconds(seconds + 3)
+      } else {
+        setWaitTimeSeconds(undefined)
+      }
+      
+      // Set user-friendly error message based on error type
+      // Error messages from server already include wait times
+      if (errorMessage.includes('Too many failed authentication attempts')) {
+        setLoginError(errorMessage)
+      } else if (errorMessage.includes('Invalid credentials')) {
+        setLoginError(errorMessage)
+      } else if (errorMessage.includes('Authentication required')) {
+        setLoginError('Please enter your username and password.')
+        setWaitTimeSeconds(undefined)
+      } else {
+        setLoginError('Authentication failed. Please try again.')
+        setWaitTimeSeconds(undefined)
+      }
+    }
+
+    window.addEventListener('mqtt-auth-success', handleAuthSuccess as EventListener)
+    window.addEventListener('mqtt-auth-error', handleAuthError as EventListener)
+
     // Check if already authenticated
     const username = sessionStorage.getItem('mqtt-explorer-username')
     const password = sessionStorage.getItem('mqtt-explorer-password')
 
     if (username && password) {
-      // Try to use stored credentials
-      setIsAuthenticated(true)
+      // Credentials exist, try to connect with them
+      setIsConnecting(true)
+      connectSocket()
     } else {
-      // Show login dialog
+      // No credentials, show login dialog
       setShowLogin(true)
+    }
+
+    return () => {
+      window.removeEventListener('mqtt-auth-success', handleAuthSuccess as EventListener)
+      window.removeEventListener('mqtt-auth-error', handleAuthError as EventListener)
     }
   }, [])
 
-  const handleLogin = async (username: string, password: string) => {
+  const handleLogin = (username: string, password: string) => {
     try {
-      // Store credentials in session storage
-      sessionStorage.setItem('mqtt-explorer-username', username)
-      sessionStorage.setItem('mqtt-explorer-password', password)
-
-      // The socket will use these credentials on next connection
-      setIsAuthenticated(true)
-      setShowLogin(false)
+      // Clear any previous error
       setLoginError(undefined)
-
-      // Reload to reinitialize socket with new auth
-      window.location.reload()
+      setWaitTimeSeconds(undefined)
+      setIsConnecting(true)
+      
+      // Update socket auth and reconnect (no page reload needed)
+      updateSocketAuth(username, password)
     } catch (error) {
-      setLoginError('Login failed. Please check your credentials.')
+      console.error('Failed to update socket auth:', error)
+      setLoginError('Failed to connect. Please try again.')
+      setIsConnecting(false)
     }
   }
 
@@ -57,7 +110,7 @@ export function BrowserAuthWrapper(props: BrowserAuthWrapperProps) {
   }
 
   if (!isAuthenticated) {
-    return <LoginDialog open={showLogin} onLogin={handleLogin} error={loginError} />
+    return <LoginDialog open={showLogin} onLogin={handleLogin} error={loginError} waitTimeSeconds={waitTimeSeconds} />
   }
 
   return <>{props.children}</>

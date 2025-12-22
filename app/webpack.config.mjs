@@ -7,27 +7,31 @@ import { dirname } from 'path'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
+const isDevelopment = process.env.NODE_ENV !== 'production'
+
 export default {
   entry: {
     app: './src/index.tsx',
     bugtracking: './src/utils/bugtracking.ts',
   },
   output: {
-    chunkFilename: '[name].bundle.js',
-    filename: '[name].bundle.js',
+    chunkFilename: isDevelopment ? '[name].js' : '[name].[contenthash:8].js',
+    filename: isDevelopment ? '[name].bundle.js' : '[name].[contenthash:8].bundle.js',
     path: `${__dirname}/build`,
+    pathinfo: false,
   },
   optimization: {
-    minimize: false,
-    runtimeChunk: 'single',
-    splitChunks: {
+    minimize: !isDevelopment,
+    removeAvailableModules: false,
+    removeEmptyChunks: false,
+    runtimeChunk: isDevelopment ? false : 'single',
+    splitChunks: isDevelopment ? false : {
       chunks: 'all',
       minSize: 30000,
       minChunks: 1,
       maxAsyncRequests: 5,
       maxInitialRequests: 3,
       automaticNameDelimiter: '~',
-      // name: true,
       cacheGroups: {
         vendors: {
           test: /[\\/]node_modules[\\/](react|react-dom|@material-ui|popper\.js|react|react-redux|prop-types|jss|redux|scheduler|react-transition-group)[\\/]/,
@@ -45,40 +49,36 @@ export default {
     },
   },
   devServer: {
-    // contentBase: './dist', // content not from webpack
     hot: true,
-    liveReload: true,
+    liveReload: false,
   },
   target: 'electron-renderer',
-  mode: 'production',
-  devtool: 'source-map',
+  mode: isDevelopment ? 'development' : 'production',
+  devtool: isDevelopment ? 'eval-cheap-module-source-map' : 'source-map',
   resolve: {
-    // Add '.ts' and '.tsx' as resolvable extensions.
     extensions: ['.ts', '.mjs', '.m.js', '.tsx', '.js', '.json', '.node'],
   },
   module: {
     rules: [
-      // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
       {
         test: /\.tsx?$/,
         use: [
           {
             loader: 'ts-loader',
-            // options: {
-            //   configFile: './tsconfig.json',
-            // },
+            options: {
+              transpileOnly: true,
+              experimentalWatchApi: true,
+            },
           },
         ],
         exclude: /node_modules/,
       },
-      // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-      // Exclude ace-builds which has malformed inline source maps
-      {
+      ...(isDevelopment ? [] : [{
         enforce: 'pre',
         test: /\.js$/,
         loader: 'source-map-loader',
         exclude: /node_modules\/ace-builds/,
-      },
+      }]),
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
@@ -87,36 +87,23 @@ export default {
         test: /\.(png|jpg|gif)$/i,
         type: 'asset/resource',
       },
-      // {
-      //   test: /\.node$/,
-      //   use: {
-      //     loader: 'node-loader',
-      //     options: {
-      //       modules: true,
-      //     }
-      //   }
-      // },
     ],
   },
-  // node: { global: true },
   plugins: [
     new HtmlWebpackPlugin({ template: './index.html', file: './build/index.html', inject: false }),
-    // new BundleAnalyzerPlugin(),
-    // new webpack.IgnorePlugin({
-    //   resourceRegExp: /\.\/build\/Debug\/addon/,
-    //   contextRegExp: /heapdump$/
-    // }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+    }),
   ],
-
-  // When importing a module whose path matches one of the following, just
-  // assume a corresponding global variable exists and use that instead.
-  // This is important because it allows us to avoid bundling all of our
-  // dependencies, which allows browsers to cache those libraries between builds.
-  externals: {
-    // "react": "React",
-    // "react-dom": "ReactDOM"
-  },
+  externals: {},
   cache: {
     type: 'filesystem',
+    buildDependencies: {
+      config: [__filename],
+    },
   },
+  performance: {
+    hints: isDevelopment ? false : 'warning',
+  },
+  stats: isDevelopment ? 'errors-warnings' : 'normal',
 }
