@@ -26,10 +26,11 @@ Xvfb :$SCR -screen 0 "$DIMENSIONS"x24 -ac &
 export PID_XVFB=$!
 sleep 2
 
-# Start mqtt broker
-mosquitto &
+# Start mqtt broker with test configuration
+mosquitto -c mosquitto-test.conf &
 export PID_MOSQUITTO=$!
-sleep 1
+sleep 2
+echo "Mosquitto started with PID: $PID_MOSQUITTO"
 
 # Run UI tests
 DISPLAY=:$SCR yarn test:ui
