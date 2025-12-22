@@ -40,30 +40,27 @@ function ChartPreview(props: Props) {
   const hasEnoughDataToDisplayDiagrams = props.treeNode.messageHistory.count() > 1
 
   const addChartToPanelButton = hasEnoughDataToDisplayDiagrams ? (
-    <Tooltip title="Add to chart panel">
-      <span
-        ref={chartIconRef}
-        data-test-type="ShowChart"
-        data-test={props.literal.path}
-        onMouseEnter={mouseOver}
-        onMouseLeave={mouseOut}
-        onClick={onClick}
-        style={{ cursor: 'pointer', display: 'inline-flex' }}
-      >
-        <ShowChart className={props.classes.icon} />
-      </span>
-    </Tooltip>
+    <span data-test-type="ShowChart" data-test={props.literal.path}>
+      <Tooltip title="Add to chart panel">
+        <span
+          ref={chartIconRef}
+          onMouseEnter={mouseOver}
+          onMouseLeave={mouseOut}
+          onClick={onClick}
+          style={{ cursor: 'pointer', display: 'inline-flex' }}
+        >
+          <ShowChart className={props.classes.icon} />
+        </span>
+      </Tooltip>
+    </span>
   ) : (
-    <Tooltip title="Add to chart panel, not enough data for preview">
-      <span
-        data-test-type="ShowChart"
-        data-test={props.literal.path}
-        onClick={onClick}
-        style={{ cursor: 'pointer', display: 'inline-flex' }}
-      >
-        <ShowChart className={props.classes.icon} style={{ color: '#aaa' }} />
-      </span>
-    </Tooltip>
+    <span data-test-type="ShowChart" data-test={props.literal.path}>
+      <Tooltip title="Add to chart panel, not enough data for preview">
+        <span onClick={onClick} style={{ cursor: 'pointer', display: 'inline-flex' }}>
+          <ShowChart className={props.classes.icon} style={{ color: '#aaa' }} />
+        </span>
+      </Tooltip>
+    </span>
   )
 
   return (
