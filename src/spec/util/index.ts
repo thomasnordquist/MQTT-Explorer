@@ -82,10 +82,16 @@ export async function moveToCenterOfElement(element: Locator) {
 
   const duration = fast ? 1 : 500
 
-  const js = `window.demo.moveMouse(${targetX}, ${targetY}, ${duration});`
-  await runJavascript(js, element.page())
-  await sleep(duration)
-  await sleep(250, true)
+  try {
+    const js = `window.demo.moveMouse(${targetX}, ${targetY}, ${duration});`
+    await runJavascript(js, element.page())
+    await sleep(duration)
+    await sleep(250, true)
+  } catch (error) {
+    // window.demo.moveMouse might not be available in all test environments
+    // This is fine - we'll proceed with the click anyway
+    console.log('moveMouse not available, proceeding without custom mouse movement')
+  }
 }
 
 export async function runJavascript(js: string, browser: Page) {
@@ -111,8 +117,14 @@ export async function clickOn(
 
   // Skip hover when force is true (used when modal backdrop might intercept)
   if (!force) {
-    await moveToCenterOfElement(element)
-    await element.hover()
+    try {
+      await moveToCenterOfElement(element)
+      await element.hover()
+    } catch (error) {
+      // If custom mouse movement fails, we can still proceed with the click
+      // Playwright's click will handle scrolling into view automatically
+      console.log('Custom mouse movement failed, proceeding with direct click')
+    }
   }
   await element.click({ delay, button, force, clickCount: clicks })
   await sleep(50)
