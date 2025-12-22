@@ -17,7 +17,7 @@
 
 2. **Start the server:**
    ```bash
-   # Set credentials (required)
+   # Set credentials (required) - these are for the browser login page
    export MQTT_EXPLORER_USERNAME=admin
    export MQTT_EXPLORER_PASSWORD=your_password
    
@@ -25,6 +25,13 @@
    node dist/src/server.js
    ```
    Server will run on http://localhost:3000
+
+3. **Login to the application:**
+   - Navigate to http://localhost:3000
+   - Enter the username and password you set in the environment variables
+   - Click "LOGIN" button
+   - After successful login, the main application will load
+   - The MQTT Connection modal will appear where you can configure broker connections
 
 ### Debugging with Browser DevTools
 
@@ -60,6 +67,16 @@
    - Cause: Material-UI theme not loading correctly
    - Check: Console for theme-related errors
    - Verify: Both ThemeProvider and LegacyThemeProvider in `app/src/index.tsx`
+   
+   **Expected console warnings (non-fatal):**
+   - React 18 type warnings with Material-UI v5 components (dozens of "Failed prop type" warnings)
+   - `TypeError: Cannot read properties of undefined (reading 'on')` from IpcRendererEventBus - this is expected in browser mode as there's no Electron IPC
+   - MUI locale warnings for `en-US` - expected, app uses available locales
+   - `componentWillReceiveProps` deprecation warnings - from legacy TreeComponent
+   - ACE editor autocomplete warnings - expected, features not imported
+   - CSP worker violation for ACE editor - known issue, editor still functions
+   
+   These warnings don't prevent the application from functioning correctly.
 
 ### Using Playwright for Automated Testing
 
@@ -74,6 +91,25 @@ playwright-browser_navigate http://localhost:3000
 playwright-browser_take_screenshot --filename debug.png
 playwright-browser_console_messages  # Check for errors
 ```
+
+### Expected UI Flow
+
+1. **Login Page** (https://github.com/user-attachments/assets/383305e1-2169-433c-a668-5a05da0c343a)
+   - Enter username and password from environment variables
+   - Click "LOGIN" button
+   
+2. **Main Application After Login** (https://github.com/user-attachments/assets/cc4d665f-2665-4289-b2fc-dc4986f9ab5b)
+   - Application loads with sidebar, topic tree, value panel, and publish panel
+   - MQTT Connection modal appears automatically for first-time setup
+   - Configure broker connection (host, port, credentials, etc.)
+   - Click "CONNECT" to establish MQTT connection
+   
+3. **Application Features:**
+   - Topic tree on the left shows MQTT topic hierarchy
+   - Value panel shows selected topic's message content
+   - Publish panel allows sending MQTT messages
+   - Charts panel for numeric value visualization
+   - Settings drawer for app configuration
 
 ### Debugging WebSocket Connection
 
