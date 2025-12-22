@@ -79,7 +79,7 @@ async function startServer() {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "'unsafe-inline'"], // Required for React
+          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // unsafe-eval required for webpack runtime
           styleSrc: ["'self'", "'unsafe-inline'"], // Required for Material-UI
           connectSrc: ["'self'", 'ws:', 'wss:'], // Allow WebSocket connections
           imgSrc: ["'self'", 'data:', 'blob:'],
