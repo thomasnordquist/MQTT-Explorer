@@ -65,17 +65,21 @@ function ChartPanel(props: Props) {
     }
   }, [chartsInView])
 
-  const charts = props.charts.map(chartParameters => (
-    <CSSTransition
-      key={`${chartParameters.topic}-${chartParameters.dotPath || ''}`}
-      timeout={{ enter: 500, exit: 500 }}
-      classNames="example"
-    >
-      <Grid item xs={mapWidth(chartParameters.width, spacing)}>
-        <ChartWithTreeNode tree={props.tree} parameters={chartParameters} />
-      </Grid>
-    </CSSTransition>
-  ))
+  const charts = props.charts.map(chartParameters => {
+    const nodeRef = React.createRef<HTMLDivElement>()
+    return (
+      <CSSTransition
+        key={`${chartParameters.topic}-${chartParameters.dotPath || ''}`}
+        timeout={{ enter: 500, exit: 500 }}
+        classNames="example"
+        nodeRef={nodeRef}
+      >
+        <Grid item xs={mapWidth(chartParameters.width, spacing)} ref={nodeRef}>
+          <ChartWithTreeNode tree={props.tree} parameters={chartParameters} />
+        </Grid>
+      </CSSTransition>
+    )
+  })
 
   return (
     <div className={props.classes.container}>
