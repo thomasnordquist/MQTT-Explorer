@@ -107,3 +107,9 @@ export const browserSocket = socket
 // For compatibility, export same instances (renderer communicates with server backend via socket)
 export const backendEvents = rendererEvents
 export const backendRpc = rendererRpc
+
+// Re-export all events from the events module so imports work correctly
+export * from '../../events/Events'
+export * from '../../events/EventsV2'
+export * from '../../events/EventSystem/EventDispatcher'
+export * from '../../events/EventSystem/EventBusInterface'

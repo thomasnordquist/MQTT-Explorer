@@ -45,10 +45,25 @@ export default {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
       'process.env.BROWSER_MODE': JSON.stringify('true'),
     }),
-    // Replace EventSystem/EventBus with app-level browserEventBus
-    new webpack.NormalModuleReplacementPlugin(/events[\\/]EventSystem[\\/]EventBus$/, resource => {
-      // Point to the app-level browser event bus
+    // Replace events/index with browser-specific version that excludes IPC EventBus
+    new webpack.NormalModuleReplacementPlugin(/^\.\.\/\.\.\/\.\.\/events$/, resource => {
+      // Point to browser event bus when importing from '../../../events'
       resource.request = path.resolve(__dirname, 'src', 'browserEventBus.ts')
+    }),
+    new webpack.NormalModuleReplacementPlugin(/^\.\.\/\.\.\/\.\.\/\.\.\/events$/, resource => {
+      // Point to browser event bus when importing from '../../../../events'
+      resource.request = path.resolve(__dirname, 'src', 'browserEventBus.ts')
+    }),
+    // Replace EventSystem/EventBus directly as well
+    new webpack.NormalModuleReplacementPlugin(/events[\\/]EventSystem[\\/]EventBus$/, resource => {
+      resource.request = path.resolve(__dirname, 'src', 'browserEventBus.ts')
+    }),
+    // Exclude IPC-based EventBus files completely
+    new webpack.IgnorePlugin({
+      resourceRegExp: /IpcRendererEventBus\.ts$/,
+    }),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /IpcMainEventBus\.ts$/,
     }),
   ],
 
