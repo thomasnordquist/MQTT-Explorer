@@ -65,6 +65,7 @@ const ConnectionSettings = memo(function ConnectionSettings(props: Props) {
               color="secondary"
               onClick={() => props.managerActions.addSubscription({ topic, qos }, props.connection.id)}
               variant="contained"
+              data-testid="add-subscription-button"
             >
               <Add /> Add
             </Button>
@@ -99,6 +100,7 @@ const ConnectionSettings = memo(function ConnectionSettings(props: Props) {
               variant="contained"
               className={classes.button}
               onClick={props.managerActions.toggleAdvancedSettings}
+              data-testid="back-button"
             >
               <Undo /> Back
             </Button>

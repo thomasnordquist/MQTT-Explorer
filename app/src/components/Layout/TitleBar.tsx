@@ -100,6 +100,7 @@ class TitleBar extends React.PureComponent<Props, {}> {
             className={classes.disconnect}
             sx={{ color: 'primary.contrastText' }}
             onClick={actions.connection.disconnect}
+            data-testid="disconnect-button"
           >
             Disconnect <CloudOff className={classes.disconnectIcon} />
           </Button>

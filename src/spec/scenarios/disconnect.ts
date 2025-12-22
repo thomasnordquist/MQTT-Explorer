@@ -2,6 +2,6 @@ import { Page } from 'playwright'
 import { clickOn } from '../util'
 
 export async function disconnect(browser: Page) {
-  const disconnectButton = await browser.locator('//button/span[contains(text(),"Disconnect")]')
+  const disconnectButton = browser.locator('[data-testid="disconnect-button"]')
   await clickOn(disconnectButton)
 }
