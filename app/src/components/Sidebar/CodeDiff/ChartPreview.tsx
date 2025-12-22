@@ -61,7 +61,7 @@ function ChartPreview(props: Props) {
 
   return (
     <span>
-      <span data-test-type="ShowChart" data-test={props.literal.path}>
+      <span data-test-type="ShowChart" data-test={props.literal.path} style={{ display: 'inline-block' }}>
         {addChartToPanelButton}
       </span>
       <Popper open={open} anchorEl={chartIconRef.current} placement="left-end">
