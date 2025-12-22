@@ -42,12 +42,12 @@ export default memo((props: Props) => {
   }, [])
 
   const showTooltip = React.useCallback(
-    (point: Point, event: React.PointerEvent) => {
-      if (!event) {
+    (point: Point, element: EventTarget | null) => {
+      if (!element) {
         return
       }
       setHoveredPoint(point)
-      setTooltip({ point, value: hintFormatter(point), element: event.target as any })
+      setTooltip({ point, value: hintFormatter(point), element: element as Element })
     },
     [hintFormatter]
   )
@@ -102,10 +102,9 @@ export default memo((props: Props) => {
             stroke={color}
             curve={mapCurveType(props.interpolation)}
             onPointerMove={(datum) => {
-              if (datum && datum.datum) {
+              if (datum && datum.datum && datum.svgPoint) {
                 const point = datum.datum as Point
-                const syntheticEvent = { target: datum.svgPoint } as any
-                showTooltip(point, syntheticEvent)
+                showTooltip(point, datum.svgPoint)
               }
             }}
           />
@@ -122,7 +121,7 @@ export default memo((props: Props) => {
                   cy={glyphProps.y}
                   r={3}
                   fill={pointColor}
-                  onPointerMove={(e) => showTooltip(point, e as any)}
+                  onPointerMove={(e) => showTooltip(point, e.target)}
                 />
               )
             }}
