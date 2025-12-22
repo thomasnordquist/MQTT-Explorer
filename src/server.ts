@@ -157,6 +157,16 @@ async function startServer() {
 
   // Authentication middleware for Socket.io
   io.use(async (socket, next) => {
+    // Skip authentication if disabled
+    if (authManager.isAuthDisabled()) {
+      if (!isProduction) {
+        console.log('Client connected without authentication (auth disabled)')
+      }
+      // Mark socket as auth-disabled for later identification
+      ;(socket as any).authDisabled = true
+      return next()
+    }
+
     const { username, password } = socket.handshake.auth
     const clientIp = socket.handshake.address
 
@@ -203,6 +213,17 @@ async function startServer() {
       console.log('Client authenticated:', username)
     }
     next()
+  })
+
+  // Send auth status to clients on connection
+  io.on('connection', (socket) => {
+    // Inform client about auth status
+    const authDisabled = (socket as any).authDisabled === true
+    socket.emit('auth-status', { authDisabled })
+    
+    if (!isProduction) {
+      console.log(`Client connected, auth disabled: ${authDisabled}`)
+    }
   })
 
   // Initialize backend event bus with Socket.io

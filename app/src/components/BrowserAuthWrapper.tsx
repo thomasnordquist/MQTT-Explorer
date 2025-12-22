@@ -2,6 +2,7 @@ import * as React from 'react'
 import { LoginDialog } from './LoginDialog'
 import { updateSocketAuth, connectSocket } from '../browserEventBus'
 import { isBrowserMode } from '../utils/browserMode'
+import { AuthContext } from '../contexts/AuthContext'
 
 interface BrowserAuthWrapperProps {
   children: React.ReactNode
@@ -10,15 +11,46 @@ interface BrowserAuthWrapperProps {
 export function BrowserAuthWrapper(props: BrowserAuthWrapperProps) {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false)
   const [loginError, setLoginError] = React.useState<string | undefined>()
-  const [showLogin, setShowLogin] = React.useState(isBrowserMode) // Show login initially in browser mode
+  const [showLogin, setShowLogin] = React.useState(false)
   const [waitTimeSeconds, setWaitTimeSeconds] = React.useState<number | undefined>()
   const [isConnecting, setIsConnecting] = React.useState(false)
+  const [authCheckComplete, setAuthCheckComplete] = React.useState(false)
+  const [authDisabled, setAuthDisabled] = React.useState(false)
 
   React.useEffect(() => {
     if (!isBrowserMode) {
       // Not in browser mode, skip authentication
       setIsAuthenticated(true)
+      setAuthCheckComplete(true)
       return
+    }
+
+    // Listen for auth status from socket connection
+    const handleAuthStatus = (event: CustomEvent) => {
+      const { authDisabled } = event.detail
+      setAuthDisabled(authDisabled)
+      
+      if (authDisabled) {
+        // Authentication is disabled on server
+        console.log('Authentication is disabled on server, skipping login')
+        setIsAuthenticated(true)
+        setShowLogin(false)
+        setAuthCheckComplete(true)
+      } else {
+        // Authentication is enabled, check if we have credentials
+        setAuthCheckComplete(true)
+        
+        const username = sessionStorage.getItem('mqtt-explorer-username')
+        const password = sessionStorage.getItem('mqtt-explorer-password')
+
+        if (username && password) {
+          // Credentials exist, connection will authenticate automatically
+          setIsConnecting(true)
+        } else {
+          // No credentials, show login dialog
+          setShowLogin(true)
+        }
+      }
     }
 
     // Listen for successful authentication from socket
@@ -66,23 +98,15 @@ export function BrowserAuthWrapper(props: BrowserAuthWrapperProps) {
       }
     }
 
+    // Connect socket to trigger auth-status event
+    connectSocket()
+
+    window.addEventListener('mqtt-auth-status', handleAuthStatus as EventListener)
     window.addEventListener('mqtt-auth-success', handleAuthSuccess as EventListener)
     window.addEventListener('mqtt-auth-error', handleAuthError as EventListener)
 
-    // Check if already authenticated
-    const username = sessionStorage.getItem('mqtt-explorer-username')
-    const password = sessionStorage.getItem('mqtt-explorer-password')
-
-    if (username && password) {
-      // Credentials exist, try to connect with them
-      setIsConnecting(true)
-      connectSocket()
-    } else {
-      // No credentials, show login dialog
-      setShowLogin(true)
-    }
-
     return () => {
+      window.removeEventListener('mqtt-auth-status', handleAuthStatus as EventListener)
       window.removeEventListener('mqtt-auth-success', handleAuthSuccess as EventListener)
       window.removeEventListener('mqtt-auth-error', handleAuthError as EventListener)
     }
@@ -109,9 +133,14 @@ export function BrowserAuthWrapper(props: BrowserAuthWrapperProps) {
     return <>{props.children}</>
   }
 
+  // Show nothing while checking auth status to avoid flash
+  if (!authCheckComplete) {
+    return null
+  }
+
   if (!isAuthenticated) {
     return <LoginDialog open={showLogin} onLogin={handleLogin} error={loginError} waitTimeSeconds={waitTimeSeconds} />
   }
 
-  return <>{props.children}</>
+  return <AuthContext.Provider value={{ authDisabled }}>{props.children}</AuthContext.Provider>
 }

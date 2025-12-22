@@ -12,13 +12,29 @@ export interface Credentials {
 export class AuthManager {
   private credentialsPath: string
   private credentials: Credentials | undefined
+  private skipAuth: boolean
 
   constructor(credentialsPath: string) {
     this.credentialsPath = credentialsPath
+    this.skipAuth = process.env.MQTT_EXPLORER_SKIP_AUTH === 'true'
+  }
+
+  public isAuthDisabled(): boolean {
+    return this.skipAuth
   }
 
   public async initialize(): Promise<void> {
     const isProduction = process.env.NODE_ENV === 'production'
+
+    // Check if authentication is disabled
+    if (this.skipAuth) {
+      console.log('='.repeat(60))
+      console.log('WARNING: Authentication is DISABLED')
+      console.log('MQTT_EXPLORER_SKIP_AUTH=true')
+      console.log('This should only be used behind a secure authentication proxy!')
+      console.log('='.repeat(60))
+      return
+    }
 
     // Try to get credentials from environment variables
     const envUsername = process.env.MQTT_EXPLORER_USERNAME

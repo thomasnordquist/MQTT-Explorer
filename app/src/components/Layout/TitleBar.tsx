@@ -14,6 +14,7 @@ import { connectionActions, globalActions, settingsActions } from '../../actions
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
 import { isBrowserMode } from '../../utils/browserMode'
+import { useAuth } from '../../contexts/AuthContext'
 
 const styles = (theme: Theme) => ({
   title: {
@@ -104,20 +105,31 @@ class TitleBar extends React.PureComponent<Props, {}> {
           >
             Disconnect <CloudOff className={classes.disconnectIcon} />
           </Button>
-          {isBrowserMode && (
-            <Button
-              className={classes.logout}
-              sx={{ color: 'primary.contrastText' }}
-              onClick={this.handleLogout}
-            >
-              Logout <Logout className={classes.disconnectIcon} />
-            </Button>
-          )}
+          <LogoutButton classes={classes} onLogout={this.handleLogout} />
           <ConnectionHealthIndicatorAny withBackground={true} />
         </Toolbar>
       </AppBar>
     )
   }
+}
+
+// Separate component to use hooks
+function LogoutButton({ classes, onLogout }: { classes: any; onLogout: () => void }) {
+  const { authDisabled } = useAuth()
+  
+  if (!isBrowserMode || authDisabled) {
+    return null
+  }
+
+  return (
+    <Button
+      className={classes.logout}
+      sx={{ color: 'primary.contrastText' }}
+      onClick={onLogout}
+    >
+      Logout <Logout className={classes.disconnectIcon} />
+    </Button>
+  )
 }
 
 const mapStateToProps = (state: AppState) => {

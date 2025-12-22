@@ -1,0 +1,81 @@
+# Multi-stage build for MQTT Explorer Browser Mode
+# Stage 1: Build
+FROM node:24-alpine AS builder
+
+WORKDIR /build
+
+# Copy package files for dependency installation
+COPY package.json yarn.lock ./
+COPY app/package.json ./app/
+COPY backend/package.json ./backend/
+
+# Install ALL dependencies (needed for build)
+RUN yarn install --frozen-lockfile --network-timeout 100000
+
+# Copy source files
+COPY tsconfig.json ./
+COPY src ./src
+COPY backend ./backend
+COPY events ./events
+COPY app ./app
+
+# Build the application (compiles TypeScript and webpack bundles)
+RUN yarn build:server
+
+# Stage 2: Production dependencies
+FROM node:24-alpine AS deps
+
+WORKDIR /deps
+
+# Copy only package files
+COPY --from=builder /build/package.json /build/yarn.lock ./
+
+# Install ONLY production dependencies
+RUN yarn install --production --frozen-lockfile --network-timeout 100000 && \
+    yarn cache clean && \
+    rm -rf /tmp/*
+
+# Stage 3: Production
+FROM node:24-alpine
+
+# Install dumb-init in a single layer
+RUN apk add --no-cache dumb-init
+
+# Create app user in a single layer
+RUN addgroup -g 1001 -S mqttexplorer && \
+    adduser -u 1001 -S mqttexplorer -G mqttexplorer
+
+WORKDIR /app
+
+# Copy ONLY the compiled dist folder (contains compiled TypeScript)
+COPY --from=builder --chown=mqttexplorer:mqttexplorer /build/dist ./dist
+
+# Copy ONLY the built frontend app
+COPY --from=builder --chown=mqttexplorer:mqttexplorer /build/app/build ./app/build
+COPY --from=builder --chown=mqttexplorer:mqttexplorer /build/app/index.html ./app/
+
+# Copy runtime node_modules (minimal set)
+COPY --from=deps --chown=mqttexplorer:mqttexplorer /deps/node_modules ./node_modules
+
+# Copy package.json for version info (needed by server)
+COPY --from=builder --chown=mqttexplorer:mqttexplorer /build/package.json ./
+
+# Create data directory for persistent storage
+RUN mkdir -p /app/data && \
+    chown -R mqttexplorer:mqttexplorer /app/data
+
+# Switch to non-root user
+USER mqttexplorer
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "const http = require('http'); const req = http.get('http://localhost:3000', (r) => process.exit(r.statusCode === 200 ? 0 : 1)); req.on('error', () => process.exit(1));"
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
+# Start the server
+CMD ["node", "dist/src/server.js"]

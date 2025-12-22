@@ -54,6 +54,27 @@ yarn start:server
 
 Then open your browser to `http://localhost:3000`. For more details, see [BROWSER_MODE.md](BROWSER_MODE.md).
 
+### Docker (Browser Mode)
+
+[![Try in PWD](https://raw.githubusercontent.com/play-with-docker/stacks/master/assets/images/button.png)](https://labs.play-with-docker.com/?stack=https://raw.githubusercontent.com/thomasnordquist/MQTT-Explorer/master/docker-compose.yml)
+
+Run MQTT Explorer in a Docker container:
+
+```bash
+docker run -d \
+  -p 3000:3000 \
+  -e MQTT_EXPLORER_USERNAME=admin \
+  -e MQTT_EXPLORER_PASSWORD=your_secure_password \
+  -v mqtt-explorer-data:/app/data \
+  ghcr.io/thomasnordquist/mqtt-explorer:latest
+```
+
+**Supports multiple platforms**: amd64, arm64 (Raspberry Pi 3/4/5), arm/v7 (Raspberry Pi 2/3).
+
+**Enterprise integration**: Set `MQTT_EXPLORER_SKIP_AUTH=true` to disable built-in authentication when deploying behind a secure authentication proxy (e.g., OAuth2 Proxy, SSO).
+
+For complete Docker documentation including authentication options, deployment examples, and security best practices, see [DOCKER.md](DOCKER.md).
+
 ## Develop
 
 ### Desktop Application
