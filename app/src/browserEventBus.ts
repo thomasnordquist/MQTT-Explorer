@@ -60,6 +60,18 @@ socket.on('connect', () => {
   }
 })
 
+// Listen for auth-status from server (sent on connection)
+socket.on('auth-status', (data: { authDisabled: boolean }) => {
+  console.log('Auth status received from server:', data)
+  
+  // Dispatch custom event with auth status
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('mqtt-auth-status', { 
+      detail: { authDisabled: data.authDisabled } 
+    }))
+  }
+})
+
 /**
  * Update socket authentication credentials and attempt to reconnect
  * @param newUsername New username

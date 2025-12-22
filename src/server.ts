@@ -162,6 +162,8 @@ async function startServer() {
       if (!isProduction) {
         console.log('Client connected without authentication (auth disabled)')
       }
+      // Mark socket as auth-disabled for later identification
+      ;(socket as any).authDisabled = true
       return next()
     }
 
@@ -211,6 +213,17 @@ async function startServer() {
       console.log('Client authenticated:', username)
     }
     next()
+  })
+
+  // Send auth status to clients on connection
+  io.on('connection', (socket) => {
+    // Inform client about auth status
+    const authDisabled = (socket as any).authDisabled === true
+    socket.emit('auth-status', { authDisabled })
+    
+    if (!isProduction) {
+      console.log(`Client connected, auth disabled: ${authDisabled}`)
+    }
   })
 
   // Initialize backend event bus with Socket.io
@@ -348,11 +361,6 @@ async function startServer() {
       console.error('Error uploading certificate:', error instanceof Error ? error.message : 'Unknown error')
       throw new Error('Failed to upload certificate')
     }
-  })
-
-  // API endpoint to check if authentication is disabled
-  app.get('/api/auth-status', (req: Request, res: Response) => {
-    res.json({ authDisabled: authManager.isAuthDisabled() })
   })
 
   // Serve static files

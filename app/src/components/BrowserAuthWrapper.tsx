@@ -2,6 +2,7 @@ import * as React from 'react'
 import { LoginDialog } from './LoginDialog'
 import { updateSocketAuth, connectSocket } from '../browserEventBus'
 import { isBrowserMode } from '../utils/browserMode'
+import { AuthContext } from '../contexts/AuthContext'
 
 interface BrowserAuthWrapperProps {
   children: React.ReactNode
@@ -10,10 +11,11 @@ interface BrowserAuthWrapperProps {
 export function BrowserAuthWrapper(props: BrowserAuthWrapperProps) {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false)
   const [loginError, setLoginError] = React.useState<string | undefined>()
-  const [showLogin, setShowLogin] = React.useState(false) // Changed: default to false until we check auth status
+  const [showLogin, setShowLogin] = React.useState(false)
   const [waitTimeSeconds, setWaitTimeSeconds] = React.useState<number | undefined>()
   const [isConnecting, setIsConnecting] = React.useState(false)
   const [authCheckComplete, setAuthCheckComplete] = React.useState(false)
+  const [authDisabled, setAuthDisabled] = React.useState(false)
 
   React.useEffect(() => {
     if (!isBrowserMode) {
@@ -23,47 +25,33 @@ export function BrowserAuthWrapper(props: BrowserAuthWrapperProps) {
       return
     }
 
-    // Check if authentication is disabled on the server
-    async function checkAuthStatus() {
-      try {
-        const response = await fetch('/api/auth-status')
-        const data = await response.json()
-        
-        if (data.authDisabled) {
-          // Authentication is disabled, skip login
-          console.log('Authentication is disabled on server, connecting without credentials')
-          setIsAuthenticated(true)
-          setShowLogin(false)
-          setAuthCheckComplete(true)
-          // Connect without auth
-          connectSocket()
-          return
-        }
-        
-        // Authentication is enabled, proceed with normal flow
+    // Listen for auth status from socket connection
+    const handleAuthStatus = (event: CustomEvent) => {
+      const { authDisabled } = event.detail
+      setAuthDisabled(authDisabled)
+      
+      if (authDisabled) {
+        // Authentication is disabled on server
+        console.log('Authentication is disabled on server, skipping login')
+        setIsAuthenticated(true)
+        setShowLogin(false)
+        setAuthCheckComplete(true)
+      } else {
+        // Authentication is enabled, check if we have credentials
         setAuthCheckComplete(true)
         
-        // Check if already authenticated
         const username = sessionStorage.getItem('mqtt-explorer-username')
         const password = sessionStorage.getItem('mqtt-explorer-password')
 
         if (username && password) {
-          // Credentials exist, try to connect with them
+          // Credentials exist, connection will authenticate automatically
           setIsConnecting(true)
-          connectSocket()
         } else {
           // No credentials, show login dialog
           setShowLogin(true)
         }
-      } catch (error) {
-        console.error('Failed to check auth status:', error)
-        // On error, assume auth is required and show login
-        setAuthCheckComplete(true)
-        setShowLogin(true)
       }
     }
-
-    checkAuthStatus()
 
     // Listen for successful authentication from socket
     const handleAuthSuccess = (event: CustomEvent) => {
@@ -110,10 +98,15 @@ export function BrowserAuthWrapper(props: BrowserAuthWrapperProps) {
       }
     }
 
+    // Connect socket to trigger auth-status event
+    connectSocket()
+
+    window.addEventListener('mqtt-auth-status', handleAuthStatus as EventListener)
     window.addEventListener('mqtt-auth-success', handleAuthSuccess as EventListener)
     window.addEventListener('mqtt-auth-error', handleAuthError as EventListener)
 
     return () => {
+      window.removeEventListener('mqtt-auth-status', handleAuthStatus as EventListener)
       window.removeEventListener('mqtt-auth-success', handleAuthSuccess as EventListener)
       window.removeEventListener('mqtt-auth-error', handleAuthError as EventListener)
     }
@@ -149,5 +142,5 @@ export function BrowserAuthWrapper(props: BrowserAuthWrapperProps) {
     return <LoginDialog open={showLogin} onLogin={handleLogin} error={loginError} waitTimeSeconds={waitTimeSeconds} />
   }
 
-  return <>{props.children}</>
+  return <AuthContext.Provider value={{ authDisabled }}>{props.children}</AuthContext.Provider>
 }
