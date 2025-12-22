@@ -1,3 +1,4 @@
+import { clickOn } from './'
 import { Page, Locator } from 'playwright'
 
 // Time to wait after clicking a topic for the tree to expand and render children
@@ -63,9 +64,7 @@ export async function expandTopic(path: string, browser: Page) {
       await new Promise(resolve => setTimeout(resolve, 200))
 
       // Click to expand/select this level
-      // Use direct Playwright click instead of clickOn to avoid custom mouse movement
-      // which may not work reliably in all test environments
-      await locator.click({ timeout: 5000 })
+      await clickOn(locator)
 
       // Give the UI time to expand and render child topics
       // This is important for MQTT async operations and tree rendering
