@@ -81,6 +81,7 @@ export function LoginDialog(props: LoginDialogProps) {
           onKeyPress={handleKeyPress}
           disabled={isDisabled}
           required
+          data-testid="username-input"
         />
         <TextField
           margin="dense"
@@ -92,6 +93,7 @@ export function LoginDialog(props: LoginDialogProps) {
           onKeyPress={handleKeyPress}
           disabled={isDisabled}
           required
+          data-testid="password-input"
         />
       </DialogContent>
       <DialogActions>

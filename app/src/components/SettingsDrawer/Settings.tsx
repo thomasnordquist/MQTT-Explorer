@@ -138,6 +138,7 @@ class Settings extends React.PureComponent<Props, {}> {
         tooltip="Enable dark theme"
         value={theme === 'dark'}
         action={actions.settings.toggleTheme}
+        data-testid="dark-mode-toggle"
       />
     )
   }

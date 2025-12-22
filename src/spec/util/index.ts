@@ -38,9 +38,9 @@ export async function setInputText(input: Locator, text: string, browser: Page) 
 }
 
 export async function setTextInInput(name: string, text: string, browser: Page) {
-  // Material-UI v5 TextField renders label inside the component
-  // Try multiple locator strategies to find the input
+  // Try data-testid first, then fall back to label-based selectors for Material-UI v5
   const selectors = [
+    `[data-testid="${name.toLowerCase()}-input"]`,
     `//label[contains(text(), "${name}")]/..//input`,
     `//div[contains(@class, 'MuiTextField')]//label[contains(text(), "${name}")]/..//input`,
     `//input[@name="${name.toLowerCase()}"]`,
@@ -101,7 +101,7 @@ export async function runJavascript(js: string, browser: Page) {
 }
 
 export async function clickOnHistory(browser: Page) {
-  const messageHistory = await browser.locator('//span/*[contains(text(), "History")]').first()
+  const messageHistory = await browser.locator('[data-testid="message-history"]').first()
   await clickOn(messageHistory)
 }
 

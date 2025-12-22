@@ -65,37 +65,37 @@ function ChartSettings(props: {
   return (
     <span>
       <Menu id="long-menu" anchorEl={props.anchorEl.current} open={props.open} onClose={props.close}>
-        <MenuItem key="range" onClick={toggleRange}>
+        <MenuItem key="range" onClick={toggleRange} data-menu-item="Y-Axis range (Values)">
           <ListItemIcon>
             <BarChart />
           </ListItemIcon>
           <Typography variant="inherit">Y-Axis range (Values)</Typography>
         </MenuItem>
-        <MenuItem key="timeRange" onClick={toggleTimeRange}>
+        <MenuItem key="timeRange" onClick={toggleTimeRange} data-menu-item="X-Axis range (Time)">
           <ListItemIcon>
             <BarChart />
           </ListItemIcon>
           <Typography variant="inherit">X-Axis range (Time)</Typography>
         </MenuItem>
-        <MenuItem key="interpolation" onClick={toggleInterpolation}>
+        <MenuItem key="interpolation" onClick={toggleInterpolation} data-menu-item="Curve interpolation">
           <ListItemIcon>
             <MultilineChart />
           </ListItemIcon>
           <Typography variant="inherit">Curve interpolation</Typography>
         </MenuItem>
-        <MenuItem key="size" onClick={toggleSize}>
+        <MenuItem key="size" onClick={toggleSize} data-menu-item="Size">
           <ListItemIcon>
             <Sort />
           </ListItemIcon>
           <Typography variant="inherit">Size</Typography>
         </MenuItem>
-        <MenuItem key="color" onClick={toggleColor}>
+        <MenuItem key="color" onClick={toggleColor} data-menu-item="Color">
           <ListItemIcon>
             <ColorLens />
           </ListItemIcon>
           <Typography variant="inherit">Color</Typography>
         </MenuItem>
-        <MenuItem key="clear" onClick={props.resetDataAction}>
+        <MenuItem key="clear" onClick={props.resetDataAction} data-menu-item="Clear data">
           <ListItemIcon>
             <Clear />
           </ListItemIcon>

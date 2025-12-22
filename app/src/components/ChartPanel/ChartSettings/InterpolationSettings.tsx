@@ -39,7 +39,12 @@ function InterpolationSettings(props: {
 
   const menuItems = React.useMemo(() => {
     return curves.map(curve => (
-      <MenuItem key={curve} onClick={callbacks[curve]} selected={props.chart.interpolation === curve}>
+      <MenuItem 
+        key={curve} 
+        onClick={callbacks[curve]} 
+        selected={props.chart.interpolation === curve}
+        data-menu-item={curve.replace(/_/g, ' ')}
+      >
         <Typography variant="inherit">{curve.replace(/_/g, ' ')}</Typography>
       </MenuItem>
     ))

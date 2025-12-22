@@ -21,7 +21,7 @@ export async function showMenu(browser: Page) {
 
   await showText('Dark Mode', 1500, browser, 'top')
   await sleep(1500)
-  const themeSwitch = await browser.locator('//*[contains(text(), "Dark Mode")]/..//input')
+  const themeSwitch = await browser.locator('[data-testid="dark-mode-toggle"]')
   await clickOn(themeSwitch)
   await sleep(3000)
   await browser.screenshot({ path: 'screen_dark_mode.png' })
