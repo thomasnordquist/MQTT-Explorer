@@ -7,13 +7,34 @@
 - Yarn package manager
 - Running Mosquitto MQTT broker (for testing)
 
-### Building Browser Mode
+### Development Mode (with Hot Reload)
+
+1. **Set credentials (required):**
+   ```bash
+   export MQTT_EXPLORER_USERNAME=admin
+   export MQTT_EXPLORER_PASSWORD=your_password
+   ```
+
+2. **Start development servers:**
+   ```bash
+   yarn dev:server
+   ```
+   This runs two servers in parallel:
+   - Backend server on http://localhost:3000 (serves API, WebSocket, authentication)
+   - Webpack dev server on http://localhost:8080 (serves frontend with hot reload)
+
+3. **Access the application:**
+   - Navigate to http://localhost:8080 (NOT :3000)
+   - Webpack dev server proxies API/WebSocket requests to backend on port 3000
+   - Hot reload enabled - changes to React components update automatically
+
+### Production Mode (Production Build)
 
 1. **Build the browser version:**
    ```bash
    yarn build:server
    ```
-   This compiles TypeScript and builds the webpack bundle with `webpack.browser.config.mjs`
+   This compiles TypeScript and builds the optimized webpack bundle
 
 2. **Start the server:**
    ```bash
@@ -22,9 +43,10 @@
    export MQTT_EXPLORER_PASSWORD=your_password
    
    # Start server
-   node dist/src/server.js
+   yarn start:server
+   # OR: node dist/src/server.js
    ```
-   Server will run on http://localhost:3000
+   Server will run on http://localhost:3000 (serves both frontend and backend)
 
 3. **Login to the application:**
    - Navigate to http://localhost:3000

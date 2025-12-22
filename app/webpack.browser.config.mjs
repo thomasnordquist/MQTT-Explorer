@@ -72,4 +72,25 @@ export default {
     ...baseConfig.cache,
     cacheDirectory: path.resolve(__dirname, '.webpack-cache'),
   },
+
+  // Dev server configuration for browser mode development
+  devServer: {
+    static: {
+      directory: path.resolve(__dirname),
+      publicPath: '/',
+    },
+    compress: true,
+    port: 8080, // Different port from backend server (3000)
+    hot: true,
+    historyApiFallback: true,
+    proxy: [
+      {
+        // Proxy API, auth, and socket.io requests to backend server
+        context: ['/socket.io', '/api', '/auth'],
+        target: 'http://localhost:3000',
+        ws: true, // Enable WebSocket proxying
+        changeOrigin: true,
+      },
+    ],
+  },
 }
