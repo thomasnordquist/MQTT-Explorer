@@ -75,11 +75,8 @@ let migrations: Migration[] = [
       if (connection.order !== undefined) {
         return connection
       }
-      // Use a timestamp-based order for existing connections
-      return {
-        ...connection,
-        order: Date.now() + Math.random(),
-      }
+      // Order will be assigned during migration based on current position
+      return connection
     },
   },
 ]
@@ -94,8 +91,14 @@ function isMigrationNecessary(connections: ConnectionDictionary): boolean {
 
 function applyMigrations(connections: ConnectionDictionary): ConnectionDictionary {
   let newConnectionDictionary: ConnectionDictionary = {}
-  Object.keys(connections).forEach(key => {
+  const connectionKeys = Object.keys(connections)
+  
+  connectionKeys.forEach((key, index) => {
     let newConnection = connectionMigrator.applyMigrations(connections[key]) as any
+    // If the migration didn't assign an order, assign one based on current position
+    if (newConnection.order === undefined) {
+      newConnection.order = index
+    }
     newConnectionDictionary[newConnection.id] = newConnection
   })
 

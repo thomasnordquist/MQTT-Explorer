@@ -41,22 +41,22 @@ const ConnectionItem = (props: Props) => {
     <ListItem
       button={true}
       selected={props.selected}
-      style={{ display: 'flex', alignItems: 'center', padding: '8px 8px 8px 16px' }}
+      className={props.classes.itemContainer}
       onClick={() => props.actions.connectionManager.selectConnection(props.connection.id)}
       onDoubleClick={() => {
         props.actions.connectionManager.selectConnection(props.connection.id)
         connect()
       }}
     >
-      <Box style={{ flex: 1, overflow: 'hidden' }}>
+      <Box className={props.classes.textContainer}>
         <Typography className={props.classes.name}>{props.connection.name || 'mqtt broker'}</Typography>
         <Typography className={props.classes.details}>{connection && connection.url}</Typography>
       </Box>
-      <Box style={{ display: 'flex', flexDirection: 'column', marginLeft: '4px' }}>
-        <IconButton size="small" onClick={handleMoveUp} style={{ padding: '2px' }}>
+      <Box className={props.classes.buttonContainer}>
+        <IconButton size="small" onClick={handleMoveUp} className={props.classes.arrowButton}>
           <ArrowUpward fontSize="small" />
         </IconButton>
-        <IconButton size="small" onClick={handleMoveDown} style={{ padding: '2px' }}>
+        <IconButton size="small" onClick={handleMoveDown} className={props.classes.arrowButton}>
           <ArrowDownward fontSize="small" />
         </IconButton>
       </Box>
@@ -86,6 +86,23 @@ export const connectionItemStyle = (theme: Theme) => ({
     overflow: 'hidden' as 'hidden',
     color: theme.palette.text.secondary,
     fontSize: '0.7em',
+  },
+  itemContainer: {
+    display: 'flex' as 'flex',
+    alignItems: 'center' as 'center',
+    padding: '8px 8px 8px 16px',
+  },
+  textContainer: {
+    flex: 1,
+    overflow: 'hidden' as 'hidden',
+  },
+  buttonContainer: {
+    display: 'flex' as 'flex',
+    flexDirection: 'column' as 'column',
+    marginLeft: '4px',
+  },
+  arrowButton: {
+    padding: '2px',
   },
 })
 
