@@ -1,4 +1,4 @@
-When redistributing, the attribution page may not be altered or made less accessible without explicit approval.
+When distributing, the attribution and donation page may not be altered or made less accessible without explicit approval.
 
 # Creative Commons Attribution-ShareAlike 4.0 International
 

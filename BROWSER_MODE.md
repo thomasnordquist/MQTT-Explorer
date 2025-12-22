@@ -112,6 +112,120 @@ Both Electron IPC and Socket.io implement the same `EventBusInterface`, allowing
 
 ## Security Considerations
 
+### Production Deployment
+
+**CRITICAL**: The following security measures must be implemented for production deployments:
+
+#### 1. HTTPS/TLS Encryption
+Always use HTTPS in production to protect credentials and MQTT data in transit:
+
+```bash
+# Use a reverse proxy like nginx or Apache with TLS
+# Example nginx configuration:
+server {
+    listen 443 ssl http2;
+    server_name mqtt-explorer.example.com;
+    
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
+    
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+
+#### 2. Environment Variables for Credentials
+**NEVER** use generated credentials in production. Always set secure credentials via environment variables:
+
+```bash
+export MQTT_EXPLORER_USERNAME=your_secure_username
+export MQTT_EXPLORER_PASSWORD=your_strong_password_min_12_chars
+export NODE_ENV=production
+yarn start:server
+```
+
+#### 3. CORS Configuration
+Configure allowed origins instead of using the wildcard (`*`):
+
+```bash
+# Single origin
+export ALLOWED_ORIGINS=https://mqtt-explorer.example.com
+
+# Multiple origins (comma-separated)
+export ALLOWED_ORIGINS=https://app1.example.com,https://app2.example.com
+
+yarn start:server
+```
+
+In production with `NODE_ENV=production`, wildcard CORS is automatically disabled for security.
+
+#### 4. Network Security
+- Deploy behind a firewall or VPN
+- Use IP whitelisting if possible
+- Implement network-level rate limiting
+- Monitor for suspicious connection patterns
+
+#### 5. File Upload Security
+The server implements several protections against malicious file uploads:
+- Maximum file size: 16MB (configurable via `MAX_FILE_SIZE` constant)
+- Path traversal protection via filename sanitization
+- Files stored in isolated directories
+- Real path validation to prevent directory escapes
+
+#### 6. Authentication Security
+The server implements multiple layers of authentication security:
+- **Password Hashing**: bcrypt with 10 rounds
+- **Timing Attack Protection**: Constant-time string comparison for usernames
+- **Rate Limiting**: Maximum 5 failed attempts per IP per 15 minutes
+- **Session Tracking**: Failed attempts are tracked per client IP
+- **No Credential Logging**: In production mode, credentials are not logged
+
+#### 7. HTTP Security Headers
+The server uses helmet.js to set security headers:
+- Content Security Policy (CSP)
+- HTTP Strict Transport Security (HSTS) in production
+- X-Content-Type-Options: nosniff
+- X-Frame-Options: DENY
+- X-XSS-Protection
+
+### Security Best Practices
+
+1. **Rotate Credentials Regularly**: Change authentication credentials periodically
+2. **Monitor Logs**: Watch for authentication failures and unusual patterns
+3. **Keep Dependencies Updated**: Run `yarn audit` regularly
+4. **Limit Network Exposure**: Don't expose the server directly to the internet
+5. **Use Strong Passwords**: Minimum 12 characters with mixed case, numbers, and symbols
+6. **Enable Logging**: Monitor access logs and error logs
+7. **Regular Backups**: Back up configuration and certificate data
+8. **Principle of Least Privilege**: Run the server with minimal required permissions
+
+### Vulnerability Reporting
+
+If you discover a security vulnerability, please report it via:
+- GitHub Security Advisories
+- Email to the maintainer
+- Do NOT create public issues for security vulnerabilities
+
+### Security Audit Log
+
+- **2024-12**: Initial security review and hardening
+  - Added helmet.js for HTTP security headers
+  - Implemented rate limiting for authentication
+  - Added path traversal protection
+  - Implemented constant-time comparison for credentials
+  - Added input validation and size limits
+  - Removed credential logging in production
+  - Added configurable CORS origins
+  - Created comprehensive security test suite
+
+## Security Considerations (Legacy)
+
 1. **HTTPS**: For production, always use HTTPS to encrypt credentials and MQTT data
 2. **Authentication**: Keep credentials secure and rotate them regularly
 3. **Network**: Ensure the server is on a trusted network or behind a firewall

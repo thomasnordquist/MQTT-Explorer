@@ -76,6 +76,6 @@ async function removeChart(name: string, browser: Page) {
 }
 
 async function clickOnMenuPoint(name: string, browser: Page) {
-  const item = await browser.locator(`//li/span[contains(text(), "${name}")]`)
+  const item = await browser.locator(`[data-menu-item="${name}"]`)
   return clickOn(item)
 }

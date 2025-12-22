@@ -8,7 +8,7 @@ function ConnectButton(props: { connecting: boolean; classes: any; toggle: () =>
 
   if (connecting) {
     return (
-      <Button variant="contained" color="primary" className={classes.button} onClick={toggle}>
+      <Button variant="contained" color="primary" className={classes.button} onClick={toggle} data-testid="abort-button">
         <ConnectionHealthIndicator />
         &nbsp;&nbsp;Abort
       </Button>
@@ -16,7 +16,7 @@ function ConnectButton(props: { connecting: boolean; classes: any; toggle: () =>
   }
 
   return (
-    <Button variant="contained" color="primary" className={classes.button} onClick={toggle}>
+    <Button variant="contained" color="primary" className={classes.button} onClick={toggle} data-testid="connect-button">
       <PowerSettingsNew /> Connect
     </Button>
   )

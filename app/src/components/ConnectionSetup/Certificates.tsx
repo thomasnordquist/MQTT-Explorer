@@ -9,10 +9,9 @@ import { connectionManagerActions } from '../../actions'
 import { ConnectionOptions } from '../../model/ConnectionOptions'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
+import { isBrowserMode } from '../../utils/browserMode'
 
-// Check if we're in browser mode
-const isBrowserMode =
-  typeof window !== 'undefined' && (typeof process === 'undefined' || process.env?.BROWSER_MODE === 'true')
+// Use browser or desktop file selection based on mode
 const CertSelector: any = isBrowserMode ? BrowserCertificateFileSelection : CertificateFileSelection
 
 interface Props {

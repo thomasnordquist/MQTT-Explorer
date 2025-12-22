@@ -236,6 +236,7 @@ function ConnectionSettings(props: Props) {
               variant="contained"
               className={classes.button}
               onClick={props.managerActions.toggleAdvancedSettings}
+              data-testid="advanced-button"
             >
               <Settings /> Advanced
             </Button>

@@ -8,7 +8,7 @@ import RetainSwitch from './RetainSwitch'
 import TopicInput from './TopicInput'
 import { AppState } from '../../../reducers'
 import { bindActionCreators } from 'redux'
-import { Button, Fab, Tooltip, useTheme } from '@mui/material'
+import { Button, Fab, Tooltip } from '@mui/material'
 import { connect } from 'react-redux'
 import { EditorModeSelect } from './EditorModeSelect'
 import { globalActions, publishActions } from '../../../actions'
@@ -41,7 +41,6 @@ function useHistory(): [Array<Message>, (topic: string, payload?: string) => voi
 }
 
 function Publish(props: Props) {
-  const theme = useTheme()
   const editorRef = useRef<AceEditor>()
   const [history, amendToHistory] = useHistory()
 

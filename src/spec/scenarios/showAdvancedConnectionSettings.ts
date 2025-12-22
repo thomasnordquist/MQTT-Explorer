@@ -2,9 +2,9 @@ import { Page } from 'playwright'
 import { clickOn, sleep, setInputText } from '../util'
 
 export async function showAdvancedConnectionSettings(browser: Page) {
-  const advancedSettingsButton = await browser.locator('//button/span[contains(text(),"Advanced")]')
-  const addButton = await browser.locator('//button/span[contains(text(),"Add")]')
-  const topicInput = await browser.locator('//*[contains(@class, "advanced-connection-settings-topic-input")]//input')
+  const advancedSettingsButton = browser.locator('[data-testid="advanced-button"]')
+  const addButton = browser.locator('[data-testid="add-subscription-button"]')
+  const topicInput = browser.locator('//*[contains(@class, "advanced-connection-settings-topic-input")]//input')
 
   await clickOn(advancedSettingsButton)
   await setInputText(topicInput, 'garden/#', browser)
@@ -17,14 +17,14 @@ export async function showAdvancedConnectionSettings(browser: Page) {
   await deleteFirstSubscribedTopic(browser)
   await sleep(1000)
 
-  const backButton = await browser.locator('//button/span[contains(text(),"Back")]').first()
+  const backButton = browser.locator('[data-testid="back-button"]').first()
   await clickOn(backButton)
 
-  const connectButton = await browser.locator('//button/span[contains(text(),"Connect")]')
+  const connectButton = browser.locator('[data-testid="connect-button"]')
   await clickOn(connectButton)
 }
 
 async function deleteFirstSubscribedTopic(browser: Page) {
-  const deleteButton = await browser.locator('.advanced-connection-settings-topic-list button').first()
+  const deleteButton = browser.locator('.advanced-connection-settings-topic-list button').first()
   await clickOn(deleteButton)
 }

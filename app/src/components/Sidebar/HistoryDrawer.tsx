@@ -88,6 +88,7 @@ function HistoryDrawer(props: Props) {
                 invisible={!visible}
                 badgeContent={props.items.length}
                 color="primary"
+                data-testid="message-history"
               >
                 {expanded ? '▼ History' : '▶ History'}
               </Badge>
