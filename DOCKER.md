@@ -2,6 +2,12 @@
 
 Docker image for running MQTT Explorer in browser mode.
 
+## Try It Now
+
+[![Try in PWD](https://raw.githubusercontent.com/play-with-docker/stacks/master/assets/images/button.png)](https://labs.play-with-docker.com/?stack=https://raw.githubusercontent.com/thomasnordquist/MQTT-Explorer/master/docker-compose.yml)
+
+Click the badge above to instantly try MQTT Explorer in your browser using Play with Docker (requires free Docker Hub account).
+
 ## Quick Start
 
 ### Using Pre-built Image
@@ -182,6 +188,41 @@ The Docker image is built for multiple architectures:
 - `linux/amd64` - x86-64 (standard PCs, servers)
 - `linux/arm64` - ARM 64-bit (Raspberry Pi 3/4/5, Apple Silicon)
 - `linux/arm/v7` - ARM 32-bit (Raspberry Pi 2/3)
+
+## One-Click Deployment Options
+
+### Play with Docker (Free)
+
+Try MQTT Explorer instantly in your browser without installing anything:
+
+[![Try in PWD](https://raw.githubusercontent.com/play-with-docker/stacks/master/assets/images/button.png)](https://labs.play-with-docker.com/?stack=https://raw.githubusercontent.com/thomasnordquist/MQTT-Explorer/master/docker-compose.yml)
+
+- **No installation required** - Runs entirely in your browser
+- **Free to use** - Requires only a Docker Hub account
+- **Perfect for demos** - Great for testing and demonstrations
+- **4-hour sessions** - Sessions automatically expire after 4 hours
+
+### Cloud Platforms
+
+Deploy MQTT Explorer to various cloud platforms with one click:
+
+#### DigitalOcean App Platform
+
+[![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/thomasnordquist/MQTT-Explorer/tree/master&refcode=docker)
+
+- Automatically detects Docker configuration
+- Managed platform with auto-scaling
+- Starting at $5/month
+
+#### Koyeb
+
+[![Deploy to Koyeb](https://www.koyeb.com/static/images/deploy/button.svg)](https://app.koyeb.com/deploy?type=docker&name=mqtt-explorer&image=ghcr.io/thomasnordquist/mqtt-explorer:latest&ports=3000;http;/)
+
+- Deploy directly from Docker image
+- Global edge network
+- Free tier available
+
+**Note:** Remember to set the environment variables `MQTT_EXPLORER_USERNAME` and `MQTT_EXPLORER_PASSWORD` when deploying to cloud platforms.
 
 ## License
 
