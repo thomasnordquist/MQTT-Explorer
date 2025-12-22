@@ -6,7 +6,7 @@ export async function connectTo(host: string, browser: Page) {
 
   await browser.screenshot({ path: 'screen1.png' })
 
-  // Material-UI v5 changed button text to uppercase
-  const connectButton = browser.locator('//button/span[contains(text(),"CONNECT")]')
+  // Use data-testid for reliable button location
+  const connectButton = browser.locator('[data-testid="connect-button"]')
   await clickOn(connectButton)
 }
