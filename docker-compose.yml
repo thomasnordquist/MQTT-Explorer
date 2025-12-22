@@ -8,6 +8,8 @@ services:
     environment:
       - MQTT_EXPLORER_USERNAME=admin
       - MQTT_EXPLORER_PASSWORD=changeme
+      # Uncomment to disable authentication (use only behind a secure proxy!)
+      # - MQTT_EXPLORER_SKIP_AUTH=true
     volumes:
       - mqtt-explorer-data:/app/data
     restart: unless-stopped

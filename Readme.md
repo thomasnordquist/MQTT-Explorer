@@ -69,9 +69,11 @@ docker run -d \
   ghcr.io/thomasnordquist/mqtt-explorer:latest
 ```
 
-Supports multiple platforms: amd64, arm64 (Raspberry Pi 3/4/5), arm/v7 (Raspberry Pi 2/3).
+**Supports multiple platforms**: amd64, arm64 (Raspberry Pi 3/4/5), arm/v7 (Raspberry Pi 2/3).
 
-For complete Docker documentation, see [DOCKER.md](DOCKER.md).
+**Enterprise integration**: Set `MQTT_EXPLORER_SKIP_AUTH=true` to disable built-in authentication when deploying behind a secure authentication proxy (e.g., OAuth2 Proxy, SSO).
+
+For complete Docker documentation including authentication options, deployment examples, and security best practices, see [DOCKER.md](DOCKER.md).
 
 ## Develop
 

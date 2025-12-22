@@ -157,6 +157,14 @@ async function startServer() {
 
   // Authentication middleware for Socket.io
   io.use(async (socket, next) => {
+    // Skip authentication if disabled
+    if (authManager.isAuthDisabled()) {
+      if (!isProduction) {
+        console.log('Client connected without authentication (auth disabled)')
+      }
+      return next()
+    }
+
     const { username, password } = socket.handshake.auth
     const clientIp = socket.handshake.address
 
@@ -340,6 +348,11 @@ async function startServer() {
       console.error('Error uploading certificate:', error instanceof Error ? error.message : 'Unknown error')
       throw new Error('Failed to upload certificate')
     }
+  })
+
+  // API endpoint to check if authentication is disabled
+  app.get('/api/auth-status', (req: Request, res: Response) => {
+    res.json({ authDisabled: authManager.isAuthDisabled() })
   })
 
   // Serve static files

@@ -64,9 +64,30 @@ docker-compose up -d
 |----------|----------|---------|-------------|
 | `MQTT_EXPLORER_USERNAME` | No | Generated | Username for authentication |
 | `MQTT_EXPLORER_PASSWORD` | No | Generated | Password for authentication |
+| `MQTT_EXPLORER_SKIP_AUTH` | No | `false` | Set to `true` to disable authentication (use only behind a secure proxy!) |
 | `PORT` | No | `3000` | Port the server listens on |
+| `ALLOWED_ORIGINS` | No | `*` | Comma-separated list of allowed CORS origins |
+| `NODE_ENV` | No | - | Set to `production` for production deployments |
 
-**Note**: If credentials are not provided, they will be auto-generated and stored in `/app/data/credentials.json`. Check the container logs to see the generated credentials:
+### Authentication Modes
+
+**Standard Mode (Default):**
+- Requires username and password for access
+- Credentials can be set via environment variables or auto-generated
+- Auto-generated credentials are logged on first startup and saved to `/app/data/credentials.json`
+
+**Skip Authentication Mode (Use with caution!):**
+```bash
+docker run -d -p 3000:3000 \
+  -e MQTT_EXPLORER_SKIP_AUTH=true \
+  ghcr.io/thomasnordquist/mqtt-explorer:latest
+```
+
+⚠️ **WARNING**: When `MQTT_EXPLORER_SKIP_AUTH=true`, the application is **completely open** without any authentication. This should **only be used** when MQTT Explorer is deployed behind a secure authentication proxy (e.g., OAuth2 Proxy, Authelia, Nginx with auth_request) or in a trusted private network.
+
+**Recommended use case**: Integration with enterprise SSO systems where authentication is handled by a reverse proxy.
+
+**Note**: If credentials are not provided and auth is not skipped, they will be auto-generated and stored in `/app/data/credentials.json`. Check the container logs to see the generated credentials:
 
 ```bash
 docker logs mqtt-explorer
