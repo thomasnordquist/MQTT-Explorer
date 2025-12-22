@@ -10,7 +10,7 @@ import { PlotCurveTypes } from '../../reducers/Charts'
 import { Point, Tooltip } from './Model'
 import { useCustomXDomain } from './effects/useCustomXDomain'
 import { useCustomYDomain } from './effects/useCustomYDomain'
-import { XYChart, AnimatedAxis, AnimatedGrid, AnimatedLineSeries, AnimatedGlyphSeries } from '@visx/xychart'
+import { XYChart, Axis, Grid, LineSeries, GlyphSeries } from '@visx/xychart'
 const abbreviate = require('number-abbreviate')
 
 export interface Props {
@@ -90,18 +90,20 @@ export default memo((props: Props) => {
         <div ref={chartContainerRef}>
           <XYChart
             width={width || 300}
-            height={180}
+            height={150}
+            margin={{ top: 10, right: 10, bottom: 30, left: 50 }}
             xScale={{ type: 'linear', domain: hasData ? (xDomain ?? dummyDomain) : dummyDomain }}
             yScale={{ type: 'linear', domain: hasData ? yDomain : dummyDomain }}
             onPointerOut={onMouseLeave}
           >
-            <AnimatedGrid rows={true} columns={false} />
-            <AnimatedAxis orientation="left" tickFormat={formatYAxis} />
-            <AnimatedLineSeries
+            <Grid rows={true} columns={false} stroke={theme.palette.divider} strokeOpacity={0.3} />
+            <Axis orientation="left" tickFormat={formatYAxis} stroke={theme.palette.text.secondary} tickStroke={theme.palette.text.secondary} />
+            <LineSeries
               dataKey="line"
               data={hasData ? data : dummyData}
               {...accessors}
               stroke={color}
+              strokeWidth={2}
               curve={mapCurveType(props.interpolation)}
               onPointerMove={(datum) => {
                 if (datum && datum.datum) {
@@ -110,7 +112,7 @@ export default memo((props: Props) => {
                 }
               }}
             />
-            <AnimatedGlyphSeries
+            <GlyphSeries
               dataKey="points"
               data={hasData ? data : dummyData}
               {...accessors}
@@ -123,6 +125,7 @@ export default memo((props: Props) => {
                     cy={glyphProps.y}
                     r={3}
                     fill={pointColor}
+                    stroke={pointColor}
                   />
                 )
               }}
