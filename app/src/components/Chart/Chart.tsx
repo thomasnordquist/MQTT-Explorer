@@ -91,7 +91,7 @@ export default memo((props: Props) => {
           <XYChart
             width={width || 300}
             height={180}
-            xScale={{ type: 'linear', domain: hasData ? (xDomain || dummyDomain) : dummyDomain }}
+            xScale={{ type: 'linear', domain: hasData ? (xDomain ?? dummyDomain) : dummyDomain }}
             yScale={{ type: 'linear', domain: hasData ? yDomain : dummyDomain }}
             onPointerOut={onMouseLeave}
           >
