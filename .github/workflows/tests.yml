@@ -77,10 +77,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: 'eu-central-1'
           AWS_BUCKET: ${{ vars.AWS_BUCKET }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           # Generate unique filename with PR number and timestamp
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-          FILENAME="pr-${{ github.event.pull_request.number }}-${TIMESTAMP}.gif"
+          FILENAME="pr-${PR_NUMBER}-${TIMESTAMP}.gif"
 
           # Upload file with tagging for lifecycle expiration
           aws s3 cp ./ui-test.gif s3://${AWS_BUCKET}/${FILENAME} \
@@ -102,17 +103,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const commentBody = `## 🎬 Demo Video Generated
-
-            ![Demo Video](${{ steps.upload.outputs.file-url }})
-
-            _This video will expire in 90 days._`;
-
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: commentBody,
+              body: '## 🎬 Demo Video Generated\n\n' +
+                    '![Demo Video](${{ steps.upload.outputs.file-url }})\n\n' +
+                    '_This video will expire in 90 days._'
             });
 
   test-browser:
