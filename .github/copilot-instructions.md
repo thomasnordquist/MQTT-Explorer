@@ -264,12 +264,10 @@ When debugging, be aware that:
 
 ## Styling Conventions
 
-When modifying or creating UI components, follow the styling patterns documented in [STYLING.md](../STYLING.md).
+When modifying or creating UI components, follow the styling patterns documented in <a>STYLING.md</a>.
 
 **Key points for AI agents:**
 - Use Material-UI (MUI) v7.3.6 components with `withStyles` HOC for styling
 - Access theme colors via `theme.palette.*`, spacing via `theme.spacing()`, typography via `theme.typography.*`
 - Support both light and dark modes with theme-conditional styling
 - Import Material-UI colors: `import { blueGrey, amber, green, red } from '@mui/material/colors'`
-
-See [STYLING.md](../STYLING.md) for complete guidelines, patterns, and best practices.
