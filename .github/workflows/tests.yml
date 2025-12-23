@@ -96,8 +96,7 @@ jobs:
             --bucket ${AWS_BUCKET} \
             --key ${FILENAME} \
             --body ./ui-test.gif \
-            --tagging "expiration=90days&Source=github-actions&Type=pr-demo-video" \
-            --acl public-read
+            --tagging "expiration=90days&Source=github-actions&Type=pr-demo-video"
       - name: Generate file URL
         id: fileurl
         env:

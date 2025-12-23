@@ -268,15 +268,31 @@ aws s3api get-bucket-lifecycle-configuration --bucket YOUR_BUCKET_NAME
 #### Required AWS Credentials
 
 The workflow requires the following secrets/variables:
-- `vars.AWS_KEY_ID` - AWS access key ID (requires `s3:PutObject`, `s3:PutObjectTagging`, and `s3:PutObjectAcl` permissions)
+- `vars.AWS_KEY_ID` - AWS access key ID (requires `s3:PutObject` and `s3:PutObjectTagging` permissions)
 - `secrets.AWS_SECRET_ACCESS_KEY` - AWS secret access key
 - `vars.AWS_BUCKET` - S3 bucket name
 - AWS region: `eu-central-1` (hardcoded in workflow)
 
 The S3 bucket must have:
-- Public read access enabled for uploaded objects (via ACL or bucket policy)
+- **Bucket policy for public read access**: Since ACLs are disabled (BucketOwnerEnforced), a bucket policy must grant public read access to uploaded objects
 - Object tagging enabled
 - Lifecycle policy configured as described above
+
+**Example S3 Bucket Policy for Public Read Access**:
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::YOUR_BUCKET_NAME/*"
+    }
+  ]
+}
+```
 
 The workflow uses AWS CLI v2 installed directly and `aws-actions/configure-aws-credentials@v4` action for secure credential management.
 
