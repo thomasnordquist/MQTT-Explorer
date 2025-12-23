@@ -21,7 +21,7 @@ jobs:
       - name: Test
         run: yarn test
 
-  electron-tests:
+  browser-ui-tests:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/thomasnordquist/mqtt-explorer-ui-tests:latest
@@ -34,16 +34,16 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Install Packages
         run: yarn install --frozen-lockfile
-      - name: Build
-        run: yarn build
-      - name: Run Electron UI Tests
+      - name: Build Browser Mode
+        run: yarn build:server
+      - name: Run Browser UI Tests
         timeout-minutes: 10
-        run: ./scripts/runUiTests.sh
+        run: ./scripts/runBrowserTests.sh
       - name: Upload Test Screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: electron-test-screenshots
+          name: browser-test-screenshots
           path: |
             test-screenshot-*.png
           retention-days: 30
