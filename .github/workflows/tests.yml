@@ -67,36 +67,37 @@ jobs:
         run: yarn ui-test
       - name: Post-processing
         run: ./scripts/prepareVideo.sh
-      - name: Install AWS CLI
+      - name: Generate unique filename
+        id: filename
         run: |
-          apt-get update && apt-get install -y awscli
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          FILENAME="pr-${{ github.event.pull_request.number }}-${TIMESTAMP}.gif"
+          echo "filename=${FILENAME}" >> $GITHUB_OUTPUT
       - name: Upload to S3 with expiration tag
         id: upload
-        env:
-          AWS_ACCESS_KEY_ID: ${{ vars.AWS_KEY_ID }}
+        uses: ramonpaolo/action-upload-s3@main
+        with:
+          AWS_BUCKET_NAME: ${{ vars.AWS_BUCKET }}
+          AWS_REGION: 'eu-central-1'
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: 'eu-central-1'
+          AWS_ACCESS_KEY_ID: ${{ vars.AWS_KEY_ID }}
+          local_path_upload: './ui-test.gif'
+          bucket_path_upload: '/'
+          name_to_save_on_s3: ${{ steps.filename.outputs.filename }}
+          tags: 'expiration=90days&Source=github-actions&Type=pr-demo-video'
+      - name: Generate file URL
+        id: fileurl
+        env:
           AWS_BUCKET: ${{ vars.AWS_BUCKET }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          FILENAME: ${{ steps.filename.outputs.filename }}
         run: |
-          # Generate unique filename with PR number and timestamp
-          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-          FILENAME="pr-${PR_NUMBER}-${TIMESTAMP}.gif"
-
-          # Upload file with tagging for lifecycle expiration
-          aws s3 cp ./ui-test.gif s3://${AWS_BUCKET}/${FILENAME} \
-            --content-type image/gif \
-            --tagging "expiration=90days" \
-            --acl public-read
-
-          # Generate and save the public URL
-          FILE_URL="https://${AWS_BUCKET}.s3.${AWS_DEFAULT_REGION}.amazonaws.com/${FILENAME}"
+          FILE_URL="https://${AWS_BUCKET}.s3.eu-central-1.amazonaws.com/${FILENAME}"
           echo "file-url=${FILE_URL}" >> $GITHUB_OUTPUT
           echo "Uploaded to: ${FILE_URL}"
       - name: Show URL
-        run: echo '${{ steps.upload.outputs.file-url }}'
+        run: echo '${{ steps.fileurl.outputs.file-url }}'
         id: artifact-upload-step
-      - run: echo '<picture><img src="${{ steps.upload.outputs.file-url }}"></picture>' \
+      - run: echo '<picture><img src="${{ steps.fileurl.outputs.file-url }}"></picture>' \
           >> $GITHUB_STEP_SUMMARY
       - name: Post video to PR
         uses: actions/github-script@v7
@@ -108,7 +109,7 @@ jobs:
               repo: context.repo.repo,
               issue_number: context.issue.number,
               body: '## 🎬 Demo Video Generated\n\n' +
-                    '![Demo Video](${{ steps.upload.outputs.file-url }})\n\n' +
+                    '![Demo Video](${{ steps.fileurl.outputs.file-url }})\n\n' +
                     '_This video will expire in 90 days._'
             });
 

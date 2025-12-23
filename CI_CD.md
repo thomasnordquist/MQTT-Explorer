@@ -257,20 +257,25 @@ aws s3api get-bucket-lifecycle-configuration --bucket YOUR_BUCKET_NAME
 
 #### How It Works
 
-- **PR demo videos**: Uploaded with filename pattern `pr-{number}-{timestamp}.gif` and tagged `expiration=90days`
+- **PR demo videos**: Uploaded with filename pattern `pr-{number}-{timestamp}.gif` and tagged with:
+  - `expiration=90days` - Used by lifecycle policy for automatic deletion
+  - `Source=github-actions` - Identifies source of upload
+  - `Type=pr-demo-video` - Categorizes the object type
 - **S3 lifecycle rule**: Automatically deletes objects tagged with `expiration=90days` after 90 days
-- **gh-pages video**: `video.mp4` in gh-pages branch is uploaded without expiration tags, so it persists indefinitely
+- **Upload mechanism**: Uses `ramonpaolo/action-upload-s3@main` GitHub Action with object tagging support
+- **gh-pages video**: `video.mp4` in gh-pages branch is served from GitHub Pages, not S3, so it persists indefinitely
 
 #### Required AWS Credentials
 
 The workflow requires the following secrets/variables:
-- `vars.AWS_KEY_ID` - AWS access key ID
+- `vars.AWS_KEY_ID` - AWS access key ID (requires `s3:PutObject` and `s3:PutObjectTagging` permissions)
 - `secrets.AWS_SECRET_ACCESS_KEY` - AWS secret access key
 - `vars.AWS_BUCKET` - S3 bucket name
 - AWS region: `eu-central-1` (hardcoded in workflow)
 
 The S3 bucket must have:
-- Public read access for uploaded objects (via `--acl public-read`)
+- Public read access enabled for uploaded objects
+- Object tagging enabled
 - Lifecycle policy configured as described above
 
 ## Troubleshooting
