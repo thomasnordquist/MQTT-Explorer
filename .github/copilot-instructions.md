@@ -264,68 +264,12 @@ When debugging, be aware that:
 
 ## Styling Conventions
 
-MQTT Explorer follows specific styling patterns for visual consistency. When modifying or creating UI components:
+When modifying or creating UI components, follow the styling patterns documented in [STYLING.md](../STYLING.md).
 
-### Quick Reference
+**Key points for AI agents:**
+- Use Material-UI (MUI) v7.3.6 components with `withStyles` HOC for styling
+- Access theme colors via `theme.palette.*`, spacing via `theme.spacing()`, typography via `theme.typography.*`
+- Support both light and dark modes with theme-conditional styling
+- Import Material-UI colors: `import { blueGrey, amber, green, red } from '@mui/material/colors'`
 
-- **UI Framework**: Material-UI (MUI) v7.3.6
-- **Styling Approach**: JSS with `withStyles` HOC
-- **Theme System**: Light and dark modes defined in `app/src/theme.ts`
-- **Primary Color**: `#335C67`
-- **Secondary Color**: Material-UI `amber` palette
-
-### Key Principles
-
-1. **Use theme variables** for colors, spacing, and typography:
-   ```typescript
-   backgroundColor: theme.palette.background.default
-   padding: theme.spacing(2)  // 16px
-   fontSize: theme.typography.pxToRem(15)
-   ```
-
-2. **Style components with `withStyles` HOC:**
-   ```typescript
-   const styles = (theme: Theme) => ({
-     root: {
-       backgroundColor: theme.palette.background.default,
-       padding: theme.spacing(2),
-     },
-   })
-   
-   export default withStyles(styles)(MyComponent)
-   ```
-
-3. **Support both themes** - Always consider light and dark mode:
-   ```typescript
-   const color = theme.palette.mode === 'light' ? blueGrey[300] : theme.palette.primary.main
-   ```
-
-4. **Import Material-UI colors:**
-   ```typescript
-   import { blueGrey, amber, green, red } from '@mui/material/colors'
-   ```
-
-5. **Use spacing scale** based on 8px grid:
-   - `theme.spacing(1)` = 8px
-   - `theme.spacing(1.5)` = 12px (tree indentation)
-   - `theme.spacing(2)` = 16px
-
-6. **Typography variants:**
-   ```typescript
-   <Typography variant="h6">Heading</Typography>
-   <Typography variant="body1">Body text</Typography>
-   <Typography variant="caption">Caption</Typography>
-   ```
-
-### Complete Documentation
-
-For comprehensive styling guidelines, patterns, and best practices, see [STYLING.md](../STYLING.md).
-
-This includes:
-- Theme configuration details
-- Color usage patterns
-- Typography conventions
-- Spacing and layout rules
-- Component styling patterns
-- Animation and transitions
-- Common patterns and examples
+See [STYLING.md](../STYLING.md) for complete guidelines, patterns, and best practices.
