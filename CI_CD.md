@@ -262,7 +262,7 @@ aws s3api get-bucket-lifecycle-configuration --bucket YOUR_BUCKET_NAME
   - `Source=github-actions` - Identifies source of upload
   - `Type=pr-demo-video` - Categorizes the object type
 - **S3 lifecycle rule**: Automatically deletes objects tagged with `expiration=90days` after 90 days
-- **Upload mechanism**: AWS CLI is installed via Python pip, authentication is configured via `aws-actions/configure-aws-credentials@v4` GitHub Action, then `aws s3 cp` is used with object tagging support
+- **Upload mechanism**: AWS CLI v2 is installed directly, authentication is configured via `aws-actions/configure-aws-credentials@v4` GitHub Action, then `aws s3api put-object` is used with object tagging support
 - **gh-pages video**: `video.mp4` in gh-pages branch is served from GitHub Pages, not S3, so it persists indefinitely
 
 #### Required AWS Credentials
@@ -278,7 +278,7 @@ The S3 bucket must have:
 - Object tagging enabled
 - Lifecycle policy configured as described above
 
-The workflow uses AWS CLI installed via Python pip and `aws-actions/configure-aws-credentials@v4` action for secure credential management.
+The workflow uses AWS CLI v2 installed directly and `aws-actions/configure-aws-credentials@v4` action for secure credential management.
 
 ## Troubleshooting
 

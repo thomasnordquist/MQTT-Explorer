@@ -92,7 +92,10 @@ jobs:
           AWS_BUCKET: ${{ vars.AWS_BUCKET }}
           FILENAME: ${{ steps.filename.outputs.filename }}
         run: |
-          aws s3 cp ./ui-test.gif s3://${AWS_BUCKET}/${FILENAME} \
+          aws s3api put-object \
+            --bucket ${AWS_BUCKET} \
+            --key ${FILENAME} \
+            --body ./ui-test.gif \
             --tagging "expiration=90days&Source=github-actions&Type=pr-demo-video" \
             --acl public-read
       - name: Generate file URL
