@@ -23,9 +23,8 @@ mosquitto &
 export PID_MOSQUITTO=$!
 sleep 1
 
-# Set default credentials if not set
-export MQTT_EXPLORER_USERNAME=${MQTT_EXPLORER_USERNAME:-test}
-export MQTT_EXPLORER_PASSWORD=${MQTT_EXPLORER_PASSWORD:-test123}
+# Disable authentication for browser tests
+export MQTT_EXPLORER_SKIP_AUTH=true
 export PORT=${PORT:-3000}
 
 # Start the browser mode server

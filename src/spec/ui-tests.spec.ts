@@ -68,6 +68,10 @@ describe('MQTT Explorer UI Tests', function () {
       browserContext = await browser.newContext()
       page = await browserContext.newPage()
 
+      // Listen for console messages
+      page.on('console', msg => console.log('Browser console:', msg.type(), msg.text()))
+      page.on('pageerror', error => console.error('Browser error:', error))
+
       // Navigate to the browser mode URL
       await page.goto(browserUrl, { timeout: 30000, waitUntil: 'networkidle' })
 
@@ -75,15 +79,18 @@ describe('MQTT Explorer UI Tests', function () {
       const username = process.env.MQTT_EXPLORER_USERNAME || 'test'
       const password = process.env.MQTT_EXPLORER_PASSWORD || 'test123'
 
+      console.log('Waiting for page to initialize...')
+      await sleep(3000) // Wait for WebSocket connection and auth check
+
       console.log('Checking for login dialog...')
-      const loginDialog = page.locator('h2:has-text("Login")')
-      const loginDialogVisible = await loginDialog.isVisible().catch(() => false)
+      const loginDialog = page.locator('h2:has-text("Login to MQTT Explorer")')
+      const loginDialogVisible = await loginDialog.isVisible({ timeout: 5000 }).catch(() => false)
 
       if (loginDialogVisible) {
         console.log('Login dialog detected, authenticating...')
-        await page.fill('input[name="username"]', username)
-        await page.fill('input[name="password"]', password)
-        await page.click('button:has-text("LOGIN")')
+        await page.fill('[data-testid="username-input"]', username)
+        await page.fill('[data-testid="password-input"]', password)
+        await page.click('button:has-text("Login")')
         await sleep(2000) // Wait for authentication to complete
         console.log('Authentication complete')
       } else {
@@ -92,7 +99,13 @@ describe('MQTT Explorer UI Tests', function () {
 
       // Wait for the connection dialog to appear
       console.log('Waiting for MQTT connection dialog...')
-      await page.locator('//label[contains(text(), "Host")]/..//input').waitFor({ timeout: 10000 })
+      try {
+        await page.locator('//label[contains(text(), "Host")]/..//input').waitFor({ timeout: 10000 })
+      } catch (error) {
+        console.log('Failed to find connection dialog, taking screenshot for debugging')
+        await page.screenshot({ path: 'browser-debug-screenshot.png', fullPage: true })
+        throw error
+      }
     } else {
       console.log('Launching Electron application...')
       electronApp = await electron.launch({
