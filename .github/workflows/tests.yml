@@ -86,7 +86,7 @@ jobs:
           aws-access-key-id: ${{ vars.AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: 'eu-central-1'
-      - name: Upload to S3 with expiration tag
+      - name: Upload to S3
         id: upload
         env:
           AWS_BUCKET: ${{ vars.AWS_BUCKET }}
@@ -95,8 +95,7 @@ jobs:
           aws s3api put-object \
             --bucket ${AWS_BUCKET} \
             --key ${FILENAME} \
-            --body ./ui-test.gif \
-            --tagging "expiration=90days&Source=github-actions&Type=pr-demo-video"
+            --body ./ui-test.gif
       - name: Generate file URL
         id: fileurl
         env:
