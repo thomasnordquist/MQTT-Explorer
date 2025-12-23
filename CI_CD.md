@@ -75,7 +75,7 @@ Tests the traditional Electron desktop application:
   7. Display test results in GitHub summary
 
 **Artifacts**: 
-- UI test video (GIF format) uploaded to S3
+- UI test video (GIF format) uploaded to S3 using AWS CLI
 - Video is tagged with `expiration=90days` for automatic lifecycle deletion
 - Video is posted to the PR thread as an embedded image
 - Videos expire after 90 days via S3 lifecycle policy
@@ -262,21 +262,23 @@ aws s3api get-bucket-lifecycle-configuration --bucket YOUR_BUCKET_NAME
   - `Source=github-actions` - Identifies source of upload
   - `Type=pr-demo-video` - Categorizes the object type
 - **S3 lifecycle rule**: Automatically deletes objects tagged with `expiration=90days` after 90 days
-- **Upload mechanism**: Uses `ramonpaolo/action-upload-s3@main` GitHub Action with object tagging support
+- **Upload mechanism**: Uses official AWS CLI via `aws-actions/configure-aws-credentials@v4` GitHub Action for authentication, then `aws s3 cp` with object tagging support
 - **gh-pages video**: `video.mp4` in gh-pages branch is served from GitHub Pages, not S3, so it persists indefinitely
 
 #### Required AWS Credentials
 
 The workflow requires the following secrets/variables:
-- `vars.AWS_KEY_ID` - AWS access key ID (requires `s3:PutObject` and `s3:PutObjectTagging` permissions)
+- `vars.AWS_KEY_ID` - AWS access key ID (requires `s3:PutObject`, `s3:PutObjectTagging`, and `s3:PutObjectAcl` permissions)
 - `secrets.AWS_SECRET_ACCESS_KEY` - AWS secret access key
 - `vars.AWS_BUCKET` - S3 bucket name
 - AWS region: `eu-central-1` (hardcoded in workflow)
 
 The S3 bucket must have:
-- Public read access enabled for uploaded objects
+- Public read access enabled for uploaded objects (via ACL or bucket policy)
 - Object tagging enabled
 - Lifecycle policy configured as described above
+
+The workflow uses the official AWS CLI via `aws-actions/configure-aws-credentials@v4` action for secure credential management.
 
 ## Troubleshooting
 
