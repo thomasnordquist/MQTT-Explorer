@@ -1,5 +1,16 @@
 # GitHub Copilot Agent Instructions for MQTT Explorer
 
+## Style Guide
+
+**Always follow the [Style Guide](../STYLE_GUIDE.md)** when making code changes. The style guide covers:
+- Code formatting (Prettier + TSLint)
+- TypeScript conventions
+- React component patterns
+- State management (Redux)
+- File organization and naming
+- Testing practices
+- Security guidelines
+
 ## Test Suites
 
 MQTT Explorer has several test suites to ensure code quality and reliability:

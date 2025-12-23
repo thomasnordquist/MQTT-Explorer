@@ -99,6 +99,8 @@ yarn dev:server
 
 The `app` directory contains all the rendering logic, the `backend` directory currently contains the models, tests, connection management, `src` contains all the electron bindings. [mqttjs](https://github.com/mqttjs/MQTT.js) is used to facilitate communication to MQTT brokers.
 
+For coding standards, design patterns, and best practices, see the [Style Guide](STYLE_GUIDE.md).
+
 ## Automated Tests
 
 MQTT Explorer uses multiple test suites to ensure reliability and quality:
