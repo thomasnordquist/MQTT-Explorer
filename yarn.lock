@@ -650,23 +650,7 @@
   optionalDependencies:
     global-agent "^3.0.0"
 
-"@electron/node-gyp@10.2.0-electron.1", "@electron/node-gyp@https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2":
-  version "10.2.0-electron.1"
-  resolved "https://registry.yarnpkg.com/@electron/node-gyp/-/node-gyp-10.2.0-electron.1.tgz#ca5f125dcd0ffb275797c0c418c0d64005e0f815"
-  integrity sha512-YdpRE6qSNYyf7gBv1LBDc8OAs8f/mZthzM1k4pFzodNq8dBGf64MWC5Bq8VVlgdafjQXLpINHvtRAUC9uinoqw==
-  dependencies:
-    env-paths "^2.2.0"
-    exponential-backoff "^3.1.1"
-    glob "^8.1.0"
-    graceful-fs "^4.2.6"
-    make-fetch-happen "^10.2.1"
-    nopt "^6.0.0"
-    proc-log "^2.0.1"
-    semver "^7.3.5"
-    tar "^6.2.1"
-    which "^2.0.2"
-
-"@electron/node-gyp@10.2.0-electron.2":
+"@electron/node-gyp@10.2.0-electron.2", "@electron/node-gyp@https://github.com/electron/node-gyp#06b29aafb7708acef8b3669835c8a7857ebc92d2":
   version "10.2.0-electron.2"
   resolved "https://registry.yarnpkg.com/@electron/node-gyp/-/node-gyp-10.2.0-electron.2.tgz#391b28473d7c9dc1fc2b5407d314579a49f4bf24"
   integrity sha512-OhO6fwqpetMO1vWI3+J8mb3a4s4A405tgKoUCJsgd4nyQDdFh0VvZm+gj/Cc70iRLQoIYUfSaAgYSVwmLsQHig==

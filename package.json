@@ -47,7 +47,7 @@
     "url": "https://github.com/thomasnordquist/MQTT-Explorer.git"
   },
   "resolutions": {
-    "@electron/node-gyp": "10.2.0-electron.1"
+    "@electron/node-gyp": "10.2.0-electron.2"
   },
   "build": {
     "appId": "mqtt-explorer",
