@@ -10,8 +10,8 @@
 #   MQTT_EXPLORER_PASSWORD - Password for browser authentication (default: test123)
 #   PORT - Server port (default: 3000)
 #   BROWSER_MODE_URL - URL for browser tests (set automatically)
-#   MQTT_BROKER_HOST - MQTT broker host for tests (required, default: 127.0.0.1)
-#   MQTT_BROKER_PORT - MQTT broker port for tests (default: 1883)
+#   TESTS_MQTT_BROKER_HOST - MQTT broker host for tests (required, default: 127.0.0.1)
+#   TESTS_MQTT_BROKER_PORT - MQTT broker port for tests (default: 1883)
 #
 set -e
 
@@ -52,10 +52,10 @@ done
 
 # Run browser tests
 export BROWSER_MODE_URL="http://localhost:${PORT}"
-export MQTT_BROKER_HOST="${MQTT_BROKER_HOST:-127.0.0.1}"
-export MQTT_BROKER_PORT="${MQTT_BROKER_PORT:-1883}"
+export TESTS_MQTT_BROKER_HOST="${TESTS_MQTT_BROKER_HOST:-127.0.0.1}"
+export TESTS_MQTT_BROKER_PORT="${TESTS_MQTT_BROKER_PORT:-1883}"
 
-echo "Using MQTT broker at $MQTT_BROKER_HOST:$MQTT_BROKER_PORT"
+echo "Using MQTT broker at $TESTS_MQTT_BROKER_HOST:$TESTS_MQTT_BROKER_PORT"
 
 yarn test:browser
 TEST_EXIT_CODE=$?

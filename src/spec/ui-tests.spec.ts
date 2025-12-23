@@ -134,7 +134,7 @@ describe('MQTT Explorer UI Tests', function () {
     }
 
     console.log('Connecting to MQTT broker...')
-    const brokerHost = process.env.MQTT_BROKER_HOST || '127.0.0.1'
+    const brokerHost = process.env.TESTS_MQTT_BROKER_HOST || '127.0.0.1'
     await connectTo(brokerHost, page)
     await sleep(3000) // Give time for topics to load
     console.log('Setup complete')
