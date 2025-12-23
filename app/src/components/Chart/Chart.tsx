@@ -68,6 +68,14 @@ export default memo((props: Props) => {
   )
 
   const formatYAxis = useCallback((num: number) => abbreviate(num), [])
+  
+  const formatXAxis = useCallback((timestamp: number) => {
+    const date = new Date(timestamp)
+    const hours = date.getHours().toString().padStart(2, '0')
+    const minutes = date.getMinutes().toString().padStart(2, '0')
+    const seconds = date.getSeconds().toString().padStart(2, '0')
+    return `${hours}:${minutes}:${seconds}`
+  }, [])
 
   const xDomain = useCustomXDomain(props)
   const yDomain = useCustomYDomain(props)
@@ -100,6 +108,7 @@ export default memo((props: Props) => {
           >
             <Grid rows={true} columns={false} stroke={theme.palette.divider} strokeOpacity={0.3} />
             <Axis orientation="left" tickFormat={formatYAxis} stroke={theme.palette.text.secondary} tickStroke={theme.palette.text.secondary} />
+            <Axis orientation="bottom" tickFormat={formatXAxis} stroke={theme.palette.text.secondary} tickStroke={theme.palette.text.secondary} />
             <LineSeries
               dataKey="line"
               data={hasData ? data : dummyData}
