@@ -1,5 +1,6 @@
 import React from 'react'
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Link } from '@mui/material'
+import { rendererRpc, getAppVersion } from '../../../events'
 
 interface AboutDialogProps {
   open: boolean
@@ -7,12 +8,25 @@ interface AboutDialogProps {
 }
 
 export function AboutDialog(props: AboutDialogProps) {
+  const [version, setVersion] = React.useState<string>('0.4.0-beta.5')
+
+  React.useEffect(() => {
+    // Fetch version from backend
+    rendererRpc
+      .call(getAppVersion, undefined, 5000)
+      .then(v => setVersion(v))
+      .catch(() => {
+        // Fallback to hardcoded version if RPC fails
+        console.warn('Failed to fetch app version, using fallback')
+      })
+  }, [])
+
   return (
     <Dialog open={props.open} onClose={props.onClose} maxWidth="sm" fullWidth>
       <DialogTitle>About MQTT Explorer</DialogTitle>
       <DialogContent>
         <Typography variant="body1" gutterBottom>
-          <strong>Version:</strong> 0.4.0-beta.5
+          <strong>Version:</strong> {version}
         </Typography>
         <Typography variant="body1" gutterBottom>
           <strong>Author:</strong> Thomas Nordquist
