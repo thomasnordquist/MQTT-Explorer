@@ -10,7 +10,7 @@
 #   MQTT_EXPLORER_PASSWORD - Password for browser authentication (default: test123)
 #   PORT - Server port (default: 3000)
 #   BROWSER_MODE_URL - URL for browser tests (set automatically)
-#   MQTT_BROKER_HOST - MQTT broker host for tests (required, default: 127.0.0.1)
+#   MQTT_BROKER_HOST - MQTT broker host for tests (default: 127.0.0.1)
 #   MQTT_BROKER_PORT - MQTT broker port for tests (default: 1883)
 #
 set -e
