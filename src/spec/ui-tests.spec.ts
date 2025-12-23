@@ -56,7 +56,10 @@ describe('MQTT Explorer UI Tests', function () {
 
     if (isBrowserMode) {
       console.log('Launching browser in browser mode...')
-      const browserUrl = process.env.BROWSER_MODE_URL!
+      const browserUrl = process.env.BROWSER_MODE_URL
+      if (!browserUrl) {
+        throw new Error('BROWSER_MODE_URL environment variable must be set when running in browser mode')
+      }
       console.log(`Browser URL: ${browserUrl}`)
 
       // Launch Chromium browser
@@ -84,7 +87,13 @@ describe('MQTT Explorer UI Tests', function () {
 
       console.log('Checking for login dialog...')
       const loginDialog = page.locator('h2:has-text("Login to MQTT Explorer")')
-      const loginDialogVisible = await loginDialog.isVisible({ timeout: 5000 }).catch(() => false)
+      let loginDialogVisible = false
+      try {
+        loginDialogVisible = await loginDialog.isVisible({ timeout: 5000 })
+      } catch (error) {
+        // Timeout is expected if dialog is not shown, not an error
+        console.log('Login dialog not found (timeout) - this is expected when auth is disabled')
+      }
 
       if (loginDialogVisible) {
         console.log('Login dialog detected, authenticating...')

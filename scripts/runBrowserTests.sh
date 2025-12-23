@@ -1,4 +1,17 @@
 #!/bin/bash
+# Browser Mode Test Runner
+# 
+# This script runs UI tests against the browser mode server (instead of Electron).
+# It starts a local mosquitto MQTT broker and the MQTT Explorer server, then runs
+# the test suite using Playwright with a headless Chrome browser.
+#
+# Environment Variables:
+#   MQTT_EXPLORER_SKIP_AUTH - Set to 'true' to disable authentication (default for tests)
+#   PORT - Server port (default: 3000)
+#   BROWSER_MODE_URL - URL for browser tests (set automatically)
+#   MQTT_BROKER_HOST - MQTT broker host for tests (default: 127.0.0.1)
+#   MQTT_BROKER_PORT - MQTT broker port for tests (default: 1883)
+#
 set -e
 
 function finish {
@@ -34,7 +47,7 @@ export PID_SERVER=$!
 # Wait for server to be ready (max 60 seconds)
 echo "Waiting for server to start..."
 for i in {1..60}; do
-  if curl -f http://localhost:${PORT} > /dev/null 2>&1; then
+  if curl -f --connect-timeout 5 --max-time 10 http://localhost:${PORT} > /dev/null 2>&1; then
     echo "Server started successfully after $i seconds"
     break
   fi
