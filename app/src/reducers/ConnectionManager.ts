@@ -26,6 +26,7 @@ export type Action =
   | ToggleCertificateSettings
   | DeleteSubscription
   | AddSubscription
+  | MoveConnection
 
 export enum ActionTypes {
   CONNECTION_MANAGER_SET_CONNECTIONS = 'CONNECTION_MANAGER_SET_CONNECTIONS',
@@ -37,6 +38,7 @@ export enum ActionTypes {
   CONNECTION_MANAGER_TOGGLE_CERTIFICATE_SETTINGS = 'CONNECTION_MANAGER_TOGGLE_CERTIFICATE_SETTINGS',
   CONNECTION_MANAGER_ADD_SUBSCRIPTION = 'CONNECTION_MANAGER_ADD_SUBSCRIPTION',
   CONNECTION_MANAGER_DELETE_SUBSCRIPTION = 'CONNECTION_MANAGER_DELETE_SUBSCRIPTION',
+  CONNECTION_MANAGER_MOVE_CONNECTION = 'CONNECTION_MANAGER_MOVE_CONNECTION',
 }
 
 export interface SetConnections {
@@ -85,6 +87,12 @@ export interface ToggleCertificateSettings {
   type: ActionTypes.CONNECTION_MANAGER_TOGGLE_CERTIFICATE_SETTINGS
 }
 
+export interface MoveConnection {
+  type: ActionTypes.CONNECTION_MANAGER_MOVE_CONNECTION
+  connectionId: string
+  direction: 'up' | 'down'
+}
+
 export const connectionManagerReducer = createReducer(initialState, {
   CONNECTION_MANAGER_SET_CONNECTIONS: setConnections,
   CONNECTION_MANAGER_SELECT_CONNECTION: selectConnection,
@@ -95,6 +103,7 @@ export const connectionManagerReducer = createReducer(initialState, {
   CONNECTION_MANAGER_TOGGLE_CERTIFICATE_SETTINGS: toggleCertificateSettings,
   CONNECTION_MANAGER_DELETE_SUBSCRIPTION: deleteSubscription,
   CONNECTION_MANAGER_ADD_SUBSCRIPTION: addSubscription,
+  CONNECTION_MANAGER_MOVE_CONNECTION: moveConnection,
 })
 
 function setConnections(state: ConnectionManagerState, action: SetConnections): ConnectionManagerState {
@@ -219,6 +228,43 @@ function updateConnection(state: ConnectionManagerState, action: UpdateConnectio
     connections: {
       ...state.connections,
       [action.connectionId]: connection,
+    },
+  }
+}
+
+function moveConnection(state: ConnectionManagerState, action: MoveConnection): ConnectionManagerState {
+  const connections = Object.values(state.connections).sort((a, b) => (a.order || 0) - (b.order || 0))
+  const currentIndex = connections.findIndex(c => c.id === action.connectionId)
+
+  if (currentIndex === -1) {
+    return state
+  }
+
+  const targetIndex = action.direction === 'up' ? currentIndex - 1 : currentIndex + 1
+
+  // Can't move beyond bounds
+  if (targetIndex < 0 || targetIndex >= connections.length) {
+    return state
+  }
+
+  // Swap order values
+  const currentConnection = connections[currentIndex]
+  const targetConnection = connections[targetIndex]
+  const currentOrder = currentConnection.order || 0
+  const targetOrder = targetConnection.order || 0
+
+  return {
+    ...state,
+    connections: {
+      ...state.connections,
+      [currentConnection.id]: {
+        ...currentConnection,
+        order: targetOrder,
+      },
+      [targetConnection.id]: {
+        ...targetConnection,
+        order: currentOrder,
+      },
     },
   }
 }
