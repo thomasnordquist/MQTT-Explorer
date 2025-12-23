@@ -81,13 +81,13 @@ jobs:
           # Generate unique filename with PR number and timestamp
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
           FILENAME="pr-${{ github.event.pull_request.number }}-${TIMESTAMP}.gif"
-          
+
           # Upload file with tagging for lifecycle expiration
           aws s3 cp ./ui-test.gif s3://${AWS_BUCKET}/${FILENAME} \
             --content-type image/gif \
             --tagging "expiration=90days" \
             --acl public-read
-          
+
           # Generate and save the public URL
           FILE_URL="https://${AWS_BUCKET}.s3.${AWS_DEFAULT_REGION}.amazonaws.com/${FILENAME}"
           echo "file-url=${FILE_URL}" >> $GITHUB_OUTPUT
@@ -95,18 +95,19 @@ jobs:
       - name: Show URL
         run: echo '${{ steps.upload.outputs.file-url }}'
         id: artifact-upload-step
-      - run: echo '<picture><img src="${{ steps.upload.outputs.file-url }}"></picture>' >> $GITHUB_STEP_SUMMARY
+      - run: echo '<picture><img src="${{ steps.upload.outputs.file-url }}"></picture>' \
+          >> $GITHUB_STEP_SUMMARY
       - name: Post video to PR
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const commentBody = `## 🎬 Demo Video Generated
-            
+
             ![Demo Video](${{ steps.upload.outputs.file-url }})
-            
+
             _This video will expire in 90 days._`;
-            
+
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
