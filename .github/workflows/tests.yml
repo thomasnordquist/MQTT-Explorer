@@ -67,20 +67,52 @@ jobs:
         run: yarn ui-test
       - name: Post-processing
         run: ./scripts/prepareVideo.sh
-      - uses: hkusu/s3-upload-action@v2
-        id: upload # specify some ID for use in subsequent steps
+      - name: Generate unique filename
+        id: filename
+        run: |
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          FILENAME="pr-${{ github.event.pull_request.number }}-${TIMESTAMP}.gif"
+          echo "filename=${FILENAME}" >> $GITHUB_OUTPUT
+      - name: Upload to S3 with expiration tag
+        id: upload
+        uses: ramonpaolo/action-upload-s3@main
         with:
-          aws-access-key-id: ${{ vars.AWS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: 'eu-central-1'
-          aws-bucket: ${{ vars.AWS_BUCKET }}
-          file-path: './ui-test.gif'
-          content-type: image/gif
-          output-file-url: 'true'
+          AWS_BUCKET_NAME: ${{ vars.AWS_BUCKET }}
+          AWS_REGION: 'eu-central-1'
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ vars.AWS_KEY_ID }}
+          local_path_upload: './ui-test.gif'
+          bucket_path_upload: '/'
+          name_to_save_on_s3: ${{ steps.filename.outputs.filename }}
+          tags: 'expiration=90days&Source=github-actions&Type=pr-demo-video'
+      - name: Generate file URL
+        id: fileurl
+        env:
+          AWS_BUCKET: ${{ vars.AWS_BUCKET }}
+          FILENAME: ${{ steps.filename.outputs.filename }}
+        run: |
+          FILE_URL="https://${AWS_BUCKET}.s3.eu-central-1.amazonaws.com/${FILENAME}"
+          echo "file-url=${FILE_URL}" >> $GITHUB_OUTPUT
+          echo "Uploaded to: ${FILE_URL}"
       - name: Show URL
-        run: echo '${{ steps.upload.outputs.file-url }}'
+        run: echo '${{ steps.fileurl.outputs.file-url }}'
         id: artifact-upload-step
-      - run: echo '<picture><img src="${{ steps.upload.outputs.file-url }}"></picture>' >> $GITHUB_STEP_SUMMARY
+      - run: echo '<picture><img src="${{ steps.fileurl.outputs.file-url }}"></picture>' \
+          >> $GITHUB_STEP_SUMMARY
+      - name: Post video to PR
+        uses: actions/github-script@v7
+        env:
+          VIDEO_URL: ${{ steps.fileurl.outputs.file-url }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const videoUrl = process.env.VIDEO_URL;
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## 🎬 Demo Video Generated\n\n![Demo Video](${videoUrl})\n\n_This video will expire in 90 days._`
+            });
 
   test-browser:
     runs-on: ubuntu-latest
