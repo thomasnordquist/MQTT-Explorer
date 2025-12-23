@@ -85,6 +85,7 @@ jobs:
           bucket_path_upload: '/'
           name_to_save_on_s3: ${{ steps.filename.outputs.filename }}
           tags: 'expiration=90days&Source=github-actions&Type=pr-demo-video'
+          zip: false
       - name: Generate file URL
         id: fileurl
         env:
