@@ -102,7 +102,7 @@ export default memo((props: Props) => {
             width={width || 300}
             height={CHART_HEIGHT}
             margin={{ top: 10, right: 10, bottom: 30, left: 50 }}
-            xScale={{ type: 'linear', ...(xDomain && { domain: xDomain }) }}
+            xScale={{ type: 'time', domain: xDomain || dummyDomain }}
             yScale={{ type: 'linear', domain: hasData ? yDomain : dummyDomain }}
             onPointerOut={onMouseLeave}
           >
@@ -126,7 +126,8 @@ export default memo((props: Props) => {
             <LineSeries
               dataKey="line"
               data={hasData ? data : dummyData}
-              {...accessors}
+              xAccessor={accessors.xAccessor}
+              yAccessor={accessors.yAccessor}
               stroke={color}
               strokeWidth={2}
               curve={mapCurveType(props.interpolation)}
@@ -140,7 +141,8 @@ export default memo((props: Props) => {
             <GlyphSeries
               dataKey="points"
               data={hasData ? data : dummyData}
-              {...accessors}
+              xAccessor={accessors.xAccessor}
+              yAccessor={accessors.yAccessor}
               renderGlyph={(glyphProps) => {
                 const point = glyphProps.datum as Point
                 const pointColor = highlightSelectedPoint(point)
