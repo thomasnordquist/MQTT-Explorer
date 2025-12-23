@@ -62,8 +62,8 @@ export interface CertificateUploadResponse {
   data: string // base64 encoded
 }
 
-// Electron dialog types (re-exported for convenience)
-import { OpenDialogOptions, OpenDialogReturnValue, SaveDialogOptions, SaveDialogReturnValue } from 'electron'
+// Dialog types (browser-compatible versions)
+import type { OpenDialogOptions, OpenDialogReturnValue, SaveDialogOptions, SaveDialogReturnValue } from './DialogTypes'
 
 export type OpenDialogOptionsV2 = OpenDialogOptions
 export type OpenDialogReturnValueV2 = OpenDialogReturnValue

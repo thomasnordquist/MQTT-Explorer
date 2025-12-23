@@ -54,10 +54,6 @@ export default {
       // Point to browser event bus when importing from '../../../../events'
       resource.request = path.resolve(__dirname, 'src', 'browserEventBus.ts')
     }),
-    // Replace EventSystem/EventBus directly as well
-    new webpack.NormalModuleReplacementPlugin(/events[\\/]EventSystem[\\/]EventBus$/, resource => {
-      resource.request = path.resolve(__dirname, 'src', 'browserEventBus.ts')
-    }),
     // Exclude IPC-based EventBus files completely
     new webpack.IgnorePlugin({
       resourceRegExp: /IpcRendererEventBus\.ts$/,

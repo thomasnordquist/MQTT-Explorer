@@ -166,6 +166,9 @@ jobs:
       - name: Install dependencies for browser tests
         run: yarn install --frozen-lockfile
 
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
       - name: Start Docker container for browser tests
         run: |
           docker run -d \

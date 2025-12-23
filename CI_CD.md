@@ -40,10 +40,13 @@ This workflow builds and publishes a Docker image for the browser mode.
 4. Verify HTTP response
 5. Test data directory creation
 6. Check Docker image size
-7. Start container for frontend tests
-8. Test frontend bundles (app.bundle.js, vendors.bundle.js)
-9. Push image to GitHub Container Registry
-10. Generate build attestation for supply chain security
+7. Setup Node.js 24 for browser tests
+8. Install dependencies for browser tests
+9. Install Playwright browsers (`npx playwright install --with-deps chromium`)
+10. Start container for browser tests
+11. Run browser test suite with Playwright
+12. Push image to GitHub Container Registry
+13. Generate build attestation for supply chain security
 
 **Image Features**:
 - Multi-stage build for minimal size
@@ -65,6 +68,11 @@ This workflow runs on pull requests to `master`, `beta`, and `release` branches.
 Tests the traditional Electron desktop application:
 
 - **Environment**: Custom Docker container (`ghcr.io/thomasnordquist/mqtt-explorer-ui-tests:latest`)
+  - Based on Node.js 24
+  - Includes Xvfb for headless display
+  - Includes FFmpeg for video recording
+  - Includes Mosquitto MQTT broker
+  - **Playwright browsers pre-installed** with system dependencies
 - **Steps**:
   1. Install dependencies with frozen lockfile
   2. Build the Electron application
@@ -75,7 +83,7 @@ Tests the traditional Electron desktop application:
   7. Display test results in GitHub summary
 
 **Artifacts**: 
-- UI test video (GIF format) uploaded to S3
+- UI test video (GIF format) uploaded to S3 using AWS CLI
 - Video is tagged with `expiration=90days` for automatic lifecycle deletion
 - Video is posted to the PR thread as an embedded image
 - Videos expire after 90 days via S3 lifecycle policy
@@ -84,20 +92,21 @@ Tests the traditional Electron desktop application:
 
 Tests the new browser/server mode:
 
-- **Environment**: Ubuntu latest with Node.js 20
+- **Environment**: Ubuntu latest with Node.js 24
 - **Services**:
   - **Mosquitto MQTT Broker**: Eclipse Mosquitto v2 on port 1883
     - Health checks enabled
     - Anonymous connections allowed
 - **Steps**:
-  1. Setup Node.js 20
+  1. Setup Node.js 24
   2. Install dependencies
-  3. Build browser mode (`yarn build:server`)
-  4. Run unit tests (app + backend)
-  5. Start server in background with test credentials
-  6. Wait for server to be ready
-  7. Run browser smoke tests
-  8. Clean up server process
+  3. Install Playwright browsers (`npx playwright install --with-deps chromium`)
+  4. Build browser mode (`yarn build:server`)
+  5. Run unit tests (app + backend)
+  6. Start server in background with test credentials
+  7. Wait for server to be ready
+  8. Run browser smoke tests
+  9. Clean up server process
 
 **Environment Variables**:
 - `MQTT_EXPLORER_USERNAME=test`
@@ -262,7 +271,7 @@ aws s3api get-bucket-lifecycle-configuration --bucket YOUR_BUCKET_NAME
   - `Source=github-actions` - Identifies source of upload
   - `Type=pr-demo-video` - Categorizes the object type
 - **S3 lifecycle rule**: Automatically deletes objects tagged with `expiration=90days` after 90 days
-- **Upload mechanism**: Uses `ramonpaolo/action-upload-s3@main` GitHub Action with object tagging support
+- **Upload mechanism**: AWS CLI v2 is installed directly, authentication is configured via `aws-actions/configure-aws-credentials@v4` GitHub Action, then `aws s3api put-object` is used with object tagging support
 - **gh-pages video**: `video.mp4` in gh-pages branch is served from GitHub Pages, not S3, so it persists indefinitely
 
 #### Required AWS Credentials
@@ -274,9 +283,27 @@ The workflow requires the following secrets/variables:
 - AWS region: `eu-central-1` (hardcoded in workflow)
 
 The S3 bucket must have:
-- Public read access enabled for uploaded objects
+- **Bucket policy for public read access**: Since ACLs are disabled (BucketOwnerEnforced), a bucket policy must grant public read access to uploaded objects
 - Object tagging enabled
 - Lifecycle policy configured as described above
+
+**Example S3 Bucket Policy for Public Read Access**:
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::YOUR_BUCKET_NAME/*"
+    }
+  ]
+}
+```
+
+The workflow uses AWS CLI v2 installed directly and `aws-actions/configure-aws-credentials@v4` action for secure credential management.
 
 ## Troubleshooting
 
@@ -293,6 +320,7 @@ The S3 bucket must have:
 
 ## Future Improvements
 
+- [x] Add Playwright browser installation to workflows (browser tests can now use Playwright)
 - [ ] Add E2E browser tests with Playwright
 - [ ] Test WebSocket connections in browser mode
 - [ ] Add performance benchmarks
