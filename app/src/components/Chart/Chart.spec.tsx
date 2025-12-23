@@ -405,4 +405,110 @@ describe('Chart Component', () => {
       expect(container.querySelector('svg')).to.exist
     })
   })
+
+  describe('Interactive Data Updates', () => {
+    it('should dynamically update when data points are added', () => {
+      // Start with 3 data points
+      const initialData = createMockChartData(3)
+      const { rerender, container } = renderWithProviders(
+        <Chart data={initialData} />,
+        { withTheme: true }
+      )
+      
+      // Verify initial state: should have 3 data points
+      const initialCircles = container.querySelectorAll('circle')
+      expect(initialCircles.length).to.equal(3, 'Should initially render 3 data points')
+      
+      // Verify each initial circle has valid attributes
+      initialCircles.forEach((circle, index) => {
+        const cx = circle.getAttribute('cx')
+        const cy = circle.getAttribute('cy')
+        const r = circle.getAttribute('r')
+        
+        expect(cx).to.exist
+        expect(cy).to.exist
+        expect(r).to.equal('3')
+        expect(parseFloat(cx!)).to.be.a('number').and.not.NaN
+        expect(parseFloat(cy!)).to.be.a('number').and.not.NaN
+      })
+      
+      // Update state: add 2 more data points (total 5)
+      const updatedData = createMockChartData(5)
+      rerender(<Chart data={updatedData} />)
+      
+      // Verify updated state: should now have 5 data points
+      const updatedCircles = container.querySelectorAll('circle')
+      expect(updatedCircles.length).to.equal(5, 'Should render 5 data points after update')
+      
+      // Verify each updated circle has valid attributes
+      updatedCircles.forEach((circle, index) => {
+        const cx = circle.getAttribute('cx')
+        const cy = circle.getAttribute('cy')
+        const r = circle.getAttribute('r')
+        const fill = circle.getAttribute('fill')
+        
+        expect(cx).to.exist
+        expect(cy).to.exist
+        expect(r).to.equal('3')
+        expect(fill).to.exist
+        expect(parseFloat(cx!)).to.be.a('number').and.not.NaN
+        expect(parseFloat(cy!)).to.be.a('number').and.not.NaN
+        expect(parseFloat(cy!)).to.be.greaterThan(0, 'Y coordinate should be positive')
+      })
+      
+      // Verify the line path is updated to connect all 5 points
+      const linePath = container.querySelector('path[stroke]')
+      expect(linePath).to.exist
+      expect(linePath!.getAttribute('d')).to.exist
+      
+      // The path should start with MoveTo (M) command and contain curve/line commands
+      const pathData = linePath!.getAttribute('d')
+      expect(pathData).to.include('M') // MoveTo command for first point
+      // Path may contain 'L' (line) or 'C' (curve) commands depending on interpolation
+      expect(pathData!.length).to.be.greaterThan(10, 'Path should have substantial data for 5 points')
+    })
+
+    it('should handle data point removal', () => {
+      // Start with 5 data points
+      const initialData = createMockChartData(5)
+      const { rerender, container } = renderWithProviders(
+        <Chart data={initialData} />,
+        { withTheme: true }
+      )
+      
+      // Verify initial state
+      let circles = container.querySelectorAll('circle')
+      expect(circles.length).to.equal(5, 'Should initially render 5 data points')
+      
+      // Remove 2 data points (now 3)
+      const reducedData = createMockChartData(3)
+      rerender(<Chart data={reducedData} />)
+      
+      // Verify reduced state
+      circles = container.querySelectorAll('circle')
+      expect(circles.length).to.equal(3, 'Should render 3 data points after removal')
+    })
+
+    it('should maintain chart structure during data updates', () => {
+      const initialData = createMockChartData(3)
+      const { rerender, container } = renderWithProviders(
+        <Chart data={initialData} />,
+        { withTheme: true }
+      )
+      
+      // Verify chart structure exists initially
+      expect(container.querySelector('svg')).to.exist
+      expect(container.querySelectorAll('line').length).to.be.greaterThan(0, 'Should have axis/grid lines')
+      expect(container.querySelectorAll('text').length).to.be.greaterThan(0, 'Should have axis labels')
+      
+      // Update data
+      const updatedData = createMockChartData(5)
+      rerender(<Chart data={updatedData} />)
+      
+      // Verify chart structure is maintained after update
+      expect(container.querySelector('svg')).to.exist
+      expect(container.querySelectorAll('line').length).to.be.greaterThan(0, 'Should still have axis/grid lines')
+      expect(container.querySelectorAll('text').length).to.be.greaterThan(0, 'Should still have axis labels')
+    })
+  })
 })
