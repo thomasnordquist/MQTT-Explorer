@@ -40,10 +40,13 @@ This workflow builds and publishes a Docker image for the browser mode.
 4. Verify HTTP response
 5. Test data directory creation
 6. Check Docker image size
-7. Start container for frontend tests
-8. Test frontend bundles (app.bundle.js, vendors.bundle.js)
-9. Push image to GitHub Container Registry
-10. Generate build attestation for supply chain security
+7. Setup Node.js 24 for browser tests
+8. Install dependencies for browser tests
+9. Install Playwright browsers (`npx playwright install --with-deps chromium`)
+10. Start container for browser tests
+11. Run browser test suite with Playwright
+12. Push image to GitHub Container Registry
+13. Generate build attestation for supply chain security
 
 **Image Features**:
 - Multi-stage build for minimal size
@@ -65,6 +68,11 @@ This workflow runs on pull requests to `master`, `beta`, and `release` branches.
 Tests the traditional Electron desktop application:
 
 - **Environment**: Custom Docker container (`ghcr.io/thomasnordquist/mqtt-explorer-ui-tests:latest`)
+  - Based on Node.js 24
+  - Includes Xvfb for headless display
+  - Includes FFmpeg for video recording
+  - Includes Mosquitto MQTT broker
+  - **Playwright browsers pre-installed** with system dependencies
 - **Steps**:
   1. Install dependencies with frozen lockfile
   2. Build the Electron application
@@ -84,20 +92,21 @@ Tests the traditional Electron desktop application:
 
 Tests the new browser/server mode:
 
-- **Environment**: Ubuntu latest with Node.js 20
+- **Environment**: Ubuntu latest with Node.js 24
 - **Services**:
   - **Mosquitto MQTT Broker**: Eclipse Mosquitto v2 on port 1883
     - Health checks enabled
     - Anonymous connections allowed
 - **Steps**:
-  1. Setup Node.js 20
+  1. Setup Node.js 24
   2. Install dependencies
-  3. Build browser mode (`yarn build:server`)
-  4. Run unit tests (app + backend)
-  5. Start server in background with test credentials
-  6. Wait for server to be ready
-  7. Run browser smoke tests
-  8. Clean up server process
+  3. Install Playwright browsers (`npx playwright install --with-deps chromium`)
+  4. Build browser mode (`yarn build:server`)
+  5. Run unit tests (app + backend)
+  6. Start server in background with test credentials
+  7. Wait for server to be ready
+  8. Run browser smoke tests
+  9. Clean up server process
 
 **Environment Variables**:
 - `MQTT_EXPLORER_USERNAME=test`
@@ -311,6 +320,7 @@ The workflow uses AWS CLI v2 installed directly and `aws-actions/configure-aws-c
 
 ## Future Improvements
 
+- [x] Add Playwright browser installation to workflows (browser tests can now use Playwright)
 - [ ] Add E2E browser tests with Playwright
 - [ ] Test WebSocket connections in browser mode
 - [ ] Add performance benchmarks
