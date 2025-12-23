@@ -27,12 +27,12 @@ interface AboutDialogProps {
  * 
  * This component displays application information including version, author, and license.
  * 
- * LICENSE NOTICE (CC-BY-ND-4.0):
+ * LICENSE NOTICE (CC-BY-SA-4.0):
  * This component must retain the following attribution:
  * - Author: Thomas Nordquist
- * - License: CC-BY-ND-4.0
+ * - License: CC-BY-SA-4.0
  * Removing or modifying this attribution violates the Creative Commons 
- * Attribution-NoDerivatives 4.0 International License.
+ * Attribution-ShareAlike 4.0 International License.
  */
 export function AboutDialog(props: AboutDialogProps) {
   const [version, setVersion] = React.useState<string>(FALLBACK_VERSION)
@@ -56,7 +56,7 @@ export function AboutDialog(props: AboutDialogProps) {
           <strong>Version:</strong> {version}
         </Typography>
         <Typography variant="body1" gutterBottom data-testid="about-license">
-          <strong>License:</strong> CC-BY-ND-4.0
+          <strong>License:</strong> CC-BY-SA-4.0
         </Typography>
         <Typography variant="body1" gutterBottom>
           <strong>Description:</strong> Explore your message queues
