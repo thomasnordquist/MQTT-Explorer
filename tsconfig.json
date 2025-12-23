@@ -28,6 +28,7 @@
     "src/spec/ui-tests-comprehensive.spec.ts",
     "src/spec/expandTopic.spec.ts",
     "src/spec/security-tests.spec.ts",
+    "src/spec/server-electron-dependency.spec.ts",
     "scripts/*.ts"
   ],
   "exclude": ["node_modules"]
