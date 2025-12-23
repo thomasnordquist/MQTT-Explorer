@@ -68,7 +68,7 @@ function TopicPlot(props: Props) {
     return props.dotPath
       ? nodeDotPathToHistory(decodeMessage, startOffset, props.history, props.dotPath)
       : nodeToHistory(decodeMessage, startOffset, props.history)
-  }, [props.history.last(), startOffset, props.dotPath])
+  }, [props.history, startOffset, props.dotPath, decodeMessage])
 
   return (
     <PlotHistory
