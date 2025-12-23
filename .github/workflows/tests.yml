@@ -122,17 +122,17 @@ jobs:
           AWS_BUCKET: ${{ vars.AWS_BUCKET }}
           BASEPATH: ${{ steps.basepath.outputs.basepath }}
         run: |
-          # Upload all segment files
+          # Upload all segment files if they exist
+          shopt -s nullglob  # Make glob return empty list if no matches
           for segment in segment-*.mp4; do
-            if [ -f "$segment" ]; then
-              echo "Uploading $segment..."
-              aws s3api put-object \
-                --bucket ${AWS_BUCKET} \
-                --key artifacts/${BASEPATH}/${segment} \
-                --body ./${segment} \
-                --content-type video/mp4
-            fi
+            echo "Uploading $segment..."
+            aws s3api put-object \
+              --bucket ${AWS_BUCKET} \
+              --key artifacts/${BASEPATH}/${segment} \
+              --body ./${segment} \
+              --content-type video/mp4
           done
+          shopt -u nullglob  # Restore default behavior
       - name: Generate file URLs
         id: fileurl
         env:

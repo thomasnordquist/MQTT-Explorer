@@ -17,6 +17,13 @@ const { execSync } = require('child_process');
 function testSceneGeneration() {
   console.log('Testing scene generation...');
   
+  // Check if compiled files exist
+  const distPath = path.join(__dirname, '../dist/src/spec/SceneBuilder.js');
+  if (!require('fs').existsSync(distPath)) {
+    console.log('  ⚠ Skipping test - TypeScript not compiled. Run "npx tsc" first.');
+    return null;
+  }
+  
   // Import and test SceneBuilder
   const SceneBuilder = require('../dist/src/spec/SceneBuilder').SceneBuilder;
   const SCENE_TITLES = require('../dist/src/spec/SceneBuilder').SCENE_TITLES;
@@ -147,7 +154,15 @@ function cleanup(tempDir) {
 try {
   console.log('=== Video Segmentation Integration Test ===\n');
   
-  const { tempDir, scenesPath, scenes } = testSceneGeneration();
+  const result = testSceneGeneration();
+  
+  if (!result) {
+    console.log('\n=== Test Skipped (TypeScript not compiled) ===\n');
+    console.log('Run "npx tsc" to compile TypeScript before running this test.');
+    process.exit(0);
+  }
+  
+  const { tempDir, scenesPath, scenes } = result;
   const segments = testCuttingLogic(tempDir, scenes);
   const markdown = testMarkdownGeneration(tempDir);
   cleanup(tempDir);

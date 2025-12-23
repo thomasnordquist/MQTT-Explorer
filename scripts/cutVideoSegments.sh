@@ -17,30 +17,56 @@ echo "Cutting video into segments based on scenes.json..."
 # Parse scenes.json and cut video segments
 node -e "
 const fs = require('fs');
-const { execSync } = require('child_process');
+const { spawn } = require('child_process');
 
 const scenes = JSON.parse(fs.readFileSync('scenes.json', 'utf8'));
 
 console.log('Creating video segments...');
 
-scenes.forEach((scene, index) => {
-  const outputFile = \`segment-\${String(index + 1).padStart(2, '0')}-\${scene.name}.mp4\`;
+// Sanitize scene name to prevent path traversal and command injection
+function sanitizeName(name) {
+  // Remove any characters that aren't alphanumeric, dash, or underscore
+  return name.replace(/[^a-zA-Z0-9_-]/g, '-');
+}
+
+async function cutSegment(scene, index) {
+  const safeName = sanitizeName(scene.name);
+  const outputFile = \`segment-\${String(index + 1).padStart(2, '0')}-\${safeName}.mp4\`;
   const startTime = scene.start / 1000; // Convert ms to seconds
   const duration = scene.duration / 1000; // Convert ms to seconds
   
   console.log(\`Creating \${outputFile} (start: \${startTime}s, duration: \${duration}s)\`);
   
-  const cmd = \`ffmpeg -y -i ui-test.mp4 -ss \${startTime} -t \${duration} -c copy \${outputFile}\`;
-  
-  try {
-    execSync(cmd, { stdio: 'inherit' });
-  } catch (error) {
-    console.error(\`Failed to create \${outputFile}\`);
-    process.exit(1);
-  }
-});
+  return new Promise((resolve, reject) => {
+    const ffmpeg = spawn('ffmpeg', [
+      '-y',
+      '-i', 'ui-test.mp4',
+      '-ss', startTime.toString(),
+      '-t', duration.toString(),
+      '-c', 'copy',
+      outputFile
+    ]);
+    
+    ffmpeg.on('close', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        console.error(\`Failed to create \${outputFile}\`);
+        reject(new Error(\`ffmpeg exited with code \${code}\`));
+      }
+    });
+  });
+}
 
-console.log('All segments created successfully');
+(async () => {
+  for (let i = 0; i < scenes.length; i++) {
+    await cutSegment(scenes[i], i);
+  }
+  console.log('All segments created successfully');
+})().catch(err => {
+  console.error(err);
+  process.exit(1);
+});
 "
 
 echo "Video segments created successfully"

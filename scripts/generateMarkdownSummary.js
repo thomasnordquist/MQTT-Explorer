@@ -12,6 +12,12 @@ if (!baseUrl) {
   process.exit(1);
 }
 
+// Sanitize scene name to prevent path traversal
+function sanitizeName(name) {
+  // Remove any characters that aren't alphanumeric, dash, or underscore
+  return name.replace(/[^a-zA-Z0-9_-]/g, '-');
+}
+
 // Generate markdown
 let markdown = '## 🎬 Demo Video Generated\n\n';
 markdown += `### Full Video\n\n`;
@@ -23,7 +29,8 @@ markdown += `<details>\n`;
 markdown += `<summary>Click to expand segment links</summary>\n\n`;
 
 scenes.forEach((scene, index) => {
-  const segmentFile = `segment-${String(index + 1).padStart(2, '0')}-${scene.name}.mp4`;
+  const safeName = sanitizeName(scene.name);
+  const segmentFile = `segment-${String(index + 1).padStart(2, '0')}-${safeName}.mp4`;
   const title = scene.title || scene.name;
   const duration = (scene.duration / 1000).toFixed(1);
   
