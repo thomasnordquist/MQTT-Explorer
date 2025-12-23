@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
-import { ListItem, Typography, IconButton, Box } from '@mui/material'
-import { ArrowUpward, ArrowDownward } from '@mui/icons-material'
+import { ListItem, Typography, Box } from '@mui/material'
+import { DragIndicator } from '@mui/icons-material'
 import { toMqttConnection, ConnectionOptions } from '../../../model/ConnectionOptions'
 import { withStyles } from '@mui/styles'
 import { Theme } from '@mui/material/styles'
@@ -16,6 +16,9 @@ export interface Props {
   }
   selected: boolean
   classes: any
+  onDragStart: (connectionId: string) => void
+  onDragOver: (e: React.DragEvent) => void
+  onDrop: (connectionId: string) => void
 }
 
 const ConnectionItem = (props: Props) => {
@@ -26,14 +29,21 @@ const ConnectionItem = (props: Props) => {
     }
   }, [props.connection, props])
 
-  const handleMoveUp = (e: React.MouseEvent) => {
+  const handleDragStart = (e: React.DragEvent) => {
     e.stopPropagation()
-    props.actions.connectionManager.moveConnection(props.connection.id, 'up')
+    props.onDragStart(props.connection.id)
   }
 
-  const handleMoveDown = (e: React.MouseEvent) => {
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
     e.stopPropagation()
-    props.actions.connectionManager.moveConnection(props.connection.id, 'down')
+    props.onDragOver(e)
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    props.onDrop(props.connection.id)
   }
 
   const connection = props.connection.host && toMqttConnection(props.connection)
@@ -47,18 +57,19 @@ const ConnectionItem = (props: Props) => {
         props.actions.connectionManager.selectConnection(props.connection.id)
         connect()
       }}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
     >
+      <Box
+        className={props.classes.dragHandle}
+        draggable
+        onDragStart={handleDragStart}
+      >
+        <DragIndicator fontSize="small" />
+      </Box>
       <Box className={props.classes.textContainer}>
         <Typography className={props.classes.name}>{props.connection.name || 'mqtt broker'}</Typography>
         <Typography className={props.classes.details}>{connection && connection.url}</Typography>
-      </Box>
-      <Box className={props.classes.buttonContainer}>
-        <IconButton size="small" onClick={handleMoveUp} className={props.classes.arrowButton}>
-          <ArrowUpward fontSize="small" />
-        </IconButton>
-        <IconButton size="small" onClick={handleMoveDown} className={props.classes.arrowButton}>
-          <ArrowDownward fontSize="small" />
-        </IconButton>
       </Box>
     </ListItem>
   )
@@ -90,19 +101,21 @@ export const connectionItemStyle = (theme: Theme) => ({
   itemContainer: {
     display: 'flex' as 'flex',
     alignItems: 'center' as 'center',
-    padding: '8px 8px 8px 16px',
+    padding: '8px 8px 8px 8px',
   },
   textContainer: {
     flex: 1,
     overflow: 'hidden' as 'hidden',
   },
-  buttonContainer: {
+  dragHandle: {
     display: 'flex' as 'flex',
-    flexDirection: 'column' as 'column',
-    marginLeft: '4px',
-  },
-  arrowButton: {
-    padding: '2px',
+    alignItems: 'center' as 'center',
+    marginRight: '8px',
+    cursor: 'grab' as 'grab',
+    color: theme.palette.text.secondary,
+    '&:active': {
+      cursor: 'grabbing' as 'grabbing',
+    },
   },
 })
 

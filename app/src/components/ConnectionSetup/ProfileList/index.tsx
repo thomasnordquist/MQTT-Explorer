@@ -1,6 +1,6 @@
 import ConnectionItem from './ConnectionItem'
 const ConnectionItemAny = ConnectionItem as any
-import React from 'react'
+import React, { useState } from 'react'
 import { AddButton } from './AddButton'
 import { AppState } from '../../../reducers'
 import { bindActionCreators } from 'redux'
@@ -22,6 +22,7 @@ interface Props {
 
 function ProfileList(props: Props) {
   const { actions, classes, connections, selected } = props
+  const [draggedConnectionId, setDraggedConnectionId] = useState<string | null>(null)
 
   const selectConnection = (dir: 'next' | 'previous') => (event: KeyboardEvent) => {
     if (!selected) {
@@ -40,6 +41,39 @@ function ProfileList(props: Props) {
   useGlobalKeyEventHandler(KeyCodes.arrow_down, selectConnection('next'))
   useGlobalKeyEventHandler(KeyCodes.arrow_up, selectConnection('previous'))
 
+  const handleDragStart = (connectionId: string) => {
+    setDraggedConnectionId(connectionId)
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+  }
+
+  const handleDrop = (targetConnectionId: string) => {
+    if (!draggedConnectionId || draggedConnectionId === targetConnectionId) {
+      setDraggedConnectionId(null)
+      return
+    }
+
+    const sortedConnections = Object.values(connections).sort((a, b) => (a.order || 0) - (b.order || 0))
+    const draggedIndex = sortedConnections.findIndex(c => c.id === draggedConnectionId)
+    const targetIndex = sortedConnections.findIndex(c => c.id === targetConnectionId)
+
+    if (draggedIndex === -1 || targetIndex === -1) {
+      setDraggedConnectionId(null)
+      return
+    }
+
+    // Swap order values
+    const draggedConnection = sortedConnections[draggedIndex]
+    const targetConnection = sortedConnections[targetIndex]
+
+    actions.updateConnection(draggedConnection.id, { order: targetConnection.order })
+    actions.updateConnection(targetConnection.id, { order: draggedConnection.order })
+    
+    setDraggedConnectionId(null)
+  }
+
   const createConnectionButton = (
     <div style={{ padding: '8px 16px' }}>
       <AddButton action={actions.createConnection} />
@@ -53,7 +87,14 @@ function ProfileList(props: Props) {
         {Object.values(connections)
           .sort((a, b) => (a.order || 0) - (b.order || 0))
           .map(connection => (
-            <ConnectionItemAny connection={connection} key={connection.id} selected={selected === connection.id} />
+            <ConnectionItemAny
+              connection={connection}
+              key={connection.id}
+              selected={selected === connection.id}
+              onDragStart={handleDragStart}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+            />
           ))}
       </div>
     </List>
