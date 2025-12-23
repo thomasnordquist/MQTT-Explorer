@@ -1,8 +1,6 @@
 import React from 'react'
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Link } from '@mui/material'
 
-const packageJson = require('../../../package.json')
-
 interface AboutDialogProps {
   open: boolean
   onClose: () => void
@@ -14,16 +12,16 @@ export function AboutDialog(props: AboutDialogProps) {
       <DialogTitle>About MQTT Explorer</DialogTitle>
       <DialogContent>
         <Typography variant="body1" gutterBottom>
-          <strong>Version:</strong> {packageJson.version}
+          <strong>Version:</strong> 0.4.0-beta.5
         </Typography>
         <Typography variant="body1" gutterBottom>
-          <strong>Author:</strong> {packageJson.author}
+          <strong>Author:</strong> Thomas Nordquist
         </Typography>
         <Typography variant="body1" gutterBottom>
-          <strong>License:</strong> {packageJson.license}
+          <strong>License:</strong> CC-BY-ND-4.0
         </Typography>
         <Typography variant="body1" gutterBottom>
-          <strong>Description:</strong> {packageJson.description}
+          <strong>Description:</strong> Explore your message queues
         </Typography>
         <Typography variant="body1" gutterBottom>
           <strong>Homepage:</strong>{' '}
@@ -32,7 +30,7 @@ export function AboutDialog(props: AboutDialogProps) {
           </Link>
         </Typography>
         <Typography variant="body1" gutterBottom>
-          <strong>Report Issues:</strong>{' '}
+          <strong>Bug Report:</strong>{' '}
           <Link
             href="https://github.com/thomasnordquist/MQTT-Explorer/issues"
             target="_blank"
