@@ -1,13 +1,11 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState,
-} from 'react'
-import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../../../../backend/src/Model'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import TreeNodeSubnodes from './TreeNodeSubnodes'
 import TreeNodeTitle from './TreeNodeTitle'
 import { SettingsState } from '../../../reducers/Settings'
 import { styles } from './styles'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 import { TopicViewModel } from '../../../model/TopicViewModel'
 import { treeActions } from '../../../actions'
 import { useAnimationToIndicateTopicUpdate } from './effects/useAnimationToIndicateTopicUpdate'
@@ -30,16 +28,15 @@ export interface Props {
 }
 
 function TreeNodeComponent(props: Props) {
-  const {
-    actions, classes, settings, theme, treeNode, lastUpdate, name,
-  } = props
+  const { actions, classes, settings, theme, treeNode, lastUpdate, name } = props
   const [collapsedOverride, setCollapsedOverride] = useState<boolean | undefined>(undefined)
   const [selected, selectionLastUpdate, setSelected] = useSelectionState(false)
   const nodeRef = useRef<HTMLDivElement>()
   const isAllowedToAutoExpand = useIsAllowedToAutoExpandState(props)
   const deleteTopicCallback = useDeleteKeyCallback(treeNode, actions)
   useViewModelSubscriptions(treeNode, nodeRef, setSelected, setCollapsedOverride)
-  const animationClass = props.theme.palette.mode === 'light' ? props.classes.animationLight : props.classes.animationDark
+  const animationClass =
+    props.theme.palette.mode === 'light' ? props.classes.animationLight : props.classes.animationDark
 
   useAnimationToIndicateTopicUpdate(
     nodeRef,
@@ -47,17 +44,18 @@ function TreeNodeComponent(props: Props) {
     animationClass,
     selected,
     selectionLastUpdate,
-    settings.get('highlightTopicUpdates'),
+    settings.get('highlightTopicUpdates')
   )
 
-  const isCollapsed = Boolean(collapsedOverride) === collapsedOverride ? Boolean(collapsedOverride) : !isAllowedToAutoExpand
+  const isCollapsed =
+    Boolean(collapsedOverride) === collapsedOverride ? Boolean(collapsedOverride) : !isAllowedToAutoExpand
 
   const didSelectTopic = useCallback(
     (event?: React.MouseEvent) => {
       event && event.stopPropagation()
       props.selectTopicAction(treeNode)
     },
-    [treeNode],
+    [treeNode]
   )
 
   const didClickTitle = React.useCallback(
@@ -66,7 +64,7 @@ function TreeNodeComponent(props: Props) {
       didSelectTopic()
       setCollapsedOverride(!isCollapsed)
     },
-    [isCollapsed, didSelectTopic],
+    [isCollapsed, didSelectTopic]
   )
 
   const toggleCollapsed = useCallback(
@@ -74,7 +72,7 @@ function TreeNodeComponent(props: Props) {
       event.stopPropagation()
       setCollapsedOverride(!isCollapsed)
     },
-    [isCollapsed],
+    [isCollapsed]
   )
 
   const didObtainFocus = useCallback(() => {
@@ -88,7 +86,7 @@ function TreeNodeComponent(props: Props) {
         didSelectTopic()
       }
     },
-    [didSelectTopic, settings],
+    [didSelectTopic, settings]
   )
 
   useEffect(() => {

@@ -1,13 +1,13 @@
 import 'mocha'
 import { expect } from 'chai'
 import { ElectronApplication, Page, _electron as electron } from 'playwright'
-import type { MqttClient } from 'mqtt'
 import { createTestMock, stopTestMock } from './mock-mqtt-test'
 import { default as MockSparkplug } from './mock-sparkplugb'
 import { sleep } from './util'
 import { connectTo } from './scenarios/connect'
 import { searchTree, clearSearch } from './scenarios/searchTree'
 import { expandTopic } from './util/expandTopic'
+import type { MqttClient } from 'mqtt'
 
 /**
  * MQTT Explorer UI Tests
@@ -74,7 +74,7 @@ describe('MQTT Explorer UI Tests', function () {
   })
 
   describe('Connection Management', () => {
-    it('should connect and expand livingroom/lamp topic', async () => {
+    it('should connect and expand livingroom/lamp topic', async function () {
       // Given: Connected to broker with topics loaded
       // When: Expand topic
       await expandTopic('livingroom/lamp', page)
@@ -89,7 +89,7 @@ describe('MQTT Explorer UI Tests', function () {
   })
 
   describe('Topic Tree Structure', () => {
-    it('should expand and display kitchen/coffee_maker with JSON payload', async () => {
+    it('should expand and display kitchen/coffee_maker with JSON payload', async function () {
       // Given: Connected to broker with kitchen/coffee_maker topic
       // When: Expand topic
       await expandTopic('kitchen/coffee_maker', page)
@@ -102,7 +102,7 @@ describe('MQTT Explorer UI Tests', function () {
       await page.screenshot({ path: 'test-screenshot-kitchen-json.png' })
     })
 
-    it('should expand nested topic livingroom/lamp/state', async () => {
+    it('should expand nested topic livingroom/lamp/state', async function () {
       // Given: Connected to broker with nested topics
       // When: Expand to nested topic
       await expandTopic('livingroom/lamp/state', page)
@@ -117,7 +117,7 @@ describe('MQTT Explorer UI Tests', function () {
   })
 
   describe('Search Functionality', () => {
-    it('should search for temperature and expand kitchen/temperature', async () => {
+    it('should search for temperature and expand kitchen/temperature', async function () {
       // Given: Connected to broker with temperature topics
       // When: Search and expand
       await searchTree('temp', page)
@@ -134,7 +134,7 @@ describe('MQTT Explorer UI Tests', function () {
       await page.screenshot({ path: 'test-screenshot-search-temp.png' })
     })
 
-    it('should search for lamp and expand kitchen/lamp', async () => {
+    it('should search for lamp and expand kitchen/lamp', async function () {
       // Given: Connected to broker with lamp topics
       // When: Search and expand
       await searchTree('kitchen/lamp', page)

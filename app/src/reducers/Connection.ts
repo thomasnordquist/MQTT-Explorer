@@ -1,6 +1,6 @@
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
-import { MqttOptions } from 'mqtt-explorer-backend/src/DataSource/DataSource'
+import * as q from '../../../backend/src/Model'
 import { createReducer } from './lib'
+import { MqttOptions } from '../../../backend/src/DataSource'
 import { TopicViewModel } from '../model/TopicViewModel'
 
 export type ConnectionHealth = 'offline' | 'online' | 'connecting'

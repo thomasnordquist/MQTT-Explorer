@@ -1,11 +1,11 @@
 import 'mocha'
 import { expect } from 'chai'
 import { ElectronApplication, Page, _electron as electron } from 'playwright'
-import type { MqttClient } from 'mqtt'
 import { createTestMock, stopTestMock } from './mock-mqtt-test'
 import { sleep } from './util'
 import { connectTo } from './scenarios/connect'
 import { expandTopic } from './util/expandTopic'
+import type { MqttClient } from 'mqtt'
 
 /**
  * Isolated Test for expandTopic UI Helper
@@ -71,7 +71,7 @@ describe('expandTopic UI Helper - Isolated Test', function () {
   })
 
   describe('Single Level Topics', () => {
-    it('should expand a single-level topic (kitchen)', async () => {
+    it('should expand a single-level topic (kitchen)', async function () {
       // Given: Topics are loaded
       // When: Expand single-level topic
       await expandTopic('kitchen', page)
@@ -84,7 +84,7 @@ describe('expandTopic UI Helper - Isolated Test', function () {
       await page.screenshot({ path: 'test-expand-single-level.png' })
     })
 
-    it('should expand another single-level topic (livingroom)', async () => {
+    it('should expand another single-level topic (livingroom)', async function () {
       // Given: Topics are loaded
       // When: Expand single-level topic
       await expandTopic('livingroom', page)
@@ -99,7 +99,7 @@ describe('expandTopic UI Helper - Isolated Test', function () {
   })
 
   describe('Two Level Topics', () => {
-    it('should expand a two-level topic (kitchen/lamp)', async () => {
+    it('should expand a two-level topic (kitchen/lamp)', async function () {
       // Given: Topics are loaded
       // When: Expand two-level topic
       await expandTopic('kitchen/lamp', page)
@@ -114,7 +114,7 @@ describe('expandTopic UI Helper - Isolated Test', function () {
       await page.screenshot({ path: 'test-expand-two-level-kitchen-lamp.png' })
     })
 
-    it('should expand a different two-level topic (kitchen/temperature)', async () => {
+    it('should expand a different two-level topic (kitchen/temperature)', async function () {
       // Given: Topics are loaded
       // When: Expand two-level topic
       await expandTopic('kitchen/temperature', page)
@@ -129,7 +129,7 @@ describe('expandTopic UI Helper - Isolated Test', function () {
   })
 
   describe('Three Level Topics', () => {
-    it('should expand a three-level topic (kitchen/lamp/state)', async () => {
+    it('should expand a three-level topic (kitchen/lamp/state)', async function () {
       // Given: Topics are loaded
       // When: Expand three-level topic
       await expandTopic('kitchen/lamp/state', page)
@@ -146,7 +146,7 @@ describe('expandTopic UI Helper - Isolated Test', function () {
       await page.screenshot({ path: 'test-expand-three-level.png' })
     })
 
-    it('should expand kitchen/lamp/brightness (different leaf same parent)', async () => {
+    it('should expand kitchen/lamp/brightness (different leaf same parent)', async function () {
       // Given: Topics are loaded
       // When: Expand another three-level topic under same parent
       await expandTopic('kitchen/lamp/brightness', page)
@@ -161,7 +161,7 @@ describe('expandTopic UI Helper - Isolated Test', function () {
   })
 
   describe('Different Branches', () => {
-    it('should correctly expand livingroom/lamp (different branch, same name)', async () => {
+    it('should correctly expand livingroom/lamp (different branch, same name)', async function () {
       // Given: Topics are loaded (kitchen/lamp also exists)
       // When: Expand livingroom/lamp (note: lamp exists under both kitchen and livingroom)
       await expandTopic('livingroom/lamp', page)
@@ -177,7 +177,7 @@ describe('expandTopic UI Helper - Isolated Test', function () {
       await page.screenshot({ path: 'test-expand-different-branch.png' })
     })
 
-    it('should expand livingroom/lamp/state (full path in different branch)', async () => {
+    it('should expand livingroom/lamp/state (full path in different branch)', async function () {
       // Given: kitchen/lamp/state also exists
       // When: Expand livingroom/lamp/state
       await expandTopic('livingroom/lamp/state', page)
@@ -192,7 +192,7 @@ describe('expandTopic UI Helper - Isolated Test', function () {
   })
 
   describe('Error Handling', () => {
-    it('should throw error for non-existent topic', async () => {
+    it('should throw error for non-existent topic', async function () {
       // Given: Topics are loaded
       // When: Try to expand non-existent topic
       // Then: Should throw error

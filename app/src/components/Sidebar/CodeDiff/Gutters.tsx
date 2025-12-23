@@ -1,13 +1,13 @@
 import * as diff from 'diff'
+import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
 import Add from '@mui/icons-material/Add'
+import ChartPreview from './ChartPreview'
 import Remove from '@mui/icons-material/Remove'
-import { JsonPropertyLocation } from 'mqtt-explorer-backend/src/JsonAstParser'
+import { JsonPropertyLocation } from '../../../../../backend/src/JsonAstParser'
+import { lineChangeStyle, trimNewlineRight } from './util'
 import { Theme } from '@mui/material'
 import { withStyles } from '@mui/styles'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
-import { lineChangeStyle, trimNewlineRight } from './util'
-import ChartPreview from './ChartPreview'
 
 interface Props {
   changes: Array<diff.Change>
@@ -40,7 +40,7 @@ const style = (theme: Theme) => {
       },
     },
     gutterLine: {
-      textAlign: 'right' as const,
+      textAlign: 'right' as 'right',
       paddingRight: theme.spacing(0.5),
       height: '16px',
       width: '100%',
@@ -52,7 +52,7 @@ function tokensForLine(change: diff.Change, line: number, props: Props) {
   const { classes, literalPositions } = props
   const literal = literalPositions[line]
 
-  const chartPreview = literal ? (
+  const chartPreview = Boolean(literal) ? (
     <ChartPreview
       key="chartPreview"
       treeNode={props.treeNode}
@@ -63,32 +63,35 @@ function tokensForLine(change: diff.Change, line: number, props: Props) {
 
   if (change.added) {
     return [chartPreview, <Add key="add" className={classes.icon} />]
-  } if (change.removed) {
+  } else if (change.removed) {
     return [<Remove key="remove" className={classes.icon} />]
+  } else {
+    return [
+      chartPreview,
+      <div
+        key="placeholder"
+        style={{ width: '12px', display: 'inline-block' }}
+        dangerouslySetInnerHTML={{ __html: '&nbsp;' }}
+      />,
+    ]
   }
-  return [
-    chartPreview,
-    <div
-      key="placeholder"
-      style={{ width: '12px', display: 'inline-block' }}
-      dangerouslySetInnerHTML={{ __html: '&nbsp;' }}
-    />,
-  ]
 }
 
 function Gutters(props: Props) {
   let currentLine = -1
   const gutters = props.changes
-    .map((change, key) => trimNewlineRight(change.value)
-      .split('\n')
-      .map((_, idx) => {
-        currentLine = !change.removed ? currentLine + 1 : currentLine
-        return (
-          <div key={`${key}-${idx}`} style={lineChangeStyle(change)} className={props.classes.gutterLine}>
-            {tokensForLine(change, currentLine, props)}
-          </div>
-        )
-      }))
+    .map((change, key) => {
+      return trimNewlineRight(change.value)
+        .split('\n')
+        .map((_, idx) => {
+          currentLine = !change.removed ? currentLine + 1 : currentLine
+          return (
+            <div key={`${key}-${idx}`} style={lineChangeStyle(change)} className={props.classes.gutterLine}>
+              {tokensForLine(change, currentLine, props)}
+            </div>
+          )
+        })
+    })
     .reduce((a, b) => a.concat(b), [])
 
   return (

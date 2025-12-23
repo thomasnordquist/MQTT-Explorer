@@ -14,7 +14,7 @@ export function EditorModeSelect(props: Props) {
       value={props.value}
       onFocus={props.focusEditor}
       onChange={props.onChange}
-      row
+      row={true}
     >
       <FormControlLabel
         value="text"

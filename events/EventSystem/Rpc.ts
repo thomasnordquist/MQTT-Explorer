@@ -1,6 +1,6 @@
-import { v4 } from 'uuid'
 import { Event } from '../Events'
 import { EventBusInterface } from './EventBusInterface'
+import { v4 } from 'uuid'
 
 export type RpcEvent<RequestType, ResponseType> = {
   topic: string
@@ -13,7 +13,7 @@ export class Rpc {
   async call<RpcRequest, RpcResponse>(
     event: RpcEvent<RpcRequest, RpcResponse>,
     request: RpcRequest,
-    timeout: number = 0,
+    timeout: number = 0
   ): Promise<RpcResponse> {
     return new Promise((resolve, reject) => {
       const id = v4()
@@ -44,9 +44,9 @@ export class Rpc {
   // tslint:disable-next-line:member-access
   async on<RpcRequest, RpcResponse>(
     event: RpcEvent<RpcRequest, RpcResponse>,
-    handler: (request: RpcRequest) => Promise<RpcResponse>,
+    handler: (request: RpcRequest) => Promise<RpcResponse>
   ) {
-    this.participant.subscribe<RpcRequest>({ topic: `${event.topic}/request` }, async (request) => {
+    this.participant.subscribe<RpcRequest>({ topic: `${event.topic}/request` }, async request => {
       let payload
       let error
       try {
@@ -54,7 +54,7 @@ export class Rpc {
       } catch (e) {
         error = e
       }
-      const { id } = (request as any)
+      const id = (request as any).id
       console.log(`${event.topic}/response/${id}`, payload, error)
       this.participant.emit({ topic: `${event.topic}/response/${id}` }, { id, payload, error })
     })

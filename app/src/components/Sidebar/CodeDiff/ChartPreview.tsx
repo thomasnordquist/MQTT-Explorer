@@ -1,14 +1,12 @@
+import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
 import ShowChart from '@mui/icons-material/ShowChart'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import {
-  Fade, Paper, Popper, Tooltip,
-} from '@mui/material'
-import { JsonPropertyLocation } from 'mqtt-explorer-backend/src/JsonAstParser'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
-import { chartActions } from '../../../actions'
 import TopicPlot from '../../TopicPlot'
+import { bindActionCreators } from 'redux'
+import { chartActions } from '../../../actions'
+import { connect } from 'react-redux'
+import { Fade, Paper, Popper, Tooltip } from '@mui/material'
+import { JsonPropertyLocation } from '../../../../../backend/src/JsonAstParser'
 
 interface Props {
   treeNode: q.TreeNode<any>
@@ -81,10 +79,12 @@ function ChartPreview(props: Props) {
   )
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-  actions: {
-    chart: bindActionCreators(chartActions, dispatch),
-  },
-})
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: {
+      chart: bindActionCreators(chartActions, dispatch),
+    },
+  }
+}
 
 export default connect(undefined, mapDispatchToProps)(ChartPreview)

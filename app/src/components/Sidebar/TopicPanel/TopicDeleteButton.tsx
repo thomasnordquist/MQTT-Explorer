@@ -1,12 +1,12 @@
+import * as q from '../../../../../backend/src/Model'
+import CustomIconButton from '../../helper/CustomIconButton'
 import Delete from '@mui/icons-material/Delete'
 import React from 'react'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
-import CustomIconButton from '../../helper/CustomIconButton'
 
-export function TopicDeleteButton(props: {
+export const TopicDeleteButton = (props: {
   node?: q.TreeNode<any>
   deleteTopicAction: (node: q.TreeNode<any>) => void
-}) {
+}) => {
   const { node } = props
   if (!node || !node.message || !node.message.payload) {
     return null

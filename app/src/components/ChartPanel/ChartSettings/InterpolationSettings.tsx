@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { Menu, MenuItem, Typography } from '@mui/material'
 import { AppState } from '../../../reducers'
+import { bindActionCreators } from 'redux'
 import { chartActions } from '../../../actions'
 import { ChartParameters, PlotCurveTypes } from '../../../reducers/Charts'
+import { connect } from 'react-redux'
+import { Menu, MenuItem, Typography } from '@mui/material'
 
 function chartParametersForAction(chart: ChartParameters, action: string) {
   return {
@@ -37,16 +37,18 @@ function InterpolationSettings(props: {
     return callbacks
   }, [curves])
 
-  const menuItems = React.useMemo(() => curves.map((curve) => (
-    <MenuItem
-      key={curve}
-      onClick={callbacks[curve]}
-      selected={props.chart.interpolation === curve}
-      data-menu-item={curve.replace(/_/g, ' ')}
-    >
-      <Typography variant="inherit">{curve.replace(/_/g, ' ')}</Typography>
-    </MenuItem>
-  )), [curves, props.chart])
+  const menuItems = React.useMemo(() => {
+    return curves.map(curve => (
+      <MenuItem 
+        key={curve} 
+        onClick={callbacks[curve]} 
+        selected={props.chart.interpolation === curve}
+        data-menu-item={curve.replace(/_/g, ' ')}
+      >
+        <Typography variant="inherit">{curve.replace(/_/g, ' ')}</Typography>
+      </MenuItem>
+    ))
+  }, [curves, props.chart])
 
   return (
     <Menu anchorEl={props.anchorEl} open={props.open} onClose={props.close}>
@@ -55,10 +57,12 @@ function InterpolationSettings(props: {
   )
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-  actions: {
-    chart: bindActionCreators(chartActions, dispatch),
-  },
-})
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: {
+      chart: bindActionCreators(chartActions, dispatch),
+    },
+  }
+}
 
 export default connect(undefined, mapDispatchToProps)(InterpolationSettings)

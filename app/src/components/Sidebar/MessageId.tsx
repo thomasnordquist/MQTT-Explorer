@@ -1,8 +1,8 @@
 import React, { memo } from 'react'
+import { Message } from '../../../../backend/src/Model'
 import { Tooltip } from '@mui/material'
-import { Message } from 'mqtt-explorer-backend/src/Model/Model'
 
-export const MessageId = memo((props: { message: Message; addComma?: boolean }) => {
+export const MessageId = memo(function MessageId(props: { message: Message; addComma?: boolean }) {
   const { message, addComma } = props
 
   if (!message.messageId) {
@@ -12,9 +12,7 @@ export const MessageId = memo((props: { message: Message; addComma?: boolean }) 
   return (
     <Tooltip title="MessageIds are used to signal a successful transmission of a message.">
       <span>
-        #msg:
-        {' '}
-        {message.messageId}
+        #msg: {message.messageId}
         {addComma ? ', ' : ''}
       </span>
     </Tooltip>

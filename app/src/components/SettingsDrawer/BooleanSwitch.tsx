@@ -1,15 +1,10 @@
 import * as React from 'react'
-import {
-  InputLabel, Switch, Theme, Tooltip,
-} from '@mui/material'
+import { InputLabel, Switch, Theme, Tooltip } from '@mui/material'
 import { withStyles } from '@mui/styles'
-
 const sha1 = require('sha1')
 
 function BooleanSwitch(props: { title: string; value: boolean; tooltip: string; action: () => void; classes: any; 'data-testid'?: string }) {
-  const {
-    tooltip, value, action, title, classes,
-  } = props
+  const { tooltip, value, action, title, classes } = props
 
   const clickHandler = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -25,10 +20,10 @@ function BooleanSwitch(props: { title: string; value: boolean; tooltip: string; 
         </InputLabel>
       </Tooltip>
       <Tooltip title={tooltip}>
-        <Switch
-          name={`toggle-${sha1(title)}`}
-          checked={value}
-          onChange={action}
+        <Switch 
+          name={`toggle-${sha1(title)}`} 
+          checked={value} 
+          onChange={action} 
           color="primary"
           data-testid={props['data-testid']}
         />

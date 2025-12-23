@@ -1,6 +1,4 @@
-import {
-  Menu, app, BrowserWindow, webContents, MenuItemConstructorOptions, MenuItem,
-} from 'electron'
+import { Menu, app, BrowserWindow, webContents, MenuItemConstructorOptions, MenuItem } from 'electron'
 import openAboutWindow from 'about-window'
 import * as path from 'path'
 
@@ -20,7 +18,7 @@ const applicationMenu: MenuItemConstructorOptions = {
       },
     },
     {
-      type: 'separator' as const,
+      type: 'separator' as 'separator',
     },
     {
       label: 'Dev Tools',

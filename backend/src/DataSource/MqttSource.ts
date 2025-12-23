@@ -1,8 +1,8 @@
 import { URL } from 'url'
 
 import { type MqttClient, connect as mqttConnect } from 'mqtt'
-import { MqttMessage } from 'MQTT-Explorer/events/events'
-import { DataSource, DataSourceStateMachine } from '.'
+import { DataSource, DataSourceStateMachine } from './'
+import { MqttMessage } from '../../../events'
 import { Base64Message } from '../Model/Base64Message'
 
 export interface MqttOptions {
@@ -27,11 +27,8 @@ export type QoS = 0 | 1 | 2
 
 export class MqttSource implements DataSource<MqttOptions> {
   public stateMachine: DataSourceStateMachine = new DataSourceStateMachine()
-
   private client: MqttClient | undefined
-
   private messageCallback?: (topic: string, message: Buffer, packet: any) => void
-
   public topicSeparator = '/'
 
   public onMessage(messageCallback: (topic: string, message: Buffer, packet: any) => void) {
@@ -83,7 +80,7 @@ export class MqttSource implements DataSource<MqttOptions> {
 
     client.on('connect', () => {
       this.stateMachine.setConnected(true)
-      options.subscriptions.forEach((subscription) => {
+      options.subscriptions.forEach(subscription => {
         client.subscribe(subscription.topic, { qos: subscription.qos }, (err: Error | null) => {
           if (err) {
             this.stateMachine.setError(err)

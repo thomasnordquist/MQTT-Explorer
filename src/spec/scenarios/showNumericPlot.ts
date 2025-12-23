@@ -1,7 +1,5 @@
 import { Page } from 'playwright'
-import {
-  moveToCenterOfElement, clickOn, clickOnHistory, expandTopic, sleep,
-} from '../util'
+import { moveToCenterOfElement, clickOn, clickOnHistory, expandTopic, sleep } from '../util'
 
 export async function showNumericPlot(browser: Page) {
   await expandTopic('kitchen/coffee_maker', browser)
@@ -48,21 +46,21 @@ async function valuePreviewGuttersShowChartIcon(name: string, browser: Page) {
   const locator = browser
     .locator(`//*[contains(@data-test-type, "ShowChart")][contains(@data-test, "${name}")]`)
     .first()
-
+  
   await locator.waitFor({ state: 'visible', timeout: 30000 })
   return locator
 }
 
 async function chartSettings(name: string, browser: Page) {
   const settings = await browser.locator(
-    `//*[contains(@data-test-type, "ChartSettings")][contains(@data-test, "${name}")]`,
+    `//*[contains(@data-test-type, "ChartSettings")][contains(@data-test, "${name}")]`
   )
   return clickOn(settings)
 }
 
 async function clickAway(name: string, browser: Page) {
   const settings = await browser.locator(
-    `//*[contains(@data-test-type, "ChartPaper")][contains(@data-test, "${name}")]`,
+    `//*[contains(@data-test-type, "ChartPaper")][contains(@data-test, "${name}")]`
   )
   await moveToCenterOfElement(settings)
   await settings.press('Escape')

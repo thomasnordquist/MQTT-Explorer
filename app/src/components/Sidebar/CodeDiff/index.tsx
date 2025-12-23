@@ -1,15 +1,15 @@
 import * as diff from 'diff'
 import * as Prism from 'prismjs'
+import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
-import { JsonPropertyLocation, literalsMappedByLines } from 'mqtt-explorer-backend/src/JsonAstParser'
-import { Typography } from '@mui/material'
-import { withStyles } from '@mui/styles'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
 import DiffCount from './DiffCount'
 import Gutters from './Gutters'
 import { isPlottable, lineChangeStyle, trimNewlineRight } from './util'
+import { JsonPropertyLocation, literalsMappedByLines } from '../../../../../backend/src/JsonAstParser'
 import { selectTextWithCtrlA } from '../../../utils/handleTextSelectWithCtrlA'
 import { style } from './style'
+import { Typography } from '@mui/material'
+import { withStyles } from '@mui/styles'
 import 'prismjs/components/prism-json'
 
 interface Props {
@@ -44,7 +44,9 @@ class CodeDiff extends React.PureComponent<Props, State> {
   private plottableLiteralsIndexedWithLineNumbers() {
     const allLiterals = this.isValidJson(this.props.current) ? literalsMappedByLines(this.props.current) || [] : []
 
-    return allLiterals.map((l: JsonPropertyLocation) => (isPlottable(l.value) ? l : undefined)) as Array<JsonPropertyLocation>
+    return allLiterals.map((l: JsonPropertyLocation) =>
+      isPlottable(l.value) ? l : undefined
+    ) as Array<JsonPropertyLocation>
   }
 
   private renderStyledCodeLines(changes: Array<Diff.Change>) {
@@ -57,11 +59,13 @@ class CodeDiff extends React.PureComponent<Props, State> {
         const changedLines = change.count || 0
         if (hasStyledCode && this.props.language === 'json') {
           const currentLines = styledLines.slice(lineNumber, lineNumber + changedLines)
-          const lines = currentLines.map((html: string, idx: number) => (
-            <div key={`${key}-${idx}`} style={lineChangeStyle(change)} className={this.props.classes.line}>
-              <span dangerouslySetInnerHTML={{ __html: html }} />
-            </div>
-          ))
+          const lines = currentLines.map((html: string, idx: number) => {
+            return (
+              <div key={`${key}-${idx}`} style={lineChangeStyle(change)} className={this.props.classes.line}>
+                <span dangerouslySetInnerHTML={{ __html: html }} />
+              </div>
+            )
+          })
           lineNumber += changedLines
 
           return [<div key={key}>{lines}</div>]
@@ -69,11 +73,13 @@ class CodeDiff extends React.PureComponent<Props, State> {
 
         return trimNewlineRight(change.value)
           .split('\n')
-          .map((line, idx) => (
-            <div key={`${key}-${idx}`} style={lineChangeStyle(change)} className={this.props.classes.line}>
-              <span>{line}</span>
-            </div>
-          ))
+          .map((line, idx) => {
+            return (
+              <div key={`${key}-${idx}`} style={lineChangeStyle(change)} className={this.props.classes.line}>
+                <span>{line}</span>
+              </div>
+            )
+          })
       })
       .reduce((a, b) => a.concat(b), [])
   }

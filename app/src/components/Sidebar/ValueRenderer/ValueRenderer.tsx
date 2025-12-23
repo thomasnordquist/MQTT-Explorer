@@ -1,11 +1,11 @@
+import * as q from '../../../../../backend/src/Model'
 import React, { useMemo } from 'react'
-import { connect } from 'react-redux'
-import { Fade } from '@mui/material'
-import { Decoder } from 'mqtt-explorer-backend/src/Model/Decoder'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
 import CodeDiff from '../CodeDiff'
 import { AppState } from '../../../reducers'
+import { connect } from 'react-redux'
 import { ValueRendererDisplayMode } from '../../../reducers/Settings'
+import { Fade } from '@mui/material'
+import { Decoder } from '../../../../../backend/src/Model/Decoder'
 import { useDecoder } from '../../hooks/useDecoder'
 import { TopicViewModel } from '../../../model/TopicViewModel'
 
@@ -24,7 +24,7 @@ function renderDiff(
   current: string = '',
   previous: string = '',
   title?: string,
-  language?: Language,
+  language?: Language
 ) {
   return (
     <CodeDiff
@@ -44,7 +44,7 @@ function renderDiffMode(
   compareStr: string | undefined,
   currentType: Language | undefined,
   compareType: Language | undefined,
-  compareWithPreviousMessage: boolean,
+  compareWithPreviousMessage: boolean
 ) {
   const language = currentType === compareType && compareType === 'json' ? 'json' : undefined
 
@@ -57,14 +57,14 @@ function renderRawMode(
   compareStr: string | undefined,
   currentType: Language | undefined,
   compareType: Language | undefined,
-  compareWithPreviousMessage: boolean,
+  compareWithPreviousMessage: boolean
 ) {
   return (
     <div>
       {renderDiff(treeNode, compareWithPreviousMessage, currentStr, currentStr, undefined, currentType)}
       <Fade in={Boolean(compareStr)} timeout={400}>
         <div>
-          {compareStr
+          {Boolean(compareStr)
             ? renderDiff(treeNode, compareWithPreviousMessage, compareStr, compareStr, 'selected', compareType)
             : null}
         </div>
@@ -73,9 +73,7 @@ function renderRawMode(
   )
 }
 
-export const ValueRenderer: React.FC<Props> = ({
-  treeNode, compareWith: compare, message, renderMode,
-}) => {
+export const ValueRenderer: React.FC<Props> = ({ treeNode, compareWith: compare, message, renderMode }) => {
   const decodeMessage = useDecoder(treeNode)
   const decodedMessage = useMemo(() => decodeMessage(message), [decodeMessage, message])
 
@@ -86,11 +84,11 @@ export const ValueRenderer: React.FC<Props> = ({
 
   const [currentStr, currentType] = useMemo(
     () => decodedMessage?.message?.format(treeNode.type) ?? [],
-    [decodedMessage, treeNode.type],
+    [decodedMessage, treeNode.type]
   )
   const [compareStr, compareType] = useMemo(
     () => decodeMessage(compareMessage)?.message?.format(treeNode.type) ?? [],
-    [compareMessage, decodeMessage, treeNode.type],
+    [compareMessage, decodeMessage, treeNode.type]
   )
 
   function renderValue(
@@ -100,7 +98,7 @@ export const ValueRenderer: React.FC<Props> = ({
     currentType: Language | undefined,
     compareType: Language | undefined,
     renderMode: string,
-    compareWithPreviousMessage: boolean,
+    compareWithPreviousMessage: boolean
   ) {
     if (!decodedMessage) {
       return null
@@ -115,8 +113,9 @@ export const ValueRenderer: React.FC<Props> = ({
   }
 
   const renderedValue = useMemo(
-    () => renderValue(treeNode, currentStr, compareStr, currentType, compareType, renderMode, compareWithPreviousMessage),
-    [treeNode, currentStr, compareStr, currentType, compareType, renderMode, compareWithPreviousMessage],
+    () =>
+      renderValue(treeNode, currentStr, compareStr, currentType, compareType, renderMode, compareWithPreviousMessage),
+    [treeNode, currentStr, compareStr, currentType, compareType, renderMode, compareWithPreviousMessage]
   )
 
   return (
@@ -127,8 +126,10 @@ export const ValueRenderer: React.FC<Props> = ({
   )
 }
 
-const mapStateToProps = (state: AppState) => ({
-  renderMode: state.settings.get('valueRendererDisplayMode'),
-})
+const mapStateToProps = (state: AppState) => {
+  return {
+    renderMode: state.settings.get('valueRendererDisplayMode'),
+  }
+}
 
 export default connect(mapStateToProps)(ValueRenderer)

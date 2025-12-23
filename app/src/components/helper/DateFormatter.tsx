@@ -1,7 +1,7 @@
 import moment from 'moment'
 import React from 'react'
-import { connect } from 'react-redux'
 import { AppState } from '../../reducers'
+import { connect } from 'react-redux'
 
 interface Props {
   date: Date
@@ -64,8 +64,10 @@ class DateFormatter extends React.PureComponent<Props, {}> {
   }
 }
 
-const mapStateToProps = (state: AppState) => ({
-  locale: state.settings.get('timeLocale'),
-})
+const mapStateToProps = (state: AppState) => {
+  return {
+    locale: state.settings.get('timeLocale'),
+  }
+}
 
 export default connect(mapStateToProps)(DateFormatter)

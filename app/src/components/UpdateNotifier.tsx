@@ -4,18 +4,16 @@ import React from 'react'
 import axios from 'axios'
 import Close from '@mui/icons-material/Close'
 import CloudDownload from '@mui/icons-material/CloudDownload'
+import { AppState } from '../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { green } from '@mui/material/colors'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
-import {
-  Button, IconButton, Modal, Paper, Snackbar, SnackbarContent, Typography,
-} from '@mui/material'
-import { rendererRpc, getAppVersion } from 'MQTT-Explorer/events/events'
 import { updateNotifierActions } from '../actions'
 
-import { AppState } from '../reducers'
+import { Button, IconButton, Modal, Paper, Snackbar, SnackbarContent, Typography } from '@mui/material'
+import { rendererRpc, getAppVersion } from '../../../events'
 
 interface Props {
   showUpdateNotification: boolean
@@ -60,8 +58,8 @@ class UpdateNotifier extends React.PureComponent<Props, State> {
     const ownVersion = await rendererRpc.call(getAppVersion, undefined, 10000)
     const releases = await this.fetchReleases()
     const newerVersions = releases
-      .filter((release) => this.allowPrereleaseIfOwnVersionIsBeta(release, ownVersion))
-      .filter((release) => compareVersions(release.tag_name, ownVersion) > 0)
+      .filter(release => this.allowPrereleaseIfOwnVersionIsBeta(release, ownVersion))
+      .filter(release => compareVersions(release.tag_name, ownVersion) > 0)
       .sort((a, b) => compareVersions(b.tag_name, a.tag_name))
 
     if (newerVersions.length > 0) {
@@ -151,16 +149,14 @@ class UpdateNotifier extends React.PureComponent<Props, State> {
       return null
     }
     const releaseNotes = this.state.newerVersions
-      .map((release) => `<p><h3>${release.tag_name}</h3><p/><p>${release.body_html}</p>`)
+      .map(release => `<p><h3>${release.tag_name}</h3><p/><p>${release.body_html}</p>`)
       .join('<hr />')
 
     return (
-      <Modal open={this.props.showUpdateDetails} disableAutoFocus onClose={this.hideDetails}>
+      <Modal open={this.props.showUpdateDetails} disableAutoFocus={true} onClose={this.hideDetails}>
         <Paper className={this.props.classes.root}>
           <Typography variant="h6" className={this.props.classes.title}>
-            Version
-            {' '}
-            {latestUpdate.tag_name}
+            Version {latestUpdate.tag_name}
           </Typography>
           <Typography className={this.props.classes.title}>Changelog</Typography>
           <div className={this.props.classes.releaseNotes} dangerouslySetInnerHTML={{ __html: releaseNotes }} />
@@ -212,12 +208,11 @@ class UpdateNotifier extends React.PureComponent<Props, State> {
       return null
     }
 
-    return latestUpdate.assets.filter(this.assetForCurrentPlatform).map((asset) => (
+    return latestUpdate.assets.filter(this.assetForCurrentPlatform).map(asset => (
       <div>
         <Button className={this.props.classes.download} onClick={() => this.openUrl(asset.browser_download_url)}>
           <CloudDownload />
-          &nbsp;
-          {asset.name}
+          &nbsp;{asset.name}
         </Button>
       </div>
     ))
@@ -271,13 +266,17 @@ const styles = (theme: Theme) => ({
   },
 })
 
-const mapStateToProps = (state: AppState) => ({
-  showUpdateNotification: state.globalState.get('showUpdateNotification'),
-  showUpdateDetails: state.globalState.get('showUpdateDetails'),
-})
+const mapStateToProps = (state: AppState) => {
+  return {
+    showUpdateNotification: state.globalState.get('showUpdateNotification'),
+    showUpdateDetails: state.globalState.get('showUpdateDetails'),
+  }
+}
 
-const mapDispatchToProps = (dispatch: any) => ({
-  actions: bindActionCreators(updateNotifierActions, dispatch),
-})
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: bindActionCreators(updateNotifierActions, dispatch),
+  }
+}
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(UpdateNotifier))

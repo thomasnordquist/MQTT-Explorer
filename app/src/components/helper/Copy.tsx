@@ -1,9 +1,9 @@
 import * as React from 'react'
 import Check from '@mui/icons-material/Check'
+import CustomIconButton from './CustomIconButton'
 import FileCopy from '@mui/icons-material/FileCopy'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import CustomIconButton from './CustomIconButton'
 import { globalActions } from '../../actions'
 
 // Fallback for older browsers or when clipboard API is not available
@@ -19,7 +19,7 @@ async function copyToClipboard(text: string): Promise<boolean> {
   } catch (error) {
     console.warn('Clipboard API failed, using fallback:', error)
   }
-
+  
   // Fallback to copy-text-to-clipboard library
   return copyTextFallback(text)
 }
@@ -77,10 +77,12 @@ class Copy extends React.PureComponent<Props, State> {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-  actions: {
-    global: bindActionCreators(globalActions, dispatch),
-  },
-})
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: {
+      global: bindActionCreators(globalActions, dispatch),
+    },
+  }
+}
 
 export default connect(undefined, mapDispatchToProps)(Copy)

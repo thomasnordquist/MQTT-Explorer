@@ -23,7 +23,7 @@ function redirectOutputFor(child: ChildProcess) {
 }
 
 async function waitFor(child: ChildProcess) {
-  return new Promise<void>((resolve) => {
+  return new Promise<void>(resolve => {
     child.once('close', () => resolve())
   })
 }

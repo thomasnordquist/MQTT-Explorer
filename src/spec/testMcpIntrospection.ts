@@ -7,7 +7,7 @@ const DEFAULT_REMOTE_DEBUGGING_PORT = 9222
 const PROJECT_ROOT = path.join(__dirname, '../../..')
 
 async function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 async function main() {
@@ -36,7 +36,7 @@ async function main() {
 
   // Check console logs for remote debugging message
   const logs: Array<string> = []
-  page.on('console', (msg) => {
+  page.on('console', msg => {
     const text = msg.text()
     logs.push(text)
     if (text.includes('Remote debugging enabled')) {
@@ -79,7 +79,7 @@ async function main() {
   process.exit(0)
 }
 
-main().catch((error) => {
+main().catch(error => {
   console.error('Error during MCP introspection test:', error)
   process.exit(1)
 })

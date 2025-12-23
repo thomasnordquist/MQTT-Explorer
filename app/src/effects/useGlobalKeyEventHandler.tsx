@@ -4,7 +4,7 @@ import { KeyCodes } from '../utils/KeyCodes'
 export function useGlobalKeyEventHandler(
   key: KeyCodes | undefined,
   callback: (event: KeyboardEvent) => void,
-  dependencies?: Array<any>,
+  dependencies?: Array<any>
 ) {
   useEffect(() => {
     function handleKeyEvent(event: KeyboardEvent) {

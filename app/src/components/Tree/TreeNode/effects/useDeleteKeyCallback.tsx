@@ -1,5 +1,5 @@
+import * as q from '../../../../../../backend/src/Model'
 import React, { useCallback } from 'react'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
 import { KeyCodes } from '../../../../utils/KeyCodes'
 import { treeActions } from '../../../../actions'
 
@@ -12,6 +12,6 @@ export function useDeleteKeyCallback(topic: q.TreeNode<any>, actions: typeof tre
         actions.clearTopic(topic, true)
       }
     },
-    [topic],
+    [topic]
   )
 }

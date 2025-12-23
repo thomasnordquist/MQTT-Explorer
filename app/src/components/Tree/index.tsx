@@ -1,20 +1,19 @@
+import * as q from '../../../../backend/src/Model'
 import React from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
 import TreeNode from './TreeNode'
 import { AppState } from '../../reducers'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import { KeyCodes } from '../../utils/KeyCodes'
 import { SettingsState } from '../../reducers/Settings'
 import { TopicViewModel } from '../../model/TopicViewModel'
 import { treeActions } from '../../actions'
-
 const MovingAverage = require('moving-average')
 
 const averagingTimeInterval = 10 * 1000
 const average = MovingAverage(averagingTimeInterval)
 
-declare let window: any
+declare var window: any
 
 interface Props {
   actions: typeof treeActions
@@ -54,9 +53,7 @@ function useArrowKeyEventHandler(actions: typeof treeActions) {
 
 class TreeComponent extends React.PureComponent<Props, State> {
   private updateTimer?: any
-
   private perf: number = 0
-
   private renderTime = 0
 
   constructor(props: any) {
@@ -65,7 +62,6 @@ class TreeComponent extends React.PureComponent<Props, State> {
   }
 
   private keyEventHandler = useArrowKeyEventHandler(this.props.actions)
-
   private performanceCallback = (ms: number) => {
     average.push(Date.now(), ms)
   }
@@ -107,13 +103,13 @@ class TreeComponent extends React.PureComponent<Props, State> {
               () => {
                 this.setState({ lastUpdate: this.renderTime })
               },
-              { timeout: 100 },
+              { timeout: 100 }
             )
           },
-          { timeout: 500 },
+          { timeout: 500 }
         )
       },
-      Math.max(0, timeUntilNextUpdate),
+      Math.max(0, timeUntilNextUpdate)
     )
   }
 
@@ -146,7 +142,7 @@ class TreeComponent extends React.PureComponent<Props, State> {
       <div style={style} tabIndex={0} onKeyDown={this.keyEventHandler}>
         <TreeNode
           key={tree.hash()}
-          isRoot
+          isRoot={true}
           treeNode={tree}
           name={this.props.host}
           collapsed={false}
@@ -160,16 +156,20 @@ class TreeComponent extends React.PureComponent<Props, State> {
   }
 }
 
-const mapStateToProps = (state: AppState) => ({
-  tree: state.tree.get('tree'),
-  paused: state.tree.get('paused'),
-  filter: state.tree.get('filter'),
-  host: state.connection.host,
-  settings: state.settings,
-})
+const mapStateToProps = (state: AppState) => {
+  return {
+    tree: state.tree.get('tree'),
+    paused: state.tree.get('paused'),
+    filter: state.tree.get('filter'),
+    host: state.connection.host,
+    settings: state.settings,
+  }
+}
 
-const mapDispatchToProps = (dispatch: any) => ({
-  actions: bindActionCreators(treeActions, dispatch),
-})
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: bindActionCreators(treeActions, dispatch),
+  }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(TreeComponent)

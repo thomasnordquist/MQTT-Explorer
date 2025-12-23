@@ -1,8 +1,6 @@
 import React, { memo } from 'react'
 import { alpha as fade, useTheme } from '@mui/material/styles'
-import {
-  Fade, Grow, Paper, Popper, Typography,
-} from '@mui/material'
+import { Fade, Grow, Paper, Popper, Typography } from '@mui/material'
 import { Tooltip } from './Model'
 
 function TooltipComponent(props: { tooltip?: Tooltip }) {
@@ -10,9 +8,9 @@ function TooltipComponent(props: { tooltip?: Tooltip }) {
   const { tooltip } = props
   return (
     <Popper
-      style={tooltip ? { transition: 'all 0.1s ease-out' } : undefined}
+      style={Boolean(tooltip) ? { transition: 'all 0.1s ease-out' } : undefined}
       open={Boolean(tooltip)}
-      transition
+      transition={true}
       placement="top"
       anchorEl={tooltip && tooltip.element}
     >
@@ -32,14 +30,14 @@ function TooltipComponent(props: { tooltip?: Tooltip }) {
                   theme.palette.mode === 'light'
                     ? theme.palette.background.paper
                     : theme.palette.background.default,
-                  0.7,
+                  0.7
                 ),
               }}
             >
               <table style={{ lineHeight: '1.25em' }}>
                 <tbody>
-                  {tooltip
-                    && tooltip.value.map((v: any, idx: number) => (
+                  {tooltip &&
+                    tooltip.value.map((v: any, idx: number) => (
                       <tr key={idx}>
                         <td>
                           <Typography style={{ lineHeight: '1.2' }}>{v.title}</Typography>

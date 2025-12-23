@@ -11,7 +11,6 @@ interface State {
 
 class Demo extends React.Component<{ classes: any }, State> {
   private timer: any
-
   constructor(props: any) {
     super(props)
     this.state = { location: 'bottom', keys: [] }
@@ -22,17 +21,17 @@ class Demo extends React.Component<{ classes: any }, State> {
   }
 
   public componentDidMount() {
-    (window as any).demo.showMessage = (
+    ;(window as any).demo.showMessage = (
       message: string,
       location: string,
       duration: number,
-      keys: Array<string> = [],
+      keys: Array<string> = []
     ) => {
       this.clearTimer()
       this.setState({ message, location, keys })
       this.timer = setTimeout(() => this.setState({ message: undefined }), duration)
-    };
-    (window as any).demo.hideMessage = () => {
+    }
+    ;(window as any).demo.hideMessage = () => {
       this.clearTimer()
       this.setState({ message: undefined })
     }
@@ -45,7 +44,7 @@ class Demo extends React.Component<{ classes: any }, State> {
       middle: -32,
     }
     const style = {
-      position: 'fixed' as const,
+      position: 'fixed' as 'fixed',
       left: '5vw',
       zIndex: 1000000,
       margin: '30vw auto 50vw',
@@ -53,7 +52,7 @@ class Demo extends React.Component<{ classes: any }, State> {
       bottom: `${positions[this.state.location]}vh`,
     }
     const style2 = {
-      textAlign: 'center' as const,
+      textAlign: 'center' as 'center',
       fontSize: '4em',
       color: 'white',
       backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -67,8 +66,10 @@ class Demo extends React.Component<{ classes: any }, State> {
     let keys: Array<any> = []
     if (this.state.keys.length > 0) {
       keys = this.state.keys
-        .map((key) => [<Key key={key} keyboardKey={key} />])
-        .reduce((prev, current) => [prev, '+' as any, current])
+        .map(key => [<Key key={key} keyboardKey={key} />])
+        .reduce((prev, current) => {
+          return [prev, '+' as any, current]
+        })
     }
 
     return (
@@ -85,7 +86,7 @@ class Demo extends React.Component<{ classes: any }, State> {
 const style = (theme: Theme) => ({
   keysStyle: {
     fontSize: '1em',
-    display: 'inline-block' as const,
+    display: 'inline-block' as 'inline-block',
     transform: 'translateY(0.3em) translateX(0.8em)',
   },
 })

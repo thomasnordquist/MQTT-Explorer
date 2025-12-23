@@ -1,8 +1,3 @@
-import { Dispatch } from 'redux'
-import * as path from 'path'
-import { Subscription } from 'mqtt-explorer-backend/src/DataSource/MqttSource'
-import { rendererRpc, readFromFile } from 'MQTT-Explorer/events/events'
-import { makeOpenDialogRpc } from 'MQTT-Explorer/events/OpenDialogRequest'
 import { AppState } from '../reducers'
 import { clearLegacyConnectionOptions, loadLegacyConnectionOptions } from '../model/LegacyConnectionSettings'
 import {
@@ -12,9 +7,14 @@ import {
   CertificateParameters,
 } from '../model/ConnectionOptions'
 import { default as persistentStorage, StorageIdentifier } from '../utils/PersistentStorage'
+import { Dispatch } from 'redux'
 import { showError } from './Global'
+import * as path from 'path'
 import { ActionTypes, Action } from '../reducers/ConnectionManager'
+import { Subscription } from '../../../backend/src/DataSource/MqttSource'
 import { connectionsMigrator } from './migrations/Connection'
+import { rendererRpc, readFromFile } from '../../../events'
+import { makeOpenDialogRpc } from '../../../events/OpenDialogRequest'
 
 export interface ConnectionDictionary {
   [s: string]: ConnectionOptions
@@ -50,18 +50,19 @@ export const loadConnectionSettings = () => async (dispatch: Dispatch<any>, getS
 }
 
 export type CertificateTypes = 'selfSignedCertificate' | 'clientCertificate' | 'clientKey'
-export const selectCertificate = (type: CertificateTypes, connectionId: string) => async (dispatch: Dispatch<any>, getState: () => AppState) => {
-  try {
-    const certificate = await openCertificate()
-    dispatch(
-      updateConnection(connectionId, {
-        [type]: certificate,
-      }),
-    )
-  } catch (error) {
-    dispatch(showError(error))
+export const selectCertificate =
+  (type: CertificateTypes, connectionId: string) => async (dispatch: Dispatch<any>, getState: () => AppState) => {
+    try {
+      const certificate = await openCertificate()
+      dispatch(
+        updateConnection(connectionId, {
+          [type]: certificate,
+        })
+      )
+    } catch (error) {
+      dispatch(showError(error))
+    }
   }
-}
 
 async function openCertificate(): Promise<CertificateParameters> {
   const rejectReasons = {
@@ -150,7 +151,7 @@ export const deleteConnection = (connectionId: string) => (dispatch: Dispatch<an
   const connectionIds = Object.keys(getState().connectionManager.connections)
   const connectionIdLocation = connectionIds.indexOf(connectionId)
 
-  const remainingIds = connectionIds.filter((id) => id !== connectionId)
+  const remainingIds = connectionIds.filter(id => id !== connectionId)
   const nextSelectedConnectionIndex = Math.min(remainingIds.length - 1, connectionIdLocation)
   const nextSelectedConnection = remainingIds[nextSelectedConnectionIndex]
 

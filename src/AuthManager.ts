@@ -11,9 +11,7 @@ export interface Credentials {
 
 export class AuthManager {
   private credentialsPath: string
-
   private credentials: Credentials | undefined
-
   private skipAuth: boolean
 
   constructor(credentialsPath: string) {
@@ -113,7 +111,7 @@ export class AuthManager {
     // Use constant-time comparison for username to prevent timing attacks
     const usernameMatch = crypto.timingSafeEqual(
       Buffer.from(username.padEnd(256, '\0')),
-      Buffer.from(this.credentials.username.padEnd(256, '\0')),
+      Buffer.from(this.credentials.username.padEnd(256, '\0'))
     )
 
     if (!usernameMatch) {

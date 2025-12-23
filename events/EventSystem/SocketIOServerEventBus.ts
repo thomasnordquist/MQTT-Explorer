@@ -1,7 +1,7 @@
 import { Server as SocketIOServer, Socket } from 'socket.io'
-import Debug from 'debug'
 import { Event } from '../Events'
 import { EventBusInterface } from './EventBusInterface'
+import Debug from 'debug'
 
 const debug = Debug('mqtt-explorer:socketio')
 const debugConnect = Debug('mqtt-explorer:socketio:connect')
@@ -17,7 +17,6 @@ interface SocketSubscription {
 
 export class SocketIOServerEventBus implements EventBusInterface {
   private io: SocketIOServer
-
   private clients: Map<string, Socket> = new Map() // socketId -> Socket
 
   // Global handlers that apply to ALL sockets (like RPC endpoints)
@@ -39,7 +38,7 @@ export class SocketIOServerEventBus implements EventBusInterface {
     this.io = io
 
     // Register connection handler once
-    this.io.on('connection', (socket) => {
+    this.io.on('connection', socket => {
       debugConnect('Client connected: %s', socket.id)
       this.clients.set(socket.id, socket)
       this.socketSubscriptions.set(socket.id, [])
@@ -78,21 +77,21 @@ export class SocketIOServerEventBus implements EventBusInterface {
       totalConnections,
       socketId.substring(0, 8),
       socketSubs,
-      socketConns,
+      socketConns
     )
 
     debugSubscriptions(
       'Total subscriptions: %d across %d sockets (avg: %d per socket)',
       totalSubscriptions,
       totalClients,
-      totalClients > 0 ? Math.round(totalSubscriptions / totalClients) : 0,
+      totalClients > 0 ? Math.round(totalSubscriptions / totalClients) : 0
     )
 
     debugConnections(
       'MQTT connections: %d total, %d owned by socket %s',
       totalConnections,
       socketConns,
-      socketId.substring(0, 8),
+      socketId.substring(0, 8)
     )
   }
 
@@ -111,7 +110,7 @@ export class SocketIOServerEventBus implements EventBusInterface {
           'Connection %s owned by socket %s (total: %d)',
           arg.id,
           socket.id.substring(0, 8),
-          socketConns?.size || 0,
+          socketConns?.size || 0
         )
       }
 
@@ -126,7 +125,7 @@ export class SocketIOServerEventBus implements EventBusInterface {
           'Connection %s removed (socket %s remaining: %d)',
           arg,
           socket.id.substring(0, 8),
-          socketConns?.size || 0,
+          socketConns?.size || 0
         )
       }
 
@@ -161,12 +160,12 @@ export class SocketIOServerEventBus implements EventBusInterface {
       debugConnections(
         'Socket %s owned %d connections, requesting cleanup',
         socket.id.substring(0, 8),
-        ownedConnections.size,
+        ownedConnections.size
       )
 
       // Emit connection/remove for each owned connection
       // This will be handled by ConnectionManager to actually close the MQTT connection
-      ownedConnections.forEach((connectionId) => {
+      ownedConnections.forEach(connectionId => {
         debugConnections('Auto-closing connection %s (owner disconnected)', connectionId)
         // Simulate a remove request from this socket
         const removeHandler = this.globalHandlers.get('connection/remove')
@@ -201,7 +200,7 @@ export class SocketIOServerEventBus implements EventBusInterface {
     this.globalHandlers.set(subscribeEvent.topic, handler)
 
     // Register on all currently connected clients
-    this.clients.forEach((client) => {
+    this.clients.forEach(client => {
       this.registerHandlerOnSocket(client, subscribeEvent.topic, handler)
     })
   }
@@ -211,10 +210,10 @@ export class SocketIOServerEventBus implements EventBusInterface {
     this.globalHandlers.delete(event.topic)
 
     // Remove from all sockets
-    this.clients.forEach((client) => {
+    this.clients.forEach(client => {
       const subscriptions = this.socketSubscriptions.get(client.id)
       if (subscriptions) {
-        const toRemove = subscriptions.filter((s) => s.topic === event.topic)
+        const toRemove = subscriptions.filter(s => s.topic === event.topic)
         toRemove.forEach(({ handler }) => {
           client.off(event.topic, handler)
         })
@@ -222,7 +221,7 @@ export class SocketIOServerEventBus implements EventBusInterface {
         // Update subscriptions list
         this.socketSubscriptions.set(
           client.id,
-          subscriptions.filter((s) => s.topic !== event.topic),
+          subscriptions.filter(s => s.topic !== event.topic)
         )
       }
     })
@@ -233,7 +232,7 @@ export class SocketIOServerEventBus implements EventBusInterface {
   }
 
   public emit<MessageType>(event: Event<MessageType>, msg: MessageType) {
-    const { topic } = event
+    const topic = event.topic
 
     // Check if this is an RPC response (contains /response/ in topic)
     if (topic.includes('/response/')) {

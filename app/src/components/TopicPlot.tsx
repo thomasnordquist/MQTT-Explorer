@@ -1,6 +1,6 @@
 import * as dotProp from 'dot-prop'
+import * as q from '../../../backend/src/Model'
 import * as React from 'react'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
 import PlotHistory from './Chart/Chart'
 import { toPlottableValue } from './Sidebar/CodeDiff/util'
 import { PlotCurveTypes } from '../reducers/Charts'
@@ -21,7 +21,7 @@ interface Props {
 function filterUsingTimeRange(startTime: number | undefined, data: Array<q.Message>) {
   if (startTime) {
     const threshold = new Date(Date.now() - startTime)
-    return data.filter((d) => d.received >= threshold)
+    return data.filter(d => d.received >= threshold)
   }
 
   return data
@@ -33,14 +33,14 @@ function nodeToHistory(decodeMessage: DecoderFunction, startTime: number | undef
       const decoded = decodeMessage(message)?.message?.toUnicodeString()
       return { x: message.received.getTime(), y: toPlottableValue(decoded) }
     })
-    .filter((data) => !isNaN(data.y as any)) as any
+    .filter(data => !isNaN(data.y as any)) as any
 }
 
 function nodeDotPathToHistory(
   decodeMessage: DecoderFunction,
   startTime: number | undefined,
   history: q.MessageHistory,
-  dotPath: string,
+  dotPath: string
 ) {
   return filterUsingTimeRange(startTime, history.toArray())
     .map((message: q.Message) => {
@@ -54,7 +54,7 @@ function nodeDotPathToHistory(
 
       return { x: message.received.getTime(), y: toPlottableValue(value) }
     })
-    .filter((data) => !isNaN(data.y as any)) as any
+    .filter(data => !isNaN(data.y as any)) as any
 }
 
 function TopicPlot(props: Props) {

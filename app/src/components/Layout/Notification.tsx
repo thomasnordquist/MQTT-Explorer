@@ -30,8 +30,8 @@ class Notification extends React.PureComponent<Props, {}> {
 
   public render() {
     const snackbarAnchor = {
-      vertical: 'bottom' as const,
-      horizontal: 'left' as const,
+      vertical: 'bottom' as 'bottom',
+      horizontal: 'left' as 'left',
     }
 
     return (

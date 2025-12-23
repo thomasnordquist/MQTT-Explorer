@@ -1,17 +1,15 @@
 import * as React from 'react'
+import ClearAdornment from '../helper/ClearAdornment'
 import Lock from '@mui/icons-material/Lock'
 import { bindActionCreators } from 'redux'
-import {
-  Button, Theme, Tooltip, Typography,
-} from '@mui/material'
-import { connect } from 'react-redux'
-import { withStyles } from '@mui/styles'
-import { rendererRpc } from 'MQTT-Explorer/events/events'
-import { RpcEvents } from 'MQTT-Explorer/events/EventsV2'
+import { Button, Theme, Tooltip, Typography } from '@mui/material'
 import { CertificateParameters, ConnectionOptions } from '../../model/ConnectionOptions'
 import { CertificateTypes } from '../../actions/ConnectionManager'
+import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
-import ClearAdornment from '../helper/ClearAdornment'
+import { withStyles } from '@mui/styles'
+import { rendererRpc } from '../../../../events'
+import { RpcEvents } from '../../../../events/EventsV2'
 
 function BrowserCertificateFileSelection(props: {
   certificateType: CertificateTypes
@@ -41,7 +39,7 @@ function BrowserCertificateFileSelection(props: {
       try {
         // Read file content
         const reader = new FileReader()
-        reader.onload = async (e) => {
+        reader.onload = async e => {
           const content = e.target?.result
           if (typeof content === 'string') {
             // Convert to base64
@@ -75,7 +73,7 @@ function BrowserCertificateFileSelection(props: {
         fileInputRef.current.value = ''
       }
     },
-    [props.connection.id, props.certificateType, props.actions.connectionManager],
+    [props.connection.id, props.certificateType, props.actions.connectionManager]
   )
 
   const handleButtonClick = () => {
@@ -93,9 +91,7 @@ function BrowserCertificateFileSelection(props: {
       />
       <Tooltip title="Select certificate" placement="top">
         <Button variant="contained" className={props.classes.button} onClick={handleButtonClick}>
-          <Lock />
-          {' '}
-          {props.title}
+          <Lock /> {props.title}
         </Button>
       </Tooltip>
       <ClearCertificate classes={props.classes} certificate={props.certificate} action={clearCertificate} />
@@ -118,19 +114,21 @@ function ClearCertificate(props: { classes: any; certificate?: CertificateParame
   )
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-  actions: {
-    connectionManager: bindActionCreators(connectionManagerActions, dispatch),
-  },
-})
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: {
+      connectionManager: bindActionCreators(connectionManagerActions, dispatch),
+    },
+  }
+}
 
 const styles = (theme: Theme) => ({
   certificateName: {
     width: '100%',
     height: 'calc(1em + 4px)',
-    overflow: 'hidden' as const,
-    whiteSpace: 'nowrap' as const,
-    textOverflow: 'ellipsis' as const,
+    overflow: 'hidden' as 'hidden',
+    whiteSpace: 'nowrap' as 'nowrap',
+    textOverflow: 'ellipsis' as 'ellipsis',
     color: theme.palette.text.secondary,
   },
   button: {

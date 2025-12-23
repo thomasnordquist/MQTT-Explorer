@@ -1,13 +1,13 @@
 import * as React from 'react'
-import ReactSplitPaneImport from 'react-split-pane'
-import { connect } from 'react-redux'
-import { List } from 'immutable'
-import { useResizeDetector } from 'react-resize-detector'
 import ChartPanel from '../ChartPanel'
+import ReactSplitPaneImport from 'react-split-pane'
 import Tree from '../Tree'
 import { AppState } from '../../reducers'
 import { ChartParameters } from '../../reducers/Charts'
+import { connect } from 'react-redux'
+import { List } from 'immutable'
 import { Sidebar } from '../Sidebar'
+import { useResizeDetector } from 'react-resize-detector'
 
 // Type cast to any to work around React 18 compatibility issues with react-split-pane 0.1.x
 const ReactSplitPane = ReactSplitPaneImport as any
@@ -24,18 +24,18 @@ function ContentView(props: Props) {
   const [sidebarWidth, setSidebarWidth] = React.useState<string | number>('40%')
   const [detectedHeight, setDetectedHeight] = React.useState(0)
   const [detectedSidebarWidth, setDetectedSidebarWidth] = React.useState(0)
-
+  
   const { height: resizeHeight, ref: heightRef } = useResizeDetector()
   const { width: resizeWidth, ref: widthRef } = useResizeDetector()
-
+  
   React.useEffect(() => {
     if (resizeHeight) setDetectedHeight(resizeHeight)
   }, [resizeHeight])
-
+  
   React.useEffect(() => {
     if (resizeWidth) setDetectedSidebarWidth(resizeWidth)
   }, [resizeWidth])
-
+  
   const detectSize = React.useCallback((width: any, newHeight: any) => {
     setDetectedHeight(newHeight)
   }, [])
@@ -80,7 +80,7 @@ function ContentView(props: Props) {
           size={sidebarWidth}
           onChange={(size: number) => setSidebarWidth(size)}
           onDragFinished={closeSidebarCompletelyIfItSitsOnTheEdge}
-          allowResize
+          allowResize={true}
           style={{ height: '100%' }}
           pane1Style={{ overflowX: 'hidden' }}
           resizerStyle={{ height: '100%' }}
@@ -91,7 +91,7 @@ function ContentView(props: Props) {
               split="horizontal"
               minSize={0}
               size={height}
-              allowResize
+              allowResize={true}
               style={{ height: 'calc(100vh - 64px)' }}
               pane1Style={{ maxHeight: '100%' }}
               pane2Style={{ borderTop: '1px solid #999', display: 'flex' }}
@@ -100,12 +100,7 @@ function ContentView(props: Props) {
             >
               <Tree />
               {/** Passing height constraints via flex options down */}
-              <div
-                ref={heightRef}
-                style={{
-                  flex: 1, display: 'flex', height: '100%', width: '100%',
-                }}
-              >
+              <div ref={heightRef} style={{ flex: 1, display: 'flex', height: '100%', width: '100%' }}>
                 {/** Resize detector must not be in the scroll zone, it needs to detect actual available size */}
                 <ChartPanel />
               </div>
@@ -114,9 +109,7 @@ function ContentView(props: Props) {
           <div ref={widthRef} style={{ height: '100%' }}>
             <div
               className={props.paneDefaults}
-              style={{
-                minWidth: '250px', height: '100%', overflowY: 'auto', overflowX: 'hidden',
-              }}
+              style={{ minWidth: '250px', height: '100%', overflowY: 'auto', overflowX: 'hidden' }}
             >
               <Sidebar connectionId={props.connectionId} />
             </div>
@@ -127,8 +120,10 @@ function ContentView(props: Props) {
   )
 }
 
-const mapStateToProps = (state: AppState) => ({
-  chartPanelItems: state.charts.get('charts'),
-})
+const mapStateToProps = (state: AppState) => {
+  return {
+    chartPanelItems: state.charts.get('charts'),
+  }
+}
 
 export default connect(mapStateToProps)(ContentView)

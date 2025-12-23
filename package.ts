@@ -1,6 +1,6 @@
+import * as builder from 'electron-builder'
 import * as fs from 'fs'
 import * as path from 'path'
-import * as builder from 'electron-builder'
 import * as dotProp from 'dot-prop'
 
 const linuxAppImage: builder.CliOptions = {

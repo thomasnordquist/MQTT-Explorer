@@ -1,6 +1,6 @@
-import { rendererRpc } from 'MQTT-Explorer/events/events'
+import { rendererRpc } from '../../../events'
 
-import { storageStoreEvent, storageLoadEvent, storageClearEvent } from 'MQTT-Explorer/events/StorageEvents'
+import { storageStoreEvent, storageLoadEvent, storageClearEvent } from '../../../events/StorageEvents'
 
 export interface StorageIdentifier<Model> {
   id: string
@@ -26,7 +26,7 @@ class RemoteStorage implements PersistentStorage {
       {
         store: identifier.id,
       },
-      10000,
+      10000
     )
 
     return (result as any).data

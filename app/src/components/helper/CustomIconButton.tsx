@@ -39,9 +39,9 @@ class CustomIconButton extends React.PureComponent<Props, {}> {
 
   public render() {
     return (
-      <IconButton
-        className={this.props.classes.button}
-        style={this.props.style}
+      <IconButton 
+        className={this.props.classes.button} 
+        style={this.props.style} 
         onClick={this.onClick}
         data-testid={this.props['data-testid']}
       >

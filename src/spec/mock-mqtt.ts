@@ -2,7 +2,7 @@ import * as mqtt from 'mqtt'
 
 let mqttClient: mqtt.MqttClient
 function startServer(): Promise<mqtt.MqttClient> {
-  return new Promise(async (resolve) => {
+  return new Promise(async resolve => {
     mqttClient = await connectMqtt()
     generateData(mqttClient)
     resolve(mqttClient)
@@ -10,7 +10,7 @@ function startServer(): Promise<mqtt.MqttClient> {
 }
 
 function connectMqtt(): Promise<mqtt.MqttClient> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const client = mqtt.connect('mqtt://127.0.0.1:1883', {
       username: '',
       password: '',
@@ -53,7 +53,7 @@ function generateData(client: mqtt.MqttClient) {
     qos: 0,
   })
   intervals.push(
-    setInterval(() => client.publish('livingroom/temperature', temperature(), { retain: true, qos: 0 }), 1000),
+    setInterval(() => client.publish('livingroom/temperature', temperature(), { retain: true, qos: 0 }), 1000)
   )
   intervals.push(setInterval(() => client.publish('livingroom/humidity', temperature(60, -2, 0)), 1000))
 
@@ -97,15 +97,15 @@ function generateData(client: mqtt.MqttClient) {
       coffeeMaker.heater = newTemp > coffeeMaker.temperature ? 'on' : 'off'
       coffeeMaker.temperature = newTemp
       client.publish('kitchen/coffee_maker', JSON.stringify(coffeeMaker), { retain: true, qos: 2 })
-    }, 1500),
+    }, 1500)
   )
 
   intervals.push(
-    setInterval(() => client.publish('kitchen/temperature', temperature(), { retain: true, qos: 0 }), 1500),
+    setInterval(() => client.publish('kitchen/temperature', temperature(), { retain: true, qos: 0 }), 1500)
   )
 
   intervals.push(
-    setInterval(() => client.publish('kitchen/humidity', temperature(60, -5, 0), { retain: true, qos: 0 }), 1800),
+    setInterval(() => client.publish('kitchen/humidity', temperature(60, -5, 0), { retain: true, qos: 0 }), 1800)
   )
 
   client.publish('garden/pump/state', 'off', { retain: true, qos: 0 })
@@ -130,7 +130,7 @@ function generateData(client: mqtt.MqttClient) {
     setInterval(() => {
       client.publish('3d-printer/OctoPrint/temperature/bed', '{"_timestamp":1548589083,"actual":25.9,"target":0}')
       client.publish('3d-printer/OctoPrint/temperature/tool0', '{"_timestamp":1548589093,"actual":26.4,"target":0}')
-    }, 3333),
+    }, 3333)
   )
 
   let state = true
@@ -151,7 +151,7 @@ function generateData(client: mqtt.MqttClient) {
         retain: true,
         qos: 0,
       })
-    }, 2102),
+    }, 2102)
   )
 }
 

@@ -1,18 +1,18 @@
-import React, { useCallback } from 'react'
-import { bindActionCreators } from 'redux'
-import { Typography } from '@mui/material'
-import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
-import { connect } from 'react-redux'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../../../../backend/src/Model'
 import ActionButtons from './ActionButtons'
 import Copy from '../../helper/Copy'
 import Save from '../../helper/Save'
 import DateFormatter from '../../helper/DateFormatter'
 import MessageHistory from './MessageHistory'
 import Panel from '../Panel'
+import React, { useCallback } from 'react'
 import ValueRenderer from './ValueRenderer'
 import { AppState } from '../../../reducers'
+import { bindActionCreators } from 'redux'
+import { Typography } from '@mui/material'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
+import { connect } from 'react-redux'
 import { sidebarActions } from '../../../actions'
 import DeleteSelectedTopicButton from './DeleteSelectedTopicButton'
 import { MessageId } from '../MessageId'
@@ -58,7 +58,9 @@ function ValuePanel(props: Props) {
     )
   }
 
-  const getDecodedValue = useCallback(() => node?.message && decodeMessage(node.message)?.message?.toUnicodeString(), [node, decodeMessage])
+  const getDecodedValue = useCallback(() => {
+    return node?.message && decodeMessage(node.message)?.message?.toUnicodeString()
+  }, [node, decodeMessage])
 
   const getData = () => {
     if (node?.message && node.message.payload) {
@@ -74,7 +76,7 @@ function ValuePanel(props: Props) {
     return (
       <span style={{ width: '100%', paddingLeft: '8px', flex: 6 }}>
         <Typography style={{ textAlign: 'right' }}>
-          <MessageId message={props.node.message} addComma />
+          <MessageId message={props.node.message} addComma={true} />
           {`QoS: ${props.node.message.qos}`}
         </Typography>
         <Typography style={{ textAlign: 'right' }}>
@@ -94,21 +96,18 @@ function ValuePanel(props: Props) {
         props.sidebarActions.setCompareMessage(undefined)
       }
     },
-    [compareMessage],
+    [compareMessage]
   )
 
-  const [value] = node && node.message && node.message.payload ? node.message.payload?.format(node.type) : [null, undefined]
+  const [value] =
+    node && node.message && node.message.payload ? node.message.payload?.format(node.type) : [null, undefined]
   const copyValue = value ? <Copy getValue={getDecodedValue} /> : null
   const saveValue = value ? <Save getData={getData} /> : null
 
   return (
     <Panel>
       <span>
-        Value
-        {' '}
-        {copyValue}
-        {' '}
-        {saveValue}
+        Value {copyValue} {saveValue}
       </span>
       <span style={{ width: '100%' }}>
         {renderViewOptions()}
@@ -125,14 +124,18 @@ function ValuePanel(props: Props) {
   )
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-  sidebarActions: bindActionCreators(sidebarActions, dispatch),
-})
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    sidebarActions: bindActionCreators(sidebarActions, dispatch),
+  }
+}
 
-const mapStateToProps = (state: AppState) => ({
-  node: state.tree.get('selectedTopic'),
-  compareMessage: state.sidebar.get('compareMessage'),
-})
+const mapStateToProps = (state: AppState) => {
+  return {
+    node: state.tree.get('selectedTopic'),
+    compareMessage: state.sidebar.get('compareMessage'),
+  }
+}
 
 const styles = (theme: Theme) => ({
   heading: {

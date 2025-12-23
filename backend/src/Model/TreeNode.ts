@@ -1,48 +1,29 @@
-import { EventDispatcher } from 'MQTT-Explorer/events/events'
 import { Destroyable } from './Destroyable'
-import {
-  Edge, Message, RingBuffer, MessageHistory,
-} from '.'
+import { Edge, Message, RingBuffer, MessageHistory } from './'
+import { EventDispatcher } from '../../../events'
 
 export type TopicDataType = 'string' | 'json' | 'hex'
 
 export class TreeNode<ViewModel extends Destroyable> {
   public sourceEdge?: Edge<ViewModel>
-
   public message?: Message
-
   public messageHistory: MessageHistory = new RingBuffer<Message>(20000, 100)
-
   public viewModel?: ViewModel
-
   public edges: { [s: string]: Edge<ViewModel> } = {}
-
   public edgeArray: Array<Edge<ViewModel>> = []
-
   public collapsed = false
-
   public messages: number = 0
-
   public lastUpdate: number = Date.now()
-
   public onMerge = new EventDispatcher<void>()
-
   public onEdgesChange = new EventDispatcher<void>()
-
   public onMessage = new EventDispatcher<Message>()
-
   public onDestroy = new EventDispatcher<TreeNode<ViewModel>>()
-
   public isTree = false
-
   public type: TopicDataType = 'json'
 
   private cachedPath?: string
-
   private cachedChildTopics?: Array<TreeNode<ViewModel>>
-
   private cachedLeafMessageCount?: number
-
   private cachedChildTopicCount?: number
 
   constructor(sourceEdge?: Edge<ViewModel>, message?: Message) {
@@ -176,8 +157,8 @@ export class TreeNode<ViewModel extends Destroyable> {
   public path(): string {
     if (!this.cachedPath) {
       this.cachedPath = this.branch()
-        .map((node) => node.sourceEdge && node.sourceEdge.name)
-        .filter((name) => name !== undefined)
+        .map(node => node.sourceEdge && node.sourceEdge.name)
+        .filter(name => name !== undefined)
         .join('/')
     }
 
@@ -232,7 +213,8 @@ export class TreeNode<ViewModel extends Destroyable> {
 
   public leafMessageCount(): number {
     if (this.cachedLeafMessageCount === undefined) {
-      this.cachedLeafMessageCount = this.edgeArray.map((edge) => edge.target.leafMessageCount()).reduce((a, b) => a + b, 0) + this.messages
+      this.cachedLeafMessageCount =
+        this.edgeArray.map(edge => edge.target.leafMessageCount()).reduce((a, b) => a + b, 0) + this.messages
     }
 
     return this.cachedLeafMessageCount as number
@@ -241,7 +223,7 @@ export class TreeNode<ViewModel extends Destroyable> {
   public childTopicCount(): number {
     if (this.cachedChildTopicCount === undefined) {
       this.cachedChildTopicCount = this.edgeArray
-        .map((e) => e.target.childTopicCount())
+        .map(e => e.target.childTopicCount())
         .reduce((a, b) => a + b, this.hasMessage() ? 1 : 0)
     }
 
@@ -257,14 +239,14 @@ export class TreeNode<ViewModel extends Destroyable> {
       const initialValue = this.message && this.message.payload ? [this] : []
 
       this.cachedChildTopics = this.edgeArray
-        .map((e) => e.target.childTopics())
+        .map(e => e.target.childTopics())
         .reduce((a, b) => a.concat(b), initialValue)
     }
 
     return this.cachedChildTopics as Array<TreeNode<ViewModel>>
   }
 
-  public findNode(path: string): TreeNode<ViewModel> | undefined {
+  public findNode(path: String): TreeNode<ViewModel> | undefined {
     const topics = path.split('/')
 
     return this.findChild(topics)

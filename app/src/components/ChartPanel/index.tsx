@@ -1,17 +1,16 @@
+import * as q from '../../../../backend/src/Model'
 import * as React from 'react'
 import ShowChart from '@mui/icons-material/ShowChart'
+import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
+import { chartActions } from '../../actions'
+import { ChartParameters } from '../../reducers/Charts'
+import { ChartWithTreeNode } from './ChartWithTreeNode'
 import { connect } from 'react-redux'
 import { Grid, Typography } from '@mui/material'
 import { withStyles } from '@mui/styles'
 import { Theme } from '@mui/material/styles'
 import { List } from 'immutable'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
-import { AppState } from '../../reducers'
-import { ChartWithTreeNode } from './ChartWithTreeNode'
-import { ChartParameters } from '../../reducers/Charts'
-import { chartActions } from '../../actions'
-
 const { TransitionGroup, CSSTransition } = require('react-transition-group/esm')
 
 interface Props {
@@ -27,10 +26,11 @@ interface Props {
 function spacingForChartCount(count: number): 4 | 6 | 12 {
   if (count >= 5) {
     return 4
-  } if (count >= 2) {
+  } else if (count >= 2) {
     return 6
+  } else {
+    return 12
   }
-  return 12
 }
 
 function mapWidth(width: 'big' | 'medium' | 'small' | undefined, calculatedSpacing: 4 | 6 | 12): 4 | 6 | 12 {
@@ -65,7 +65,7 @@ function ChartPanel(props: Props) {
     }
   }, [chartsInView])
 
-  const charts = props.charts.map((chartParameters) => (
+  const charts = props.charts.map(chartParameters => (
     <CSSTransition
       key={`${chartParameters.topic}-${chartParameters.dotPath || ''}`}
       timeout={{ enter: 500, exit: 500 }}
@@ -95,27 +95,27 @@ function NoCharts() {
       <Typography variant="h2">No charts selected</Typography>
       <Typography>Select a numeric values from the value preview.</Typography>
       <Typography>
-        Click on
-        {' '}
-        <ShowChart />
-        {' '}
-        to add a topic / value to this panel.
+        Click on <ShowChart /> to add a topic / value to this panel.
       </Typography>
     </div>
   )
 }
 
-const mapStateToProps = (state: AppState) => ({
-  charts: state.charts.get('charts'),
-  connectionId: state.connection.connectionId,
-  tree: state.connection.tree,
-})
+const mapStateToProps = (state: AppState) => {
+  return {
+    charts: state.charts.get('charts'),
+    connectionId: state.connection.connectionId,
+    tree: state.connection.tree,
+  }
+}
 
-const mapDispatchToProps = (dispatch: any) => ({
-  actions: {
-    chart: bindActionCreators(chartActions, dispatch),
-  },
-})
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: {
+      chart: bindActionCreators(chartActions, dispatch),
+    },
+  }
+}
 
 const styles = (theme: Theme) => ({
   container: {

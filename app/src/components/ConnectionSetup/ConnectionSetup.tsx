@@ -1,21 +1,18 @@
 import * as React from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
-import {
-  Modal, Paper, Toolbar, Typography, Collapse,
-} from '@mui/material'
 import ConnectionSettings from './ConnectionSettings'
+const ConnectionSettingsAny = ConnectionSettings as any
 import ProfileList from './ProfileList'
 import { AppState } from '../../reducers'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
 import { ConnectionOptions, toMqttConnection } from '../../model/ConnectionOptions'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
+import { Modal, Paper, Toolbar, Typography, Collapse } from '@mui/material'
 import AdvancedConnectionSettings from './AdvancedConnectionSettings'
-import Certificates from './Certificates'
-
-const ConnectionSettingsAny = ConnectionSettings as any
 const AdvancedConnectionSettingsAny = AdvancedConnectionSettings as any
+import Certificates from './Certificates'
 const CertificatesAny = Certificates as any
 
 interface Props {
@@ -62,7 +59,7 @@ class ConnectionSetup extends React.PureComponent<Props, {}> {
     const mqttConnection = connection && toMqttConnection(connection)
     return (
       <div>
-        <Modal open={visible} disableAutoFocus>
+        <Modal open={visible} disableAutoFocus={true}>
           <Paper className={classes.root}>
             <div className={classes.left}>
               <ProfileList />
@@ -87,25 +84,25 @@ const connectionHeight = '440px'
 const styles = (theme: Theme) => ({
   title: {
     color: theme.palette.text.primary,
-    whiteSpace: 'nowrap' as const,
+    whiteSpace: 'nowrap' as 'nowrap',
   },
   root: {
     margin: `calc((100vh - ${connectionHeight}) / 2) auto 0 auto`,
     minWidth: '800px',
     maxWidth: '850px',
     height: connectionHeight,
-    outline: 'none' as const,
-    display: 'flex' as const,
+    outline: 'none' as 'none',
+    display: 'flex' as 'flex',
   },
   left: {
-    borderRightStyle: 'dotted' as const,
+    borderRightStyle: 'dotted' as 'dotted',
     borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
     paddingTop: theme.spacing(2),
     flex: 3,
-    overflow: 'hidden' as const,
+    overflow: 'hidden' as 'hidden',
     backgroundColor: theme.palette.background.default,
     color: theme.palette.text.primary,
-    overflowY: 'auto' as const,
+    overflowY: 'auto' as 'auto',
   },
   right: {
     borderRadius: `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0`,
@@ -115,26 +112,30 @@ const styles = (theme: Theme) => ({
   },
   connectionUri: {
     width: '27em',
-    textOverflow: 'ellipsis' as const,
-    whiteSpace: 'nowrap' as const,
-    overflow: 'hidden' as const,
+    textOverflow: 'ellipsis' as 'ellipsis',
+    whiteSpace: 'nowrap' as 'nowrap',
+    overflow: 'hidden' as 'hidden',
     color: theme.palette.text.secondary,
     fontSize: '0.9em',
     marginLeft: theme.spacing(4),
   },
 })
 
-const mapStateToProps = (state: AppState) => ({
-  visible: !state.connection.connected,
-  showAdvancedSettings: state.connectionManager.showAdvancedSettings,
-  showCertificateSettings: state.connectionManager.showCertificateSettings,
-  connection: state.connectionManager.selected
-    ? state.connectionManager.connections[state.connectionManager.selected]
-    : undefined,
-})
+const mapStateToProps = (state: AppState) => {
+  return {
+    visible: !state.connection.connected,
+    showAdvancedSettings: state.connectionManager.showAdvancedSettings,
+    showCertificateSettings: state.connectionManager.showCertificateSettings,
+    connection: state.connectionManager.selected
+      ? state.connectionManager.connections[state.connectionManager.selected]
+      : undefined,
+  }
+}
 
-const mapDispatchToProps = (dispatch: any) => ({
-  actions: bindActionCreators(connectionManagerActions, dispatch),
-})
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: bindActionCreators(connectionManagerActions, dispatch),
+  }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ConnectionSetup) as any)

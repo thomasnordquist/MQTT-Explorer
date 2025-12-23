@@ -1,10 +1,10 @@
+import ClearAdornment from '../../helper/ClearAdornment'
 import React, { useCallback, useMemo, useRef } from 'react'
 import { FormControl, Input, InputLabel } from '@mui/material'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
 import { publishActions } from '../../../actions'
+import { bindActionCreators } from 'redux'
 import { AppState } from '../../../reducers'
-import ClearAdornment from '../../helper/ClearAdornment'
+import { connect } from 'react-redux'
 
 function TopicInput(props: { actions: typeof publishActions; manualTopic?: string; selectedTopic?: string }) {
   const inputElement = useRef<HTMLInputElement>(null)
@@ -45,17 +45,21 @@ function TopicInput(props: { actions: typeof publishActions; manualTopic?: strin
         </FormControl>
       </div>
     ),
-    [topicStr],
+    [topicStr]
   )
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-  actions: bindActionCreators(publishActions, dispatch),
-})
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: bindActionCreators(publishActions, dispatch),
+  }
+}
 
-const mapStateToProps = (state: AppState) => ({
-  manualTopic: state.publish.manualTopic,
-  selectedTopic: state.tree.get('selectedTopic')?.path(),
-})
+const mapStateToProps = (state: AppState) => {
+  return {
+    manualTopic: state.publish.manualTopic,
+    selectedTopic: state.tree.get('selectedTopic')?.path(),
+  }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopicInput)

@@ -1,18 +1,17 @@
-import React from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { List } from '@mui/material'
-import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
 import ConnectionItem from './ConnectionItem'
+const ConnectionItemAny = ConnectionItem as any
+import React from 'react'
 import { AddButton } from './AddButton'
 import { AppState } from '../../../reducers'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../../actions'
 import { ConnectionOptions } from '../../../model/ConnectionOptions'
 import { KeyCodes } from '../../../utils/KeyCodes'
+import { List } from '@mui/material'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 import { useGlobalKeyEventHandler } from '../../../effects/useGlobalKeyEventHandler'
-
-const ConnectionItemAny = ConnectionItem as any
 
 interface Props {
   classes: any
@@ -22,9 +21,7 @@ interface Props {
 }
 
 function ProfileList(props: Props) {
-  const {
-    actions, classes, connections, selected,
-  } = props
+  const { actions, classes, connections, selected } = props
 
   const selectConnection = (dir: 'next' | 'previous') => (event: KeyboardEvent) => {
     if (!selected) {
@@ -32,7 +29,7 @@ function ProfileList(props: Props) {
     }
     const indexDirection = dir === 'next' ? 1 : -1
     const connectionArray = Object.values(connections)
-    const selectedIndex = connectionArray.map((connection) => connection.id).indexOf(selected)
+    const selectedIndex = connectionArray.map(connection => connection.id).indexOf(selected)
     const nextConnection = connectionArray[selectedIndex + indexDirection]
     if (nextConnection) {
       actions.selectConnection(nextConnection.id)
@@ -53,7 +50,7 @@ function ProfileList(props: Props) {
   return (
     <List style={{ height: '100%' }} component="nav" subheader={createConnectionButton}>
       <div className={classes.list}>
-        {Object.values(connections).map((connection) => (
+        {Object.values(connections).map(connection => (
           <ConnectionItemAny connection={connection} key={connection.id} selected={selected === connection.id} />
         ))}
       </div>
@@ -65,17 +62,21 @@ const styles = (theme: Theme) => ({
   list: {
     marginTop: theme.spacing(1),
     height: `calc(100% - ${theme.spacing(6)})`,
-    overflowY: 'auto' as const,
+    overflowY: 'auto' as 'auto',
   },
 })
 
-const mapDispatchToProps = (dispatch: any) => ({
-  actions: bindActionCreators(connectionManagerActions, dispatch),
-})
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: bindActionCreators(connectionManagerActions, dispatch),
+  }
+}
 
-const mapStateToProps = (state: AppState) => ({
-  connections: state.connectionManager.connections,
-  selected: state.connectionManager.selected,
-})
+const mapStateToProps = (state: AppState) => {
+  return {
+    connections: state.connectionManager.connections,
+    selected: state.connectionManager.selected,
+  }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProfileList) as any)

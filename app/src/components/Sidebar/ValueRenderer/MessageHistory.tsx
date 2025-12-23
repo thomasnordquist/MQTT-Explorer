@@ -1,15 +1,15 @@
+import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
 import ShowChart from '@mui/icons-material/ShowChart'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
 import Copy from '../../helper/Copy'
 import DateFormatter from '../../helper/DateFormatter'
 import History from '../HistoryDrawer'
 import TopicPlot from '../../TopicPlot'
 import { isPlottable } from '../CodeDiff/util'
 import { TopicViewModel } from '../../../model/TopicViewModel'
+import { bindActionCreators } from 'redux'
 import { chartActions } from '../../../actions'
+import { connect } from 'react-redux'
 import CustomIconButton from '../../helper/CustomIconButton'
 import { MessageId } from '../MessageId'
 import { useSubscription } from '../../hooks/useSubscription'
@@ -26,13 +26,13 @@ interface Props {
   }
 }
 
-export const MessageHistory: React.FC<Props> = (props) => {
+export const MessageHistory: React.FC<Props> = props => {
   const [, setLastUpdate] = React.useState(Date.now())
   const updateNodeThrottled = React.useCallback(
     throttle(() => {
       setLastUpdate
     }, 300),
-    [],
+    []
   )
 
   useSubscription(props.node?.onMessage, updateNodeThrottled)
@@ -77,8 +77,7 @@ export const MessageHistory: React.FC<Props> = (props) => {
             {previousMessage && previousMessage !== message ? (
               <i>
                 (-
-                <DateFormatter date={message.received} intervalSince={previousMessage.received} />
-                )
+                <DateFormatter date={message.received} intervalSince={previousMessage.received} />)
               </i>
             ) : null}
           </div>
@@ -123,8 +122,10 @@ export const MessageHistory: React.FC<Props> = (props) => {
   )
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-  actions: { charts: bindActionCreators(chartActions, dispatch) },
-})
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: { charts: bindActionCreators(chartActions, dispatch) },
+  }
+}
 
 export default connect(null, mapDispatchToProps)(React.memo(MessageHistory))

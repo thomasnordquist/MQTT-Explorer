@@ -1,7 +1,5 @@
 import * as React from 'react'
-import {
-  Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography,
-} from '@mui/material'
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography } from '@mui/material'
 
 interface LoginDialogProps {
   open: boolean
@@ -27,7 +25,7 @@ export function LoginDialog(props: LoginDialogProps) {
     }
 
     const timer = setInterval(() => {
-      setCountdown((prev) => {
+      setCountdown(prev => {
         if (prev === undefined || prev <= 1) {
           return undefined
         }
@@ -69,11 +67,7 @@ export function LoginDialog(props: LoginDialogProps) {
         )}
         {countdown !== undefined && countdown > 0 && (
           <Typography color="warning" style={{ marginBottom: 16, fontWeight: 'bold' }}>
-            Please wait
-            {' '}
-            {countdown}
-            {' '}
-            seconds before trying again...
+            Please wait {countdown} seconds before trying again...
           </Typography>
         )}
         <TextField
@@ -83,7 +77,7 @@ export function LoginDialog(props: LoginDialogProps) {
           type="text"
           fullWidth
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={e => setUsername(e.target.value)}
           onKeyPress={handleKeyPress}
           disabled={isDisabled}
           required
@@ -95,7 +89,7 @@ export function LoginDialog(props: LoginDialogProps) {
           type="password"
           fullWidth
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={e => setPassword(e.target.value)}
           onKeyPress={handleKeyPress}
           disabled={isDisabled}
           required

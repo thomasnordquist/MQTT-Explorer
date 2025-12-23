@@ -52,7 +52,7 @@ const initialStateFactory = Record<GlobalStateInterface>({
 
 export const globalState: Reducer<Record<GlobalStateInterface>, GlobalAction> = (
   state = initialStateFactory(),
-  action,
+  action
 ): GlobalState => {
   trackEvent(action.type)
 
@@ -90,7 +90,7 @@ export const globalState: Reducer<Record<GlobalStateInterface>, GlobalAction> = 
       }
       return state.set(
         'confirmationRequests',
-        state.get('confirmationRequests').filter((a) => a !== action.confirmationRequest),
+        state.get('confirmationRequests').filter(a => a !== action.confirmationRequest)
       )
 
     default:

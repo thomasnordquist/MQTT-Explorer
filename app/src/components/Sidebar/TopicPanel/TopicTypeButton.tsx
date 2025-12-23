@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
+import * as q from '../../../../../backend/src/Model'
 import ClickAwayListener from '@mui/material/ClickAwayListener'
 import Grow from '@mui/material/Grow'
 import Button from '@mui/material/Button'
@@ -7,17 +8,16 @@ import Popper from '@mui/material/Popper'
 import MenuItem from '@mui/material/MenuItem'
 import MenuList from '@mui/material/MenuList'
 import WarningRounded from '@mui/icons-material/WarningRounded'
-import { Tooltip } from '@mui/material'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
 import { MessageDecoder, decoders } from '../../../decoders'
+import { Tooltip } from '@mui/material'
 
-export function TopicTypeButton(props: { node?: q.TreeNode<any> }) {
+export const TopicTypeButton = (props: { node?: q.TreeNode<any> }) => {
   const { node } = props
   if (!node || !node.message || !node.message.payload) {
     return null
   }
 
-  const options = decoders.flatMap((decoder) => decoder.formats.map((format) => [decoder, format] as const))
+  const options = decoders.flatMap(decoder => decoder.formats.map(format => [decoder, format] as const))
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const [open, setOpen] = React.useState(false)
@@ -31,7 +31,7 @@ export function TopicTypeButton(props: { node?: q.TreeNode<any> }) {
       node.viewModel.decoder = { decoder, format }
       setOpen(false)
     },
-    [node],
+    [node]
   )
 
   const handleToggle = useCallback(
@@ -41,9 +41,9 @@ export function TopicTypeButton(props: { node?: q.TreeNode<any> }) {
         return
       }
       setAnchorEl(event.currentTarget)
-      setOpen((prevOpen) => !prevOpen)
+      setOpen(prevOpen => !prevOpen)
     },
-    [open],
+    [open]
   )
 
   const handleClose = useCallback((event: any) => {
@@ -87,14 +87,14 @@ export function TopicTypeButton(props: { node?: q.TreeNode<any> }) {
 }
 
 function DecoderStatus({ node, decoder, format }: { node: q.TreeNode<any>; decoder: MessageDecoder; format: string }) {
-  const decoded = useMemo(() => node.message?.payload && decoder.decode(node.message?.payload, format), [node.message, decoder, format])
+  const decoded = useMemo(() => {
+    return node.message?.payload && decoder.decode(node.message?.payload, format)
+  }, [node.message, decoder, format])
 
   return decoded?.error ? (
     <Tooltip title={decoded.error}>
       <div>
-        {format}
-        {' '}
-        <WarningRounded />
+        {format} <WarningRounded />
       </div>
     </Tooltip>
   ) : (

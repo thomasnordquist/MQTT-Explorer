@@ -1,12 +1,12 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import Check from '@mui/icons-material/Check'
+import CustomIconButton from './CustomIconButton'
 
 import { SaveAlt } from '@mui/icons-material'
 import { bindActionCreators } from 'redux'
-import { rendererRpc, writeToFile } from 'MQTT-Explorer/events/events'
-import { makeSaveDialogRpc } from 'MQTT-Explorer/events/OpenDialogRequest'
-import CustomIconButton from './CustomIconButton'
+import { rendererRpc, writeToFile } from '../../../../events'
+import { makeSaveDialogRpc } from '../../../../events/OpenDialogRequest'
 
 import { globalActions } from '../../actions'
 
@@ -74,10 +74,12 @@ class Save extends React.PureComponent<Props, State> {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-  actions: {
-    global: bindActionCreators(globalActions, dispatch),
-  },
-})
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: {
+      global: bindActionCreators(globalActions, dispatch),
+    },
+  }
+}
 
 export default connect(undefined, mapDispatchToProps)(Save)

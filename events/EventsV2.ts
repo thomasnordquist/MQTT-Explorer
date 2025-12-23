@@ -6,15 +6,10 @@
  * you can now use: Events.connectionState(id)
  */
 
+import { Base64MessageDTO } from '../backend/src/Model/Base64Message'
+import { DataSourceState, MqttOptions } from '../backend/src/DataSource'
 import { UpdateInfo } from 'builder-util-runtime'
-import {
-  OpenDialogOptions, OpenDialogReturnValue, SaveDialogOptions, SaveDialogReturnValue,
-} from 'electron'
-import { Base64MessageDTO } from 'mqtt-explorer-backend/src/Model/Base64Message'
-import { DataSourceState, MqttOptions } from 'mqtt-explorer-backend/src/DataSource/DataSource'
 import { RpcEvent } from './EventSystem/Rpc'
-
-// Electron dialog types (re-exported for convenience)
 
 export type EventV2<MessageType> = {
   topic: string
@@ -66,6 +61,9 @@ export interface CertificateUploadResponse {
   name: string
   data: string // base64 encoded
 }
+
+// Electron dialog types (re-exported for convenience)
+import { OpenDialogOptions, OpenDialogReturnValue, SaveDialogOptions, SaveDialogReturnValue } from 'electron'
 
 export type OpenDialogOptionsV2 = OpenDialogOptions
 export type OpenDialogReturnValueV2 = OpenDialogReturnValue

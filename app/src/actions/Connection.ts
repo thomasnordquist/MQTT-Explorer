@@ -1,40 +1,39 @@
+import * as q from '../../../backend/src/Model'
 import * as url from 'url'
-import { DataSourceState, MqttOptions } from 'mqtt-explorer-backend/src/DataSource/DataSource'
-import { Dispatch } from 'redux'
-import {
-  addMqttConnectionEvent, makeConnectionStateEvent, removeConnection, rendererEvents,
-} from 'MQTT-Explorer/events/events'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
 import { Action, ActionTypes } from '../reducers/Connection'
 import { ActionTypes as SettingsActionTypes } from '../reducers/Settings'
 import { AppState } from '../reducers'
+import { DataSourceState, MqttOptions } from '../../../backend/src/DataSource'
+import { Dispatch } from 'redux'
 import { globalActions } from '.'
 import { resetStore as resetTreeStore, showTree } from './Tree'
 import { showError } from './Global'
 import { TopicViewModel } from '../model/TopicViewModel'
+import { addMqttConnectionEvent, makeConnectionStateEvent, removeConnection, rendererEvents } from '../../../events'
 
-export const connect = (options: MqttOptions, connectionId: string) => (dispatch: Dispatch<any>, getState: () => AppState) => {
-  dispatch(connecting(connectionId))
-  rendererEvents.emit(addMqttConnectionEvent, { options, id: connectionId })
-  const event = makeConnectionStateEvent(connectionId)
-  const host = url.parse(options.url).hostname
+export const connect =
+  (options: MqttOptions, connectionId: string) => (dispatch: Dispatch<any>, getState: () => AppState) => {
+    dispatch(connecting(connectionId))
+    rendererEvents.emit(addMqttConnectionEvent, { options, id: connectionId })
+    const event = makeConnectionStateEvent(connectionId)
+    const host = url.parse(options.url).hostname
 
-  rendererEvents.subscribe(event, (dataSourceState) => {
-    if (dataSourceState.connected) {
-      const didReconnect = Boolean(getState().connection.tree)
-      if (!didReconnect) {
-        const tree = new q.Tree<TopicViewModel>()
-        tree.updateWithConnection(rendererEvents, connectionId)
-        dispatch(showTree(tree))
-        dispatch(connected(tree, host!))
+    rendererEvents.subscribe(event, dataSourceState => {
+      if (dataSourceState.connected) {
+        const didReconnect = Boolean(getState().connection.tree)
+        if (!didReconnect) {
+          const tree = new q.Tree<TopicViewModel>()
+          tree.updateWithConnection(rendererEvents, connectionId)
+          dispatch(showTree(tree))
+          dispatch(connected(tree, host!))
+        }
+      } else if (dataSourceState.error) {
+        dispatch(showError(dataSourceState.error))
+        dispatch(disconnect())
       }
-    } else if (dataSourceState.error) {
-      dispatch(showError(dataSourceState.error))
-      dispatch(disconnect())
-    }
-    dispatch(updateHealth(dataSourceState))
-  })
-}
+      dispatch(updateHealth(dataSourceState))
+    })
+  }
 
 const updateHealth = (dataSourceState: DataSourceState) => (dispatch: Dispatch<any>, getState: () => AppState) => {
   let state
@@ -57,7 +56,7 @@ const updateHealth = (dataSourceState: DataSourceState) => (dispatch: Dispatch<a
 
 export const connected: (tree: q.Tree<TopicViewModel>, host: string) => Action = (
   tree: q.Tree<TopicViewModel>,
-  host: string,
+  host: string
 ) => ({
   tree,
   host,

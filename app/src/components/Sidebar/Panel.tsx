@@ -1,8 +1,6 @@
 import React from 'react'
 import ExpandMore from '@mui/icons-material/ExpandMore'
-import {
-  Accordion, AccordionDetails, AccordionSummary, Typography, Theme,
-} from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Typography, Theme } from '@mui/material'
 import { withStyles } from '@mui/styles'
 
 const styles = (theme: Theme) => ({
@@ -14,14 +12,14 @@ const styles = (theme: Theme) => ({
   },
 })
 
-function Panel(props: {
+const Panel = (props: {
   classes: any
   children: [React.ReactElement, React.ReactElement]
   disabled?: boolean
   detailsHidden?: boolean
-}) {
+}) => {
   return (
-    <Accordion defaultExpanded disabled={props.disabled}>
+    <Accordion defaultExpanded={true} disabled={props.disabled}>
       <AccordionSummary expandIcon={<ExpandMore />} className={props.classes.summary}>
         <Typography className={props.classes.heading}>{props.children[0]}</Typography>
       </AccordionSummary>
