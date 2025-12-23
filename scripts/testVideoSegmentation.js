@@ -12,6 +12,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const { execSync } = require('child_process');
 
 function testSceneGeneration() {
@@ -19,7 +20,7 @@ function testSceneGeneration() {
   
   // Check if compiled files exist
   const distPath = path.join(__dirname, '../dist/src/spec/SceneBuilder.js');
-  if (!require('fs').existsSync(distPath)) {
+  if (!fs.existsSync(distPath)) {
     console.log('  ⚠ Skipping test - TypeScript not compiled. Run "npx tsc" first.');
     return null;
   }
@@ -48,7 +49,7 @@ function testSceneGeneration() {
   builder.scenes = testScenes;
   
   // Save to JSON
-  const tempDir = fs.mkdtempSync('/tmp/test-workflow-');
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-workflow-'));
   const scenesPath = path.join(tempDir, 'scenes.json');
   fs.writeFileSync(scenesPath, JSON.stringify(builder.scenes, null, 2));
   
