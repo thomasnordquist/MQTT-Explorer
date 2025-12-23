@@ -19,7 +19,8 @@ import {
 import { shouldAutoUpdate, handleAutoUpdate } from './autoUpdater'
 import { registerCrashReporter } from './registerCrashReporter'
 import { makeOpenDialogRpc, makeSaveDialogRpc } from '../events/OpenDialogRequest'
-import { backendRpc, backendEvents, getAppVersion, writeToFile, readFromFile } from '../events'
+import { getAppVersion, writeToFile, readFromFile } from '../events'
+import { backendRpc, backendEvents } from '../events/EventSystem/EventBus'
 import { RpcEvents } from '../events/EventsV2'
 
 registerCrashReporter()
