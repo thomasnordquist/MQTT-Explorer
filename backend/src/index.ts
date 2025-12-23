@@ -9,10 +9,17 @@ import {
   makePublishEvent,
   removeConnection,
 } from '../../events'
+import {
+  Events,
+  MAX_MESSAGE_SIZE_DEFAULT,
+  MAX_MESSAGE_SIZE_20KB,
+  MAX_MESSAGE_SIZE_UNLIMITED,
+} from '../../events/EventsV2'
 import { EventBusInterface } from '../../events/EventSystem/EventBusInterface'
 
 export class ConnectionManager {
   private connections: { [s: string]: DataSource<any> } = {}
+  private maxMessageSize: number = MAX_MESSAGE_SIZE_DEFAULT
   private backendEvents: EventBusInterface
 
   constructor(backendEvents: EventBusInterface) {
@@ -47,8 +54,9 @@ export class ConnectionManager {
     const messageEvent = makeConnectionMessageEvent(connectionId)
     connection.onMessage((topic: string, payload: Buffer, packet: any) => {
       let buffer = payload
-      if (buffer.length > 20000) {
-        buffer = buffer.slice(0, 20000)
+      // Only apply limit if not unlimited
+      if (this.maxMessageSize !== MAX_MESSAGE_SIZE_UNLIMITED && buffer.length > this.maxMessageSize) {
+        buffer = buffer.slice(0, this.maxMessageSize)
       }
 
       let decoded_payload = null
@@ -68,6 +76,14 @@ export class ConnectionManager {
     this.backendEvents.subscribe(addMqttConnectionEvent, this.handleConnectionRequest)
     this.backendEvents.subscribe(removeConnection, (connectionId: string) => {
       this.removeConnection(connectionId)
+    })
+    this.backendEvents.subscribe(Events.setMaxMessageSize, (maxMessageSize: number) => {
+      // Validate: must be an integer >= 20KB or unlimited (-1)
+      if (typeof maxMessageSize === 'number' && Number.isInteger(maxMessageSize)) {
+        if (maxMessageSize === MAX_MESSAGE_SIZE_UNLIMITED || maxMessageSize >= MAX_MESSAGE_SIZE_20KB) {
+          this.maxMessageSize = maxMessageSize
+        }
+      }
     })
   }
 

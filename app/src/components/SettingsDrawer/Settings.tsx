@@ -11,6 +11,13 @@ import { shell } from 'electron'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
 import { TopicOrder } from '../../reducers/Settings'
+import {
+  MAX_MESSAGE_SIZE_20KB,
+  MAX_MESSAGE_SIZE_100KB,
+  MAX_MESSAGE_SIZE_1MB,
+  MAX_MESSAGE_SIZE_5MB,
+  MAX_MESSAGE_SIZE_UNLIMITED,
+} from '../../../../events/EventsV2'
 
 import {
   Divider,
@@ -90,6 +97,7 @@ interface Props {
   topicOrder: TopicOrder
   visible: boolean
   theme: 'light' | 'dark'
+  maxMessageSize: number
 }
 
 class Settings extends React.PureComponent<Props, {}> {
@@ -206,6 +214,47 @@ class Settings extends React.PureComponent<Props, {}> {
     this.props.actions.settings.setTopicOrder(e.target.value as TopicOrder)
   }
 
+  private renderMaxMessageSize() {
+    const { classes, maxMessageSize } = this.props
+
+    const formatSize = (size: number) => {
+      if (size === MAX_MESSAGE_SIZE_UNLIMITED) {
+        return 'Unlimited'
+      } else if (size >= 1000000) {
+        return `${size / 1000000} MB`
+      } else if (size >= 1000) {
+        return `${size / 1000} KB`
+      }
+      return `${size} bytes`
+    }
+
+    return (
+      <div style={{ padding: '8px', display: 'flex' }}>
+        <InputLabel htmlFor="max-message-size" style={{ flex: '1', marginTop: '8px' }}>
+          Max Message Size
+        </InputLabel>
+        <Select
+          value={maxMessageSize}
+          onChange={this.onChangeMaxMessageSize}
+          input={<Input name="max-message-size" id="max-message-size-label-placeholder" />}
+          name="max-message-size"
+          className={classes.input}
+          style={{ flex: '1' }}
+        >
+          <MenuItem value={MAX_MESSAGE_SIZE_20KB}>{formatSize(MAX_MESSAGE_SIZE_20KB)}</MenuItem>
+          <MenuItem value={MAX_MESSAGE_SIZE_100KB}>{formatSize(MAX_MESSAGE_SIZE_100KB)}</MenuItem>
+          <MenuItem value={MAX_MESSAGE_SIZE_1MB}>{formatSize(MAX_MESSAGE_SIZE_1MB)}</MenuItem>
+          <MenuItem value={MAX_MESSAGE_SIZE_5MB}>{formatSize(MAX_MESSAGE_SIZE_5MB)}</MenuItem>
+          <MenuItem value={MAX_MESSAGE_SIZE_UNLIMITED}>{formatSize(MAX_MESSAGE_SIZE_UNLIMITED)}</MenuItem>
+        </Select>
+      </div>
+    )
+  }
+
+  private onChangeMaxMessageSize = (e: React.ChangeEvent<{ value: unknown }>) => {
+    this.props.actions.settings.setMaxMessageSize(parseInt(String(e.target.value), 10))
+  }
+
   public render() {
     const { classes, actions, visible } = this.props
     return (
@@ -223,6 +272,7 @@ class Settings extends React.PureComponent<Props, {}> {
           {this.renderAutoExpand()}
           {this.renderNodeOrder()}
           <TimeLocale />
+          {this.renderMaxMessageSize()}
           {this.renderHighlightTopicUpdates()}
           {this.selectTopicsOnMouseOver()}
           {this.toggleTheme()}
@@ -246,6 +296,7 @@ const mapStateToProps = (state: AppState) => {
     highlightTopicUpdates: state.settings.get('highlightTopicUpdates'),
     selectTopicWithMouseOver: state.settings.get('selectTopicWithMouseOver'),
     theme: state.settings.get('theme'),
+    maxMessageSize: state.settings.get('maxMessageSize'),
   }
 }
 
