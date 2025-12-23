@@ -6,8 +6,8 @@
   "scripts": {
     "build": "webpack --mode production",
     "dev": "node_modules/.bin/webpack-dev-server --mode development --progress",
-    "test": "mocha --require tsx --require source-map-support/register --recursive src/*/**/*.spec.ts",
-    "mochatest": "mocha --require tsx --require source-map-support/register --recursive src/*/**/*.spec.ts"
+    "test": "mocha --require tsx --require source-map-support/register --recursive 'src/*/**/*.spec.{ts,tsx}'",
+    "mochatest": "mocha --require tsx --require source-map-support/register --recursive 'src/*/**/*.spec.{ts,tsx}'"
   },
   "engines": {
     "node": ">=20"
@@ -21,7 +21,12 @@
     "@mui/lab": "^7.0.1-beta.20",
     "@mui/material": "^7.3.6",
     "@mui/styles": "^6.4.8",
+    "@react-spring/web": "^9.7.5",
     "@types/react-transition-group": "^4.4.11",
+    "@visx/axis": "^3.10.1",
+    "@visx/grid": "^3.5.0",
+    "@visx/tooltip": "^3.3.0",
+    "@visx/xychart": "^3.10.2",
     "ace-builds": "^1.4.11",
     "axios": "^1.13.2",
     "compare-versions": "^6.1.1",
@@ -51,7 +56,6 @@
     "react-resize-detector": "^11.0.1",
     "react-split-pane": "^0.1.92",
     "react-transition-group": "^4.4.5",
-    "react-vis": "^1.12.1",
     "redux": "^5.0.1",
     "redux-batched-actions": "^0.5.0",
     "redux-thunk": "^3.1.0",
@@ -62,6 +66,10 @@
   },
   "devDependencies": {
     "@babel/runtime": "^7.28.4",
+    "@reduxjs/toolkit": "2.5.0",
+    "@testing-library/dom": "10.4.0",
+    "@testing-library/react": "16.1.0",
+    "@testing-library/user-event": "14.5.2",
     "@types/d3": "^7.4.3",
     "@types/diff": "^7.0.0",
     "@types/get-value": "^3.0.5",
@@ -81,6 +89,8 @@
     "css-loader": "^7.1.2",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.6.3",
+    "jsdom": "25.0.1",
+    "jsdom-global": "3.0.2",
     "lodash": "^4.17.21",
     "mocha": "^10.8.2",
     "moment": "^2.30.1",

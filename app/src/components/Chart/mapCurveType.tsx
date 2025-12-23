@@ -1,17 +1,19 @@
 import { PlotCurveTypes } from '../../reducers/Charts'
+import * as d3Shape from 'd3-shape'
+
 export function mapCurveType(type: PlotCurveTypes | undefined) {
   switch (type) {
     case 'curve':
-      return 'curveMonotoneX'
+      return d3Shape.curveMonotoneX
     case 'linear':
-      return 'curveLinear'
+      return d3Shape.curveLinear
     case 'cubic_basis_spline':
-      return 'curveBasis'
+      return d3Shape.curveBasis
     case 'step_after':
-      return 'curveStepAfter'
+      return d3Shape.curveStepAfter
     case 'step_before':
-      return 'curveStepBefore'
+      return d3Shape.curveStepBefore
     default:
-      return 'curveMonotoneX'
+      return d3Shape.curveMonotoneX
   }
 }
