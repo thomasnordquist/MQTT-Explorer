@@ -102,7 +102,7 @@ jobs:
           AWS_BUCKET: ${{ vars.AWS_BUCKET }}
           FILENAME: ${{ steps.filename.outputs.filename }}
         run: |
-          FILE_URL="https://${AWS_BUCKET}.s3.eu-central-1.amazonaws.com/${FILENAME}"
+          FILE_URL="https://${AWS_BUCKET}.s3.eu-central-1.amazonaws.com/artifacts/${FILENAME}"
           echo "file-url=${FILE_URL}" >> $GITHUB_OUTPUT
           echo "Uploaded to: ${FILE_URL}"
       - name: Show URL
