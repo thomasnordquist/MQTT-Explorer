@@ -147,7 +147,7 @@ In CI environments, tests run in isolated containers with all dependencies pre-i
    - Verify: Both ThemeProvider and LegacyThemeProvider in `app/src/index.tsx`
    
    **Expected console warnings (non-fatal):**
-   - React 18 type warnings with Material-UI v5 components (dozens of "Failed prop type" warnings)
+   - React type warnings with Material-UI components (dozens of "Failed prop type" warnings)
    - `TypeError: Cannot read properties of undefined (reading 'on')` from IpcRendererEventBus - this is expected in browser mode as there's no Electron IPC
    - MUI locale warnings for `en-US` - expected, app uses available locales
    - `componentWillReceiveProps` deprecation warnings - from legacy TreeComponent
@@ -267,7 +267,7 @@ When debugging, be aware that:
 When modifying or creating UI components, follow the styling patterns documented in <a>STYLING.md</a>.
 
 **Key points for AI agents:**
-- Use Material-UI (MUI) v7.3.6 components with `withStyles` HOC for styling
+- Use Material-UI (MUI) components with `withStyles` HOC for styling
 - Access theme colors via `theme.palette.*`, spacing via `theme.spacing()`, typography via `theme.typography.*`
 - Support both light and dark modes with theme-conditional styling
 - Import Material-UI colors: `import { blueGrey, amber, green, red } from '@mui/material/colors'`
