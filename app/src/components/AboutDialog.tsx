@@ -2,6 +2,9 @@ import React from 'react'
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Link } from '@mui/material'
 import { rendererRpc, getAppVersion } from '../../../events'
 
+// Fallback version if RPC call fails (e.g., in browser mode during initialization)
+const FALLBACK_VERSION = '0.4.0-beta.5'
+
 interface AboutDialogProps {
   open: boolean
   onClose: () => void
@@ -20,7 +23,7 @@ interface AboutDialogProps {
  * Attribution-NoDerivatives 4.0 International License.
  */
 export function AboutDialog(props: AboutDialogProps) {
-  const [version, setVersion] = React.useState<string>('0.4.0-beta.5')
+  const [version, setVersion] = React.useState<string>(FALLBACK_VERSION)
 
   React.useEffect(() => {
     // Fetch version from backend
