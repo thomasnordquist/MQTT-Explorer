@@ -7,6 +7,18 @@ interface AboutDialogProps {
   onClose: () => void
 }
 
+/**
+ * About Dialog Component
+ * 
+ * This component displays application information including version, author, and license.
+ * 
+ * LICENSE NOTICE (CC-BY-ND-4.0):
+ * This component must retain the following attribution:
+ * - Author: Thomas Nordquist
+ * - License: CC-BY-ND-4.0
+ * Removing or modifying this attribution violates the Creative Commons 
+ * Attribution-NoDerivatives 4.0 International License.
+ */
 export function AboutDialog(props: AboutDialogProps) {
   const [version, setVersion] = React.useState<string>('0.4.0-beta.5')
 
@@ -28,10 +40,10 @@ export function AboutDialog(props: AboutDialogProps) {
         <Typography variant="body1" gutterBottom>
           <strong>Version:</strong> {version}
         </Typography>
-        <Typography variant="body1" gutterBottom>
+        <Typography variant="body1" gutterBottom data-testid="about-author">
           <strong>Author:</strong> Thomas Nordquist
         </Typography>
-        <Typography variant="body1" gutterBottom>
+        <Typography variant="body1" gutterBottom data-testid="about-license">
           <strong>License:</strong> CC-BY-ND-4.0
         </Typography>
         <Typography variant="body1" gutterBottom>
