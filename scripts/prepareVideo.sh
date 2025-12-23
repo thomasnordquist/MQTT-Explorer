@@ -25,3 +25,12 @@ rm ffmpeg_info palette*.png qrawvideorgb24.yuv
 
 mv app.mp4 ui-test.mp4
 mv app720.gif ui-test.gif
+
+# Cut video into segments based on scenes.json
+echo "Cutting video into segments..."
+if [ -f "scenes.json" ]; then
+  ./scripts/cutVideoSegments.sh
+else
+  echo "Warning: scenes.json not found, skipping segment creation"
+fi
+
