@@ -108,7 +108,8 @@ jobs:
           aws s3api put-object \
             --bucket ${AWS_BUCKET} \
             --key artifacts/${FILENAME} \
-            --body ./ui-test.gif
+            --body ./ui-test.gif \
+            --content-type image/gif
       - name: Generate file URL
         id: fileurl
         env:
