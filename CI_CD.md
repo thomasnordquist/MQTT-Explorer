@@ -75,7 +75,7 @@ Tests the traditional Electron desktop application:
   7. Display test results in GitHub summary
 
 **Artifacts**: 
-- UI test video (GIF format) uploaded to S3
+- UI test video (GIF format) uploaded to S3 using AWS CLI
 - Video is tagged with `expiration=90days` for automatic lifecycle deletion
 - Video is posted to the PR thread as an embedded image
 - Videos expire after 90 days via S3 lifecycle policy
@@ -262,7 +262,7 @@ aws s3api get-bucket-lifecycle-configuration --bucket YOUR_BUCKET_NAME
   - `Source=github-actions` - Identifies source of upload
   - `Type=pr-demo-video` - Categorizes the object type
 - **S3 lifecycle rule**: Automatically deletes objects tagged with `expiration=90days` after 90 days
-- **Upload mechanism**: Uses `ramonpaolo/action-upload-s3@main` GitHub Action with object tagging support
+- **Upload mechanism**: AWS CLI v2 is installed directly, authentication is configured via `aws-actions/configure-aws-credentials@v4` GitHub Action, then `aws s3api put-object` is used with object tagging support
 - **gh-pages video**: `video.mp4` in gh-pages branch is served from GitHub Pages, not S3, so it persists indefinitely
 
 #### Required AWS Credentials
@@ -274,9 +274,27 @@ The workflow requires the following secrets/variables:
 - AWS region: `eu-central-1` (hardcoded in workflow)
 
 The S3 bucket must have:
-- Public read access enabled for uploaded objects
+- **Bucket policy for public read access**: Since ACLs are disabled (BucketOwnerEnforced), a bucket policy must grant public read access to uploaded objects
 - Object tagging enabled
 - Lifecycle policy configured as described above
+
+**Example S3 Bucket Policy for Public Read Access**:
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::YOUR_BUCKET_NAME/*"
+    }
+  ]
+}
+```
+
+The workflow uses AWS CLI v2 installed directly and `aws-actions/configure-aws-credentials@v4` action for secure credential management.
 
 ## Troubleshooting
 

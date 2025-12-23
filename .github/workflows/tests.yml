@@ -73,18 +73,30 @@ jobs:
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
           FILENAME="pr-${{ github.event.pull_request.number }}-${TIMESTAMP}.gif"
           echo "filename=${FILENAME}" >> $GITHUB_OUTPUT
+      - name: Install AWS CLI v2
+        run: |
+          apt-get update && apt-get install -y unzip
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip -q awscliv2.zip
+          ./aws/install
+          rm -rf aws awscliv2.zip
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ vars.AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: 'eu-central-1'
       - name: Upload to S3 with expiration tag
         id: upload
-        uses: ramonpaolo/action-upload-s3@main
-        with:
-          AWS_BUCKET_NAME: ${{ vars.AWS_BUCKET }}
-          AWS_REGION: 'eu-central-1'
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_ACCESS_KEY_ID: ${{ vars.AWS_KEY_ID }}
-          local_path_upload: './ui-test.gif'
-          bucket_path_upload: '/'
-          name_to_save_on_s3: ${{ steps.filename.outputs.filename }}
-          tags: 'expiration=90days&Source=github-actions&Type=pr-demo-video'
+        env:
+          AWS_BUCKET: ${{ vars.AWS_BUCKET }}
+          FILENAME: ${{ steps.filename.outputs.filename }}
+        run: |
+          aws s3api put-object \
+            --bucket ${AWS_BUCKET} \
+            --key ${FILENAME} \
+            --body ./ui-test.gif \
+            --tagging "expiration=90days&Source=github-actions&Type=pr-demo-video"
       - name: Generate file URL
         id: fileurl
         env:
