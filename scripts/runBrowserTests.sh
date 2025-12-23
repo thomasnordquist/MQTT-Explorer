@@ -2,15 +2,15 @@
 # Browser Mode Test Runner
 # 
 # This script runs UI tests against the browser mode server (instead of Electron).
-# It starts a local mosquitto MQTT broker and the MQTT Explorer server, then runs
-# the test suite using Playwright with a headless Chrome browser.
+# It expects a mosquitto MQTT broker to be running (via service or manually started).
+# The broker address is configured via environment variables.
 #
 # Environment Variables:
 #   MQTT_EXPLORER_USERNAME - Username for browser authentication (default: test)
 #   MQTT_EXPLORER_PASSWORD - Password for browser authentication (default: test123)
 #   PORT - Server port (default: 3000)
 #   BROWSER_MODE_URL - URL for browser tests (set automatically)
-#   MQTT_BROKER_HOST - MQTT broker host for tests (default: 127.0.0.1)
+#   MQTT_BROKER_HOST - MQTT broker host for tests (required, default: 127.0.0.1)
 #   MQTT_BROKER_PORT - MQTT broker port for tests (default: 1883)
 #
 set -e
@@ -19,11 +19,6 @@ function finish {
   set +e
   echo "Exiting, cleaning up.."
 
-  if [[ ! -z "$PID_MOSQUITTO" ]]; then
-    echo "Stopping mosquitto ($PID_MOSQUITTO).."
-    kill "$PID_MOSQUITTO" || echo "Already stopped"
-  fi
-
   if [[ ! -z "$PID_SERVER" ]]; then
     echo "Stopping server ($PID_SERVER).."
     kill "$PID_SERVER" || echo "Already stopped"
@@ -31,11 +26,6 @@ function finish {
 }
 
 trap finish EXIT
-
-# Start mqtt broker
-mosquitto &
-export PID_MOSQUITTO=$!
-sleep 1
 
 # Set credentials for browser authentication (tests will use these to login)
 export MQTT_EXPLORER_USERNAME=${MQTT_EXPLORER_USERNAME:-test}
@@ -62,8 +52,10 @@ done
 
 # Run browser tests
 export BROWSER_MODE_URL="http://localhost:${PORT}"
-export MQTT_BROKER_HOST="127.0.0.1"
-export MQTT_BROKER_PORT="1883"
+export MQTT_BROKER_HOST="${MQTT_BROKER_HOST:-127.0.0.1}"
+export MQTT_BROKER_PORT="${MQTT_BROKER_PORT:-1883}"
+
+echo "Using MQTT broker at $MQTT_BROKER_HOST:$MQTT_BROKER_PORT"
 
 yarn test:browser
 TEST_EXIT_CODE=$?
