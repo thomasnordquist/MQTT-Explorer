@@ -31,8 +31,8 @@ jobs:
       id-token: write
 
     env:
-      MQTT_BROKER_HOST: localhost
-      MQTT_BROKER_PORT: 1883
+      TESTS_MQTT_BROKER_HOST: localhost
+      TESTS_MQTT_BROKER_PORT: 1883
 
     services:
       # MQTT broker for testing

@@ -29,8 +29,8 @@ jobs:
         - ./:/app
       options: --user root
     env:
-      MQTT_BROKER_HOST: mosquitto
-      MQTT_BROKER_PORT: 1883
+      TESTS_MQTT_BROKER_HOST: mosquitto
+      TESTS_MQTT_BROKER_PORT: 1883
     services:
       mosquitto:
         image: eclipse-mosquitto:2
@@ -142,8 +142,8 @@ jobs:
   test-browser:
     runs-on: ubuntu-latest
     env:
-      MQTT_BROKER_HOST: localhost
-      MQTT_BROKER_PORT: 1883
+      TESTS_MQTT_BROKER_HOST: localhost
+      TESTS_MQTT_BROKER_PORT: 1883
     services:
       mosquitto:
         image: eclipse-mosquitto:2
