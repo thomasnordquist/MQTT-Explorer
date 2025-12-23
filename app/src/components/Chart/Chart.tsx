@@ -107,8 +107,22 @@ export default memo((props: Props) => {
             onPointerOut={onMouseLeave}
           >
             <Grid rows={true} columns={false} stroke={theme.palette.divider} strokeOpacity={0.3} />
-            <Axis orientation="left" tickFormat={formatYAxis} stroke={theme.palette.text.secondary} tickStroke={theme.palette.text.secondary} />
-            <Axis orientation="bottom" tickFormat={formatXAxis} stroke={theme.palette.text.secondary} tickStroke={theme.palette.text.secondary} />
+            <Axis 
+              orientation="left" 
+              numTicks={5}
+              tickFormat={formatYAxis} 
+              stroke={theme.palette.text.secondary} 
+              tickStroke={theme.palette.text.secondary}
+              tickLabelProps={() => ({ fontSize: 11, fill: theme.palette.text.secondary })}
+            />
+            <Axis 
+              orientation="bottom" 
+              numTicks={4}
+              tickFormat={formatXAxis} 
+              stroke={theme.palette.text.secondary} 
+              tickStroke={theme.palette.text.secondary}
+              tickLabelProps={() => ({ fontSize: 10, fill: theme.palette.text.secondary, textAnchor: 'middle' })}
+            />
             <LineSeries
               dataKey="line"
               data={hasData ? data : dummyData}
