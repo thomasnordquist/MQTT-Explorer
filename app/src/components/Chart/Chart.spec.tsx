@@ -69,6 +69,45 @@ describe('Chart Component', () => {
       expect(circles.length).to.be.greaterThan(0)
     })
 
+    it('should render exact number of data points matching data length', () => {
+      const dataLength = 5
+      const data = createMockChartData(dataLength)
+      const { container } = renderWithProviders(<Chart data={data} />, { withTheme: true })
+      
+      // Each data point should render as a circle
+      const circles = container.querySelectorAll('circle')
+      expect(circles.length).to.equal(dataLength, `Expected ${dataLength} circles for ${dataLength} data points`)
+      
+      // Verify each circle has proper attributes
+      circles.forEach((circle, index) => {
+        expect(circle.getAttribute('cx')).to.exist
+        expect(circle.getAttribute('cy')).to.exist
+        expect(circle.getAttribute('r')).to.equal('3')
+        expect(circle.getAttribute('fill')).to.exist
+      })
+    })
+
+    it('should position data points with valid coordinates', () => {
+      const data = createMockChartData(3)
+      const { container } = renderWithProviders(<Chart data={data} />, { withTheme: true })
+      
+      const circles = container.querySelectorAll('circle')
+      circles.forEach((circle) => {
+        const cx = parseFloat(circle.getAttribute('cx') || '0')
+        const cy = parseFloat(circle.getAttribute('cy') || '0')
+        
+        // Coordinates should be valid numbers
+        expect(cx).to.be.a('number')
+        expect(cy).to.be.a('number')
+        expect(isNaN(cx)).to.be.false
+        expect(isNaN(cy)).to.be.false
+        
+        // Coordinates should be within chart bounds (positive values)
+        expect(cx).to.be.greaterThan(0)
+        expect(cy).to.be.greaterThan(0)
+      })
+    })
+
     it('should render line connecting data points', () => {
       const data = createMockChartData(5)
       const { container } = renderWithProviders(<Chart data={data} />, { withTheme: true })
@@ -84,7 +123,7 @@ describe('Chart Component', () => {
       
       expect(container.querySelector('svg')).to.exist
       const circles = container.querySelectorAll('circle')
-      expect(circles.length).to.be.greaterThan(0)
+      expect(circles.length).to.equal(1, 'Single data point should render as one circle')
     })
 
     it('should handle large datasets', () => {
@@ -92,6 +131,8 @@ describe('Chart Component', () => {
       const { container } = renderWithProviders(<Chart data={data} />, { withTheme: true })
       
       expect(container.querySelector('svg')).to.exist
+      const circles = container.querySelectorAll('circle')
+      expect(circles.length).to.equal(100, '100 data points should render as 100 circles')
     })
   })
 
@@ -193,6 +234,44 @@ describe('Chart Component', () => {
       // Axis typically contains text elements for labels
       const texts = container.querySelectorAll('text')
       expect(texts.length).to.be.greaterThan(0)
+    })
+
+    it('should render X-axis with time labels', () => {
+      const data = createMockChartData(5)
+      const { container } = renderWithProviders(<Chart data={data} />, { withTheme: true })
+      
+      // X-axis should be present with text labels
+      const svg = container.querySelector('svg')
+      expect(svg).to.exist
+      
+      // X-axis has text labels for timestamps
+      const texts = container.querySelectorAll('text')
+      expect(texts.length).to.be.greaterThan(0, 'X-axis and Y-axis should have text labels')
+      
+      // At least one text element should contain time format (e.g., contains ":")
+      let hasTimeFormat = false
+      texts.forEach((text) => {
+        if (text.textContent && text.textContent.includes(':')) {
+          hasTimeFormat = true
+        }
+      })
+      expect(hasTimeFormat).to.be.true
+    })
+
+    it('should render both X and Y axes', () => {
+      const data = createMockChartData(5)
+      const { container } = renderWithProviders(<Chart data={data} />, { withTheme: true })
+      
+      const svg = container.querySelector('svg')
+      expect(svg).to.exist
+      
+      // Both axes should render tick marks (lines)
+      const lines = container.querySelectorAll('line')
+      expect(lines.length).to.be.greaterThan(0, 'Axes should render tick marks')
+      
+      // Both axes should have labels (text)
+      const texts = container.querySelectorAll('text')
+      expect(texts.length).to.be.greaterThan(2, 'Both axes should have multiple labels')
     })
 
     it('should render grid lines', () => {
