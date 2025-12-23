@@ -138,7 +138,6 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@electron/node-gyp": "10.2.0-electron.2",
     "about-window": "^1.12.1",
     "axios": "^1.13.2",
     "bcryptjs": "^3.0.3",
