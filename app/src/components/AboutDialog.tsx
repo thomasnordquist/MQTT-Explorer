@@ -1,6 +1,18 @@
 import React from 'react'
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Link } from '@mui/material'
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Typography,
+  Link,
+  Avatar,
+  Box,
+  Divider,
+} from '@mui/material'
 import { rendererRpc, getAppVersion } from '../../../events'
+import FavoriteIcon from '@mui/icons-material/Favorite'
 
 // Fallback version if RPC call fails (e.g., in browser mode during initialization)
 const FALLBACK_VERSION = '0.4.0-beta.5'
@@ -43,15 +55,53 @@ export function AboutDialog(props: AboutDialogProps) {
         <Typography variant="body1" gutterBottom>
           <strong>Version:</strong> {version}
         </Typography>
-        <Typography variant="body1" gutterBottom data-testid="about-author">
-          <strong>Author:</strong> Thomas Nordquist
-        </Typography>
         <Typography variant="body1" gutterBottom data-testid="about-license">
           <strong>License:</strong> CC-BY-ND-4.0
         </Typography>
         <Typography variant="body1" gutterBottom>
           <strong>Description:</strong> Explore your message queues
         </Typography>
+        
+        <Divider sx={{ my: 2 }} />
+        
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }} data-testid="about-author">
+          <Avatar
+            src="https://github.com/thomasnordquist.png"
+            alt="Thomas Nordquist"
+            sx={{ width: 56, height: 56 }}
+          />
+          <Box>
+            <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+              Thomas Nordquist
+            </Typography>
+            <Link
+              href="https://github.com/thomasnordquist"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{ display: 'block', fontSize: '0.875rem' }}
+            >
+              @thomasnordquist
+            </Link>
+            <Link
+              href="https://paypal.me/ThomasNordquist"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 0.5,
+                fontSize: '0.875rem',
+                mt: 0.5,
+              }}
+            >
+              <FavoriteIcon sx={{ fontSize: '1rem', color: 'error.main' }} />
+              Support via PayPal
+            </Link>
+          </Box>
+        </Box>
+
+        <Divider sx={{ my: 2 }} />
+
         <Typography variant="body1" gutterBottom>
           <strong>Homepage:</strong>{' '}
           <Link href="https://thomasnordquist.github.io/MQTT-Explorer/" target="_blank" rel="noopener noreferrer">
