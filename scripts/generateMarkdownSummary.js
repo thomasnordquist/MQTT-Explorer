@@ -21,22 +21,21 @@ function sanitizeName(name) {
 // Generate markdown
 let markdown = '## 🎬 Demo Video Generated\n\n';
 markdown += `### Full Video\n\n`;
-markdown += `![Demo Video](${baseUrl}/ui-test.gif)\n\n`;
-markdown += `[📥 Download Full Video (MP4)](${baseUrl}/ui-test.mp4)\n\n`;
+markdown += `[📥 Download Full Video (MP4)](${baseUrl}/ui-test.mp4) | [GIF](${baseUrl}/ui-test.gif)\n\n`;
 markdown += `---\n\n`;
 markdown += `### 📑 Video Segments\n\n`;
 markdown += `<details>\n`;
-markdown += `<summary>Click to expand segment links</summary>\n\n`;
+markdown += `<summary>Click to expand segments</summary>\n\n`;
 
 scenes.forEach((scene, index) => {
   const safeName = sanitizeName(scene.name);
-  const segmentFile = `segment-${String(index + 1).padStart(2, '0')}-${safeName}.mp4`;
+  const segmentFile = `segment-${String(index + 1).padStart(2, '0')}-${safeName}.gif`;
   const title = scene.title || scene.name;
   const duration = (scene.duration / 1000).toFixed(1);
   
   markdown += `<details>\n`;
   markdown += `<summary><strong>${index + 1}. ${title}</strong> (${duration}s)</summary>\n\n`;
-  markdown += `[📥 Download Segment](${baseUrl}/${segmentFile})\n\n`;
+  markdown += `![${title}](${baseUrl}/${segmentFile})\n\n`;
   markdown += `</details>\n\n`;
 });
 

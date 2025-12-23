@@ -65,10 +65,10 @@ function testCuttingLogic(tempDir, scenes) {
   const videoPath = path.join(tempDir, 'ui-test.mp4');
   fs.writeFileSync(videoPath, 'dummy video content');
   
-  // Process scenes like the cutting script would
+  // Process scenes like the cutting script would (now creates GIFs)
   const expectedSegments = [];
   scenes.forEach((scene, index) => {
-    const outputFile = `segment-${String(index + 1).padStart(2, '0')}-${scene.name}.mp4`;
+    const outputFile = `segment-${String(index + 1).padStart(2, '0')}-${scene.name}.gif`;
     const startTime = scene.start / 1000;
     const duration = scene.duration / 1000;
     
@@ -84,7 +84,7 @@ function testCuttingLogic(tempDir, scenes) {
   
   // Verify segment naming
   expectedSegments.forEach(seg => {
-    if (!seg.filename.match(/^segment-\d{2}-.+\.mp4$/)) {
+    if (!seg.filename.match(/^segment-\d{2}-.+\.gif$/)) {
       throw new Error(`Invalid segment filename: ${seg.filename}`);
     }
   });

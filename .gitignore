@@ -28,6 +28,7 @@ app/.webpack-cache
 # Demo video artifacts
 scenes.json
 segment-*.mp4
+segment-*.gif
 ui-test.mp4
 ui-test.gif
 app.mp4

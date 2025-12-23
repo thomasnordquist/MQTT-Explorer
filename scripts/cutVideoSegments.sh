@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Read scenes.json and cut video into segments
+# Read scenes.json and cut video into segments as GIFs
 if [ ! -f "scenes.json" ]; then
   echo "scenes.json not found"
   exit 1
@@ -12,16 +12,18 @@ if [ ! -f "ui-test.mp4" ]; then
   exit 1
 fi
 
-echo "Cutting video into segments based on scenes.json..."
+echo "Cutting video into GIF segments based on scenes.json..."
 
-# Parse scenes.json and cut video segments
+GIF_SCALE="1024"
+
+# Parse scenes.json and cut video segments as GIFs
 node -e "
 const fs = require('fs');
 const { spawn } = require('child_process');
 
 const scenes = JSON.parse(fs.readFileSync('scenes.json', 'utf8'));
 
-console.log('Creating video segments...');
+console.log('Creating GIF segments...');
 
 // Sanitize scene name to prevent path traversal and command injection
 function sanitizeName(name) {
@@ -29,30 +31,62 @@ function sanitizeName(name) {
   return name.replace(/[^a-zA-Z0-9_-]/g, '-');
 }
 
-async function cutSegment(scene, index) {
+async function cutSegmentAsGif(scene, index) {
   const safeName = sanitizeName(scene.name);
-  const outputFile = \`segment-\${String(index + 1).padStart(2, '0')}-\${safeName}.mp4\`;
+  const segmentName = \`segment-\${String(index + 1).padStart(2, '0')}-\${safeName}\`;
+  const paletteFile = \`\${segmentName}-palette.png\`;
+  const outputFile = \`\${segmentName}.gif\`;
   const startTime = scene.start / 1000; // Convert ms to seconds
   const duration = scene.duration / 1000; // Convert ms to seconds
   
   console.log(\`Creating \${outputFile} (start: \${startTime}s, duration: \${duration}s)\`);
   
-  return new Promise((resolve, reject) => {
+  // Step 1: Generate palette for this segment
+  await new Promise((resolve, reject) => {
     const ffmpeg = spawn('ffmpeg', [
       '-y',
-      '-i', 'ui-test.mp4',
       '-ss', startTime.toString(),
       '-t', duration.toString(),
-      '-c', 'copy',
-      outputFile
+      '-i', 'ui-test.mp4',
+      '-vf', 'fps=10,scale=${process.env.GIF_SCALE || 1024}:-1:flags=lanczos,palettegen',
+      paletteFile
     ]);
     
     ffmpeg.on('close', (code) => {
       if (code === 0) {
         resolve();
       } else {
+        console.error(\`Failed to create palette for \${outputFile}\`);
+        reject(new Error(\`ffmpeg palette generation exited with code \${code}\`));
+      }
+    });
+  });
+  
+  // Step 2: Create GIF using the palette
+  await new Promise((resolve, reject) => {
+    const ffmpeg = spawn('ffmpeg', [
+      '-y',
+      '-ss', startTime.toString(),
+      '-t', duration.toString(),
+      '-i', 'ui-test.mp4',
+      '-i', paletteFile,
+      '-filter_complex', 'fps=10,scale=${process.env.GIF_SCALE || 1024}:-1:flags=lanczos[x];[x][1:v]paletteuse',
+      outputFile
+    ]);
+    
+    ffmpeg.on('close', (code) => {
+      // Clean up palette file
+      try {
+        fs.unlinkSync(paletteFile);
+      } catch (e) {
+        // Ignore cleanup errors
+      }
+      
+      if (code === 0) {
+        resolve();
+      } else {
         console.error(\`Failed to create \${outputFile}\`);
-        reject(new Error(\`ffmpeg exited with code \${code}\`));
+        reject(new Error(\`ffmpeg GIF creation exited with code \${code}\`));
       }
     });
   });
@@ -60,9 +94,9 @@ async function cutSegment(scene, index) {
 
 (async () => {
   for (let i = 0; i < scenes.length; i++) {
-    await cutSegment(scenes[i], i);
+    await cutSegmentAsGif(scenes[i], i);
   }
-  console.log('All segments created successfully');
+  console.log('All GIF segments created successfully');
 })().catch(err => {
   console.error(err);
   process.exit(1);
