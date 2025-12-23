@@ -21,3 +21,6 @@ test-expand-*.png
 browser-debug-screenshot.png
 
 app/.webpack-cache
+
+# Temporary files
+/tmp
