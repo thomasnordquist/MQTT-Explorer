@@ -147,6 +147,8 @@ jobs:
           node-version: '24'
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
       - name: Build Browser Mode
         run: yarn build:server
       - name: Test App

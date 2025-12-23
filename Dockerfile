@@ -10,6 +10,11 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
+# Install Playwright and browsers
+# This ensures Playwright browsers are pre-installed in the container
+RUN npm install -g playwright@1.57.0 && \
+    npx playwright install --with-deps chromium
+
 CMD /bin/bash
 
 VOLUME /app
