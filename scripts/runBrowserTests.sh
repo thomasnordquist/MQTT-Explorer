@@ -6,7 +6,8 @@
 # the test suite using Playwright with a headless Chrome browser.
 #
 # Environment Variables:
-#   MQTT_EXPLORER_SKIP_AUTH - Set to 'true' to disable authentication (default for tests)
+#   MQTT_EXPLORER_USERNAME - Username for browser authentication (default: test)
+#   MQTT_EXPLORER_PASSWORD - Password for browser authentication (default: test123)
 #   PORT - Server port (default: 3000)
 #   BROWSER_MODE_URL - URL for browser tests (set automatically)
 #   MQTT_BROKER_HOST - MQTT broker host for tests (default: 127.0.0.1)
@@ -36,8 +37,9 @@ mosquitto &
 export PID_MOSQUITTO=$!
 sleep 1
 
-# Disable authentication for browser tests
-export MQTT_EXPLORER_SKIP_AUTH=true
+# Set credentials for browser authentication (tests will use these to login)
+export MQTT_EXPLORER_USERNAME=${MQTT_EXPLORER_USERNAME:-test}
+export MQTT_EXPLORER_PASSWORD=${MQTT_EXPLORER_PASSWORD:-test123}
 export PORT=${PORT:-3000}
 
 # Start the browser mode server

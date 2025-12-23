@@ -82,28 +82,34 @@ describe('MQTT Explorer UI Tests', function () {
       const username = process.env.MQTT_EXPLORER_USERNAME || 'test'
       const password = process.env.MQTT_EXPLORER_PASSWORD || 'test123'
 
-      console.log('Waiting for page to initialize...')
-      await sleep(3000) // Wait for WebSocket connection and auth check
+      console.log('Waiting for page to initialize and auth check...')
+      await sleep(5000) // Wait longer for WebSocket connection attempt and auth error handling
 
       console.log('Checking for login dialog...')
       const loginDialog = page.locator('h2:has-text("Login to MQTT Explorer")')
       let loginDialogVisible = false
       try {
-        loginDialogVisible = await loginDialog.isVisible({ timeout: 5000 })
+        loginDialogVisible = await loginDialog.isVisible({ timeout: 10000 })
       } catch (error) {
         // Timeout is expected if dialog is not shown, not an error
-        console.log('Login dialog not found (timeout) - this is expected when auth is disabled')
+        console.log('Login dialog not found (timeout) - checking if auth is disabled')
+      }
+      
+      // Debug: print page content to see what's rendered
+      if (!loginDialogVisible) {
+        const body = await page.locator('body').textContent().catch(() => 'Unable to read body')
+        console.log('Page body text:', body?.substring(0, 300))
       }
 
       if (loginDialogVisible) {
         console.log('Login dialog detected, authenticating...')
-        await page.fill('[data-testid="username-input"]', username)
-        await page.fill('[data-testid="password-input"]', password)
+        await page.fill('[data-testid="username-input"] input', username)
+        await page.fill('[data-testid="password-input"] input', password)
         await page.click('button:has-text("Login")')
-        await sleep(2000) // Wait for authentication to complete
+        await sleep(3000) // Wait for authentication to complete and reconnect
         console.log('Authentication complete')
       } else {
-        console.log('No login dialog detected')
+        console.log('No login dialog detected - assuming auth is disabled')
       }
 
       // Wait for the connection dialog to appear
