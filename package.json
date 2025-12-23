@@ -90,7 +90,7 @@
   "author": "Thomas Nordquist",
   "email": "xxnerowingerxx@gmail.com",
   "homepage": "https://github.com",
-  "license": "CC-BY-ND-4.0",
+  "license": "CC-BY-SA-4.0",
   "devDependencies": {
     "@babel/runtime": "^7.28.4",
     "@cspell/dict-typescript": "^3.2.3",
