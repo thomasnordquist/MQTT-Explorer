@@ -55,7 +55,8 @@ describe('expandTopic UI Helper - Isolated Test', function () {
     await page.locator('//label[contains(text(), "Host")]/..//input').waitFor({ timeout: 10000 })
 
     console.log('Connecting to MQTT broker...')
-    await connectTo('127.0.0.1', page)
+    const brokerHost = process.env.TESTS_MQTT_BROKER_HOST || '127.0.0.1'
+    await connectTo(brokerHost, page)
     await sleep(3000) // Give time for topics to load
     console.log('Setup complete')
   })

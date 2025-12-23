@@ -24,7 +24,6 @@ export async function createTestMock(): Promise<mqtt.MqttClient> {
   console.log(`Connecting to MQTT broker at ${brokerUrl}`)
 
   return new Promise((resolve, reject) => {
-    console.log('Connecting to MQTT broker at mqtt://127.0.0.1:1883...')
     const client = mqtt.connect(brokerUrl, {
       username: '',
       password: '',

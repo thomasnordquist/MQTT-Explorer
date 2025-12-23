@@ -14,6 +14,9 @@ on:
 jobs:
   copilot-setup-steps:
     runs-on: ubuntu-latest
+    env:
+      TESTS_MQTT_BROKER_HOST: localhost
+      TESTS_MQTT_BROKER_PORT: 1883
 
     steps:
       - name: Checkout code
