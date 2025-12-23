@@ -4,16 +4,17 @@ import NodeStats from './NodeStats'
 import ValuePanel from './ValueRenderer/ValuePanel'
 const ValuePanelAny = ValuePanel as any
 import { AppState } from '../../reducers'
-import { AccordionDetails } from '@mui/material'
+import { AccordionDetails, Button } from '@mui/material'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { settingsActions, sidebarActions } from '../../actions'
+import { globalActions, settingsActions, sidebarActions } from '../../actions'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
 import { TopicViewModel } from '../../model/TopicViewModel'
 import TopicPanel from './TopicPanel/TopicPanel'
 import Panel from './Panel'
 import { usePollingToFetchTreeNode } from '../helper/usePollingToFetchTreeNode'
+import Info from '@mui/icons-material/Info'
 
 const throttle = require('lodash.throttle')
 
@@ -23,6 +24,7 @@ interface Props {
   nodePath?: string
   tree?: q.Tree<TopicViewModel>
   actions: typeof sidebarActions
+  globalActions: typeof globalActions
   settingsActions: typeof settingsActions
   classes: any
   connectionId?: string
@@ -69,6 +71,20 @@ function Sidebar(props: Props) {
             <NodeStats node={node} />
           </AccordionDetails>
         </Panel>
+        <Panel>
+          <span>About</span>
+          <AccordionDetails className={classes.details}>
+            <Button
+              variant="text"
+              size="small"
+              startIcon={<Info />}
+              onClick={() => props.globalActions.toggleAboutDialogVisibility()}
+              fullWidth
+            >
+              About MQTT Explorer
+            </Button>
+          </AccordionDetails>
+        </Panel>
       </div>
     </div>
   )
@@ -85,6 +101,7 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = (dispatch: any) => {
   return {
     actions: bindActionCreators(sidebarActions, dispatch),
+    globalActions: bindActionCreators(globalActions, dispatch),
     settingsActions: bindActionCreators(settingsActions, dispatch),
   }
 }
