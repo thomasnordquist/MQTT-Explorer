@@ -1,5 +1,5 @@
 # Multi-stage build for MQTT Explorer Browser Mode
-# Stage 1: Build
+# Stage 1: Build and prepare production dependencies
 FROM node:24-alpine AS builder
 
 WORKDIR /build
@@ -18,20 +18,12 @@ RUN yarn install --frozen-lockfile --network-timeout 100000
 # Build the application (compiles TypeScript and webpack bundles)
 RUN yarn build:server
 
-# Stage 2: Production dependencies
-FROM node:24-alpine AS deps
-
-WORKDIR /deps
-
-# Copy only package files
-COPY --from=builder /build/package.json /build/yarn.lock ./
-
-# Install ONLY production dependencies
+# Remove dev dependencies, keeping only production dependencies
 RUN yarn install --production --frozen-lockfile --network-timeout 100000 && \
     yarn cache clean && \
     rm -rf /tmp/*
 
-# Stage 3: Production
+# Stage 2: Production
 FROM node:24-alpine
 
 # Install dumb-init in a single layer
@@ -50,8 +42,8 @@ COPY --from=builder --chown=mqttexplorer:mqttexplorer /build/dist ./dist
 COPY --from=builder --chown=mqttexplorer:mqttexplorer /build/app/build ./app/build
 COPY --from=builder --chown=mqttexplorer:mqttexplorer /build/app/index.html ./app/
 
-# Copy runtime node_modules (minimal set)
-COPY --from=deps --chown=mqttexplorer:mqttexplorer /deps/node_modules ./node_modules
+# Copy runtime node_modules (production dependencies only)
+COPY --from=builder --chown=mqttexplorer:mqttexplorer /build/node_modules ./node_modules
 
 # Copy package.json for version info (needed by server)
 COPY --from=builder --chown=mqttexplorer:mqttexplorer /build/package.json ./
