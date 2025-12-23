@@ -121,6 +121,7 @@ jobs:
         env:
           AWS_BUCKET: ${{ vars.AWS_BUCKET }}
           BASEPATH: ${{ steps.basepath.outputs.basepath }}
+        shell: bash
         run: |
           # Upload all GIF segment files if they exist
           shopt -s nullglob  # Make glob return empty list if no matches
