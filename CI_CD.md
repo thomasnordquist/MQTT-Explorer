@@ -70,10 +70,15 @@ Tests the traditional Electron desktop application:
   2. Build the Electron application
   3. Run unit tests (app + backend)
   4. Run UI tests with video recording
-  5. Upload test video to S3
-  6. Display test results in GitHub summary
+  5. Upload test video to S3 with 90-day expiration tag
+  6. Post demo video to PR as comment
+  7. Display test results in GitHub summary
 
-**Artifacts**: UI test video (GIF format) uploaded to S3
+**Artifacts**: 
+- UI test video (GIF format) uploaded to S3
+- Video is tagged with `expiration=90days` for automatic lifecycle deletion
+- Video is posted to the PR thread as an embedded image
+- Videos expire after 90 days via S3 lifecycle policy
 
 ##### 2. `test-browser` - Browser Mode Tests
 
@@ -203,6 +208,70 @@ The repository includes a devcontainer configuration that automatically sets up:
 - Port forwarding for development
 
 See [.devcontainer/README.md](.devcontainer/README.md) for details.
+
+## S3 Configuration for Demo Videos
+
+### Required S3 Lifecycle Policy
+
+Demo videos uploaded from PRs are tagged with `expiration=90days` and require an S3 lifecycle policy to automatically delete them after 90 days.
+
+**Important**: The `video.mp4` file in the gh-pages branch is NOT tagged and will NOT expire.
+
+#### Setting up the Lifecycle Policy
+
+1. Create a file named `s3-lifecycle-pr-videos.json`:
+
+```json
+{
+  "Rules": [
+    {
+      "ID": "ExpirePRDemoVideosAfter90Days",
+      "Status": "Enabled",
+      "Filter": {
+        "Tag": {
+          "Key": "expiration",
+          "Value": "90days"
+        }
+      },
+      "Expiration": {
+        "Days": 90
+      }
+    }
+  ]
+}
+```
+
+2. Apply the policy to your S3 bucket:
+
+```bash
+aws s3api put-bucket-lifecycle-configuration \
+  --bucket YOUR_BUCKET_NAME \
+  --lifecycle-configuration file://s3-lifecycle-pr-videos.json
+```
+
+3. Verify the policy:
+
+```bash
+aws s3api get-bucket-lifecycle-configuration --bucket YOUR_BUCKET_NAME
+```
+
+#### How It Works
+
+- **PR demo videos**: Uploaded with filename pattern `pr-{number}-{timestamp}.gif` and tagged `expiration=90days`
+- **S3 lifecycle rule**: Automatically deletes objects tagged with `expiration=90days` after 90 days
+- **gh-pages video**: `video.mp4` in gh-pages branch is uploaded without expiration tags, so it persists indefinitely
+
+#### Required AWS Credentials
+
+The workflow requires the following secrets/variables:
+- `vars.AWS_KEY_ID` - AWS access key ID
+- `secrets.AWS_SECRET_ACCESS_KEY` - AWS secret access key
+- `vars.AWS_BUCKET` - S3 bucket name
+- AWS region: `eu-central-1` (hardcoded in workflow)
+
+The S3 bucket must have:
+- Public read access for uploaded objects (via `--acl public-read`)
+- Lifecycle policy configured as described above
 
 ## Troubleshooting
 
