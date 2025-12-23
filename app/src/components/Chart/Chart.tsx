@@ -102,7 +102,7 @@ export default memo((props: Props) => {
             width={width || 300}
             height={CHART_HEIGHT}
             margin={{ top: 10, right: 10, bottom: 30, left: 50 }}
-            xScale={{ type: 'linear', ...(xDomain ? { domain: xDomain } : {}) }}
+            xScale={{ type: 'linear', domain: hasData && xDomain ? xDomain : dummyDomain }}
             yScale={{ type: 'linear', domain: hasData ? yDomain : dummyDomain }}
             onPointerOut={onMouseLeave}
           >
