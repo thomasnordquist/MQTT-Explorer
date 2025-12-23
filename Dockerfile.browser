@@ -4,20 +4,16 @@ FROM node:24-alpine AS builder
 
 WORKDIR /build
 
-# Copy package files for dependency installation
+# Copy all source files and dependencies
 COPY package.json yarn.lock ./
-COPY app/package.json ./app/
-COPY backend/package.json ./backend/
-
-# Install ALL dependencies (needed for build)
-RUN yarn install --frozen-lockfile --network-timeout 100000
-
-# Copy source files
 COPY tsconfig.json ./
 COPY src ./src
 COPY backend ./backend
 COPY events ./events
 COPY app ./app
+
+# Install ALL dependencies (needed for build)
+RUN yarn install --frozen-lockfile --network-timeout 100000
 
 # Build the application (compiles TypeScript and webpack bundles)
 RUN yarn build:server
