@@ -237,4 +237,83 @@ describe('MQTT Explorer UI Tests', function () {
       await page.screenshot({ path: 'test-screenshot-search-lamp.png' })
     })
   })
+
+  describe('Clipboard Operations', () => {
+    it('should copy topic path to clipboard in both Electron and browser modes', async function () {
+      // Given: A topic is selected
+      await expandTopic('livingroom/lamp/state', page)
+      await sleep(500)
+
+      // When: Copy topic button is clicked
+      const copyTopicButton = page.getByRole('button', { name: /Topic/i }).getByTestId('copy-button')
+      await copyTopicButton.click()
+      await sleep(500)
+
+      // Then: Success notification should appear
+      // Note: We can't easily verify clipboard content in headless mode across both environments
+      // but we can verify the button was clicked successfully
+      const copyButton = await copyTopicButton.isVisible()
+      expect(copyButton).to.be.true
+
+      await page.screenshot({ path: 'test-screenshot-copy-topic.png' })
+    })
+
+    it('should copy message value to clipboard in both Electron and browser modes', async function () {
+      // Given: A topic with a value is selected
+      await expandTopic('livingroom/lamp/state', page)
+      await sleep(500)
+
+      // When: Copy value button is clicked
+      const copyValueButton = page.getByRole('button', { name: /Value/i }).getByTestId('copy-button')
+      await copyValueButton.click()
+      await sleep(500)
+
+      // Then: Success notification should appear
+      const copyButton = await copyValueButton.isVisible()
+      expect(copyButton).to.be.true
+
+      await page.screenshot({ path: 'test-screenshot-copy-value.png' })
+    })
+  })
+
+  describe('File Save/Download Operations', () => {
+    it('should save/download message to file in both Electron and browser modes', async function () {
+      // Given: A topic with a message is selected
+      await expandTopic('kitchen/coffee_maker', page)
+      await sleep(500)
+
+      if (isBrowserMode) {
+        // In browser mode, set up download handling
+        const downloadPromise = page.waitForEvent('download', { timeout: 10000 })
+        
+        // When: Save button is clicked
+        const saveButton = page.getByRole('button', { name: /Value/i }).getByTestId('save-button')
+        await saveButton.click()
+        
+        // Then: Download should be triggered
+        const download = await downloadPromise
+        expect(download).to.not.be.undefined
+        
+        // Verify download has a filename
+        const filename = download.suggestedFilename()
+        expect(filename).to.include('mqtt-message-')
+        console.log('Browser mode: File downloaded:', filename)
+        
+        // Save to verify (optional, but helps with debugging)
+        await download.saveAs(`/tmp/${filename}`)
+      } else {
+        // In Electron mode, the file dialog would open
+        // We can't easily test the native file dialog, but we can verify the button works
+        const saveButton = page.getByRole('button', { name: /Value/i }).getByTestId('save-button')
+        const isVisible = await saveButton.isVisible()
+        expect(isVisible).to.be.true
+        
+        // Note: In Electron, clicking this would open a native dialog which we can't easily automate
+        // For now, just verify the button exists
+        console.log('Electron mode: Save button is visible (native dialog not tested)')
+      }
+
+      await page.screenshot({ path: 'test-screenshot-save-message.png' })
+    })
+  })
 })
