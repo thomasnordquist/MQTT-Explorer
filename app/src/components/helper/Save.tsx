@@ -5,7 +5,7 @@ import CustomIconButton from './CustomIconButton'
 
 import { SaveAlt } from '@mui/icons-material'
 import { bindActionCreators } from 'redux'
-import { rendererRpc, writeToFile } from '../../../../events'
+import { rendererRpc, writeToFile } from '../../eventBus'
 import { makeSaveDialogRpc } from '../../../../events/OpenDialogRequest'
 
 import { globalActions } from '../../actions'

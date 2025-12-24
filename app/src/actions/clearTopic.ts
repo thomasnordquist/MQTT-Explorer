@@ -1,7 +1,7 @@
 import * as q from '../../../backend/src/Model'
 import { AppState } from '../reducers'
 import { Dispatch } from 'redux'
-import { makePublishEvent, rendererEvents } from '../../../events'
+import { makePublishEvent, rendererEvents } from '../eventBus'
 import { moveSelectionUpOrDownwards } from './visibleTreeTraversal'
 import { globalActions } from '.'
 

@@ -188,6 +188,7 @@ function ConnectionSettings(props: Props) {
               value={connection.host}
               onChange={handleChange('host')}
               margin="normal"
+              inputProps={{ 'data-testid': 'host-input' }}
             />
           </Grid>
           <Grid item={true} xs={3}>
