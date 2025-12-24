@@ -100,7 +100,6 @@ async function cutSegmentAsGif(scene, index) {
   for (let i = 0; i < scenes.length; i++) {
     await cutSegmentAsGif(scenes[i], i);
   }
-  console.log('All GIF segments created successfully');
   console.log('Video segments created successfully');
 })().catch(err => {
   console.error(err);
