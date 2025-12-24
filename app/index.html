@@ -42,14 +42,14 @@
         font-size: 16px !important;
       }
 
-      /* Prevent text selection on mobile taps */
-      * {
+      /* Prevent text selection on mobile taps - applied to interactive elements */
+      button, a, [role="button"], [data-testid] {
         -webkit-tap-highlight-color: transparent;
         -webkit-touch-callout: none;
       }
 
-      /* Improve scrolling performance */
-      * {
+      /* Improve scrolling performance for scrollable containers */
+      [style*="overflow"], .MuiDrawer-root, [data-testid="tree-container"] {
         -webkit-overflow-scrolling: touch;
       }
 

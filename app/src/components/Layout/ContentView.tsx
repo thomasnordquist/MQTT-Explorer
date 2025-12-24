@@ -21,7 +21,8 @@ interface Props {
 
 function ContentView(props: Props) {
   // Use different defaults for mobile viewports (<=768px width)
-  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+  // Use useState with lazy initialization to get initial mobile state
+  const [isMobile] = React.useState(() => typeof window !== 'undefined' && window.innerWidth <= 768)
   const [height, setHeight] = React.useState<string | number>('100%')
   const [sidebarWidth, setSidebarWidth] = React.useState<string | number>(isMobile ? '100%' : '40%')
   const [detectedHeight, setDetectedHeight] = React.useState(0)
