@@ -4,12 +4,12 @@ This document outlines the styling conventions used in MQTT Explorer for visual 
 
 ## UI Framework
 
-Material-UI (MUI) with JSS styling via `withStyles` HOC.
+Material-UI (MUI) v7 with JSS styling via `withStyles` HOC.
 
 **Stack:**
-- `@mui/material` - Core components and theming
-- `@mui/icons-material` - Icons
-- `@mui/styles` - JSS styling with `withStyles`
+- `@mui/material` (v7) - Core components and theming
+- `@mui/icons-material` (v7) - Icons
+- `@mui/styles` (v6) - JSS styling with `withStyles`
 - `@emotion/react` & `@emotion/styled` - CSS-in-JS foundation
 
 ## Theming
