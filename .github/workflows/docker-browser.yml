@@ -34,23 +34,24 @@ jobs:
       TESTS_MQTT_BROKER_HOST: localhost
       TESTS_MQTT_BROKER_PORT: 1883
 
-    services:
-      # MQTT broker for testing
-      mosquitto:
-        image: ghcr.io/thomasnordquist/mqtt-explorer-ui-tests:latest
-        ports:
-          - 1883:1883
-        entrypoint: /bin/sh
-        args: ["-c", "mosquitto -c /etc/mosquitto/conf.d/default.conf"]
-        options: >-
-          --health-cmd "mosquitto_sub -t '$SYS/#' -C 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Install and Start Mosquitto
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mosquitto mosquitto-clients
+          
+          # Create a minimal configuration file for testing
+          sudo tee /etc/mosquitto/conf.d/test.conf > /dev/null <<EOF
+          listener 1883
+          allow_anonymous true
+          persistence false
+          EOF
+          
+          # Start mosquitto in detached mode
+          sudo mosquitto -c /etc/mosquitto/mosquitto.conf -d
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
