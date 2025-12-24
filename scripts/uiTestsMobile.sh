@@ -47,6 +47,7 @@ export PID_VNC=$!
 mosquitto &
 export PID_MOSQUITTO=$!
 sleep 2
+npx -y playwright install
 
 # Start MQTT Explorer in browser mode
 export MQTT_EXPLORER_USERNAME=admin
