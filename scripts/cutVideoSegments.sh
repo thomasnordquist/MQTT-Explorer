@@ -14,7 +14,7 @@ fi
 
 echo "Cutting video into GIF segments based on scenes.json..."
 
-GIF_SCALE="1024"
+export GIF_SCALE="1024"
 
 # Parse scenes.json and cut video segments as GIFs
 node -e "
