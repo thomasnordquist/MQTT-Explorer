@@ -68,7 +68,9 @@ describe('MQTT Explorer UI Tests', function () {
         args: ['--no-sandbox', '--disable-dev-shm-usage'],
       })
 
-      browserContext = await browser.newContext()
+      browserContext = await browser.newContext({
+        permissions: ['clipboard-read', 'clipboard-write'],
+      })
       page = await browserContext.newPage()
 
       // Listen for console messages
@@ -254,11 +256,37 @@ describe('MQTT Explorer UI Tests', function () {
       await copyTopicButton.click()
       await sleep(500)
 
-      // Then: Success notification should appear
-      // Note: We can't easily verify clipboard content in headless mode across both environments
-      // but we can verify the button was clicked successfully
-      const copyButton = await copyTopicButton.isVisible()
-      expect(copyButton).to.be.true
+      // Then: Clipboard should contain the topic path
+      const clipboardText = await page.evaluate(async () => {
+        try {
+          // Try to read from clipboard using the Clipboard API
+          if (navigator.clipboard && navigator.clipboard.readText) {
+            return await navigator.clipboard.readText()
+          }
+          // Fallback: try to paste into a temporary input element
+          const input = document.createElement('input')
+          document.body.appendChild(input)
+          input.focus()
+          document.execCommand('paste')
+          const text = input.value
+          document.body.removeChild(input)
+          return text
+        } catch (error) {
+          // If clipboard access fails, return empty string
+          console.warn('Clipboard read failed:', error)
+          return ''
+        }
+      })
+
+      // Verify clipboard contains expected topic path
+      if (clipboardText) {
+        expect(clipboardText).to.equal('livingroom/lamp/state')
+      } else {
+        // If clipboard reading is not available, at least verify the button was clicked
+        console.warn('Clipboard verification not available in this environment')
+        const copyButton = await copyTopicButton.isVisible()
+        expect(copyButton).to.be.true
+      }
 
       await page.screenshot({ path: 'test-screenshot-copy-topic.png' })
     })
@@ -270,9 +298,37 @@ describe('MQTT Explorer UI Tests', function () {
       await copyValueButton.click()
       await sleep(500)
 
-      // Then: Success notification should appear
-      const copyButton = await copyValueButton.isVisible()
-      expect(copyButton).to.be.true
+      // Then: Clipboard should contain the message value
+      const clipboardText = await page.evaluate(async () => {
+        try {
+          // Try to read from clipboard using the Clipboard API
+          if (navigator.clipboard && navigator.clipboard.readText) {
+            return await navigator.clipboard.readText()
+          }
+          // Fallback: try to paste into a temporary input element
+          const input = document.createElement('input')
+          document.body.appendChild(input)
+          input.focus()
+          document.execCommand('paste')
+          const text = input.value
+          document.body.removeChild(input)
+          return text
+        } catch (error) {
+          // If clipboard access fails, return empty string
+          console.warn('Clipboard read failed:', error)
+          return ''
+        }
+      })
+
+      // Verify clipboard contains expected value (should be "on" from livingroom/lamp/state)
+      if (clipboardText) {
+        expect(clipboardText).to.equal('on')
+      } else {
+        // If clipboard reading is not available, at least verify the button was clicked
+        console.warn('Clipboard verification not available in this environment')
+        const copyButton = await copyValueButton.isVisible()
+        expect(copyButton).to.be.true
+      }
 
       await page.screenshot({ path: 'test-screenshot-copy-value.png' })
     })
