@@ -176,7 +176,7 @@ jobs:
       TESTS_MQTT_BROKER_PORT: 1883
     services:
       mosquitto:
-        image: eclipse-mosquitto:2
+        image: ghcr.io/thomasnordquist/mqtt-explorer-ui-tests:latest
         ports:
           - 1883:1883
         options: >-
@@ -184,8 +184,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-          --entrypoint sh
-        cmd: -c "mkdir -p /mosquitto/config && echo 'listener 1883' > /mosquitto/config/mosquitto.conf && echo 'allow_anonymous true' >> /mosquitto/config/mosquitto.conf && exec mosquitto -c /mosquitto/config/mosquitto.conf"
+          --entrypoint mosquitto
+          -c
+          /etc/mosquitto/conf.d/default.conf
     steps:
       - uses: actions/checkout@v4
         with:
