@@ -37,9 +37,7 @@ jobs:
     services:
       # MQTT broker for testing
       mosquitto:
-        # Custom image with anonymous access enabled for testing
-        # Built from .github/mosquitto/Dockerfile
-        image: ghcr.io/thomasnordquist/mqtt-explorer/mosquitto-test:latest
+        image: eclipse-mosquitto:2
         ports:
           - 1883:1883
         options: >-
@@ -47,6 +45,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          --entrypoint sh
+        cmd: -c "mkdir -p /mosquitto/config && echo 'listener 1883' > /mosquitto/config/mosquitto.conf && echo 'allow_anonymous true' >> /mosquitto/config/mosquitto.conf && exec mosquitto -c /mosquitto/config/mosquitto.conf"
 
     steps:
       - name: Checkout repository
