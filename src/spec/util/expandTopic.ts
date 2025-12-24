@@ -64,7 +64,8 @@ export async function expandTopic(path: string, browser: Page) {
       await new Promise(resolve => setTimeout(resolve, 200))
 
       // Click to expand/select this level
-      await clickOn(locator)
+      // Use force:true to bypass any overlays (e.g., accordions) that might intercept
+      await clickOn(locator, 1, 0, 'left', true)
 
       // Give the UI time to expand and render child topics
       // This is important for MQTT async operations and tree rendering

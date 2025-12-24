@@ -30,8 +30,8 @@ function finish {
 trap finish EXIT
 set -e
 
-# Mobile viewport dimensions (Pixel 6)
-DIMENSIONS="412x915"
+# Mobile viewport dimensions (Pixel 6 - height must be even for h264)
+DIMENSIONS="412x914"
 SCR=99
 
 # Start new window manager

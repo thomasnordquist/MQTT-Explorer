@@ -115,6 +115,10 @@ export async function clickOn(
   // Ensure element is visible before trying to interact
   await element.waitFor({ state: 'visible', timeout: 30000 })
 
+  // Scroll element into view first (important for mobile viewports)
+  await element.scrollIntoViewIfNeeded()
+  await sleep(100)
+
   // Skip hover when force is true (used when modal backdrop might intercept)
   if (!force) {
     try {

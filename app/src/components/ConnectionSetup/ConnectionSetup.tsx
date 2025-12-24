@@ -93,6 +93,14 @@ const styles = (theme: Theme) => ({
     height: connectionHeight,
     outline: 'none' as 'none',
     display: 'flex' as 'flex',
+    // Mobile responsive adjustments
+    [theme.breakpoints.down('md')]: {
+      minWidth: '95vw',
+      maxWidth: '95vw',
+      height: '85vh',
+      margin: '7.5vh auto 0 auto',
+      flexDirection: 'column' as 'column',
+    },
   },
   left: {
     borderRightStyle: 'dotted' as 'dotted',
@@ -103,12 +111,21 @@ const styles = (theme: Theme) => ({
     backgroundColor: theme.palette.background.default,
     color: theme.palette.text.primary,
     overflowY: 'auto' as 'auto',
+    // Mobile: hide profile list to save space
+    [theme.breakpoints.down('md')]: {
+      display: 'none' as 'none',
+    },
   },
   right: {
     borderRadius: `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0`,
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(2),
     flex: 10,
+    // Mobile: enable scrolling
+    [theme.breakpoints.down('md')]: {
+      borderRadius: `${theme.shape.borderRadius}px`,
+      overflowY: 'auto' as 'auto',
+    },
   },
   connectionUri: {
     width: '27em',

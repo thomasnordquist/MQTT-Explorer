@@ -27,12 +27,23 @@ app/.webpack-cache
 
 # Demo video artifacts
 scenes.json
+scenes-mobile.json
 segment-*.mp4
 segment-*.gif
 ui-test.mp4
 ui-test.gif
+ui-test-mobile.mp4
+ui-test-mobile.gif
 app.mp4
 app2.mp4
+app-mobile.mp4
+app2-mobile.mp4
 app720.gif
 qrawvideorgb24.yuv
+qrawvideorgb24-mobile.yuv
 intro.png
+intro-mobile.png
+palette.png
+palette-mobile.png
+ffmpeg_info
+ffmpeg_info_mobile
