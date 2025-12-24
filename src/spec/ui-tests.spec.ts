@@ -241,8 +241,10 @@ describe('MQTT Explorer UI Tests', function () {
   describe('Clipboard Operations', () => {
     it('should copy topic path to clipboard in both Electron and browser modes', async function () {
       // Given: A topic is selected
+      await clearSearch(page)
+      await sleep(1000)
       await expandTopic('livingroom/lamp/state', page)
-      await sleep(500)
+      await sleep(1000)
 
       // When: Copy topic button is clicked
       const copyTopicButton = page.getByRole('button', { name: /Topic/i }).getByTestId('copy-button')
@@ -259,10 +261,7 @@ describe('MQTT Explorer UI Tests', function () {
     })
 
     it('should copy message value to clipboard in both Electron and browser modes', async function () {
-      // Given: A topic with a value is selected
-      await expandTopic('livingroom/lamp/state', page)
-      await sleep(500)
-
+      // Given: A topic with a value is selected (reuse already expanded topic)
       // When: Copy value button is clicked
       const copyValueButton = page.getByRole('button', { name: /Value/i }).getByTestId('copy-button')
       await copyValueButton.click()
@@ -278,8 +277,7 @@ describe('MQTT Explorer UI Tests', function () {
 
   describe('File Save/Download Operations', () => {
     it('should save/download message to file in both Electron and browser modes', async function () {
-      // Given: A topic with a message is selected
-      await expandTopic('kitchen/coffee_maker', page)
+      // Given: A topic with a message is already selected from previous test
       await sleep(500)
 
       if (isBrowserMode) {

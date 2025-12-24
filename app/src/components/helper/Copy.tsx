@@ -5,9 +5,7 @@ import FileCopy from '@mui/icons-material/FileCopy'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { globalActions } from '../../actions'
-
-// Fallback for older browsers or when clipboard API is not available
-const copyTextFallback = require('copy-text-to-clipboard')
+import copyTextFallback from 'copy-text-to-clipboard'
 
 async function copyToClipboard(text: string): Promise<boolean> {
   try {
