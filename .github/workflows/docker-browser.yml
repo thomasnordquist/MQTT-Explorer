@@ -40,14 +40,13 @@ jobs:
         image: ghcr.io/thomasnordquist/mqtt-explorer-ui-tests:latest
         ports:
           - 1883:1883
+        entrypoint: /bin/sh
+        args: ["-c", "mosquitto -c /etc/mosquitto/conf.d/default.conf"]
         options: >-
           --health-cmd "mosquitto_sub -t '$SYS/#' -C 1"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-          --entrypoint mosquitto
-          -c
-          /etc/mosquitto/conf.d/default.conf
 
     steps:
       - name: Checkout repository
