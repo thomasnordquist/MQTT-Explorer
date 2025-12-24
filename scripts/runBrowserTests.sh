@@ -57,20 +57,6 @@ export TESTS_MQTT_BROKER_PORT="${TESTS_MQTT_BROKER_PORT:-1883}"
 
 echo "Using MQTT broker at $TESTS_MQTT_BROKER_HOST:$TESTS_MQTT_BROKER_PORT"
 
-# Wait for MQTT broker to be ready (max 60 seconds)
-echo "Waiting for MQTT broker to be ready..."
-for i in {1..60}; do
-  if nc -z -w5 "$TESTS_MQTT_BROKER_HOST" "$TESTS_MQTT_BROKER_PORT" > /dev/null 2>&1; then
-    echo "MQTT broker is ready after $i seconds"
-    break
-  fi
-  if [ $i -eq 60 ]; then
-    echo "MQTT broker failed to become ready within 60 seconds"
-    exit 1
-  fi
-  sleep 1
-done
-
 yarn test:browser
 TEST_EXIT_CODE=$?
 
