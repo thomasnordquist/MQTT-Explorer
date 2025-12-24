@@ -34,6 +34,8 @@ const styles = (theme: Theme) => ({
   root: {
     borderBottom: `1px solid ${theme.palette.divider}`,
     backgroundColor: theme.palette.background.paper,
+    position: 'relative' as 'relative',
+    zIndex: 1,
   },
 })
 

@@ -156,38 +156,40 @@ async function doStuff() {
   })
 
   await scenes.record('mobile_browse_topics', async () => {
-    await showText('Browse Topic Tree', 1500, page, 'top')
+    await showText('Browse Topics - Topics Tab', 1500, page, 'top')
     await sleep(1500)
-    // Try to expand a topic in the tree
-    const firstTopic = page.locator('[data-testid="tree-node"]').first()
-    if (await firstTopic.isVisible()) {
-      await firstTopic.click()
+    // Expand a topic by clicking the expand button
+    const expandButton = page.locator('span.expander').first()
+    if (await expandButton.isVisible()) {
+      await expandButton.click()
       await sleep(1000)
     }
     await sleep(1500)
     await hideText(page)
   })
 
+  await scenes.record('mobile_view_message', async () => {
+    await showText('Tap Topic to View Details', 1500, page, 'top')
+    await sleep(1000)
+    // Click on topic text to select and switch to details tab
+    const topicText = page.locator('[data-test-topic]').first()
+    if (await topicText.isVisible()) {
+      await topicText.click()
+      await sleep(2000)
+      // The mobile UI should automatically switch to Details tab
+    }
+    await hideText(page)
+  })
+
   await scenes.record('mobile_search', async () => {
     await showText('Search Topics', 1500, page, 'top')
+    await sleep(500)
     await searchTree('temp', page)
     await sleep(1500)
     await showText('Filter Results', 1000, page, 'top')
     await sleep(1500)
     await clearSearch(page)
     await sleep(1000)
-    await hideText(page)
-  })
-
-  await scenes.record('mobile_view_message', async () => {
-    await showText('View Message Details', 1500, page, 'top')
-    await sleep(1000)
-    // Click on a topic to view details in sidebar
-    const topicNode = page.locator('[data-testid="tree-node"]').first()
-    if (await topicNode.isVisible()) {
-      await topicNode.click()
-      await sleep(2000)
-    }
     await hideText(page)
   })
 
@@ -199,24 +201,10 @@ async function doStuff() {
     await hideText(page)
   })
 
-  await scenes.record('mobile_clipboard', async () => {
-    await showText('Mobile-optimized UI', 1500, page, 'top')
-    // Skip clipboard operations - they require specific UI elements that may not be visible on mobile
+  await scenes.record('mobile_settings', async () => {
+    await showText('Settings with Disconnect/Logout', 1500, page, 'top')
     await sleep(2000)
-    await hideText(page)
-  })
-
-  await scenes.record('mobile_plots', async () => {
-    await showText('View Numeric Data', 1500, page, 'top')
-    // Skip numeric plots - complex interaction for mobile demo
-    await sleep(2000)
-    await hideText(page)
-  })
-
-  await scenes.record('mobile_menu', async () => {
-    await showText('Settings Available', 1500, page, 'top')
-    // Skip menu navigation - simplified for mobile demo
-    await sleep(2000)
+    // Just show that settings are available, don't click
     await hideText(page)
   })
 
