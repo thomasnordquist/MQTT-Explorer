@@ -66,7 +66,7 @@ async function doStuff() {
       '--disable-dev-shm-usage',
       '--window-size=412,914',  // Match the mobile viewport size
       '--window-position=0,0',
-      '--disable-infobars',
+      '--app=http://localhost:3000',  // App mode - removes all browser chrome
       '--disable-features=TranslateUI',
       '--no-first-run',
       '--no-default-browser-check',

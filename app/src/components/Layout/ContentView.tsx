@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { List } from 'immutable'
 import { Sidebar } from '../Sidebar'
 import { useResizeDetector } from 'react-resize-detector'
+import MobileTabs from './MobileTabs'
 
 // Type cast to any to work around React 18 compatibility issues with react-split-pane 0.1.x
 const ReactSplitPane = ReactSplitPaneImport as any
@@ -23,6 +24,7 @@ function ContentView(props: Props) {
   // Use different defaults for mobile viewports (<=768px width)
   // Use useState with lazy initialization to get initial mobile state
   const [isMobile] = React.useState(() => typeof window !== 'undefined' && window.innerWidth <= 768)
+  const [mobileTab, setMobileTab] = React.useState(0) // 0 = topics, 1 = details
   const [height, setHeight] = React.useState<string | number>('100%')
   const [sidebarWidth, setSidebarWidth] = React.useState<string | number>(isMobile ? '100%' : '40%')
   const [detectedHeight, setDetectedHeight] = React.useState(0)
@@ -71,6 +73,58 @@ function ContentView(props: Props) {
     }
   }, [props.chartPanelItems])
 
+  // Mobile view with tab switcher
+  if (isMobile) {
+    // Expose tab switching function for TreeNode to call
+    React.useEffect(() => {
+      if (typeof window !== 'undefined') {
+        (window as any).switchToDetailsTab = () => setMobileTab(1)
+      }
+      return () => {
+        if (typeof window !== 'undefined') {
+          delete (window as any).switchToDetailsTab
+        }
+      }
+    }, [])
+
+    return (
+      <div className={props.paneDefaults} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <MobileTabs value={mobileTab} onChange={setMobileTab} />
+        <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
+          {/* Topics tab */}
+          <div 
+            style={{ 
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              overflow: 'auto',
+              display: mobileTab === 0 ? 'block' : 'none'
+            }}
+          >
+            <Tree />
+          </div>
+          {/* Details tab */}
+          <div 
+            style={{ 
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              overflow: 'auto',
+              display: mobileTab === 1 ? 'block' : 'none'
+            }}
+          >
+            <Sidebar connectionId={props.connectionId} />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Desktop view with split panes
   return (
     <div className={props.paneDefaults}>
       <span>
@@ -113,7 +167,7 @@ function ContentView(props: Props) {
             <div
               className={props.paneDefaults}
               style={{ 
-                minWidth: isMobile ? '100%' : '250px', 
+                minWidth: '250px', 
                 height: '100%', 
                 overflowY: 'auto', 
                 overflowX: 'hidden' 
