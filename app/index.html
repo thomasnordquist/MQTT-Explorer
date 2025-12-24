@@ -18,6 +18,49 @@
       outline: none;
     }
 
+    /* Mobile-specific responsive styles */
+    @media (max-width: 768px) {
+      /* Increase touch target sizes for better mobile UX */
+      button {
+        min-height: 44px !important;
+        min-width: 44px !important;
+      }
+
+      /* Make icons larger on mobile */
+      svg {
+        font-size: 1.5rem !important;
+      }
+
+      /* Improve tree node tap targets */
+      [data-testid="tree-node"] {
+        min-height: 44px !important;
+        padding: 8px 12px !important;
+      }
+
+      /* Better mobile typography */
+      body {
+        font-size: 16px !important;
+      }
+
+      /* Prevent text selection on mobile taps - applied to interactive elements */
+      button, a, [role="button"], [data-testid] {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+      }
+
+      /* Improve scrolling performance for scrollable containers */
+      [style*="overflow"], .MuiDrawer-root, [data-testid="tree-container"] {
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* Make resizers more visible on mobile */
+      .Resizer.vertical::before,
+      .Resizer.horizontal::before {
+        font-size: 1.5rem !important;
+        opacity: 0.8 !important;
+      }
+    }
+
     @keyframes updateDark {
       0% {
         background-color: none;

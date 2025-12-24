@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core'
+import { FormControlLabel, Radio, RadioGroup } from '@mui/material'
 
 interface Props {
   value: string

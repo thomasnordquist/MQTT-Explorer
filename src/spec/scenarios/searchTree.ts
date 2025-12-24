@@ -12,4 +12,5 @@ export async function clearSearch(browser: Page) {
   const searchField = await browser.locator('//input[contains(@placeholder, "Search")]')
   await clickOn(searchField, 1)
   await deleteTextWithBackspaces(searchField, 100)
+  await sleep(300) // Give time for search to clear and tree to rerender
 }

@@ -1,14 +1,14 @@
 import Editor from './Editor'
-import { AttachFileOutlined, FormatAlignLeft } from '@material-ui/icons'
+import { AttachFileOutlined, FormatAlignLeft } from '@mui/icons-material'
 import Message from './Model/Message'
-import Navigation from '@material-ui/icons/Navigation'
+import Navigation from '@mui/icons-material/Navigation'
 import PublishHistory from './PublishHistory'
 import React, { useCallback, useMemo, useState, useRef, memo } from 'react'
 import RetainSwitch from './RetainSwitch'
 import TopicInput from './TopicInput'
 import { AppState } from '../../../reducers'
 import { bindActionCreators } from 'redux'
-import { Button, Fab, Theme, Tooltip, withTheme } from '@material-ui/core'
+import { Button, Fab, Tooltip } from '@mui/material'
 import { connect } from 'react-redux'
 import { EditorModeSelect } from './EditorModeSelect'
 import { globalActions, publishActions } from '../../../actions'
@@ -23,7 +23,6 @@ interface Props {
   globalActions: typeof globalActions
   retain: boolean
   editorMode: string
-  theme: Theme
 }
 
 function useHistory(): [Array<Message>, (topic: string, payload?: string) => void] {
@@ -221,4 +220,4 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTheme(Publish))
+export default connect(mapStateToProps, mapDispatchToProps)(Publish)

@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { chartActions } from '../../../actions'
 import { ChartParameters, PlotCurveTypes } from '../../../reducers/Charts'
 import { connect } from 'react-redux'
-import { Menu, MenuItem, Typography } from '@material-ui/core'
+import { Menu, MenuItem, Typography } from '@mui/material'
 
 function chartParametersForAction(chart: ChartParameters, action: string) {
   return {
@@ -39,7 +39,12 @@ function InterpolationSettings(props: {
 
   const menuItems = React.useMemo(() => {
     return curves.map(curve => (
-      <MenuItem key={curve} onClick={callbacks[curve]} selected={props.chart.interpolation === curve}>
+      <MenuItem 
+        key={curve} 
+        onClick={callbacks[curve]} 
+        selected={props.chart.interpolation === curve}
+        data-menu-item={curve.replace(/_/g, ' ')}
+      >
         <Typography variant="inherit">{curve.replace(/_/g, ' ')}</Typography>
       </MenuItem>
     ))

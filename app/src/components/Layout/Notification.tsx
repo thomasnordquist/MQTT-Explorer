@@ -1,8 +1,9 @@
 import * as React from 'react'
 
-import { Snackbar, SnackbarContent } from '@material-ui/core'
-import { Theme, withStyles } from '@material-ui/core/styles'
-import { green, red } from '@material-ui/core/colors'
+import { Snackbar, SnackbarContent } from '@mui/material'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
+import { green, red } from '@mui/material/colors'
 
 interface Props {
   message?: string

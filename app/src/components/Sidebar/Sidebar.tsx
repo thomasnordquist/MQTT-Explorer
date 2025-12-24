@@ -2,12 +2,14 @@ import * as q from '../../../../backend/src/Model'
 import React, { useState, useEffect, useCallback } from 'react'
 import NodeStats from './NodeStats'
 import ValuePanel from './ValueRenderer/ValuePanel'
+const ValuePanelAny = ValuePanel as any
 import { AppState } from '../../reducers'
-import { ExpansionPanelDetails } from '@material-ui/core'
+import { AccordionDetails } from '@mui/material'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { settingsActions, sidebarActions } from '../../actions'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 import { TopicViewModel } from '../../model/TopicViewModel'
 import TopicPanel from './TopicPanel/TopicPanel'
 import Panel from './Panel'
@@ -56,16 +58,16 @@ function Sidebar(props: Props) {
     <div id="Sidebar" className={classes.drawer}>
       <div>
         <TopicPanel node={node} />
-        <ValuePanel lastUpdate={node ? node.lastUpdate : 0} />
+        <ValuePanelAny lastUpdate={node ? node.lastUpdate : 0} />
         <Panel>
           <span>Publish</span>
           <Publish connectionId={props.connectionId} />
         </Panel>
         <Panel detailsHidden={!node}>
           <span>Stats</span>
-          <ExpansionPanelDetails className={classes.details}>
+          <AccordionDetails className={classes.details}>
             <NodeStats node={node} />
-          </ExpansionPanelDetails>
+          </AccordionDetails>
         </Panel>
       </div>
     </div>

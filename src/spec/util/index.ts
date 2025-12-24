@@ -38,27 +38,60 @@ export async function setInputText(input: Locator, text: string, browser: Page) 
 }
 
 export async function setTextInInput(name: string, text: string, browser: Page) {
-  const input = await browser.locator(`//label[contains(text(), "${name}")]/..//input`)
-  await clickOn(input, 1)
-  await browser.locator(`//label[contains(text(), "${name}")]/..//input`)
+  // Try data-testid first, then fall back to label-based selectors for Material-UI v5
+  const selectors = [
+    `[data-testid="${name.toLowerCase()}-input"]`,
+    `//label[contains(text(), "${name}")]/..//input`,
+    `//div[contains(@class, 'MuiTextField')]//label[contains(text(), "${name}")]/..//input`,
+    `//input[@name="${name.toLowerCase()}"]`,
+  ]
+  
+  let input: Locator | null = null
+  for (const selector of selectors) {
+    const locator = browser.locator(selector)
+    const count = await locator.count()
+    if (count > 0) {
+      input = locator.first()
+      break
+    }
+  }
+  
+  if (!input) {
+    throw new Error(`Could not find input for label "${name}"`)
+  }
 
+  await clickOn(input, 1)
   await deleteTextWithBackspaces(input)
   await input.fill(text)
 }
 
 export async function moveToCenterOfElement(element: Locator) {
-  // @ts-ignore
-  const { x, y, width, height } = await element.boundingBox()
+  // Wait for element to be visible and attached before getting bounding box
+  await element.waitFor({ state: 'visible', timeout: 30000 })
+
+  const boundingBox = await element.boundingBox()
+
+  if (!boundingBox) {
+    throw new Error('Could not get bounding box for element')
+  }
+
+  const { x, y, width, height } = boundingBox
 
   const targetX = x + width / 2
   const targetY = y + height / 2
 
   const duration = fast ? 1 : 500
 
-  const js = `window.demo.moveMouse(${targetX}, ${targetY}, ${duration});`
-  await runJavascript(js, element.page())
-  await sleep(duration)
-  await sleep(250, true)
+  try {
+    const js = `window.demo.moveMouse(${targetX}, ${targetY}, ${duration});`
+    await runJavascript(js, element.page())
+    await sleep(duration)
+    await sleep(250, true)
+  } catch (error) {
+    // window.demo.moveMouse might not be available in all test environments
+    // This is fine - we'll proceed with the click anyway
+    console.log('moveMouse not available, proceeding without custom mouse movement')
+  }
 }
 
 export async function runJavascript(js: string, browser: Page) {
@@ -68,7 +101,7 @@ export async function runJavascript(js: string, browser: Page) {
 }
 
 export async function clickOnHistory(browser: Page) {
-  const messageHistory = await browser.locator('//span/*[contains(text(), "History")]').first()
+  const messageHistory = await browser.locator('[data-testid="message-history"]').first()
   await clickOn(messageHistory)
 }
 
@@ -79,8 +112,20 @@ export async function clickOn(
   button: 'left' | 'right' | 'middle' = 'left',
   force = false
 ) {
-  await moveToCenterOfElement(element)
-  await element.hover()
+  // Ensure element is visible before trying to interact
+  await element.waitFor({ state: 'visible', timeout: 30000 })
+
+  // Skip hover when force is true (used when modal backdrop might intercept)
+  if (!force) {
+    try {
+      await moveToCenterOfElement(element)
+      await element.hover()
+    } catch (error) {
+      // If custom mouse movement fails, we can still proceed with the click
+      // Playwright's click will handle scrolling into view automatically
+      console.log('Custom mouse movement failed, proceeding with direct click')
+    }
+  }
   await element.click({ delay, button, force, clickCount: clicks })
   await sleep(50)
 }

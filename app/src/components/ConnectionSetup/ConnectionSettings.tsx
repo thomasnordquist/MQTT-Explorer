@@ -1,17 +1,18 @@
 import ConnectButton from './ConnectButton'
 import React, { useCallback, useState } from 'react'
-import Save from '@material-ui/icons/Save'
-import Delete from '@material-ui/icons/Delete'
-import Settings from '@material-ui/icons/Settings'
-import Visibility from '@material-ui/icons/Visibility'
-import VisibilityOff from '@material-ui/icons/VisibilityOff'
+import Save from '@mui/icons-material/Save'
+import Delete from '@mui/icons-material/Delete'
+import Settings from '@mui/icons-material/Settings'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { connectionActions, connectionManagerActions } from '../../actions'
 import { ConnectionOptions, toMqttConnection } from '../../model/ConnectionOptions'
 import { KeyCodes } from '../../utils/KeyCodes'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 import { ToggleSwitch } from './ToggleSwitch'
 import { useGlobalKeyEventHandler } from '../../effects/useGlobalKeyEventHandler'
 import {
@@ -24,7 +25,7 @@ import {
   InputLabel,
   MenuItem,
   TextField,
-} from '@material-ui/core'
+} from '@mui/material'
 
 interface Props {
   connection: ConnectionOptions
@@ -187,6 +188,7 @@ function ConnectionSettings(props: Props) {
               value={connection.host}
               onChange={handleChange('host')}
               margin="normal"
+              inputProps={{ 'data-testid': 'host-input' }}
             />
           </Grid>
           <Grid item={true} xs={3}>
@@ -235,6 +237,7 @@ function ConnectionSettings(props: Props) {
               variant="contained"
               className={classes.button}
               onClick={props.managerActions.toggleAdvancedSettings}
+              data-testid="advanced-button"
             >
               <Settings /> Advanced
             </Button>
@@ -285,4 +288,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ConnectionSettings))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ConnectionSettings) as any)

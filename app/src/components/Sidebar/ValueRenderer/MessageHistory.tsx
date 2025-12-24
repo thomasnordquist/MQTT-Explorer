@@ -1,6 +1,6 @@
 import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
-import ShowChart from '@material-ui/icons/ShowChart'
+import ShowChart from '@mui/icons-material/ShowChart'
 import Copy from '../../helper/Copy'
 import DateFormatter from '../../helper/DateFormatter'
 import History from '../HistoryDrawer'

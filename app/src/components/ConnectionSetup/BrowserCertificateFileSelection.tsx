@@ -1,14 +1,14 @@
 import * as React from 'react'
 import ClearAdornment from '../helper/ClearAdornment'
-import Lock from '@material-ui/icons/Lock'
+import Lock from '@mui/icons-material/Lock'
 import { bindActionCreators } from 'redux'
-import { Button, Theme, Tooltip, Typography } from '@material-ui/core'
+import { Button, Theme, Tooltip, Typography } from '@mui/material'
 import { CertificateParameters, ConnectionOptions } from '../../model/ConnectionOptions'
 import { CertificateTypes } from '../../actions/ConnectionManager'
 import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
-import { withStyles } from '@material-ui/styles'
-import { rendererRpc } from '../../../../events'
+import { withStyles } from '@mui/styles'
+import { rendererRpc } from '../../eventBus'
 import { RpcEvents } from '../../../../events/EventsV2'
 
 function BrowserCertificateFileSelection(props: {
@@ -129,7 +129,7 @@ const styles = (theme: Theme) => ({
     overflow: 'hidden' as 'hidden',
     whiteSpace: 'nowrap' as 'nowrap',
     textOverflow: 'ellipsis' as 'ellipsis',
-    color: theme.palette.text.hint,
+    color: theme.palette.text.secondary,
   },
   button: {
     marginTop: theme.spacing(3),
@@ -137,4 +137,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(undefined, mapDispatchToProps)(withStyles(styles)(BrowserCertificateFileSelection))
+export default connect(undefined, mapDispatchToProps)(withStyles(styles)(BrowserCertificateFileSelection) as any)

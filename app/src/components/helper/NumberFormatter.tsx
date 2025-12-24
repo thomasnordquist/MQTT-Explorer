@@ -1,7 +1,7 @@
 import React from 'react'
 import { AppState } from '../../reducers'
 import { connect } from 'react-redux'
-import { Tooltip } from '@material-ui/core'
+import { Tooltip } from '@mui/material'
 
 function NumberFormatter(props: { locale: string; value: number; grouping?: boolean }) {
   let formatter: Intl.NumberFormat | undefined

@@ -1,6 +1,6 @@
 import ConfirmationDialog from './ConfirmationDialog'
 import ConnectionSetup from './ConnectionSetup/ConnectionSetup'
-import CssBaseline from '@material-ui/core/CssBaseline'
+import CssBaseline from '@mui/material/CssBaseline'
 import ErrorBoundary from './ErrorBoundary'
 import Notification from './Layout/Notification'
 import React from 'react'
@@ -11,7 +11,8 @@ import { bindActionCreators } from 'redux'
 import { ConfirmationRequest } from '../reducers/Global'
 import { connect } from 'react-redux'
 import { globalActions, settingsActions } from '../actions'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 ;(window as any).global = window
 
 const Settings = React.lazy(() => import('./SettingsDrawer/Settings'))

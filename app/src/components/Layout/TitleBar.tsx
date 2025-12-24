@@ -1,15 +1,20 @@
 import * as React from 'react'
-import CloudOff from '@material-ui/icons/CloudOff'
+import CloudOff from '@mui/icons-material/CloudOff'
+import Logout from '@mui/icons-material/Logout'
 import ConnectionHealthIndicator from '../helper/ConnectionHealthIndicator'
-import Menu from '@material-ui/icons/Menu'
+const ConnectionHealthIndicatorAny = ConnectionHealthIndicator as any
+import Menu from '@mui/icons-material/Menu'
 import PauseButton from './PauseButton'
 import SearchBar from './SearchBar'
-import { AppBar, Button, IconButton, Toolbar, Typography } from '@material-ui/core'
+import { AppBar, Button, IconButton, Toolbar, Typography } from '@mui/material'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { connectionActions, globalActions, settingsActions } from '../../actions'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
+import { isBrowserMode } from '../../utils/browserMode'
+import { useAuth } from '../../contexts/AuthContext'
 
 const styles = (theme: Theme) => ({
   title: {
@@ -33,6 +38,9 @@ const styles = (theme: Theme) => ({
   disconnect: {
     margin: 'auto 8px auto auto',
   },
+  logout: {
+    margin: 'auto 0 auto 8px',
+  },
   disconnectLabel: {
     color: theme.palette.primary.contrastText,
   },
@@ -52,6 +60,22 @@ class TitleBar extends React.PureComponent<Props, {}> {
   constructor(props: any) {
     super(props)
     this.state = {}
+  }
+
+  private handleLogout = async () => {
+    // Disconnect first
+    this.props.actions.connection.disconnect()
+    
+    // Clear credentials from sessionStorage
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.removeItem('mqtt-explorer-username')
+      sessionStorage.removeItem('mqtt-explorer-password')
+    }
+    
+    // Reload page to reset all state and show login dialog
+    if (typeof window !== 'undefined') {
+      window.location.reload()
+    }
   }
 
   public render() {
@@ -75,16 +99,37 @@ class TitleBar extends React.PureComponent<Props, {}> {
           <PauseButton />
           <Button
             className={classes.disconnect}
-            classes={{ label: classes.disconnectLabel }}
+            sx={{ color: 'primary.contrastText' }}
             onClick={actions.connection.disconnect}
+            data-testid="disconnect-button"
           >
             Disconnect <CloudOff className={classes.disconnectIcon} />
           </Button>
-          <ConnectionHealthIndicator withBackground={true} />
+          <LogoutButton classes={classes} onLogout={this.handleLogout} />
+          <ConnectionHealthIndicatorAny withBackground={true} />
         </Toolbar>
       </AppBar>
     )
   }
+}
+
+// Separate component to use hooks
+function LogoutButton({ classes, onLogout }: { classes: any; onLogout: () => void }) {
+  const { authDisabled } = useAuth()
+  
+  if (!isBrowserMode || authDisabled) {
+    return null
+  }
+
+  return (
+    <Button
+      className={classes.logout}
+      sx={{ color: 'primary.contrastText' }}
+      onClick={onLogout}
+    >
+      Logout <Logout className={classes.disconnectIcon} />
+    </Button>
+  )
 }
 
 const mapStateToProps = (state: AppState) => {

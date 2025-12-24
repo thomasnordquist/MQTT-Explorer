@@ -43,16 +43,12 @@ export async function showNumericPlot(browser: Page) {
 }
 
 async function valuePreviewGuttersShowChartIcon(name: string, browser: Page) {
-  for (let retries = 0; retries < 2; retries += 1) {
-    try {
-      return await browser
-        .locator(`//*[contains(@data-test-type, "ShowChart")][contains(@data-test, "${name}")]`)
-        .first()
-    } catch {
-      // ignore
-    }
-  }
-  return browser.locator(`//*[contains(@data-test-type, "ShowChart")][contains(@data-test, "${name}")]`).first()
+  const locator = browser
+    .locator(`//*[contains(@data-test-type, "ShowChart")][contains(@data-test, "${name}")]`)
+    .first()
+  
+  await locator.waitFor({ state: 'visible', timeout: 30000 })
+  return locator
 }
 
 async function chartSettings(name: string, browser: Page) {
@@ -76,6 +72,6 @@ async function removeChart(name: string, browser: Page) {
 }
 
 async function clickOnMenuPoint(name: string, browser: Page) {
-  const item = await browser.locator(`//li/span[contains(text(), "${name}")]`)
+  const item = await browser.locator(`[data-menu-item="${name}"]`)
   return clickOn(item)
 }

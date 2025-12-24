@@ -3,6 +3,7 @@ export interface Scene {
   start: number
   stop: number
   duration: number
+  title?: string
 }
 
 export type SceneNames =
@@ -21,6 +22,44 @@ export type SceneNames =
   | 'keyboard_shortcuts'
   | 'sparkplugb-decoding'
   | 'end'
+  | 'mobile_intro'
+  | 'mobile_connect'
+  | 'mobile_browse_topics'
+  | 'mobile_search'
+  | 'mobile_view_message'
+  | 'mobile_json_view'
+  | 'mobile_clipboard'
+  | 'mobile_plots'
+  | 'mobile_menu'
+  | 'mobile_end'
+
+export const SCENE_TITLES: Record<SceneNames, string> = {
+  connect: 'Connecting to MQTT Broker',
+  topic_updates: 'Topic Updates',
+  numeric_plots: 'Plot Topic History',
+  'json-formatting': 'Formatted Messages',
+  diffs: 'Diff Capability',
+  publish_topic: 'Publish Topics',
+  json_formatting_publish: 'JSON Formatting Publish',
+  clipboard: 'Copy to Clipboard',
+  topic_filter: 'Search Topic Hierarchy',
+  delete_retained_topics: 'Delete Retained Topics',
+  settings: 'Settings',
+  customize_subscriptions: 'Customize Subscriptions',
+  keyboard_shortcuts: 'Keyboard Shortcuts',
+  'sparkplugb-decoding': 'SparkplugB Decoding',
+  end: 'The End',
+  mobile_intro: 'MQTT Explorer on Mobile',
+  mobile_connect: 'Connect to MQTT Broker',
+  mobile_browse_topics: 'Browse Topic Tree',
+  mobile_search: 'Search Topics',
+  mobile_view_message: 'View Message Details',
+  mobile_json_view: 'JSON Message Formatting',
+  mobile_clipboard: 'Copy to Clipboard',
+  mobile_plots: 'View Numeric Plots',
+  mobile_menu: 'Settings & Menu',
+  mobile_end: 'Mobile-Friendly MQTT Explorer',
+}
 
 export class SceneBuilder {
   public scenes: Array<Scene> = []
@@ -36,6 +75,7 @@ export class SceneBuilder {
       start,
       stop,
       duration: stop - start,
+      title: SCENE_TITLES[name],
     })
   }
 }

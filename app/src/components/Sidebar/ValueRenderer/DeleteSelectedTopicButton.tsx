@@ -1,7 +1,7 @@
-import Clear from '@material-ui/icons/Clear'
+import Clear from '@mui/icons-material/Clear'
 import React, { useMemo } from 'react'
 import { bindActionCreators } from 'redux'
-import { Button, Tooltip } from '@material-ui/core'
+import { Button, Tooltip } from '@mui/material'
 import { connect } from 'react-redux'
 import { sidebarActions } from '../../../actions'
 

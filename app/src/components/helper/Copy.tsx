@@ -1,12 +1,26 @@
 import * as React from 'react'
-import Check from '@material-ui/icons/Check'
+import Check from '@mui/icons-material/Check'
 import CustomIconButton from './CustomIconButton'
-import FileCopy from '@material-ui/icons/FileCopy'
+import FileCopy from '@mui/icons-material/FileCopy'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { globalActions } from '../../actions'
+import copyTextFallback from 'copy-text-to-clipboard'
 
-const copy = require('copy-text-to-clipboard')
+async function copyToClipboard(text: string): Promise<boolean> {
+  try {
+    // Try modern Clipboard API first (works in browser with HTTPS)
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text)
+      return true
+    }
+  } catch (error) {
+    console.warn('Clipboard API failed, using fallback:', error)
+  }
+
+  // Fallback to copy-text-to-clipboard library
+  return copyTextFallback(text)
+}
 
 interface Props {
   value?: string
@@ -26,15 +40,24 @@ class Copy extends React.PureComponent<Props, State> {
     this.state = { didCopy: false }
   }
 
-  private handleClick = (event: React.MouseEvent) => {
+  private handleClick = async (event: React.MouseEvent) => {
     event.stopPropagation()
 
-    copy(this.props.value ?? this.props.getValue?.())
-    this.props.actions.global.showNotification('Copied to clipboard')
-    this.setState({ didCopy: true })
-    setTimeout(() => {
-      this.setState({ didCopy: false })
-    }, 1500)
+    const text = this.props.value ?? this.props.getValue?.()
+    if (!text) {
+      return
+    }
+
+    const success = await copyToClipboard(text)
+    if (success) {
+      this.props.actions.global.showNotification('Copied to clipboard')
+      this.setState({ didCopy: true })
+      setTimeout(() => {
+        this.setState({ didCopy: false })
+      }, 1500)
+    } else {
+      this.props.actions.global.showNotification('Failed to copy to clipboard')
+    }
   }
 
   public render() {
@@ -45,7 +68,7 @@ class Copy extends React.PureComponent<Props, State> {
     )
 
     return (
-      <CustomIconButton onClick={this.handleClick} tooltip="Copy to clipboard">
+      <CustomIconButton onClick={this.handleClick} tooltip="Copy to clipboard" data-testid="copy-button">
         <div style={{ marginTop: '2px' }}>{icon}</div>
       </CustomIconButton>
     )

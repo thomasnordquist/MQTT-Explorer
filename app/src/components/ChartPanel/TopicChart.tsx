@@ -7,7 +7,7 @@ import { ChartActions } from './ChartActions'
 import { chartActions } from '../../actions'
 import { ChartParameters } from '../../reducers/Charts'
 import { connect } from 'react-redux'
-import { Paper } from '@material-ui/core'
+import { Paper } from '@mui/material'
 const throttle = require('lodash.throttle')
 
 class ClearableMessageBuffer extends q.RingBuffer<q.Message> {

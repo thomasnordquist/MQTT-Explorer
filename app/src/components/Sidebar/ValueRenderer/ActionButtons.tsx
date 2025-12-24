@@ -1,10 +1,12 @@
 import React, { useCallback } from 'react'
-import Code from '@material-ui/icons/Code'
-import Reorder from '@material-ui/icons/Reorder'
-import ToggleButton from '@material-ui/lab/ToggleButton'
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
+import Code from '@mui/icons-material/Code'
+import Reorder from '@mui/icons-material/Reorder'
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { settingsActions } from '../../../actions'
-import { Tooltip, withStyles, Theme } from '@material-ui/core'
+import { Tooltip } from '@mui/material'
+import { withStyles } from '@mui/styles'
+import { Theme } from '@mui/material/styles'
 import { bindActionCreators } from 'redux'
 import { AppState } from '../../../reducers'
 import { connect } from 'react-redux'
@@ -73,4 +75,4 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ActionButtons))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ActionButtons) as any)

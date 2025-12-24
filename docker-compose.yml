@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  mqtt-explorer:
+    image: ghcr.io/thomasnordquist/mqtt-explorer:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - MQTT_EXPLORER_USERNAME=admin
+      - MQTT_EXPLORER_PASSWORD=changeme
+      # Uncomment to disable authentication (use only behind a secure proxy!)
+      # - MQTT_EXPLORER_SKIP_AUTH=true
+    volumes:
+      - mqtt-explorer-data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000', (r) => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  mqtt-explorer-data:

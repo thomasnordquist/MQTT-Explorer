@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import * as bcrypt from 'bcryptjs'
+import * as crypto from 'crypto'
 import { v4 as uuidv4 } from 'uuid'
 
 export interface Credentials {
@@ -11,20 +12,40 @@ export interface Credentials {
 export class AuthManager {
   private credentialsPath: string
   private credentials: Credentials | undefined
+  private skipAuth: boolean
 
   constructor(credentialsPath: string) {
     this.credentialsPath = credentialsPath
+    this.skipAuth = process.env.MQTT_EXPLORER_SKIP_AUTH === 'true'
+  }
+
+  public isAuthDisabled(): boolean {
+    return this.skipAuth
   }
 
   public async initialize(): Promise<void> {
+    const isProduction = process.env.NODE_ENV === 'production'
+
+    // Check if authentication is disabled
+    if (this.skipAuth) {
+      console.log('='.repeat(60))
+      console.log('WARNING: Authentication is DISABLED')
+      console.log('MQTT_EXPLORER_SKIP_AUTH=true')
+      console.log('This should only be used behind a secure authentication proxy!')
+      console.log('='.repeat(60))
+      return
+    }
+
     // Try to get credentials from environment variables
     const envUsername = process.env.MQTT_EXPLORER_USERNAME
     const envPassword = process.env.MQTT_EXPLORER_PASSWORD
 
     if (envUsername && envPassword) {
       // Use environment credentials
-      console.log('Using credentials from environment variables')
-      console.log('Username:', envUsername)
+      if (!isProduction) {
+        console.log('Using credentials from environment variables')
+        console.log('Username:', envUsername)
+      }
       this.credentials = {
         username: envUsername,
         passwordHash: await bcrypt.hash(envPassword, 10),
@@ -37,8 +58,10 @@ export class AuthManager {
       try {
         const data = fs.readFileSync(this.credentialsPath, 'utf8')
         this.credentials = JSON.parse(data)
-        console.log('Loaded credentials from', this.credentialsPath)
-        console.log('Username:', this.credentials!.username)
+        if (!isProduction && this.credentials) {
+          console.log('Loaded credentials from', this.credentialsPath)
+          console.log('Username:', this.credentials.username)
+        }
         return
       } catch (error) {
         console.error('Failed to load credentials from file:', error)
@@ -56,6 +79,10 @@ export class AuthManager {
     console.log('='.repeat(60))
     console.log('Please save these credentials. They will be persisted to:')
     console.log(this.credentialsPath)
+    console.log('='.repeat(60))
+    console.log('IMPORTANT: In production, use environment variables:')
+    console.log('export MQTT_EXPLORER_USERNAME=<username>')
+    console.log('export MQTT_EXPLORER_PASSWORD=<password>')
     console.log('='.repeat(60))
 
     this.credentials = {
@@ -81,7 +108,13 @@ export class AuthManager {
       return false
     }
 
-    if (username !== this.credentials.username) {
+    // Use constant-time comparison for username to prevent timing attacks
+    const usernameMatch = crypto.timingSafeEqual(
+      Buffer.from(username.padEnd(256, '\0')),
+      Buffer.from(this.credentials.username.padEnd(256, '\0'))
+    )
+
+    if (!usernameMatch) {
       return false
     }
 
