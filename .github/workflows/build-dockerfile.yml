@@ -8,6 +8,10 @@ on:
       - Dockerfile
       - .github
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   create-image:
     runs-on: ubuntu-latest

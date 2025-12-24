@@ -2,6 +2,10 @@ name: Update Website
 
 on: [release, workflow_dispatch]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   update-website:
     runs-on: ubuntu-latest
