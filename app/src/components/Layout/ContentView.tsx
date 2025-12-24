@@ -22,13 +22,26 @@ interface Props {
 
 function ContentView(props: Props) {
   // Use different defaults for mobile viewports (<=768px width)
-  // Use useState with lazy initialization to get initial mobile state
-  const [isMobile] = React.useState(() => typeof window !== 'undefined' && window.innerWidth <= 768)
+  // Use state for mobile detection that updates on resize
+  const [isMobile, setIsMobile] = React.useState(() => typeof window !== 'undefined' && window.innerWidth <= 768)
   const [mobileTab, setMobileTab] = React.useState(0) // 0 = topics, 1 = details
   const [height, setHeight] = React.useState<string | number>('100%')
   const [sidebarWidth, setSidebarWidth] = React.useState<string | number>(isMobile ? '100%' : '40%')
   const [detectedHeight, setDetectedHeight] = React.useState(0)
   const [detectedSidebarWidth, setDetectedSidebarWidth] = React.useState(0)
+  
+  // Update mobile state on resize
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    // Set initial state
+    handleResize()
+    
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
   
   const { height: resizeHeight, ref: heightRef } = useResizeDetector()
   const { width: resizeWidth, ref: widthRef } = useResizeDetector()
@@ -75,6 +88,8 @@ function ContentView(props: Props) {
 
   // Mobile view with tab switcher
   if (isMobile) {
+    console.log('Rendering MOBILE view, tab:', mobileTab)
+    
     // Expose tab switching function for TreeNode to call
     React.useEffect(() => {
       if (typeof window !== 'undefined') {
@@ -112,7 +127,7 @@ function ContentView(props: Props) {
     }
 
     return (
-      <div className={props.paneDefaults} style={mobileContainerStyle}>
+      <div style={mobileContainerStyle}>
         <MobileTabs value={mobileTab} onChange={setMobileTab} />
         <div style={tabContentStyle}>
           {/* Topics tab */}
