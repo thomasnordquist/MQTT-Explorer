@@ -20,8 +20,11 @@ interface Props {
 }
 
 function ContentView(props: Props) {
+  // Use different defaults for mobile viewports (<=768px width)
+  // Use useState with lazy initialization to get initial mobile state
+  const [isMobile] = React.useState(() => typeof window !== 'undefined' && window.innerWidth <= 768)
   const [height, setHeight] = React.useState<string | number>('100%')
-  const [sidebarWidth, setSidebarWidth] = React.useState<string | number>('40%')
+  const [sidebarWidth, setSidebarWidth] = React.useState<string | number>(isMobile ? '100%' : '40%')
   const [detectedHeight, setDetectedHeight] = React.useState(0)
   const [detectedSidebarWidth, setDetectedSidebarWidth] = React.useState(0)
   
@@ -109,7 +112,12 @@ function ContentView(props: Props) {
           <div ref={widthRef} style={{ height: '100%' }}>
             <div
               className={props.paneDefaults}
-              style={{ minWidth: '250px', height: '100%', overflowY: 'auto', overflowX: 'hidden' }}
+              style={{ 
+                minWidth: isMobile ? '100%' : '250px', 
+                height: '100%', 
+                overflowY: 'auto', 
+                overflowX: 'hidden' 
+              }}
             >
               <Sidebar connectionId={props.connectionId} />
             </div>

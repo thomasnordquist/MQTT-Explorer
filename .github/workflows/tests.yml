@@ -157,6 +157,116 @@ jobs:
               body: markdown
             });
 
+  demo-video-mobile:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/thomasnordquist/mqtt-explorer-ui-tests:latest
+      volumes:
+        - ./:/app
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Install Packages
+        run: yarn install --frozen-lockfile
+      - name: Build Browser Mode
+        run: yarn build:server
+      - name: Generate Mobile Demo Video
+        run: ./scripts/uiTestsMobile.sh
+      - name: Post-processing
+        run: ./scripts/prepareVideoMobile.sh
+      - name: Generate unique base path
+        id: basepath
+        run: |
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          BASEPATH="pr-${{ github.event.pull_request.number }}-mobile-${TIMESTAMP}"
+          echo "basepath=${BASEPATH}" >> $GITHUB_OUTPUT
+      - name: Install AWS CLI v2
+        run: |
+          apt-get update && apt-get install -y unzip
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip -q awscliv2.zip
+          ./aws/install
+          rm -rf aws awscliv2.zip
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ vars.AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: 'eu-central-1'
+      - name: Upload full mobile video to S3
+        env:
+          AWS_BUCKET: ${{ vars.AWS_BUCKET }}
+          BASEPATH: ${{ steps.basepath.outputs.basepath }}
+        run: |
+          # Upload GIF
+          aws s3api put-object \
+            --bucket ${AWS_BUCKET} \
+            --key artifacts/${BASEPATH}/ui-test-mobile.gif \
+            --body ./ui-test-mobile.gif \
+            --content-type image/gif
+          
+          # Upload MP4
+          aws s3api put-object \
+            --bucket ${AWS_BUCKET} \
+            --key artifacts/${BASEPATH}/ui-test-mobile.mp4 \
+            --body ./ui-test-mobile.mp4 \
+            --content-type video/mp4
+      - name: Upload mobile video segments to S3
+        env:
+          AWS_BUCKET: ${{ vars.AWS_BUCKET }}
+          BASEPATH: ${{ steps.basepath.outputs.basepath }}
+        shell: bash
+        run: |
+          # Upload all mobile GIF segment files if they exist
+          shopt -s nullglob  # Make glob return empty list if no matches
+          for segment in segment-mobile-*.gif; do
+            echo "Uploading $segment..."
+            aws s3api put-object \
+              --bucket ${AWS_BUCKET} \
+              --key artifacts/${BASEPATH}/${segment} \
+              --body ./${segment} \
+              --content-type image/gif
+          done
+          shopt -u nullglob  # Restore default behavior
+      - name: Generate file URLs
+        id: fileurl
+        env:
+          AWS_BUCKET: ${{ vars.AWS_BUCKET }}
+          BASEPATH: ${{ steps.basepath.outputs.basepath }}
+        run: |
+          BASE_URL="https://${AWS_BUCKET}.s3.eu-central-1.amazonaws.com/artifacts/${BASEPATH}"
+          echo "base-url=${BASE_URL}" >> $GITHUB_OUTPUT
+          echo "Uploaded to: ${BASE_URL}"
+      - name: Generate markdown summary
+        id: markdown
+        env:
+          BASE_URL: ${{ steps.fileurl.outputs.base-url }}
+        run: |
+          MARKDOWN=$(node ./scripts/generateMarkdownSummaryMobile.js "${BASE_URL}")
+          echo "markdown<<EOF" >> $GITHUB_OUTPUT
+          echo "$MARKDOWN" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      - name: Add to workflow summary
+        env:
+          MARKDOWN: ${{ steps.markdown.outputs.markdown }}
+        run: |
+          echo "$MARKDOWN" >> $GITHUB_STEP_SUMMARY
+      - name: Post mobile video to PR
+        uses: actions/github-script@v7
+        env:
+          MARKDOWN: ${{ steps.markdown.outputs.markdown }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const markdown = process.env.MARKDOWN;
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: markdown
+            });
+
   test-browser:
     runs-on: ubuntu-latest
     env:
