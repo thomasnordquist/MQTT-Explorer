@@ -64,9 +64,9 @@ async function doStuff() {
     args: [
       '--no-sandbox',
       '--disable-dev-shm-usage',
+      '--kiosk',  // Kiosk mode - fullscreen without any browser UI
       '--window-size=412,914',  // Match the mobile viewport size
       '--window-position=0,0',
-      '--app=http://localhost:3000',  // App mode - removes all browser chrome
       '--disable-features=TranslateUI',
       '--no-first-run',
       '--no-default-browser-check',
@@ -151,13 +151,18 @@ async function doStuff() {
     await showText('Connect to MQTT Broker', 1500, page, 'top')
     await connectTo(brokerHost, page)
     await MockSparkplug.run() // Start sparkplug client after connect
-    await sleep(2000)
+    await sleep(3000) // Give more time for topics to load
     await hideText(page)
   })
 
   await scenes.record('mobile_browse_topics', async () => {
     await showText('Browse Topics - Topics Tab', 1500, page, 'top')
-    await sleep(1500)
+    await sleep(2000)
+    // Wait for tree nodes to be visible
+    await page.waitForSelector('[data-test-topic]', { timeout: 10000 }).catch(() => {
+      console.log('Tree nodes not found, continuing...')
+    })
+    await sleep(1000)
     // Expand a topic by clicking the expand button with force to avoid interception
     const expandButton = page.locator('span.expander').first()
     if (await expandButton.isVisible()) {
