@@ -36,6 +36,7 @@ trap finish EXIT
 mosquitto &
 export PID_MOSQUITTO=$!
 sleep 1
+npx -y playwright install
 
 # Set credentials for browser authentication (tests will use these to login)
 export MQTT_EXPLORER_USERNAME=${MQTT_EXPLORER_USERNAME:-test}
