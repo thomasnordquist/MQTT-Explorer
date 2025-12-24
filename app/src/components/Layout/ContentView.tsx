@@ -88,9 +88,9 @@ function ContentView(props: Props) {
     }, [])
 
     return (
-      <div className={props.paneDefaults} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div className={props.paneDefaults} style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
         <MobileTabs value={mobileTab} onChange={setMobileTab} />
-        <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
+        <div style={{ flex: 1, overflow: 'hidden', position: 'relative', minHeight: 0, width: '100%' }}>
           {/* Topics tab */}
           <div 
             style={{ 
@@ -99,8 +99,9 @@ function ContentView(props: Props) {
               left: 0,
               right: 0,
               bottom: 0,
-              overflow: 'auto',
-              display: mobileTab === 0 ? 'block' : 'none'
+              display: mobileTab === 0 ? 'block' : 'none',
+              height: '100%',
+              width: '100%'
             }}
           >
             <Tree />
