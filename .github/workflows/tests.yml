@@ -27,10 +27,6 @@ jobs:
       image: ghcr.io/thomasnordquist/mqtt-explorer-ui-tests:latest
       volumes:
         - ./:/app
-      options: --user root
-    env:
-      TESTS_MQTT_BROKER_HOST: mosquitto
-      TESTS_MQTT_BROKER_PORT: 1883
     steps:
       - uses: actions/checkout@v4
         with:
@@ -59,10 +55,6 @@ jobs:
       image: ghcr.io/thomasnordquist/mqtt-explorer-ui-tests:latest
       volumes:
         - ./:/app
-      options: --user root
-    env:
-      TESTS_MQTT_BROKER_HOST: localhost
-      TESTS_MQTT_BROKER_PORT: 1883
     steps:
       - uses: actions/checkout@v4
         with:
