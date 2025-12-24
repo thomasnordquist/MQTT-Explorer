@@ -187,6 +187,34 @@ yarn build
 
 This script handles Xvfb setup, mosquitto startup, video recording, and cleanup.
 
+### Mobile Demo Video
+
+A mobile-focused demo video showcases MQTT Explorer in a mobile viewport (Pixel 6: 412x915px):
+
+```bash
+yarn build
+yarn test:demo-video:mobile
+```
+
+Or with full recording setup:
+```bash
+yarn build
+./scripts/uiTestsMobile.sh
+```
+
+This demonstrates the mobile compatibility features and responsive design improvements. See [MOBILE_COMPATIBILITY.md](MOBILE_COMPATIBILITY.md) for the mobile strategy and implementation details.
+
+## Mobile Compatibility
+
+MQTT Explorer supports mobile devices through its browser mode with responsive design enhancements:
+
+- **Target Device**: Google Pixel 6 (412x915px viewport)
+- **Touch-Friendly UI**: Minimum 44px tap targets for better mobile UX
+- **Responsive Layout**: Sidebar and panels adapt to mobile viewports
+- **Browser Mode**: Access via mobile browser or install as PWA
+
+For the complete mobile compatibility concept, implementation phases, and future roadmap, see [MOBILE_COMPATIBILITY.md](MOBILE_COMPATIBILITY.md).
+
 ## Create a release
 
 Create a PR to `release` branch.
