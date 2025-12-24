@@ -31,8 +31,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - name: Start mosquitto
-        run: mosquitto -c /etc/mosquitto/conf.d/default.conf -d
       - name: Install Packages
         run: yarn install --frozen-lockfile
       - name: Build Browser Mode

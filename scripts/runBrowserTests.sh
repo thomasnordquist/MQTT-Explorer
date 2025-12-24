@@ -2,7 +2,7 @@
 # Browser Mode Test Runner
 # 
 # This script runs UI tests against the browser mode server (instead of Electron).
-# It expects a mosquitto MQTT broker to be running (via service or manually started).
+# It starts a mosquitto MQTT broker automatically and cleans it up on exit.
 # The broker address is configured via environment variables.
 #
 # Environment Variables:
@@ -23,9 +23,19 @@ function finish {
     echo "Stopping server ($PID_SERVER).."
     kill "$PID_SERVER" || echo "Already stopped"
   fi
+
+  if [[ ! -z "$PID_MOSQUITTO" ]]; then
+    echo "Stopping mosquitto ($PID_MOSQUITTO).."
+    kill "$PID_MOSQUITTO" || echo "Already stopped"
+  fi
 }
 
 trap finish EXIT
+
+# Start mqtt broker
+mosquitto &
+export PID_MOSQUITTO=$!
+sleep 1
 
 # Set credentials for browser authentication (tests will use these to login)
 export MQTT_EXPLORER_USERNAME=${MQTT_EXPLORER_USERNAME:-test}
