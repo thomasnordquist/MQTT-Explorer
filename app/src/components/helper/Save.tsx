@@ -21,7 +21,7 @@ function downloadFileInBrowser(data: string, filename: string): string {
   for (let i = 0; i < binaryString.length; i++) {
     bytes[i] = binaryString.charCodeAt(i)
   }
-  
+
   // Create blob and download
   const blob = new Blob([bytes], { type: 'application/octet-stream' })
   const url = URL.createObjectURL(blob)
@@ -32,7 +32,7 @@ function downloadFileInBrowser(data: string, filename: string): string {
   link.click()
   document.body.removeChild(link)
   URL.revokeObjectURL(url)
-  
+
   return filename
 }
 

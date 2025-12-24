@@ -17,7 +17,7 @@ async function copyToClipboard(text: string): Promise<boolean> {
   } catch (error) {
     console.warn('Clipboard API failed, using fallback:', error)
   }
-  
+
   // Fallback to copy-text-to-clipboard library
   return copyTextFallback(text)
 }

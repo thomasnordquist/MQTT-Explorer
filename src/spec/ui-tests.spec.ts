@@ -15,7 +15,7 @@ import type { MqttClient } from 'mqtt'
  * Tests the core UI functionality using a single connection.
  * All topics are published before connecting, and tests run sequentially
  * on the same connected application instance.
- * 
+ *
  * Supports both Electron and Browser modes:
  * - Electron mode: Default behavior, launches Electron app
  * - Browser mode: Set BROWSER_MODE_URL environment variable to the server URL
@@ -94,10 +94,13 @@ describe('MQTT Explorer UI Tests', function () {
         // Timeout is expected if dialog is not shown, not an error
         console.log('Login dialog not found (timeout) - checking if auth is disabled')
       }
-      
+
       // Debug: print page content to see what's rendered
       if (!loginDialogVisible) {
-        const body = await page.locator('body').textContent().catch(() => 'Unable to read body')
+        const body = await page
+          .locator('body')
+          .textContent()
+          .catch(() => 'Unable to read body')
         console.log('Page body text:', body?.substring(0, 300))
       }
 
@@ -283,20 +286,20 @@ describe('MQTT Explorer UI Tests', function () {
       if (isBrowserMode) {
         // In browser mode, set up download handling
         const downloadPromise = page.waitForEvent('download', { timeout: 10000 })
-        
+
         // When: Save button is clicked
         const saveButton = page.getByRole('button', { name: /Value/i }).getByTestId('save-button')
         await saveButton.click()
-        
+
         // Then: Download should be triggered
         const download = await downloadPromise
         expect(download).to.not.be.undefined
-        
+
         // Verify download has a filename
         const filename = download.suggestedFilename()
         expect(filename).to.include('mqtt-message-')
         console.log('Browser mode: File downloaded:', filename)
-        
+
         // Save to verify (optional, but helps with debugging)
         await download.saveAs(`/tmp/${filename}`)
       } else {
@@ -305,7 +308,7 @@ describe('MQTT Explorer UI Tests', function () {
         const saveButton = page.getByRole('button', { name: /Value/i }).getByTestId('save-button')
         const isVisible = await saveButton.isVisible()
         expect(isVisible).to.be.true
-        
+
         // Note: In Electron, clicking this would open a native dialog which we can't easily automate
         // For now, just verify the button exists
         console.log('Electron mode: Save button is visible (native dialog not tested)')

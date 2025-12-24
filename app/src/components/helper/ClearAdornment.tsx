@@ -15,7 +15,7 @@ interface Props {
  */
 function ClearAdornment(props: Props) {
   const theme = useTheme()
-  
+
   if (!props.value) {
     return null
   }
