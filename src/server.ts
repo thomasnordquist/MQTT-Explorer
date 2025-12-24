@@ -12,7 +12,7 @@ import ConfigStorage from '../backend/src/ConfigStorage'
 import { SocketIOServerEventBus } from '../events/EventSystem/SocketIOServerEventBus'
 import { Rpc } from '../events/EventSystem/Rpc'
 import { makeOpenDialogRpc, makeSaveDialogRpc } from '../events/OpenDialogRequest'
-import { getAppVersion, writeToFile, readFromFile } from '../events'
+import { getAppVersion, writeToFile, readFromFile, addMqttConnectionEvent } from '../events'
 import { RpcEvents } from '../events/EventsV2'
 
 const PORT = process.env.PORT || 3000
@@ -223,6 +223,43 @@ async function startServer() {
     
     if (!isProduction) {
       console.log(`Client connected, auth disabled: ${authDisabled}`)
+    }
+    
+    // Auto-connect to MQTT broker if configured via environment variables
+    const autoConnectHost = process.env.MQTT_AUTO_CONNECT_HOST
+    if (autoConnectHost) {
+      const connectionId = 'auto-connect-' + Date.now()
+      const protocol = process.env.MQTT_AUTO_CONNECT_PROTOCOL || 'mqtt'
+      const port = parseInt(process.env.MQTT_AUTO_CONNECT_PORT || '1883')
+      const tls = protocol.endsWith('s') // mqtts or wss
+      const url = `${protocol}://${autoConnectHost}:${port}`
+      
+      const autoConnectConfig = {
+        id: connectionId,
+        options: {
+          url,
+          username: process.env.MQTT_AUTO_CONNECT_USERNAME,
+          password: process.env.MQTT_AUTO_CONNECT_PASSWORD,
+          tls,
+          certValidation: false,
+          clientId: process.env.MQTT_AUTO_CONNECT_CLIENT_ID || 'mqtt-explorer-' + Math.random().toString(16).substr(2, 8),
+          subscriptions: [{ topic: '#', qos: 0 as 0 | 1 | 2 }], // Subscribe to all topics
+        }
+      }
+      
+      if (!isProduction) {
+        console.log('Auto-connecting to MQTT broker:', {
+          url: autoConnectConfig.options.url,
+          clientId: autoConnectConfig.options.clientId,
+          username: autoConnectConfig.options.username || '(none)',
+        })
+      }
+      
+      // Trigger connection via backend events
+      backendEvents.emit(addMqttConnectionEvent, autoConnectConfig)
+      
+      // Notify client that auto-connect was initiated
+      socket.emit('auto-connect-initiated', { connectionId })
     }
   })
 

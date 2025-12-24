@@ -87,39 +87,46 @@ function ContentView(props: Props) {
       }
     }, [])
 
+    const mobileContainerStyle: React.CSSProperties = {
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      width: '100%',
+    }
+
+    const tabContentStyle: React.CSSProperties = {
+      flex: 1,
+      position: 'relative',
+      minHeight: 0,
+      width: '100%',
+    }
+
+    const tabPaneStyle: React.CSSProperties = {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      height: '100%',
+      width: '100%',
+    }
+
     return (
-      <div className={props.paneDefaults} style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
+      <div className={props.paneDefaults} style={mobileContainerStyle}>
         <MobileTabs value={mobileTab} onChange={setMobileTab} />
-        <div style={{ flex: 1, overflow: 'hidden', position: 'relative', minHeight: 0, width: '100%' }}>
+        <div style={tabContentStyle}>
           {/* Topics tab */}
-          <div 
-            style={{ 
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              display: mobileTab === 0 ? 'block' : 'none',
-              height: '100%',
-              width: '100%'
-            }}
-          >
-            <Tree />
-          </div>
+          {mobileTab === 0 && (
+            <div style={tabPaneStyle}>
+              <Tree />
+            </div>
+          )}
           {/* Details tab */}
-          <div 
-            style={{ 
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              overflow: 'auto',
-              display: mobileTab === 1 ? 'block' : 'none'
-            }}
-          >
-            <Sidebar connectionId={props.connectionId} />
-          </div>
+          {mobileTab === 1 && (
+            <div style={{ ...tabPaneStyle, overflow: 'auto' }}>
+              <Sidebar connectionId={props.connectionId} />
+            </div>
+          )}
         </div>
       </div>
     )
