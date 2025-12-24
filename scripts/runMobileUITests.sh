@@ -1,7 +1,7 @@
 #!/bin/bash
-# Browser Mode Test Runner
+# Mobile UI Test Runner
 # 
-# This script runs UI tests against the browser mode server (instead of Electron).
+# This script runs UI tests against the browser mode server with mobile viewport.
 # It starts a mosquitto MQTT broker automatically and cleans it up on exit.
 # The broker address is configured via environment variables.
 #
@@ -12,6 +12,7 @@
 #   BROWSER_MODE_URL - URL for browser tests (set automatically)
 #   TESTS_MQTT_BROKER_HOST - MQTT broker host for tests (required, default: 127.0.0.1)
 #   TESTS_MQTT_BROKER_PORT - MQTT broker port for tests (default: 1883)
+#   USE_MOBILE_VIEWPORT - Enable mobile viewport (set to true)
 #
 set -e
 
@@ -61,18 +62,18 @@ for i in {1..60}; do
   sleep 1
 done
 
-# Run browser tests
+# Run mobile UI tests with mobile viewport enabled
 export BROWSER_MODE_URL="http://localhost:${PORT}"
 export TESTS_MQTT_BROKER_HOST="${TESTS_MQTT_BROKER_HOST:-127.0.0.1}"
 export TESTS_MQTT_BROKER_PORT="${TESTS_MQTT_BROKER_PORT:-1883}"
 # Enable mobile viewport for mobile UI tests
-export USE_MOBILE_VIEWPORT="${USE_MOBILE_VIEWPORT:-false}"
+export USE_MOBILE_VIEWPORT="true"
 
 echo "Using MQTT broker at $TESTS_MQTT_BROKER_HOST:$TESTS_MQTT_BROKER_PORT"
-echo "Mobile viewport: $USE_MOBILE_VIEWPORT"
+echo "Mobile viewport: ENABLED (412x914)"
 
 yarn test:browser
 TEST_EXIT_CODE=$?
 
-echo "Browser tests exited with $TEST_EXIT_CODE"
+echo "Mobile UI tests exited with $TEST_EXIT_CODE"
 exit $TEST_EXIT_CODE
