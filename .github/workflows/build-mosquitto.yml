@@ -1,0 +1,34 @@
+name: Build Mosquitto Test Image
+
+on:
+  push:
+    branches:
+      - master
+      - beta
+      - release
+    paths:
+      - '.github/mosquitto/Dockerfile'
+  workflow_dispatch:
+
+jobs:
+  build-mosquitto:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Build and push mosquitto test image
+        uses: docker/build-push-action@v5
+        with:
+          context: .github/mosquitto
+          push: true
+          tags: ghcr.io/${{ github.repository }}/mosquitto-test:latest
