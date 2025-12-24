@@ -13,6 +13,9 @@ import { globalActions } from '../../actions'
 
 /**
  * Download a file in browser mode using blob URL
+ * @param data Base64-encoded file data
+ * @param filename Filename for the download
+ * @returns The filename that was downloaded
  */
 function downloadFileInBrowser(data: string, filename: string): string {
   // Decode base64 data
