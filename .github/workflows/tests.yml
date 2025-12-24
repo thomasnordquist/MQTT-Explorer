@@ -41,6 +41,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          --entrypoint sh
+        # Run mosquitto with anonymous access enabled for testing
+        cmd: -c "mkdir -p /mosquitto/config && echo 'listener 1883' > /mosquitto/config/mosquitto.conf && echo 'allow_anonymous true' >> /mosquitto/config/mosquitto.conf && exec mosquitto -c /mosquitto/config/mosquitto.conf"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -81,6 +84,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          --entrypoint sh
+        # Run mosquitto with anonymous access enabled for testing
+        cmd: -c "mkdir -p /mosquitto/config && echo 'listener 1883' > /mosquitto/config/mosquitto.conf && echo 'allow_anonymous true' >> /mosquitto/config/mosquitto.conf && exec mosquitto -c /mosquitto/config/mosquitto.conf"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -200,6 +206,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          --entrypoint sh
+        # Run mosquitto with anonymous access enabled for testing
+        cmd: -c "mkdir -p /mosquitto/config && echo 'listener 1883' > /mosquitto/config/mosquitto.conf && echo 'allow_anonymous true' >> /mosquitto/config/mosquitto.conf && exec mosquitto -c /mosquitto/config/mosquitto.conf"
     steps:
       - uses: actions/checkout@v4
         with:
