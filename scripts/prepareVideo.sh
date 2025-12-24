@@ -29,7 +29,7 @@ mv app720.gif ui-test.gif
 # Cut video into segments based on scenes.json
 echo "Cutting video into segments..."
 if [ -f "scenes.json" ]; then
-  ./scripts/cutVideoSegments.sh
+  node ./scripts/cutVideoSegments.js
 else
   echo "Warning: scenes.json not found, skipping segment creation"
 fi
