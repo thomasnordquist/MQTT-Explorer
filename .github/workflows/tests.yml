@@ -171,29 +171,20 @@ jobs:
 
   test-browser:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/thomasnordquist/mqtt-explorer-ui-tests:latest
+      volumes:
+        - ./:/app
+      options: --user root
     env:
       TESTS_MQTT_BROKER_HOST: localhost
       TESTS_MQTT_BROKER_PORT: 1883
-    services:
-      mosquitto:
-        image: ghcr.io/thomasnordquist/mqtt-explorer-ui-tests:latest
-        ports:
-          - 1883:1883
-        entrypoint: /bin/sh
-        args: ["-c", "mosquitto -c /etc/mosquitto/conf.d/default.conf"]
-        options: >-
-          --health-cmd "mosquitto_sub -t '$SYS/#' -C 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
+      - name: Start mosquitto
+        run: mosquitto -c /etc/mosquitto/conf.d/default.conf -d
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
       - name: Install Playwright Browsers
