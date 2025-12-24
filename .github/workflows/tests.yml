@@ -31,20 +31,12 @@ jobs:
     env:
       TESTS_MQTT_BROKER_HOST: localhost
       TESTS_MQTT_BROKER_PORT: 1883
-    services:
-      mosquitto:
-        image: eclipse-mosquitto:2
-        ports:
-          - 1883:1883
-        options: >-
-          --health-cmd "mosquitto_sub -t '$SYS/#' -C 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+      - name: Start mosquitto
+        run: mosquitto -c /etc/mosquitto/conf.d/default.conf -d
       - name: Install Packages
         run: yarn install --frozen-lockfile
       - name: Build Browser Mode
@@ -71,20 +63,12 @@ jobs:
     env:
       TESTS_MQTT_BROKER_HOST: localhost
       TESTS_MQTT_BROKER_PORT: 1883
-    services:
-      mosquitto:
-        image: eclipse-mosquitto:2
-        ports:
-          - 1883:1883
-        options: >-
-          --health-cmd "mosquitto_sub -t '$SYS/#' -C 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
+      - name: Start mosquitto
+        run: mosquitto -c /etc/mosquitto/conf.d/default.conf -d
       - name: Install Packages
         run: yarn install --frozen-lockfile
       - name: Build
@@ -200,6 +184,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          --entrypoint sh
+        cmd: -c "mkdir -p /mosquitto/config && echo 'listener 1883' > /mosquitto/config/mosquitto.conf && echo 'allow_anonymous true' >> /mosquitto/config/mosquitto.conf && exec mosquitto -c /mosquitto/config/mosquitto.conf"
     steps:
       - uses: actions/checkout@v4
         with:

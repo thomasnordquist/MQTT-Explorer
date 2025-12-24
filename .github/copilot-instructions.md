@@ -19,8 +19,11 @@
 - `yarn test:demo-video` - UI recording (requires Xvfb, mosquitto, tmux, ffmpeg)
 - `yarn test:mcp` - Model Context Protocol tests
 - `yarn test:all` - All tests (unit + demo-video)
+- `./scripts/runBrowserTests.sh` - Browser mode UI tests (requires mosquitto service)
 
-**CI jobs:** `test`, `ui-tests`, `demo-video`, `test-browser`
+**CI jobs:** `test`, `ui-tests`, `demo-video`, `test-browser`, `browser-ui-tests`
+
+**Important:** Browser UI tests require MQTT broker. In CI, GitHub Actions health checks ensure the mosquitto service is ready before tests run.
 
 ## Browser Mode
 
