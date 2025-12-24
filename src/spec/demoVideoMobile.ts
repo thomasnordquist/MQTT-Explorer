@@ -158,11 +158,15 @@ async function doStuff() {
   await scenes.record('mobile_browse_topics', async () => {
     await showText('Browse Topics - Topics Tab', 1500, page, 'top')
     await sleep(1500)
-    // Expand a topic by clicking the expand button
+    // Expand a topic by clicking the expand button with force to avoid interception
     const expandButton = page.locator('span.expander').first()
     if (await expandButton.isVisible()) {
-      await expandButton.click()
-      await sleep(1000)
+      try {
+        await expandButton.click({ force: true, timeout: 5000 })
+        await sleep(1000)
+      } catch (error) {
+        console.log('Expand button click failed, continuing...')
+      }
     }
     await sleep(1500)
     await hideText(page)
@@ -172,11 +176,16 @@ async function doStuff() {
     await showText('Tap Topic to View Details', 1500, page, 'top')
     await sleep(1000)
     // Click on topic text to select and switch to details tab
+    // Use force click to avoid tab interception issues
     const topicText = page.locator('[data-test-topic]').first()
     if (await topicText.isVisible()) {
-      await topicText.click()
-      await sleep(2000)
-      // The mobile UI should automatically switch to Details tab
+      try {
+        await topicText.click({ force: true, timeout: 5000 })
+        await sleep(2000)
+        // The mobile UI should automatically switch to Details tab
+      } catch (error) {
+        console.log('Topic text click failed, continuing...')
+      }
     }
     await hideText(page)
   })
