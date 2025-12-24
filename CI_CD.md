@@ -40,10 +40,13 @@ This workflow builds and publishes a Docker image for the browser mode.
 4. Verify HTTP response
 5. Test data directory creation
 6. Check Docker image size
-7. Start container for frontend tests
-8. Test frontend bundles (app.bundle.js, vendors.bundle.js)
-9. Push image to GitHub Container Registry
-10. Generate build attestation for supply chain security
+7. Setup Node.js 24 for browser tests
+8. Install dependencies for browser tests
+9. Install Playwright browsers (`npx playwright install --with-deps chromium`)
+10. Start container for browser tests
+11. Run browser test suite with Playwright
+12. Push image to GitHub Container Registry
+13. Generate build attestation for supply chain security
 
 **Image Features**:
 - Multi-stage build for minimal size
@@ -65,34 +68,45 @@ This workflow runs on pull requests to `master`, `beta`, and `release` branches.
 Tests the traditional Electron desktop application:
 
 - **Environment**: Custom Docker container (`ghcr.io/thomasnordquist/mqtt-explorer-ui-tests:latest`)
+  - Based on Node.js 24
+  - Includes Xvfb for headless display
+  - Includes FFmpeg for video recording
+  - Includes Mosquitto MQTT broker
+  - **Playwright browsers pre-installed** with system dependencies
 - **Steps**:
   1. Install dependencies with frozen lockfile
   2. Build the Electron application
   3. Run unit tests (app + backend)
   4. Run UI tests with video recording
-  5. Upload test video to S3
-  6. Display test results in GitHub summary
+  5. Upload test video to S3 with 90-day expiration tag
+  6. Post demo video to PR as comment
+  7. Display test results in GitHub summary
 
-**Artifacts**: UI test video (GIF format) uploaded to S3
+**Artifacts**: 
+- UI test video (GIF format) uploaded to S3 using AWS CLI
+- Video is tagged with `expiration=90days` for automatic lifecycle deletion
+- Video is posted to the PR thread as an embedded image
+- Videos expire after 90 days via S3 lifecycle policy
 
 ##### 2. `test-browser` - Browser Mode Tests
 
 Tests the new browser/server mode:
 
-- **Environment**: Ubuntu latest with Node.js 20
+- **Environment**: Ubuntu latest with Node.js 24
 - **Services**:
   - **Mosquitto MQTT Broker**: Eclipse Mosquitto v2 on port 1883
     - Health checks enabled
     - Anonymous connections allowed
 - **Steps**:
-  1. Setup Node.js 20
+  1. Setup Node.js 24
   2. Install dependencies
-  3. Build browser mode (`yarn build:server`)
-  4. Run unit tests (app + backend)
-  5. Start server in background with test credentials
-  6. Wait for server to be ready
-  7. Run browser smoke tests
-  8. Clean up server process
+  3. Install Playwright browsers (`npx playwright install --with-deps chromium`)
+  4. Build browser mode (`yarn build:server`)
+  5. Run unit tests (app + backend)
+  6. Start server in background with test credentials
+  7. Wait for server to be ready
+  8. Run browser smoke tests
+  9. Clean up server process
 
 **Environment Variables**:
 - `MQTT_EXPLORER_USERNAME=test`
@@ -204,6 +218,93 @@ The repository includes a devcontainer configuration that automatically sets up:
 
 See [.devcontainer/README.md](.devcontainer/README.md) for details.
 
+## S3 Configuration for Demo Videos
+
+### Required S3 Lifecycle Policy
+
+Demo videos uploaded from PRs are tagged with `expiration=90days` and require an S3 lifecycle policy to automatically delete them after 90 days.
+
+**Important**: The `video.mp4` file in the gh-pages branch is NOT tagged and will NOT expire.
+
+#### Setting up the Lifecycle Policy
+
+1. Create a file named `s3-lifecycle-pr-videos.json`:
+
+```json
+{
+  "Rules": [
+    {
+      "ID": "ExpirePRDemoVideosAfter90Days",
+      "Status": "Enabled",
+      "Filter": {
+        "Tag": {
+          "Key": "expiration",
+          "Value": "90days"
+        }
+      },
+      "Expiration": {
+        "Days": 90
+      }
+    }
+  ]
+}
+```
+
+2. Apply the policy to your S3 bucket:
+
+```bash
+aws s3api put-bucket-lifecycle-configuration \
+  --bucket YOUR_BUCKET_NAME \
+  --lifecycle-configuration file://s3-lifecycle-pr-videos.json
+```
+
+3. Verify the policy:
+
+```bash
+aws s3api get-bucket-lifecycle-configuration --bucket YOUR_BUCKET_NAME
+```
+
+#### How It Works
+
+- **PR demo videos**: Uploaded with filename pattern `pr-{number}-{timestamp}.gif` and tagged with:
+  - `expiration=90days` - Used by lifecycle policy for automatic deletion
+  - `Source=github-actions` - Identifies source of upload
+  - `Type=pr-demo-video` - Categorizes the object type
+- **S3 lifecycle rule**: Automatically deletes objects tagged with `expiration=90days` after 90 days
+- **Upload mechanism**: AWS CLI v2 is installed directly, authentication is configured via `aws-actions/configure-aws-credentials@v4` GitHub Action, then `aws s3api put-object` is used with object tagging support
+- **gh-pages video**: `video.mp4` in gh-pages branch is served from GitHub Pages, not S3, so it persists indefinitely
+
+#### Required AWS Credentials
+
+The workflow requires the following secrets/variables:
+- `vars.AWS_KEY_ID` - AWS access key ID (requires `s3:PutObject` and `s3:PutObjectTagging` permissions)
+- `secrets.AWS_SECRET_ACCESS_KEY` - AWS secret access key
+- `vars.AWS_BUCKET` - S3 bucket name
+- AWS region: `eu-central-1` (hardcoded in workflow)
+
+The S3 bucket must have:
+- **Bucket policy for public read access**: Since ACLs are disabled (BucketOwnerEnforced), a bucket policy must grant public read access to uploaded objects
+- Object tagging enabled
+- Lifecycle policy configured as described above
+
+**Example S3 Bucket Policy for Public Read Access**:
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::YOUR_BUCKET_NAME/*"
+    }
+  ]
+}
+```
+
+The workflow uses AWS CLI v2 installed directly and `aws-actions/configure-aws-credentials@v4` action for secure credential management.
+
 ## Troubleshooting
 
 ### Browser Tests Failing
@@ -219,6 +320,7 @@ See [.devcontainer/README.md](.devcontainer/README.md) for details.
 
 ## Future Improvements
 
+- [x] Add Playwright browser installation to workflows (browser tests can now use Playwright)
 - [ ] Add E2E browser tests with Playwright
 - [ ] Test WebSocket connections in browser mode
 - [ ] Add performance benchmarks

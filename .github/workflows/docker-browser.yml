@@ -30,6 +30,10 @@ jobs:
       packages: write
       id-token: write
 
+    env:
+      TESTS_MQTT_BROKER_HOST: localhost
+      TESTS_MQTT_BROKER_PORT: 1883
+
     services:
       # MQTT broker for testing
       mosquitto:
@@ -41,6 +45,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          --entrypoint sh
+        cmd: -c "mkdir -p /mosquitto/config && echo 'listener 1883' > /mosquitto/config/mosquitto.conf && echo 'allow_anonymous true' >> /mosquitto/config/mosquitto.conf && exec mosquitto -c /mosquitto/config/mosquitto.conf"
 
     steps:
       - name: Checkout repository
@@ -166,6 +172,9 @@ jobs:
       - name: Install dependencies for browser tests
         run: yarn install --frozen-lockfile
 
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
       - name: Start Docker container for browser tests
         run: |
           docker run -d \
@@ -188,8 +197,6 @@ jobs:
           MQTT_EXPLORER_USERNAME: test
           MQTT_EXPLORER_PASSWORD: test123
           BROWSER_MODE_URL: http://localhost:3000
-          MQTT_BROKER_HOST: localhost
-          MQTT_BROKER_PORT: 1883
 
       - name: Clean up browser test container
         if: always()

@@ -1,6 +1,6 @@
 import 'mocha'
 import { expect } from 'chai'
-import { ElectronApplication, Page, _electron as electron } from 'playwright'
+import { Browser, BrowserContext, ElectronApplication, Page, _electron as electron, chromium } from 'playwright'
 import { createTestMock, stopTestMock } from './mock-mqtt-test'
 import { default as MockSparkplug } from './mock-sparkplugb'
 import { sleep } from './util'
@@ -15,14 +15,21 @@ import type { MqttClient } from 'mqtt'
  * Tests the core UI functionality using a single connection.
  * All topics are published before connecting, and tests run sequentially
  * on the same connected application instance.
+ * 
+ * Supports both Electron and Browser modes:
+ * - Electron mode: Default behavior, launches Electron app
+ * - Browser mode: Set BROWSER_MODE_URL environment variable to the server URL
  */
 // tslint:disable:only-arrow-functions ter-prefer-arrow-callback no-unused-expression
 describe('MQTT Explorer UI Tests', function () {
   this.timeout(60000)
 
-  let electronApp: ElectronApplication
+  let electronApp: ElectronApplication | undefined
+  let browser: Browser | undefined
+  let browserContext: BrowserContext | undefined
   let testMock: MqttClient
   let page: Page
+  const isBrowserMode = !!process.env.BROWSER_MODE_URL
 
   before(async function () {
     this.timeout(90000)
@@ -47,18 +54,88 @@ describe('MQTT Explorer UI Tests', function () {
 
     await sleep(2000) // Let MQTT messages propagate and get retained
 
-    console.log('Launching Electron application...')
-    electronApp = await electron.launch({
-      args: [`${__dirname}/../../..`, '--runningUiTestOnCi', '--no-sandbox', '--disable-dev-shm-usage'],
-      timeout: 60000,
-    })
+    if (isBrowserMode) {
+      console.log('Launching browser in browser mode...')
+      const browserUrl = process.env.BROWSER_MODE_URL
+      if (!browserUrl) {
+        throw new Error('BROWSER_MODE_URL environment variable must be set when running in browser mode')
+      }
+      console.log(`Browser URL: ${browserUrl}`)
 
-    console.log('Getting application window...')
-    page = await electronApp.firstWindow({ timeout: 30000 })
-    await page.locator('//label[contains(text(), "Host")]/..//input').waitFor({ timeout: 10000 })
+      // Launch Chromium browser
+      browser = await chromium.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-dev-shm-usage'],
+      })
+
+      browserContext = await browser.newContext()
+      page = await browserContext.newPage()
+
+      // Listen for console messages
+      page.on('console', msg => console.log('Browser console:', msg.type(), msg.text()))
+      page.on('pageerror', error => console.error('Browser error:', error))
+
+      // Navigate to the browser mode URL
+      await page.goto(browserUrl, { timeout: 30000, waitUntil: 'networkidle' })
+
+      // Handle authentication if required
+      const username = process.env.MQTT_EXPLORER_USERNAME || 'test'
+      const password = process.env.MQTT_EXPLORER_PASSWORD || 'test123'
+
+      console.log('Waiting for page to initialize and auth check...')
+      await sleep(5000) // Wait longer for WebSocket connection attempt and auth error handling
+
+      console.log('Checking for login dialog...')
+      const loginDialog = page.locator('h2:has-text("Login to MQTT Explorer")')
+      let loginDialogVisible = false
+      try {
+        loginDialogVisible = await loginDialog.isVisible({ timeout: 10000 })
+      } catch (error) {
+        // Timeout is expected if dialog is not shown, not an error
+        console.log('Login dialog not found (timeout) - checking if auth is disabled')
+      }
+      
+      // Debug: print page content to see what's rendered
+      if (!loginDialogVisible) {
+        const body = await page.locator('body').textContent().catch(() => 'Unable to read body')
+        console.log('Page body text:', body?.substring(0, 300))
+      }
+
+      if (loginDialogVisible) {
+        console.log('Login dialog detected, authenticating...')
+        await page.fill('[data-testid="username-input"] input', username)
+        await page.fill('[data-testid="password-input"] input', password)
+        await page.click('button:has-text("Login")')
+        await sleep(3000) // Wait for authentication to complete and reconnect
+        console.log('Authentication complete')
+      } else {
+        console.log('No login dialog detected - assuming auth is disabled')
+      }
+
+      // Wait for the connection dialog to appear
+      console.log('Waiting for MQTT connection dialog...')
+      try {
+        await page.locator('//label[contains(text(), "Host")]/..//input').waitFor({ timeout: 10000 })
+      } catch (error) {
+        console.log('Failed to find connection dialog, taking screenshot for debugging')
+        await page.screenshot({ path: 'browser-debug-screenshot.png', fullPage: true })
+        throw error
+      }
+    } else {
+      console.log('Launching Electron application...')
+      electronApp = await electron.launch({
+        args: [`${__dirname}/../../..`, '--runningUiTestOnCi', '--no-sandbox', '--disable-dev-shm-usage'],
+        timeout: 60000,
+      })
+
+      console.log('Getting application window...')
+      page = await electronApp.firstWindow({ timeout: 30000 })
+      await page.locator('//label[contains(text(), "Host")]/..//input').waitFor({ timeout: 10000 })
+    }
 
     console.log('Connecting to MQTT broker...')
-    await connectTo('127.0.0.1', page)
+    const brokerHost = process.env.TESTS_MQTT_BROKER_HOST || '127.0.0.1'
+    await connectTo(brokerHost, page)
     await sleep(3000) // Give time for topics to load
     console.log('Setup complete')
   })
@@ -66,8 +143,17 @@ describe('MQTT Explorer UI Tests', function () {
   after(async function () {
     this.timeout(10000)
 
-    if (electronApp) {
-      await electronApp.close()
+    if (isBrowserMode) {
+      if (browserContext) {
+        await browserContext.close()
+      }
+      if (browser) {
+        await browser.close()
+      }
+    } else {
+      if (electronApp) {
+        await electronApp.close()
+      }
     }
 
     stopTestMock()
