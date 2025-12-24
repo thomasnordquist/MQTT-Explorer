@@ -253,8 +253,8 @@ The readme will be generated from the docs.
 
 ## License
 
-![CC BY-SA 4.0](https://img.shields.io/badge/License-CC%20BY--SA%204.0-blue.svg)  
-[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+![CC BY-ND 4.0](https://img.shields.io/badge/License-CC%20BY--ND%204.0-blue.svg)  
+[CC BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0/)
 
 **Special requirement:** When distributing, the attribution and donation page may not be altered or made less accessible without explicit approval.
 
