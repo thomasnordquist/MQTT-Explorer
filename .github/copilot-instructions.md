@@ -19,8 +19,11 @@
 - `yarn test:demo-video` - UI recording (requires Xvfb, mosquitto, tmux, ffmpeg)
 - `yarn test:mcp` - Model Context Protocol tests
 - `yarn test:all` - All tests (unit + demo-video)
+- `./scripts/runBrowserTests.sh` - Browser mode UI tests (requires mosquitto service, waits for broker readiness)
 
-**CI jobs:** `test`, `ui-tests`, `demo-video`, `test-browser`
+**CI jobs:** `test`, `ui-tests`, `demo-video`, `test-browser`, `browser-ui-tests`
+
+**Important:** Browser UI tests require MQTT broker to be ready. The `runBrowserTests.sh` script waits up to 60 seconds for the broker to accept connections before starting tests.
 
 ## Browser Mode
 
