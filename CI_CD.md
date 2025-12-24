@@ -93,20 +93,21 @@ Tests the traditional Electron desktop application:
 Tests the new browser/server mode:
 
 - **Environment**: Ubuntu latest with Node.js 24
-- **Services**:
-  - **Mosquitto MQTT Broker**: Eclipse Mosquitto v2 on port 1883
-    - Health checks enabled
-    - Anonymous connections allowed
+- **MQTT Broker**: Mosquitto v2 on port 1883
+  - Started detached with `-d` flag
+  - Anonymous connections allowed
+  - No persistence
 - **Steps**:
-  1. Setup Node.js 24
-  2. Install dependencies
-  3. Install Playwright browsers (`npx playwright install --with-deps chromium`)
-  4. Build browser mode (`yarn build:server`)
-  5. Run unit tests (app + backend)
-  6. Start server in background with test credentials
-  7. Wait for server to be ready
-  8. Run browser smoke tests
-  9. Clean up server process
+  1. Install and start Mosquitto in detached mode
+  2. Setup Node.js 24
+  3. Install dependencies
+  4. Install Playwright browsers (`npx playwright install --with-deps chromium`)
+  5. Build browser mode (`yarn build:server`)
+  6. Run unit tests (app + backend)
+  7. Start server in background with test credentials
+  8. Wait for server to be ready
+  9. Run browser smoke tests
+  10. Clean up server process
 
 **Environment Variables**:
 - `MQTT_EXPLORER_USERNAME=test`
