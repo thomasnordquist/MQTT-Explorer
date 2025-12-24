@@ -23,8 +23,10 @@ export interface MockSparkplugClient {
 }
 
 const sample = (function () {
+  const brokerHost = process.env.TESTS_MQTT_BROKER_HOST || '127.0.0.1'
+  const brokerPort = process.env.TESTS_MQTT_BROKER_PORT || '1883'
   let config = {
-      serverUrl: 'tcp://127.0.0.1:1883',
+      serverUrl: `tcp://${brokerHost}:${brokerPort}`,
       username: '',
       password: '',
       groupId: 'Sparkplug Devices',

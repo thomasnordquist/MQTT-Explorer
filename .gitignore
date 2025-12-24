@@ -24,3 +24,15 @@ app/.webpack-cache
 
 # Temporary files
 /tmp
+
+# Demo video artifacts
+scenes.json
+segment-*.mp4
+segment-*.gif
+ui-test.mp4
+ui-test.gif
+app.mp4
+app2.mp4
+app720.gif
+qrawvideorgb24.yuv
+intro.png
