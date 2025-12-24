@@ -31,8 +31,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - name: Start mosquitto
-        run: mosquitto -c /etc/mosquitto/conf.d/default.conf -d
       - name: Install Packages
         run: yarn install --frozen-lockfile
       - name: Build Browser Mode
@@ -59,8 +57,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - name: Start mosquitto
-        run: mosquitto -c /etc/mosquitto/conf.d/default.conf -d
       - name: Install Packages
         run: yarn install --frozen-lockfile
       - name: Build
@@ -170,20 +166,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - name: Install and Start Mosquitto
+      - name: Install System Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y mosquitto mosquitto-clients
-          
-          # Create a minimal configuration file for testing
-          sudo tee /etc/mosquitto/conf.d/test.conf > /dev/null <<EOF
-          listener 1883
-          allow_anonymous true
-          persistence false
-          EOF
-          
-          # Start mosquitto in detached mode
-          sudo mosquitto -c /etc/mosquitto/mosquitto.conf -d
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -198,26 +184,5 @@ jobs:
         run: yarn test:app
       - name: Test Backend
         run: yarn test:backend
-      - name: Start Server in Background
-        run: |
-          yarn start:server &
-          echo $! > server.pid
-        env:
-          MQTT_EXPLORER_USERNAME: test
-          MQTT_EXPLORER_PASSWORD: test123
-          PORT: 3000
-      - name: Wait for Server
-        run: |
-          timeout 30 bash -c 'until curl -f http://localhost:3000; do sleep 1; done'
-      - name: Browser Smoke Test
-        run: |
-          # Test server is running
-          curl -f http://localhost:3000 || exit 1
-          echo "Browser mode server is running successfully"
-      - name: Stop Server
-        if: always()
-        run: |
-          if [ -f server.pid ]; then
-            kill $(cat server.pid) || true
-            rm server.pid
-          fi
+      - name: Run Browser UI Tests
+        run: ./scripts/runBrowserTests.sh
