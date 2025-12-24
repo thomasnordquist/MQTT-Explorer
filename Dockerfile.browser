@@ -24,7 +24,7 @@ RUN yarn install --production --frozen-lockfile --network-timeout 100000 && \
     rm -rf /tmp/*
 
 # Stage 2: Production
-FROM node:24-alpine
+FROM node:22-alpine
 
 # Install dumb-init in a single layer
 RUN apk add --no-cache dumb-init
