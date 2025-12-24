@@ -46,7 +46,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
           --entrypoint sh
-        cmd: -c "mkdir -p /mosquitto/config && echo 'listener 1883' > /mosquitto/config/mosquitto.conf && echo 'allow_anonymous true' >> /mosquitto/config/mosquitto.conf && exec mosquitto -c /mosquitto/config/mosquitto.conf"
+        command: -c "mkdir -p /mosquitto/config && echo 'listener 1883' > /mosquitto/config/mosquitto.conf && echo 'allow_anonymous true' >> /mosquitto/config/mosquitto.conf && exec mosquitto -c /mosquitto/config/mosquitto.conf"
 
     steps:
       - name: Checkout repository
