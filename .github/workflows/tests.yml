@@ -2,6 +2,10 @@ on:
   pull_request_target: # Use pull_request_target
     branches: [master, beta, release]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
