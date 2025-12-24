@@ -68,6 +68,19 @@ jobs:
       volumes:
         - ./:/app
       options: --user root
+    env:
+      TESTS_MQTT_BROKER_HOST: mosquitto
+      TESTS_MQTT_BROKER_PORT: 1883
+    services:
+      mosquitto:
+        image: eclipse-mosquitto:2
+        ports:
+          - 1883:1883
+        options: >-
+          --health-cmd "mosquitto_sub -t '$SYS/#' -C 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
         with:

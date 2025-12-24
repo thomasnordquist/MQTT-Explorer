@@ -15,7 +15,9 @@ process.on('unhandledRejection' as any, (error: Error | any) => {
 const runningUiTestOnCi = os.platform() === 'darwin' ? [] : ['--runningUiTestOnCi']
 
 async function doStuff() {
-  console.log('Waiting for MQTT Broker on port 1880 (no auth)')
+  const brokerHost = process.env.TESTS_MQTT_BROKER_HOST || '127.0.0.1'
+  const brokerPort = process.env.TESTS_MQTT_BROKER_PORT || '1883'
+  console.log(`Waiting for MQTT Broker at ${brokerHost}:${brokerPort} (no auth)`)
   await mockMqtt()
 
   console.log('Starting playwright/electron')
@@ -39,7 +41,7 @@ async function doStuff() {
   await createFakeMousePointer(browser)
   // Wait for Username input to be visible
   await browser.locator('//label[contains(text(), "Username")]/..//input')
-  await connectTo('127.0.0.1', browser)
+  await connectTo(brokerHost, browser)
   stopMqttUpdates()
   await sleep(1000, true)
   const heapDump = await getHeapDump(browser)
