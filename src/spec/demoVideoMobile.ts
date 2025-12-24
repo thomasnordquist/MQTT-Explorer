@@ -58,9 +58,19 @@ async function doStuff() {
   console.log('Starting playwright/chromium in mobile mode (Pixel 6)')
 
   // Launch Chromium browser with mobile emulation
+  // headless: false is required so the browser renders to the X display for video recording
   const browser = await chromium.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-dev-shm-usage'],
+    headless: false,
+    args: [
+      '--no-sandbox',
+      '--disable-dev-shm-usage',
+      '--window-size=412,914',  // Match the mobile viewport size
+      '--window-position=0,0',
+      '--disable-infobars',
+      '--disable-features=TranslateUI',
+      '--no-first-run',
+      '--no-default-browser-check',
+    ],
   })
 
   // Create browser context with Pixel 6 viewport
@@ -86,8 +96,12 @@ async function doStuff() {
   // Print the title
   console.log(await page.title())
   
-  // Capture a screenshot
-  await page.screenshot({ path: 'intro-mobile.png' })
+  // Try to capture a screenshot (may fail in headed mode, but that's ok)
+  try {
+    await page.screenshot({ path: 'intro-mobile.png' })
+  } catch (error) {
+    console.log('Screenshot skipped (headed mode)')
+  }
   
   // Direct console to Node terminal
   page.on('console', console.log)

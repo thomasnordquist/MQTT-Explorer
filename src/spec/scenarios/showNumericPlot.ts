@@ -30,7 +30,11 @@ export async function showNumericPlot(browser: Page) {
   await clickAway('temperature', browser)
   await sleep(2500)
 
-  await browser.screenshot({ path: 'screen_chart_panel.png' })
+  try {
+    await browser.screenshot({ path: 'screen_chart_panel.png' })
+  } catch (error) {
+    // Screenshot may fail in headed mode
+  }
 
   await removeChart('heater', browser)
   await sleep(750)
