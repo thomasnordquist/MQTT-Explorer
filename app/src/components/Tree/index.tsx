@@ -123,9 +123,7 @@ class TreeComponent extends React.PureComponent<Props, State> {
 
   public render() {
     const { tree } = this.props
-    console.log('Tree component render, tree exists:', !!tree, 'connectionId:', this.props.connectionId)
     if (!tree) {
-      console.log('Tree component: no tree prop, returning null')
       return null
     }
 

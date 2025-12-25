@@ -88,8 +88,6 @@ function ContentView(props: Props) {
 
   // Mobile view with tab switcher
   if (isMobile) {
-    console.log('Rendering MOBILE view, tab:', mobileTab)
-    
     // Expose tab switching function for TreeNode to call
     React.useEffect(() => {
       if (typeof window !== 'undefined') {
@@ -107,29 +105,38 @@ function ContentView(props: Props) {
       flexDirection: 'column',
       height: 'calc(100vh - 64px)', // Full viewport minus titlebar
       width: '100%',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
     }
 
     const tabContentStyle: React.CSSProperties = {
       flex: 1,
       display: 'flex',
       flexDirection: 'column',
-      minHeight: 0,
+      minHeight: 0, // Critical for flex children with overflow
       width: '100%',
       overflow: 'hidden',
+      position: 'relative',
     }
 
-    const tabPaneStyle: React.CSSProperties = {
-      flex: 1,
+    // Tree container needs explicit height for the Tree component's height: 100% to work
+    const treeContainerStyle: React.CSSProperties = {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
       width: '100%',
       height: '100%',
-      overflow: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
+    }
+
+    const sidebarContainerStyle: React.CSSProperties = {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      width: '100%',
+      height: '100%',
+      overflow: 'auto',
     }
 
     return (
@@ -138,13 +145,13 @@ function ContentView(props: Props) {
         <div style={tabContentStyle}>
           {/* Topics tab */}
           {mobileTab === 0 && (
-            <div style={tabPaneStyle}>
+            <div style={treeContainerStyle}>
               <Tree />
             </div>
           )}
           {/* Details tab */}
           {mobileTab === 1 && (
-            <div style={{ ...tabPaneStyle, overflow: 'auto' }}>
+            <div style={sidebarContainerStyle}>
               <Sidebar connectionId={props.connectionId} />
             </div>
           )}
