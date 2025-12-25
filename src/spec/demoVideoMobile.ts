@@ -19,6 +19,8 @@ import { showJsonPreview } from './scenarios/showJsonPreview'
 import { showMenu } from './scenarios/showMenu'
 import { showNumericPlot } from './scenarios/showNumericPlot'
 import { showOffDiffCapability } from './scenarios/showOffDiffCapability'
+import { expandTopic } from './util/expandTopic'
+import { selectTopic } from './util/selectTopic'
 
 /**
  * Mobile Demo Video - Pixel 6 viewport
@@ -168,43 +170,37 @@ async function doStuff() {
       console.log('Tree nodes not found, continuing...')
     })
     await sleep(1000)
-    // Expand a topic by clicking the expand button WITHOUT force to show cursor movement
-    const expandButton = page.locator('span.expander').first()
-    if (await expandButton.isVisible()) {
-      try {
-        // Scroll into view first
-        await expandButton.scrollIntoViewIfNeeded()
-        await sleep(500)
-        // Use clickOn helper to show cursor movement
-        await clickOn(expandButton, 1, 0, 'left', false)
-        await sleep(1000)
-      } catch (error) {
-        console.log('Expand button click failed, continuing...')
-      }
+    
+    try {
+      // Expand topics using the expandTopic utility
+      // On mobile, this clicks expand buttons (▶/▼) to navigate the tree
+      await showText('Expand Topic Tree', 1000, page, 'top')
+      await sleep(500)
+      await expandTopic('livingroom/lamp', page)
+      await sleep(1500)
+    } catch (error) {
+      console.log('Topic expansion failed, continuing...', error)
     }
-    await sleep(1500)
+    
     await hideText(page)
   })
 
   await scenes.record('mobile_view_message', async () => {
     await showText('Tap Topic to View Details', 1500, page, 'top')
     await sleep(1000)
-    // Click on topic text to select and switch to details tab
-    // Use clickOn helper to show cursor movement
-    const topicText = page.locator('[data-test-topic]').first()
-    if (await topicText.isVisible()) {
-      try {
-        // Scroll into view first
-        await topicText.scrollIntoViewIfNeeded()
-        await sleep(500)
-        // Use clickOn helper without force to show cursor movement
-        await clickOn(topicText, 1, 0, 'left', false)
-        await sleep(2000)
-        // The mobile UI should automatically switch to Details tab
-      } catch (error) {
-        console.log('Topic text click failed, continuing...')
-      }
+    
+    try {
+      // Select a topic by clicking its text
+      // On mobile, this will switch to the Details tab automatically
+      await selectTopic('livingroom/lamp/state', page)
+      await sleep(2000)
+      // The mobile UI should now show the Details tab with the selected topic
+      await showText('Details Tab Activated', 1000, page, 'top')
+      await sleep(1500)
+    } catch (error) {
+      console.log('Topic selection failed, continuing...', error)
     }
+    
     await hideText(page)
   })
 
@@ -222,9 +218,29 @@ async function doStuff() {
 
   await scenes.record('mobile_json_view', async () => {
     await showText('JSON Message Formatting', 1500, page, 'top')
-    // Skip expandTopic for mobile demo - just show the text
-    // The JSON preview requires complex topic expansion which can be flaky on mobile
-    await sleep(2000)
+    await sleep(1000)
+    
+    try {
+      // Navigate back to Topics tab to show tree navigation
+      const topicsTab = page.locator('button:has-text("TOPICS"), button:has-text("Topics")')
+      const topicsTabVisible = await topicsTab.isVisible().catch(() => false)
+      if (topicsTabVisible) {
+        await topicsTab.click()
+        await sleep(1000)
+      }
+      
+      // Expand and select kitchen/coffee_maker to show JSON
+      await expandTopic('kitchen/coffee_maker', page)
+      await sleep(1000)
+      await selectTopic('kitchen/coffee_maker', page)
+      await sleep(2000)
+      
+      await showText('JSON Payload View', 1000, page, 'top')
+      await sleep(1500)
+    } catch (error) {
+      console.log('JSON view navigation failed, continuing...', error)
+    }
+    
     await hideText(page)
   })
 
