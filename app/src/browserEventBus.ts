@@ -84,6 +84,18 @@ socket.on('auto-connect-config', (config: any) => {
   }
 })
 
+// Listen for auto-connect-initiated event from server
+socket.on('auto-connect-initiated', (data: { connectionId: string }) => {
+  console.log('Auto-connect initiated by server, connectionId:', data.connectionId)
+  
+  // Dispatch custom event to trigger connection flow
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('mqtt-auto-connect-initiated', { 
+      detail: data
+    }))
+  }
+})
+
 /**
  * Update socket authentication credentials and attempt to reconnect
  * @param newUsername New username

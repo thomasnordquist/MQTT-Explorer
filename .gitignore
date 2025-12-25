@@ -46,4 +46,25 @@ intro-mobile.png
 palette.png
 palette-mobile.png
 ffmpeg_info
-ffmpeg_info_mobile
+ffmpeg_info_mobile# Mobile test artifacts
+qrawvideorgb24-mobile.yuv
+*.yuv
+segment-mobile-*.gif
+mobile-demo.mp4
+mobile-demo.gif
+final-mobile-tree.png
+mobile-tree-debug.png
+mobile-render-debug.png
+tree-state-check.png
+server*.log
+
+# Test scripts
+test-mobile-tree.js
+check-*.js
+debug-*.js
+inspect-*.js
+final-*.js
+publish-test*.js
+verify-mobile-tree.js
+interactive-mobile-test.js
+long-wait-test.js

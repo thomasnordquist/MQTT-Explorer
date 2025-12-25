@@ -2,19 +2,16 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
 import App from './components/App'
 import Demo from './components/Demo'
-import reducers, { AppState } from './reducers'
-import { thunk as reduxThunk } from 'redux-thunk'
-import { applyMiddleware, compose, createStore } from 'redux'
-import { batchDispatchMiddleware } from 'redux-batched-actions'
+import { AppState } from './reducers'
 import { connect, Provider } from 'react-redux'
 import { ThemeProvider } from '@mui/material/styles'
 import { ThemeProvider as LegacyThemeProvider } from '@mui/styles'
 import './utils/tracking'
 import { themes } from './theme'
 import { BrowserAuthWrapper } from './components/BrowserAuthWrapper'
+import { store } from './store'
+import './autoConnectHandler' // Initialize auto-connect handling
 
-const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-const store = createStore(reducers, composeEnhancers(applyMiddleware(reduxThunk, batchDispatchMiddleware)))
 
 function ApplicationRenderer(props: { theme: 'light' | 'dark' }) {
   const theme = props.theme === 'light' ? themes.lightTheme : themes.darkTheme

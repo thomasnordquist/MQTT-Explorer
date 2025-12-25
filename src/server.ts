@@ -215,6 +215,18 @@ async function startServer() {
     next()
   })
 
+  // Initialize backend event bus with Socket.io
+  const backendEvents = new SocketIOServerEventBus(io)
+  const backendRpc = new Rpc(backendEvents)
+
+  // Initialize connection manager
+  const connectionManager = new ConnectionManager(backendEvents)
+  connectionManager.manageConnections()
+
+  // Initialize config storage
+  const configStorage = new ConfigStorage(path.join(process.cwd(), 'data', 'settings.json'), backendRpc)
+  configStorage.init()
+
   // Send auth status to clients on connection
   io.on('connection', (socket) => {
     // Inform client about auth status
@@ -229,51 +241,44 @@ async function startServer() {
     const autoConnectHost = process.env.MQTT_AUTO_CONNECT_HOST
     if (autoConnectHost) {
       const connectionId = 'auto-connect-' + Date.now()
-      const protocol = process.env.MQTT_AUTO_CONNECT_PROTOCOL || 'mqtt'
-      const port = parseInt(process.env.MQTT_AUTO_CONNECT_PORT || '1883')
-      const tls = protocol.endsWith('s') // mqtts or wss
-      const url = `${protocol}://${autoConnectHost}:${port}`
       
-      const autoConnectConfig = {
-        id: connectionId,
-        options: {
-          url,
-          username: process.env.MQTT_AUTO_CONNECT_USERNAME,
-          password: process.env.MQTT_AUTO_CONNECT_PASSWORD,
-          tls,
-          certValidation: false,
-          clientId: process.env.MQTT_AUTO_CONNECT_CLIENT_ID || 'mqtt-explorer-' + Math.random().toString(16).substr(2, 8),
-          subscriptions: [{ topic: '#', qos: 0 as 0 | 1 | 2 }], // Subscribe to all topics
-        }
-      }
-      
-      if (!isProduction) {
-        console.log('Auto-connecting to MQTT broker:', {
-          url: autoConnectConfig.options.url,
-          clientId: autoConnectConfig.options.clientId,
-          username: autoConnectConfig.options.username || '(none)',
-        })
-      }
-      
-      // Trigger connection via backend events
-      backendEvents.emit(addMqttConnectionEvent, autoConnectConfig)
-      
-      // Notify client that auto-connect was initiated
+      // Notify client immediately that auto-connect will happen
       socket.emit('auto-connect-initiated', { connectionId })
+      
+      // Delay auto-connect to give client time to subscribe to events
+      setTimeout(() => {
+        const protocol = process.env.MQTT_AUTO_CONNECT_PROTOCOL || 'mqtt'
+        const port = parseInt(process.env.MQTT_AUTO_CONNECT_PORT || '1883')
+        const tls = protocol.endsWith('s') // mqtts or wss
+        const url = `${protocol}://${autoConnectHost}:${port}`
+        
+        const autoConnectConfig = {
+          id: connectionId,
+          options: {
+            url,
+            username: process.env.MQTT_AUTO_CONNECT_USERNAME,
+            password: process.env.MQTT_AUTO_CONNECT_PASSWORD,
+            tls,
+            certValidation: false,
+            clientId: process.env.MQTT_AUTO_CONNECT_CLIENT_ID || 'mqtt-explorer-' + Math.random().toString(16).substr(2, 8),
+            subscriptions: [{ topic: '#', qos: 0 as 0 | 1 | 2 }], // Subscribe to all topics
+          }
+        }
+        
+        if (!isProduction) {
+          console.log('Auto-connecting to MQTT broker:', {
+            connectionId,
+            url: autoConnectConfig.options.url,
+            clientId: autoConnectConfig.options.clientId,
+            username: autoConnectConfig.options.username || '(none)',
+          })
+        }
+        
+        // Trigger connection via backend events
+        backendEvents.emit(addMqttConnectionEvent, autoConnectConfig)
+      }, 1000) // 1 second delay to allow client to set up event subscriptions
     }
   })
-
-  // Initialize backend event bus with Socket.io
-  const backendEvents = new SocketIOServerEventBus(io)
-  const backendRpc = new Rpc(backendEvents)
-
-  // Initialize connection manager
-  const connectionManager = new ConnectionManager(backendEvents)
-  connectionManager.manageConnections()
-
-  // Initialize config storage
-  const configStorage = new ConfigStorage(path.join(process.cwd(), 'data', 'settings.json'), backendRpc)
-  configStorage.init()
 
   // Setup RPC handlers for file operations
   backendRpc.on(makeOpenDialogRpc(), async request => {
