@@ -3,6 +3,7 @@ import * as fs from 'fs'
 import { Page, Locator } from 'playwright'
 
 export { expandTopic } from './expandTopic'
+export { selectTopic } from './selectTopic'
 
 let fast = false
 export function setFast() {

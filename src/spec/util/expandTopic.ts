@@ -13,8 +13,8 @@ export async function expandTopic(path: string, browser: Page) {
   console.log('expandTopic', path)
 
   // Expand each level of the topic tree one at a time
-  // Strategy: Click on each topic level individually, relying on the fact that
-  // after clicking a parent, its children become visible and we can find the next level
+  // Strategy: Click on the expand button (▶/▼) for each topic level
+  // This is different from clicking the topic text which selects it and switches to Details tab
   for (let i = 0; i < topics.length; i += 1) {
     const topicName = topics[i]
     const currentPath = topics.slice(0, i + 1)
@@ -24,25 +24,25 @@ export async function expandTopic(path: string, browser: Page) {
 
     // Find the topic by its data-test-topic attribute
     // After expanding previous levels, the current level should be visible
-    const selector = `span[data-test-topic='${topicName}']`
+    const topicSelector = `span[data-test-topic='${topicName}']`
 
-    console.log(`Using selector: ${selector}`)
+    console.log(`Using selector: ${topicSelector}`)
 
     // Get all matching elements (there may be multiple topics with the same name)
-    const allMatches = browser.locator(selector)
+    const allMatches = browser.locator(topicSelector)
 
     // Count how many matches we have
     const count = await allMatches.count()
     console.log(`Found ${count} elements matching '${topicName}'`)
 
     // Find the first visible match
-    let locator: Locator | null = null
+    let topicLocator: Locator | null = null
     for (let j = 0; j < count; j += 1) {
       const candidate = allMatches.nth(j)
       try {
         // Increased timeout to 3000ms to handle slower UI after many test runs
         await candidate.waitFor({ state: 'visible', timeout: 3000 })
-        locator = candidate
+        topicLocator = candidate
         console.log(`Using match #${j} for '${topicName}'`)
         break
       } catch {
@@ -51,25 +51,48 @@ export async function expandTopic(path: string, browser: Page) {
       }
     }
 
-    if (!locator) {
+    if (!topicLocator) {
       console.error(`Failed to find visible topic "${topicName}" in path "${currentPath.join('/')}"`)
       throw new Error(`Could not find topic "${topicName}" in path "${currentPath.join('/')}"`)
     }
 
     try {
-      console.log(`Found and clicking topic: ${topicName}`)
+      // Find the expand button (▶/▼) for this topic
+      // The expand button is a sibling of the topic text within the same TreeNodeTitle
+      // Navigate to the parent span (TreeNodeTitle container) and find the expander
+      const parentSpan = topicLocator.locator('..')
+      const expandButton = parentSpan.locator('span.expander, span[class*="expander"]')
+      
+      const expandButtonCount = await expandButton.count()
+      
+      // Only click expand button if it exists (topics with children)
+      // Topics without children don't have an expand button
+      if (expandButtonCount > 0) {
+        console.log(`Found expand button for topic: ${topicName}`)
 
-      // Scroll the element into view to ensure it's clickable
-      await locator.scrollIntoViewIfNeeded()
-      await new Promise(resolve => setTimeout(resolve, 200))
+        // Scroll the expand button into view to ensure it's clickable
+        await expandButton.scrollIntoViewIfNeeded()
+        await new Promise(resolve => setTimeout(resolve, 200))
 
-      // Click to expand/select this level
-      // Use force:true to bypass any overlays (e.g., accordions) that might intercept
-      await clickOn(locator, 1, 0, 'left', true)
+        // Check if already expanded (▼ means expanded, ▶ means collapsed)
+        const buttonText = await expandButton.textContent()
+        const isCollapsed = buttonText?.includes('▶')
+        
+        if (isCollapsed) {
+          console.log(`Expanding topic: ${topicName}`)
+          // Click the expand button to expand this level
+          // Use force:true to bypass any overlays (e.g., accordions) that might intercept
+          await clickOn(expandButton, 1, 0, 'left', true)
 
-      // Give the UI time to expand and render child topics
-      // This is important for MQTT async operations and tree rendering
-      await new Promise(resolve => setTimeout(resolve, TREE_EXPANSION_DELAY_MS))
+          // Give the UI time to expand and render child topics
+          // This is important for MQTT async operations and tree rendering
+          await new Promise(resolve => setTimeout(resolve, TREE_EXPANSION_DELAY_MS))
+        } else {
+          console.log(`Topic ${topicName} is already expanded`)
+        }
+      } else {
+        console.log(`Topic ${topicName} has no expand button (leaf topic or empty)`)
+      }
 
       // If this is not the last topic in the path, verify that children rendered
       if (nextTopicName) {
@@ -89,8 +112,8 @@ export async function expandTopic(path: string, browser: Page) {
         }
       }
     } catch (error) {
-      console.error(`Failed to click topic "${topicName}" in path "${currentPath.join('/')}"`, error)
-      throw new Error(`Could not click topic "${topicName}" in path "${currentPath.join('/')}"`)
+      console.error(`Failed to expand topic "${topicName}" in path "${currentPath.join('/')}"`, error)
+      throw new Error(`Could not expand topic "${topicName}" in path "${currentPath.join('/')}"`)
     }
   }
 }
