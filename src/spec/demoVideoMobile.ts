@@ -245,10 +245,24 @@ async function doStuff() {
   })
 
   await scenes.record('mobile_settings', async () => {
-    await showText('Settings with Disconnect/Logout', 1500, page, 'top')
-    await sleep(2000)
-    // Just show that settings are available, don't click
-    await hideText(page)
+    try {
+      await showText('Settings with Disconnect/Logout', 1500, page, 'top')
+      await sleep(2000)
+      // Just show that settings are available, don't click
+      await hideText(page)
+    } catch (error) {
+      console.log('Settings scene failed, continuing...', error)
+      // Try to dismiss any error dialogs
+      try {
+        const closeButton = page.locator('button:has-text("Close"), button[aria-label="close"]')
+        if (await closeButton.isVisible().catch(() => false)) {
+          await closeButton.click()
+          await sleep(500)
+        }
+      } catch (e) {
+        // Ignore if we can't close dialog
+      }
+    }
   })
 
   await scenes.record('mobile_end', async () => {
