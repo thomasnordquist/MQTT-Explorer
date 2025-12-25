@@ -12,9 +12,15 @@ export async function expandTopic(path: string, browser: Page) {
   const topics = path.split('/')
   console.log('expandTopic', path)
 
+  // Determine if we're in mobile viewport
+  // Desktop tests use 1280x720, mobile tests use 412x914
+  const viewport = browser.viewportSize()
+  const isMobileViewport = viewport && viewport.width <= 768
+
   // Expand each level of the topic tree one at a time
-  // Strategy: Click on the expand button (▶/▼) for each topic level
-  // This is different from clicking the topic text which selects it and switches to Details tab
+  // Strategy: 
+  // - Desktop: Click topic text (selects + expands, original behavior)
+  // - Mobile: Click expand button only (doesn't select, mobile-specific behavior)
   for (let i = 0; i < topics.length; i += 1) {
     const topicName = topics[i]
     const currentPath = topics.slice(0, i + 1)
@@ -57,41 +63,74 @@ export async function expandTopic(path: string, browser: Page) {
     }
 
     try {
-      // Find the expand button (▶/▼) for this topic
-      // The expand button is a sibling of the topic text within the same TreeNodeTitle
-      // Navigate to the parent span (TreeNodeTitle container) and find the expander
-      const parentSpan = topicLocator.locator('..')
-      const expandButton = parentSpan.locator('span.expander, span[class*="expander"]')
-      
-      const expandButtonCount = await expandButton.count()
-      
-      // Only click expand button if it exists (topics with children)
-      // Topics without children don't have an expand button
-      if (expandButtonCount > 0) {
-        console.log(`Found expand button for topic: ${topicName}`)
-
-        // Scroll the expand button into view to ensure it's clickable
-        await expandButton.scrollIntoViewIfNeeded()
-        await new Promise(resolve => setTimeout(resolve, 200))
-
-        // Check if already expanded (▼ means expanded, ▶ means collapsed)
-        const buttonText = await expandButton.textContent()
-        const isCollapsed = buttonText?.includes('▶')
+      if (isMobileViewport) {
+        // MOBILE: Click the expand button (▶/▼) only - doesn't select the topic
+        // The expand button is a sibling of the topic text within the same TreeNodeTitle
+        // Navigate to the parent span (TreeNodeTitle container) and find the expander
+        const parentSpan = topicLocator.locator('..')
+        const expandButton = parentSpan.locator('span.expander, span[class*="expander"]')
         
-        if (isCollapsed) {
-          console.log(`Expanding topic: ${topicName}`)
-          // Click the expand button to expand this level
-          // Use force:true to bypass any overlays (e.g., accordions) that might intercept
-          await clickOn(expandButton, 1, 0, 'left', true)
+        const expandButtonCount = await expandButton.count()
+        
+        // Only click expand button if it exists (topics with children)
+        // Topics without children don't have an expand button
+        if (expandButtonCount > 0) {
+          console.log(`Found expand button for topic: ${topicName}`)
 
-          // Give the UI time to expand and render child topics
-          // This is important for MQTT async operations and tree rendering
-          await new Promise(resolve => setTimeout(resolve, TREE_EXPANSION_DELAY_MS))
+          // Scroll the expand button into view to ensure it's clickable
+          await expandButton.scrollIntoViewIfNeeded()
+          await new Promise(resolve => setTimeout(resolve, 200))
+
+          // Check if already expanded (▼ means expanded, ▶ means collapsed)
+          const buttonText = await expandButton.textContent()
+          const isCollapsed = buttonText?.includes('▶')
+          
+          if (isCollapsed) {
+            console.log(`Expanding topic: ${topicName}`)
+            // Click the expand button to expand this level
+            // Use force:true to bypass any overlays (e.g., accordions) that might intercept
+            await clickOn(expandButton, 1, 0, 'left', true)
+
+            // Give the UI time to expand and render child topics
+            // This is important for MQTT async operations and tree rendering
+            await new Promise(resolve => setTimeout(resolve, TREE_EXPANSION_DELAY_MS))
+          } else {
+            console.log(`Topic ${topicName} is already expanded`)
+          }
         } else {
-          console.log(`Topic ${topicName} is already expanded`)
+          console.log(`Topic ${topicName} has no expand button (leaf topic or empty)`)
         }
       } else {
-        console.log(`Topic ${topicName} has no expand button (leaf topic or empty)`)
+        // DESKTOP: Click the topic text (original behavior - selects + expands)
+        console.log(`Clicking topic text to expand: ${topicName}`)
+        
+        // Scroll into view
+        await topicLocator.scrollIntoViewIfNeeded()
+        await new Promise(resolve => setTimeout(resolve, 200))
+        
+        // Check if topic has children that can be expanded
+        const parentSpan = topicLocator.locator('..')
+        const expandButton = parentSpan.locator('span.expander, span[class*="expander"]')
+        const hasExpandButton = await expandButton.count() > 0
+        
+        if (hasExpandButton) {
+          // Check if already expanded
+          const buttonText = await expandButton.textContent()
+          const isCollapsed = buttonText?.includes('▶')
+          
+          if (isCollapsed) {
+            console.log(`Topic ${topicName} is collapsed, clicking to expand`)
+            // Click the topic text - on desktop this selects AND toggles expansion
+            await clickOn(topicLocator, 1, 0, 'left', false)
+            
+            // Give the UI time to expand and render child topics
+            await new Promise(resolve => setTimeout(resolve, TREE_EXPANSION_DELAY_MS))
+          } else {
+            console.log(`Topic ${topicName} is already expanded`)
+          }
+        } else {
+          console.log(`Topic ${topicName} has no children to expand`)
+        }
       }
 
       // If this is not the last topic in the path, verify that children rendered
