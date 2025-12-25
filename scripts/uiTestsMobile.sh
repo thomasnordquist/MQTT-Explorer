@@ -32,10 +32,15 @@ set -e
 
 # Mobile viewport dimensions (Pixel 6 - height must be even for h264)
 DIMENSIONS="412x914"
+# Chrome header in --app mode is 88px tall
+# Add 88px to Xvfb height to accommodate the Chrome header
+CHROME_HEADER_HEIGHT=88
+XVFB_HEIGHT=$((914 + CHROME_HEADER_HEIGHT))
+XVFB_DIMENSIONS="412x${XVFB_HEIGHT}"
 SCR=99
 
-# Start new window manager
-Xvfb :$SCR -screen 0 "$DIMENSIONS"x24 -ac &
+# Start new window manager with extra height for Chrome header
+Xvfb :$SCR -screen 0 "$XVFB_DIMENSIONS"x24 -ac &
 export PID_XVFB=$!
 sleep 2
 
@@ -62,8 +67,9 @@ sleep 5
 rm -f ./app-mobile*.mp4
 rm -f ./qrawvideorgb24-mobile.yuv
 
-# Start recording in tmux
-tmux new-session -d -s record-mobile ffmpeg -f x11grab -draw_mouse 0 -video_size $DIMENSIONS -i :$SCR -r 20 -vcodec rawvideo -pix_fmt yuv420p qrawvideorgb24-mobile.yuv
+# Start recording in tmux with vertical offset to exclude Chrome header
+# Record only the actual mobile viewport (412x914), skipping the 88px Chrome header at top
+tmux new-session -d -s record-mobile ffmpeg -f x11grab -draw_mouse 0 -video_size $DIMENSIONS -i :$SCR+0,$CHROME_HEADER_HEIGHT -r 20 -vcodec rawvideo -pix_fmt yuv420p qrawvideorgb24-mobile.yuv
 
 # Start tests
 export BROWSER_MODE_URL=http://localhost:3000
