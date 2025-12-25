@@ -85,6 +85,13 @@ describe('MQTT Explorer UI Tests', function () {
         }
         contextOptions.userAgent = 'Mozilla/5.0 (Linux; Android 12; Pixel 6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36'
         console.log('Using mobile viewport: 412x914 (Pixel 6)')
+      } else {
+        // Desktop viewport - ensure width > 768px so mobile UI doesn't activate
+        contextOptions.viewport = {
+          width: 1280,
+          height: 720,
+        }
+        console.log('Using desktop viewport: 1280x720')
       }
 
       browserContext = await browser.newContext(contextOptions)
