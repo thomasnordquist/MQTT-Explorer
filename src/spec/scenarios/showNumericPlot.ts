@@ -1,8 +1,10 @@
 import { Page } from 'playwright'
-import { moveToCenterOfElement, clickOn, clickOnHistory, expandTopic, sleep } from '../util'
+import { moveToCenterOfElement, clickOn, clickOnHistory, expandTopic, selectTopic, sleep } from '../util'
 
 export async function showNumericPlot(browser: Page) {
   await expandTopic('kitchen/coffee_maker', browser)
+  // After expanding, we need to select the topic to show its JSON properties in the details panel
+  await selectTopic('kitchen/coffee_maker', browser)
   let heater = await valuePreviewGuttersShowChartIcon('heater', browser)
   await moveToCenterOfElement(heater)
   await sleep(1000)
