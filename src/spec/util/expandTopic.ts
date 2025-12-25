@@ -101,16 +101,6 @@ export async function expandTopic(path: string, browser: Page) {
         } else {
           console.log(`Topic ${topicName} has no expand button (leaf topic or empty)`)
         }
-        
-        // If this is the last topic in the path, click it to select it (for mobile)
-        // This ensures the final topic is selected even if it's a leaf
-        if (isLastTopic) {
-          console.log(`Selecting final topic: ${topicName}`)
-          await topicLocator.scrollIntoViewIfNeeded()
-          await new Promise(resolve => setTimeout(resolve, 200))
-          await clickOn(topicLocator, 1, 0, 'left', false)
-          await new Promise(resolve => setTimeout(resolve, 500))
-        }
       } else {
         // DESKTOP: Click the topic text (original behavior - selects + expands)
         console.log(`Clicking topic text to expand: ${topicName}`)
