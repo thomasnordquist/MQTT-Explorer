@@ -21,6 +21,12 @@ export const toggleSettingsVisibility = () => (dispatch: Dispatch<any>) => {
   })
 }
 
+export const toggleAboutDialogVisibility = () => (dispatch: Dispatch<any>) => {
+  dispatch({
+    type: ActionTypes.toggleAboutDialogVisibility,
+  })
+}
+
 export const requestConfirmation = (title: string, inquiry: string) => (dispatch: Dispatch<any>) => {
   return new Promise(resolve => {
     const confirmationRequest = {

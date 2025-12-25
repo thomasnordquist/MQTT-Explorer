@@ -6,6 +6,7 @@ import Notification from './Layout/Notification'
 import React from 'react'
 import TitleBar from './Layout/TitleBar'
 import UpdateNotifier from './UpdateNotifier'
+import { AboutDialog } from './AboutDialog'
 import { AppState } from '../reducers'
 import { bindActionCreators } from 'redux'
 import { ConfirmationRequest } from '../reducers/Global'
@@ -28,6 +29,7 @@ interface Props {
   settingsActions: typeof settingsActions
   launching: boolean
   confirmationRequests: Array<ConfirmationRequest>
+  aboutDialogVisible: boolean
 }
 
 class App extends React.PureComponent<Props, {}> {
@@ -75,6 +77,10 @@ class App extends React.PureComponent<Props, {}> {
         <CssBaseline />
         <ErrorBoundary>
           <ConfirmationDialog confirmationRequests={this.props.confirmationRequests} />
+          <AboutDialog
+            open={this.props.aboutDialogVisible}
+            onClose={() => this.props.actions.toggleAboutDialogVisibility()}
+          />
           {this.renderNotification()}
           <React.Suspense fallback={<div></div>}>
             <Settings {...anyProps} />
@@ -158,6 +164,7 @@ const mapStateToProps = (state: AppState) => {
     highlightTopicUpdates: state.settings.get('highlightTopicUpdates'),
     launching: state.globalState.get('launching'),
     confirmationRequests: state.globalState.get('confirmationRequests'),
+    aboutDialogVisible: state.globalState.get('aboutDialogVisible'),
   }
 }
 
