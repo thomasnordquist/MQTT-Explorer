@@ -88,14 +88,16 @@ function ContentView(props: Props) {
 
   // Mobile view with tab switcher
   if (isMobile) {
-    // Expose tab switching function for TreeNode to call
+    // Expose tab switching functions for other components to call
     React.useEffect(() => {
       if (typeof window !== 'undefined') {
         (window as any).switchToDetailsTab = () => setMobileTab(1)
+        (window as any).switchToTopicsTab = () => setMobileTab(0)
       }
       return () => {
         if (typeof window !== 'undefined') {
           delete (window as any).switchToDetailsTab
+          delete (window as any).switchToTopicsTab
         }
       }
     }, [])

@@ -23,7 +23,15 @@ function SearchBar(props: {
 
   const [hasFocus, setHasFocus] = useState(false)
   const inputRef = useRef<HTMLInputElement>()
-  const onFocus = useCallback(() => setHasFocus(true), [])
+  const onFocus = useCallback(() => {
+    setHasFocus(true)
+    // On mobile, switch to Topics tab when search is focused
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      if ((window as any).switchToTopicsTab) {
+        (window as any).switchToTopicsTab()
+      }
+    }
+  }, [])
   const onBlur = useCallback(() => setHasFocus(false), [])
 
   const clearFilter = useCallback(() => {
@@ -140,6 +148,11 @@ const styles = (theme: Theme) => ({
     paddingLeft: theme.spacing(6),
     transition: theme.transitions.create('width'),
     width: '100%',
+    color: theme.palette.common.white, // High contrast white text
+    '&::placeholder': {
+      color: fade(theme.palette.common.white, 0.7), // Semi-transparent white placeholder
+      opacity: 1,
+    },
   },
 })
 
