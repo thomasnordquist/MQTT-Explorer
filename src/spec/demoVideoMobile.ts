@@ -64,12 +64,14 @@ async function doStuff() {
     args: [
       '--no-sandbox',
       '--disable-dev-shm-usage',
-      '--kiosk',  // Kiosk mode - fullscreen without any browser UI
+      '--app=http://localhost:3000',  // App mode - no browser UI
       '--window-size=412,914',  // Match the mobile viewport size
       '--window-position=0,0',
       '--disable-features=TranslateUI',
       '--no-first-run',
       '--no-default-browser-check',
+      '--disable-infobars',
+      '--disable-translate',
     ],
   })
 
@@ -105,6 +107,9 @@ async function doStuff() {
   
   // Direct console to Node terminal
   page.on('console', console.log)
+  
+  // Enable the fake mouse pointer for visual cursor tracking
+  await createFakeMousePointer(page)
 
   // Handle authentication if required
   const username = process.env.MQTT_EXPLORER_USERNAME || 'admin'
@@ -163,11 +168,15 @@ async function doStuff() {
       console.log('Tree nodes not found, continuing...')
     })
     await sleep(1000)
-    // Expand a topic by clicking the expand button with force to avoid interception
+    // Expand a topic by clicking the expand button WITHOUT force to show cursor movement
     const expandButton = page.locator('span.expander').first()
     if (await expandButton.isVisible()) {
       try {
-        await expandButton.click({ force: true, timeout: 5000 })
+        // Scroll into view first
+        await expandButton.scrollIntoViewIfNeeded()
+        await sleep(500)
+        // Use clickOn helper to show cursor movement
+        await clickOn(expandButton, 1, 0, 'left', false)
         await sleep(1000)
       } catch (error) {
         console.log('Expand button click failed, continuing...')
@@ -181,11 +190,15 @@ async function doStuff() {
     await showText('Tap Topic to View Details', 1500, page, 'top')
     await sleep(1000)
     // Click on topic text to select and switch to details tab
-    // Use force click to avoid tab interception issues
+    // Use clickOn helper to show cursor movement
     const topicText = page.locator('[data-test-topic]').first()
     if (await topicText.isVisible()) {
       try {
-        await topicText.click({ force: true, timeout: 5000 })
+        // Scroll into view first
+        await topicText.scrollIntoViewIfNeeded()
+        await sleep(500)
+        // Use clickOn helper without force to show cursor movement
+        await clickOn(topicText, 1, 0, 'left', false)
         await sleep(2000)
         // The mobile UI should automatically switch to Details tab
       } catch (error) {
