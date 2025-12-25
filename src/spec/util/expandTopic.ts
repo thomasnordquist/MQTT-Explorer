@@ -71,6 +71,7 @@ export async function expandTopic(path: string, browser: Page) {
         const expandButton = parentSpan.locator('span.expander, span[class*="expander"]')
         
         const expandButtonCount = await expandButton.count()
+        const isLastTopic = i === topics.length - 1
         
         // Only click expand button if it exists (topics with children)
         // Topics without children don't have an expand button
@@ -100,6 +101,16 @@ export async function expandTopic(path: string, browser: Page) {
         } else {
           console.log(`Topic ${topicName} has no expand button (leaf topic or empty)`)
         }
+        
+        // If this is the last topic in the path, click it to select it (for mobile)
+        // This ensures the final topic is selected even if it's a leaf
+        if (isLastTopic) {
+          console.log(`Selecting final topic: ${topicName}`)
+          await topicLocator.scrollIntoViewIfNeeded()
+          await new Promise(resolve => setTimeout(resolve, 200))
+          await clickOn(topicLocator, 1, 0, 'left', false)
+          await new Promise(resolve => setTimeout(resolve, 500))
+        }
       } else {
         // DESKTOP: Click the topic text (original behavior - selects + expands)
         console.log(`Clicking topic text to expand: ${topicName}`)
@@ -112,6 +123,7 @@ export async function expandTopic(path: string, browser: Page) {
         const parentSpan = topicLocator.locator('..')
         const expandButton = parentSpan.locator('span.expander, span[class*="expander"]')
         const hasExpandButton = await expandButton.count() > 0
+        const isLastTopic = i === topics.length - 1
         
         if (hasExpandButton) {
           // Check if already expanded
@@ -126,10 +138,16 @@ export async function expandTopic(path: string, browser: Page) {
             // Give the UI time to expand and render child topics
             await new Promise(resolve => setTimeout(resolve, TREE_EXPANSION_DELAY_MS))
           } else {
-            console.log(`Topic ${topicName} is already expanded`)
+            console.log(`Topic ${topicName} is already expanded, clicking to select`)
+            // Topic is already expanded, just click to select it
+            await clickOn(topicLocator, 1, 0, 'left', false)
+            await new Promise(resolve => setTimeout(resolve, 500))
           }
         } else {
-          console.log(`Topic ${topicName} has no children to expand`)
+          // Leaf topic - click to select it (important for final topic in path)
+          console.log(`Topic ${topicName} has no children, clicking to select`)
+          await clickOn(topicLocator, 1, 0, 'left', false)
+          await new Promise(resolve => setTimeout(resolve, 500))
         }
       }
 
