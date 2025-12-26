@@ -27,7 +27,7 @@ export const styles = (theme: Theme) => {
       overflow: 'hidden' as 'hidden',
       textOverflow: 'ellipsis' as 'ellipsis',
       whiteSpace: 'nowrap' as 'nowrap',
-      padding: isMobile ? '2px 0px' : '1px 0px 0px 0px', // More padding on mobile
+      padding: isMobile ? '1px 0px' : '1px 0px 0px 0px',
     },
     topicSelect: {
       float: 'right' as 'right',
@@ -44,12 +44,12 @@ export const styles = (theme: Theme) => {
     hover: {},
     title: {
       borderRadius: '4px',
-      lineHeight: isMobile ? '1.5em' : '1em', // Better line height on mobile
+      lineHeight: isMobile ? '1.3em' : '1em',
       display: 'inline-block' as 'inline-block',
       whiteSpace: 'nowrap' as 'nowrap',
-      minHeight: isMobile ? '44px' : '14px', // 48px touch target on mobile (with padding)
+      minHeight: isMobile ? '40px' : '14px', // 44px touch target on mobile (WCAG AA minimum)
       height: 'auto' as 'auto',
-      padding: isMobile ? '12px 8px' : '1px 4px 0 4px', // Touch-friendly padding on mobile
+      padding: isMobile ? '8px 8px' : '1px 4px 0 4px', // Reduced padding, still touch-friendly
       margin: '1px 0px',
       fontSize: isMobile ? '16px' : 'inherit', // Prevent iOS zoom on focus
       cursor: 'pointer' as 'pointer',
