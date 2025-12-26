@@ -139,7 +139,7 @@ const styles = (theme: Theme) => ({
     justifyContent: 'center' as 'center',
   },
   inputRoot: {
-    color: 'inherit' as 'inherit',
+    color: theme.palette.common.white, // Ensure white text color
     width: '100%',
   },
   inputInput: {
