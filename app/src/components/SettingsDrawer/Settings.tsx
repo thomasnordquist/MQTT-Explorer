@@ -4,7 +4,6 @@ import BrokerStatistics from './BrokerStatistics'
 import ChevronRight from '@mui/icons-material/ChevronRight'
 import CloudOff from '@mui/icons-material/CloudOff'
 import Logout from '@mui/icons-material/Logout'
-import MobileConnectionSelector from './MobileConnectionSelector'
 import TimeLocale from './TimeLocale'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
@@ -239,7 +238,6 @@ class Settings extends React.PureComponent<Props, {}> {
           </Typography>
           <Divider style={{ userSelect: 'none' }} />
         </div>
-        <MobileConnectionSelector />
         <MobileActionButtons classes={classes} actions={actions} />
         <div>
           {this.renderAutoExpand()}

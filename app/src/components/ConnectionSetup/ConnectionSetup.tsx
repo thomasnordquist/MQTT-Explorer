@@ -2,6 +2,7 @@ import * as React from 'react'
 import ConnectionSettings from './ConnectionSettings'
 const ConnectionSettingsAny = ConnectionSettings as any
 import ProfileList from './ProfileList'
+import MobileConnectionSelector from './MobileConnectionSelector'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -66,10 +67,15 @@ class ConnectionSetup extends React.PureComponent<Props, {}> {
             </div>
             <div className={classes.right} key={connection && connection.id}>
               <Toolbar>
-                <Typography className={classes.title} variant="h6" color="inherit">
-                  MQTT Connection
-                </Typography>
-                <Typography className={classes.connectionUri}>{mqttConnection && mqttConnection.url}</Typography>
+                <div className={classes.toolbarContent}>
+                  <div className={classes.desktopTitle}>
+                    <Typography className={classes.title} variant="h6" color="inherit">
+                      MQTT Connection
+                    </Typography>
+                    <Typography className={classes.connectionUri}>{mqttConnection && mqttConnection.url}</Typography>
+                  </div>
+                  <MobileConnectionSelector />
+                </div>
               </Toolbar>
               {this.renderSettings()}
             </div>
@@ -85,6 +91,20 @@ const styles = (theme: Theme) => ({
   title: {
     color: theme.palette.text.primary,
     whiteSpace: 'nowrap' as 'nowrap',
+  },
+  toolbarContent: {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  desktopTitle: {
+    display: 'flex',
+    alignItems: 'center',
+    flex: 1,
+    // Hide on mobile - connection selector will take its place
+    [theme.breakpoints.down('md')]: {
+      display: 'none' as 'none',
+    },
   },
   root: {
     margin: `calc((100vh - ${connectionHeight}) / 2) auto 0 auto`,
