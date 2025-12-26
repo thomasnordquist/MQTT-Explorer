@@ -20,7 +20,9 @@ const styles = (theme: Theme) => ({
   container: {
     display: 'flex',
     alignItems: 'center',
-    flex: 1,
+    marginRight: theme.spacing(1),
+    maxWidth: '40%', // Leave space for search bar
+    minWidth: '120px',
     // Only show on mobile (<=768px)
     [theme.breakpoints.up('md')]: {
       display: 'none' as 'none',
@@ -29,13 +31,16 @@ const styles = (theme: Theme) => ({
   select: {
     flex: 1,
     color: theme.palette.common.white,
-    fontSize: '1.25rem',
+    fontSize: '1rem', // Smaller font to save space
     fontWeight: 500,
     '& .MuiSelect-select': {
       paddingTop: theme.spacing(1),
       paddingBottom: theme.spacing(1),
       paddingLeft: 0,
       paddingRight: theme.spacing(4),
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
     },
     '& .MuiOutlinedInput-notchedOutline': {
       border: 'none',

@@ -116,7 +116,7 @@ const styles = (theme: Theme) => ({
     marginRight: theme.spacing(2),
     marginLeft: 0,
     flexGrow: 1,
-    maxWidth: '60%',
+    maxWidth: '45%', // Adjusted to work with connection selector on mobile
 
     [theme.breakpoints.up('md')]: {
       maxWidth: '30%',
