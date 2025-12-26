@@ -46,6 +46,9 @@ export const loadConnectionSettings = () => async (dispatch: Dispatch<any>, getS
   const firstKey = Object.keys(connections)[0]
   if (firstKey) {
     dispatch(selectConnection(firstKey))
+  } else {
+    // No connections exist - create a default one
+    dispatch(createConnection())
   }
 }
 
