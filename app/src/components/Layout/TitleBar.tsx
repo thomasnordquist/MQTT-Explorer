@@ -4,6 +4,7 @@ import Logout from '@mui/icons-material/Logout'
 import ConnectionHealthIndicator from '../helper/ConnectionHealthIndicator'
 const ConnectionHealthIndicatorAny = ConnectionHealthIndicator as any
 import Menu from '@mui/icons-material/Menu'
+import MobileConnectionSelector from './MobileConnectionSelector'
 import PauseButton from './PauseButton'
 import SearchBar from './SearchBar'
 import { AppBar, Button, IconButton, Toolbar, Typography } from '@mui/material'
@@ -20,6 +21,9 @@ const styles = (theme: Theme) => ({
   title: {
     display: 'none' as 'none',
     [theme.breakpoints.up(750)]: {
+      display: 'block' as 'block',
+    },
+    [theme.breakpoints.up('md')]: {
       display: 'block' as 'block',
     },
     whiteSpace: 'nowrap' as 'nowrap',
@@ -103,6 +107,7 @@ class TitleBar extends React.PureComponent<Props, {}> {
           <Typography className={classes.title} variant="h6" color="inherit">
             MQTT Explorer
           </Typography>
+          <MobileConnectionSelector />
           <SearchBar />
           <PauseButton />
           <Button
