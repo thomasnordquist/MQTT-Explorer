@@ -4,7 +4,6 @@ import Logout from '@mui/icons-material/Logout'
 import ConnectionHealthIndicator from '../helper/ConnectionHealthIndicator'
 const ConnectionHealthIndicatorAny = ConnectionHealthIndicator as any
 import Menu from '@mui/icons-material/Menu'
-import MobileConnectionSelector from './MobileConnectionSelector'
 import PauseButton from './PauseButton'
 import SearchBar from './SearchBar'
 import { AppBar, Button, IconButton, Toolbar, Typography } from '@mui/material'
@@ -107,7 +106,6 @@ class TitleBar extends React.PureComponent<Props, {}> {
           <Typography className={classes.title} variant="h6" color="inherit">
             MQTT Explorer
           </Typography>
-          <MobileConnectionSelector />
           <SearchBar />
           <PauseButton />
           <Button
