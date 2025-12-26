@@ -65,8 +65,8 @@ function SearchBar(props: {
   })
 
   return (
-    <div className={classes.search}>
-      <div className={classes.searchIcon}>
+    <div className={classes.search} role="search">
+      <div className={classes.searchIcon} aria-hidden="true">
         <Search />
       </div>
       <InputBase
@@ -75,6 +75,7 @@ function SearchBar(props: {
           onFocus,
           onBlur,
           ref: inputRef,
+          'aria-label': 'Search topics',
         }}
         onChange={onFilterChange}
         placeholder="Search…"
@@ -149,9 +150,16 @@ const styles = (theme: Theme) => ({
     transition: theme.transitions.create('width'),
     width: '100%',
     color: theme.palette.common.white, // High contrast white text
+    fontSize: '16px', // Prevent iOS zoom on focus
     '&::placeholder': {
       color: fade(theme.palette.common.white, 0.7), // Semi-transparent white placeholder
       opacity: 1,
+    },
+    // Improve mobile input handling
+    [theme.breakpoints.down('md')]: {
+      fontSize: '16px', // Prevent zoom
+      WebkitAppearance: 'none',
+      touchAction: 'manipulation',
     },
   },
 })

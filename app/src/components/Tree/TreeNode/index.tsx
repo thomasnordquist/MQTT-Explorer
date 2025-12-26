@@ -136,6 +136,10 @@ function TreeNodeComponent(props: Props) {
           onClick={didClickTitle}
           tabIndex={-1}
           onKeyDown={deleteTopicCallback}
+          role="treeitem"
+          aria-selected={selected}
+          aria-expanded={!isCollapsed}
+          aria-label={`Topic: ${name || treeNode.sourceEdge?.name || 'root'}`}
         >
           <TreeNodeTitle
             lastUpdate={treeNode.lastUpdate}
