@@ -102,21 +102,17 @@ class MobileConnectionSelector extends React.PureComponent<Props, {}> {
 
 const mapStateToProps = (state: AppState) => {
   const connectionManager = state.connectionManager
-  const connections = connectionManager
-    ? connectionManager
-        .get('connections')
-        ?.valueSeq()
-        .map((conn: any) => ({
-          id: conn.get('id'),
-          name: conn.get('name'),
-          host: conn.get('host'),
-        }))
-        .toArray()
+  const connections = connectionManager && connectionManager.connections
+    ? Object.values(connectionManager.connections).map(conn => ({
+        id: conn.id,
+        name: conn.name,
+        host: conn.host,
+      }))
     : []
 
   return {
     connections,
-    currentConnectionId: state.connectionManager.selected,
+    currentConnectionId: state.connectionManager?.selected,
   }
 }
 
