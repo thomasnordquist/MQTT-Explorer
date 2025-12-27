@@ -8,7 +8,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { connectionActions, connectionManagerActions } from '../../actions'
+import { connectionActions, connectionManagerActions, globalActions } from '../../actions'
 import { ConnectionOptions, toMqttConnection } from '../../model/ConnectionOptions'
 import { KeyCodes } from '../../utils/KeyCodes'
 import { Theme } from '@mui/material/styles'
@@ -25,6 +25,7 @@ import {
   InputLabel,
   MenuItem,
   TextField,
+  Tooltip,
 } from '@mui/material'
 
 interface Props {
@@ -32,6 +33,7 @@ interface Props {
   classes: { [s: string]: string }
   actions: typeof connectionActions
   managerActions: typeof connectionManagerActions
+  globalActions: typeof globalActions
   connected: boolean
   connecting: boolean
 }
@@ -40,6 +42,17 @@ const protocols = ['mqtt', 'ws']
 
 function ConnectionSettings(props: Props) {
   const [showPassword, setShowPassword] = useState(false)
+
+  const handleDelete = useCallback(async () => {
+    const confirmed = await props.globalActions.requestConfirmation(
+      'Delete Connection',
+      `Are you sure you want to delete the connection "${props.connection.name}"?\n\nThis action cannot be undone.`
+    )
+    
+    if (confirmed) {
+      props.managerActions.deleteConnection(props.connection.id)
+    }
+  }, [props.connection.id, props.connection.name, props.globalActions, props.managerActions])
 
   const toggleConnect = useCallback(() => {
     if (props.connecting) {
@@ -101,21 +114,26 @@ function ConnectionSettings(props: Props) {
 
     const protocolItems = protocols.map((value: string) => (
       <MenuItem key={value} value={value}>
-        {value}://
+        {value}:// {value === 'mqtt' ? '(Standard)' : '(WebSocket)'}
       </MenuItem>
     ))
 
     return (
-      <TextField
-        select={true}
-        label="Protocol"
-        className={classes.textField}
-        value={connection.protocol}
-        onChange={updateProtocol}
-        margin="normal"
-      >
-        {protocolItems}
-      </TextField>
+      <Tooltip title="Use 'mqtt' for standard connections or 'ws' for WebSocket connections" arrow>
+        <TextField
+          select={true}
+          label="Protocol"
+          className={classes.textField}
+          value={connection.protocol}
+          onChange={updateProtocol}
+          margin="normal"
+          inputProps={{ 
+            'aria-label': 'MQTT protocol'
+          }}
+        >
+          {protocolItems}
+        </TextField>
+      </Tooltip>
     )
   }
 
@@ -144,9 +162,15 @@ function ConnectionSettings(props: Props) {
   function PasswordVisibilityButton(props: { showPassword: boolean; toggle: () => void }) {
     return (
       <InputAdornment position="end">
-        <IconButton aria-label="Toggle password visibility" onClick={props.toggle}>
-          {props.showPassword ? <Visibility /> : <VisibilityOff />}
-        </IconButton>
+        <Tooltip title={props.showPassword ? "Hide password" : "Show password"} arrow>
+          <IconButton 
+            aria-label={props.showPassword ? "Hide password" : "Show password"}
+            onClick={props.toggle}
+            edge="end"
+          >
+            {props.showPassword ? <Visibility /> : <VisibilityOff />}
+          </IconButton>
+        </Tooltip>
       </InputAdornment>
     )
   }
@@ -165,6 +189,11 @@ function ConnectionSettings(props: Props) {
               value={connection.name}
               onChange={handleChange('name')}
               margin="normal"
+              placeholder="My MQTT Connection"
+              helperText="A friendly name for this connection"
+              inputProps={{ 
+                'aria-label': 'Connection name'
+              }}
             />
           </Grid>
           <Grid item={true} xs={4}>
@@ -188,7 +217,12 @@ function ConnectionSettings(props: Props) {
               value={connection.host}
               onChange={handleChange('host')}
               margin="normal"
-              inputProps={{ 'data-testid': 'host-input' }}
+              placeholder="broker.example.com"
+              helperText="MQTT broker hostname or IP address"
+              inputProps={{ 
+                'data-testid': 'host-input',
+                'aria-label': 'MQTT broker host'
+              }}
             />
           </Grid>
           <Grid item={true} xs={3}>
@@ -198,6 +232,14 @@ function ConnectionSettings(props: Props) {
               value={connection.port}
               onChange={handleChange('port')}
               margin="normal"
+              type="number"
+              placeholder="1883"
+              helperText="Common: 1883 (plain), 8883 (TLS)"
+              inputProps={{ 
+                'aria-label': 'MQTT broker port',
+                min: 1,
+                max: 65535
+              }}
             />
           </Grid>
           {requiresBasePath() ? renderBasePathInput() : null}
@@ -208,6 +250,12 @@ function ConnectionSettings(props: Props) {
               value={connection.username}
               onChange={handleChange('username')}
               margin="normal"
+              placeholder="Optional"
+              helperText="Leave blank if not required"
+              inputProps={{ 
+                'aria-label': 'MQTT username',
+                'autoComplete': 'username'
+              }}
             />
           </Grid>
           <Grid item={true} xs={requiresBasePath() ? 4 : 6}>
@@ -218,7 +266,12 @@ function ConnectionSettings(props: Props) {
                 type={showPassword ? 'text' : 'password'}
                 value={connection.password}
                 onChange={handleChange('password')}
+                placeholder="Optional"
                 endAdornment={<PasswordVisibilityButton showPassword={showPassword} toggle={handleClickShowPassword} />}
+                inputProps={{ 
+                  'aria-label': 'MQTT password',
+                  'autoComplete': 'current-password'
+                }}
               />
             </FormControl>
           </Grid>
@@ -226,31 +279,41 @@ function ConnectionSettings(props: Props) {
         <br />
         <div>
           <div style={{ float: 'left' }}>
-            <Button
-              variant="contained"
-              className={classes.button}
-              onClick={() => props.managerActions.deleteConnection(props.connection.id)}
-            >
-              Delete <Delete />
-            </Button>
-            <Button
-              variant="contained"
-              className={classes.button}
-              onClick={props.managerActions.toggleAdvancedSettings}
-              data-testid="advanced-button"
-            >
-              <Settings /> Advanced
-            </Button>
+            <Tooltip title="Delete this connection permanently" arrow>
+              <Button
+                variant="contained"
+                color="error"
+                className={classes.button}
+                onClick={handleDelete}
+                aria-label="Delete connection"
+              >
+                Delete <Delete />
+              </Button>
+            </Tooltip>
+            <Tooltip title="Advanced connection settings" arrow>
+              <Button
+                variant="contained"
+                className={classes.button}
+                onClick={props.managerActions.toggleAdvancedSettings}
+                data-testid="advanced-button"
+                aria-label="Show advanced settings"
+              >
+                <Settings /> Advanced
+              </Button>
+            </Tooltip>
           </div>
           <div style={{ float: 'right' }}>
-            <Button
-              variant="contained"
-              color="secondary"
-              className={classes.button}
-              onClick={props.managerActions.saveConnectionSettings}
-            >
-              <Save /> Save
-            </Button>
+            <Tooltip title="Save connection settings" arrow>
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                onClick={props.managerActions.saveConnectionSettings}
+                aria-label="Save connection"
+              >
+                <Save /> Save
+              </Button>
+            </Tooltip>
             <ConnectButton toggle={toggleConnect} connecting={props.connecting} classes={classes} />
           </div>
         </div>
@@ -270,6 +333,7 @@ const mapDispatchToProps = (dispatch: any) => {
   return {
     actions: bindActionCreators(connectionActions, dispatch),
     managerActions: bindActionCreators(connectionManagerActions, dispatch),
+    globalActions: bindActionCreators(globalActions, dispatch),
   }
 }
 
