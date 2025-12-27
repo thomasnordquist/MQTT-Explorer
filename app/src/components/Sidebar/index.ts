@@ -1,3 +1,4 @@
-import Sidebar from './Sidebar'
+import Sidebar from './SidebarNew'
+import SidebarOld from './Sidebar'
 
-export { Sidebar }
+export { Sidebar, SidebarOld }
