@@ -77,7 +77,7 @@ async function doStuff() {
   await scenes.record('connect', async () => {
     await connectTo(brokerHost, page)
     await MockSparkplug.run() // Start sparkplug client after connect or birth topics will be missed
-    await sleep(1000)
+    await sleep(3000) // Increased wait time to allow MQTT topics to be received and rendered
   })
 
   await scenes.record('numeric_plots', async () => {
