@@ -20,7 +20,7 @@ function SimpleBreadcrumb(props: Props) {
     .branch()
     .map(n => n.sourceEdge)
     .filter(edge => Boolean(edge))
-    .map(edge => edge!.name || '')
+    .map(edge => edge?.name || '')
     .filter(name => name !== '')
 
   if (breadcrumbParts.length === 0) {
@@ -41,7 +41,7 @@ const styles = (theme: Theme) => ({
     fontSize: '1rem',
     fontWeight: 500,
     color: theme.palette.text.primary,
-    wordBreak: 'break-all' as 'break-all',
+    wordBreak: 'break-word' as 'break-word',
     lineHeight: 1.5,
   },
 })
