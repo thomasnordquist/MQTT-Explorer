@@ -18,7 +18,7 @@ import { MessageId } from '../MessageId'
 import { useDecoder } from '../../hooks/useDecoder'
 import DeleteIcon from '@mui/icons-material/Delete'
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep'
-import Topic from '../TopicPanel/Topic'
+import SimpleBreadcrumb from './SimpleBreadcrumb'
 
 interface Props {
   node?: q.TreeNode<any>
@@ -78,12 +78,10 @@ function DetailsTab(props: Props) {
 
   return (
     <Box className={classes.root}>
-      {/* Topic Section */}
+      {/* Topic Section - Breadcrumb as title */}
       <Box className={classes.section}>
         <Box className={classes.sectionHeader}>
-          <Typography variant="subtitle2" className={classes.sectionTitle}>
-            Topic Path
-          </Typography>
+          <SimpleBreadcrumb node={node} />
           <Box className={classes.actions}>
             <Copy value={node.path()} />
             {node.childTopicCount() === 0 && (
@@ -101,9 +99,6 @@ function DetailsTab(props: Props) {
               </Tooltip>
             )}
           </Box>
-        </Box>
-        <Box className={classes.topicBreadcrumb}>
-          <Topic node={node} />
         </Box>
       </Box>
 
@@ -237,14 +232,6 @@ const styles = (theme: Theme) => ({
   },
   iconButton: {
     padding: theme.spacing(0.5),
-  },
-  topicBreadcrumb: {
-    padding: theme.spacing(1),
-    backgroundColor: theme.palette.action.hover,
-    borderRadius: theme.shape.borderRadius,
-    minHeight: '44px', // Touch-friendly
-    display: 'flex',
-    alignItems: 'center',
   },
   divider: {
     margin: theme.spacing(2, 0),
