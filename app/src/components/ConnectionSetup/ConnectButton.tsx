@@ -8,15 +8,29 @@ function ConnectButton(props: { connecting: boolean; classes: any; toggle: () =>
 
   if (connecting) {
     return (
-      <Button variant="contained" color="primary" className={classes.button} onClick={toggle} data-testid="abort-button">
+      <Button 
+        variant="contained" 
+        color="primary" 
+        className={classes.button} 
+        onClick={toggle} 
+        data-testid="abort-button"
+        aria-label="Cancel connection attempt"
+      >
         <ConnectionHealthIndicator />
-        &nbsp;&nbsp;Abort
+        &nbsp;&nbsp;Cancel
       </Button>
     )
   }
 
   return (
-    <Button variant="contained" color="primary" className={classes.button} onClick={toggle} data-testid="connect-button">
+    <Button 
+      variant="contained" 
+      color="primary" 
+      className={classes.button} 
+      onClick={toggle} 
+      data-testid="connect-button"
+      aria-label="Connect to MQTT broker"
+    >
       <PowerSettingsNew /> Connect
     </Button>
   )
