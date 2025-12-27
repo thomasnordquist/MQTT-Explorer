@@ -89,7 +89,7 @@ function ConnectionSettings(props: Props) {
           className={props.classes.textField}
           value={props.connection.basePath}
           onChange={handleChange('basePath')}
-          margin="normal"
+          margin="dense"
         />
       </Grid>
     )
@@ -126,7 +126,7 @@ function ConnectionSettings(props: Props) {
           className={classes.textField}
           value={connection.protocol}
           onChange={updateProtocol}
-          margin="normal"
+          margin="dense"
           inputProps={{ 
             'aria-label': 'MQTT protocol'
           }}
@@ -180,7 +180,7 @@ function ConnectionSettings(props: Props) {
   return (
     <div>
       <form className={classes.container} noValidate={true} autoComplete="off">
-        <Grid container={true} spacing={3}>
+        <Grid container={true} spacing={2}>
           <Grid item={true} xs={5}>
             <TextField
               autoFocus={true}
@@ -188,7 +188,7 @@ function ConnectionSettings(props: Props) {
               className={classes.textField}
               value={connection.name}
               onChange={handleChange('name')}
-              margin="normal"
+              margin="dense"
               placeholder="My MQTT Connection"
               helperText="A friendly name for this connection"
               inputProps={{ 
@@ -216,7 +216,7 @@ function ConnectionSettings(props: Props) {
               className={classes.textField}
               value={connection.host}
               onChange={handleChange('host')}
-              margin="normal"
+              margin="dense"
               placeholder="broker.example.com"
               helperText="MQTT broker hostname or IP address"
               inputProps={{ 
@@ -231,7 +231,7 @@ function ConnectionSettings(props: Props) {
               className={classes.textField}
               value={connection.port}
               onChange={handleChange('port')}
-              margin="normal"
+              margin="dense"
               type="number"
               placeholder="1883"
               helperText="Common: 1883 (plain), 8883 (TLS)"
@@ -249,7 +249,7 @@ function ConnectionSettings(props: Props) {
               className={classes.textField}
               value={connection.username}
               onChange={handleChange('username')}
-              margin="normal"
+              margin="dense"
               placeholder="Optional"
               helperText="Leave blank if not required"
               inputProps={{ 
@@ -276,8 +276,7 @@ function ConnectionSettings(props: Props) {
             </FormControl>
           </Grid>
         </Grid>
-        <br />
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
           <div>
             <Tooltip title="Delete this connection permanently" arrow>
               <Button
