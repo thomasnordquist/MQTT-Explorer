@@ -49,15 +49,18 @@ function DetailsTab(props: Props) {
         props.sidebarActions.setCompareMessage(undefined)
       }
     },
-    [compareMessage]
+    [compareMessage, props.sidebarActions]
   )
 
-  const deleteTopic = useCallback((topic?: q.TreeNode<any>, recursive: boolean = false) => {
-    if (!topic) {
-      return
-    }
-    props.sidebarActions.clearTopic(topic, recursive)
-  }, [])
+  const deleteTopic = useCallback(
+    (topic?: q.TreeNode<any>, recursive: boolean = false) => {
+      if (!topic) {
+        return
+      }
+      props.sidebarActions.clearTopic(topic, recursive)
+    },
+    [props.sidebarActions]
+  )
 
   if (!node) {
     return (
@@ -308,4 +311,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(DetailsTab) as any)
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(DetailsTab))
