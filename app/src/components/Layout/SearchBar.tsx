@@ -139,21 +139,30 @@ const styles = (theme: Theme) => ({
     justifyContent: 'center' as 'center',
   },
   inputRoot: {
-    color: theme.palette.common.white, // Ensure white text color
+    color: `${theme.palette.common.white} !important`, // Ensure white text color with high specificity
     width: '100%',
+    '& input': {
+      color: `${theme.palette.common.white} !important`, // Target input element directly
+    },
   },
   inputInput: {
     paddingTop: theme.spacing(1),
     paddingRight: theme.spacing(1),
     paddingBottom: theme.spacing(1),
-    paddingLeft: theme.spacing(6),
+    paddingLeft: `${theme.spacing(6)} !important`, // Ensure padding is applied (48px)
     transition: theme.transitions.create('width'),
     width: '100%',
-    color: theme.palette.common.white, // High contrast white text
+    color: `${theme.palette.common.white} !important`, // High contrast white text with priority
     fontSize: '16px', // Prevent iOS zoom on focus
     '&::placeholder': {
-      color: fade(theme.palette.common.white, 0.7), // Semi-transparent white placeholder
+      color: `${fade(theme.palette.common.white, 0.7)} !important`, // Semi-transparent white placeholder
       opacity: 1,
+    },
+    '&::-webkit-input-placeholder': {
+      color: `${fade(theme.palette.common.white, 0.7)} !important`,
+    },
+    '&::-moz-placeholder': {
+      color: `${fade(theme.palette.common.white, 0.7)} !important`,
     },
     // Improve mobile input handling
     [theme.breakpoints.down('md')]: {
