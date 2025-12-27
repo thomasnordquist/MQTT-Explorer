@@ -8,7 +8,7 @@ import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
 import { TopicViewModel } from '../../model/TopicViewModel'
 import { usePollingToFetchTreeNode } from '../helper/usePollingToFetchTreeNode'
-import { Tabs, Tab, Box } from '@mui/material'
+import { Tabs, Tab, Box, useMediaQuery, useTheme } from '@mui/material'
 import DetailsTab from './NewSidebar/DetailsTab'
 import PublishTab from './NewSidebar/PublishTab'
 
@@ -49,11 +49,26 @@ function SidebarNew(props: Props) {
   const node = usePollingToFetchTreeNode(tree, nodePath || '')
   useUpdateNodeWhenNodeReceivesUpdates(node)
   const [tabValue, setTabValue] = useState(0)
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
   }
 
+  // On mobile, don't show tabs (mobile already has Topics/Details tabs at app level)
+  // Just show the content directly
+  if (isMobile) {
+    return (
+      <div id="Sidebar" className={classes.root}>
+        <Box className={classes.mobileContent}>
+          <DetailsTab node={node} />
+        </Box>
+      </div>
+    )
+  }
+
+  // Desktop: show tabs for Details/Publish
   return (
     <div id="Sidebar" className={classes.root}>
       <Box className={classes.tabsContainer}>
@@ -113,19 +128,18 @@ const styles = (theme: Theme) => ({
     fontWeight: 500,
     textTransform: 'none' as 'none',
     padding: theme.spacing(1.5, 2),
-    [theme.breakpoints.down('sm')]: {
-      minHeight: '56px', // Touch-friendly on mobile
-      fontSize: '16px', // Prevent iOS zoom
-    },
   },
   tabContent: {
     flex: 1,
     overflowY: 'auto' as 'auto',
     overflowX: 'hidden' as 'hidden',
     padding: theme.spacing(2),
-    [theme.breakpoints.down('sm')]: {
-      padding: theme.spacing(1),
-    },
+  },
+  mobileContent: {
+    flex: 1,
+    overflowY: 'auto' as 'auto',
+    overflowX: 'hidden' as 'hidden',
+    padding: theme.spacing(2),
   },
 })
 
