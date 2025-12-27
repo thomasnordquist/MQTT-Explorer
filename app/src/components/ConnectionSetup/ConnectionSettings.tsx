@@ -277,8 +277,8 @@ function ConnectionSettings(props: Props) {
           </Grid>
         </Grid>
         <br />
-        <div>
-          <div style={{ float: 'left' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
             <Tooltip title="Delete this connection permanently" arrow>
               <Button
                 variant="contained"
@@ -302,7 +302,7 @@ function ConnectionSettings(props: Props) {
               </Button>
             </Tooltip>
           </div>
-          <div style={{ float: 'right' }}>
+          <div>
             <Tooltip title="Save connection settings" arrow>
               <Button
                 variant="contained"
