@@ -141,10 +141,10 @@ const styles = (theme: Theme) => ({
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(2),
     flex: 10,
-    // Mobile: enable scrolling
+    overflowY: 'auto' as 'auto',
+    // Mobile: adjust border radius
     [theme.breakpoints.down('md')]: {
       borderRadius: `${theme.shape.borderRadius}px`,
-      overflowY: 'auto' as 'auto',
     },
   },
   connectionUri: {
