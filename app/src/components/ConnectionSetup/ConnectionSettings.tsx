@@ -17,12 +17,9 @@ import { ToggleSwitch } from './ToggleSwitch'
 import { useGlobalKeyEventHandler } from '../../effects/useGlobalKeyEventHandler'
 import {
   Button,
-  FormControl,
   Grid,
   IconButton,
-  Input,
   InputAdornment,
-  InputLabel,
   MenuItem,
   TextField,
   Tooltip,
@@ -255,24 +252,25 @@ function ConnectionSettings(props: Props) {
             />
           </Grid>
           <Grid item={true} xs={requiresBasePath() ? 4 : 6}>
-            <FormControl className={`${classes.textField} ${classes.inputFormControl}`}>
-              <InputLabel htmlFor="adornment-password">Password</InputLabel>
-              <Input
-                id="adornment-password"
-                type={showPassword ? 'text' : 'password'}
-                value={connection.password}
-                onChange={handleChange('password')}
-                placeholder="Optional"
-                endAdornment={<PasswordVisibilityButton showPassword={showPassword} toggle={handleClickShowPassword} />}
-                inputProps={{ 
-                  'aria-label': 'MQTT password',
-                  'autoComplete': 'current-password'
-                }}
-              />
-            </FormControl>
+            <TextField
+              label="Password"
+              className={classes.textField}
+              type={showPassword ? 'text' : 'password'}
+              value={connection.password}
+              onChange={handleChange('password')}
+              margin="dense"
+              placeholder="Optional"
+              InputProps={{
+                endAdornment: <PasswordVisibilityButton showPassword={showPassword} toggle={handleClickShowPassword} />
+              }}
+              inputProps={{ 
+                'aria-label': 'MQTT password',
+                'autoComplete': 'current-password'
+              }}
+            />
           </Grid>
         </Grid>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px' }}>
           <div>
             <Tooltip title="Delete this connection permanently" arrow>
               <Button
@@ -282,7 +280,7 @@ function ConnectionSettings(props: Props) {
                 onClick={handleDelete}
                 aria-label="Delete connection"
               >
-                Delete <Delete />
+                <Delete /> Delete
               </Button>
             </Tooltip>
             <Tooltip title="Advanced connection settings" arrow>
