@@ -190,7 +190,6 @@ function ConnectionSettings(props: Props) {
               onChange={handleChange('name')}
               margin="dense"
               placeholder="My MQTT Connection"
-              helperText="A friendly name for this connection"
               inputProps={{ 
                 'aria-label': 'Connection name'
               }}
@@ -218,7 +217,6 @@ function ConnectionSettings(props: Props) {
               onChange={handleChange('host')}
               margin="dense"
               placeholder="broker.example.com"
-              helperText="MQTT broker hostname or IP address"
               inputProps={{ 
                 'data-testid': 'host-input',
                 'aria-label': 'MQTT broker host'
@@ -234,7 +232,6 @@ function ConnectionSettings(props: Props) {
               margin="dense"
               type="number"
               placeholder="1883"
-              helperText="Common: 1883 (plain), 8883 (TLS)"
               inputProps={{ 
                 'aria-label': 'MQTT broker port',
                 min: 1,
@@ -251,7 +248,6 @@ function ConnectionSettings(props: Props) {
               onChange={handleChange('username')}
               margin="dense"
               placeholder="Optional"
-              helperText="Leave blank if not required"
               inputProps={{ 
                 'aria-label': 'MQTT username',
                 'autoComplete': 'username'
