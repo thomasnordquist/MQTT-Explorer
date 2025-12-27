@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { List } from 'immutable'
 import { Sidebar } from '../Sidebar'
 import { useResizeDetector } from 'react-resize-detector'
+import MobileTabs from './MobileTabs'
 
 // Alias for compatibility
 const ReactSplitPane = SplitPane
@@ -20,10 +21,27 @@ interface Props {
 }
 
 function ContentView(props: Props) {
+  // Use different defaults for mobile viewports (<=768px width)
+  // Use state for mobile detection that updates on resize
+  const [isMobile, setIsMobile] = React.useState(() => typeof window !== 'undefined' && window.innerWidth <= 768)
+  const [mobileTab, setMobileTab] = React.useState(0) // 0 = topics, 1 = details
   const [height, setHeight] = React.useState<string | number>('100%')
-  const [sidebarWidth, setSidebarWidth] = React.useState<string | number>('40%')
+  const [sidebarWidth, setSidebarWidth] = React.useState<string | number>(isMobile ? '100%' : '40%')
   const [detectedHeight, setDetectedHeight] = React.useState(0)
   const [detectedSidebarWidth, setDetectedSidebarWidth] = React.useState(0)
+  
+  // Update mobile state on resize
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    // Set initial state
+    handleResize()
+    
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
   
   const { height: resizeHeight, ref: heightRef } = useResizeDetector()
   const { width: resizeWidth, ref: widthRef } = useResizeDetector()
@@ -68,6 +86,83 @@ function ContentView(props: Props) {
     }
   }, [props.chartPanelItems])
 
+  // Mobile view with tab switcher
+  if (isMobile) {
+    // Expose tab switching functions for other components to call
+    React.useEffect(() => {
+      if (typeof window !== 'undefined') {
+        (window as any).switchToDetailsTab = () => setMobileTab(1)
+        (window as any).switchToTopicsTab = () => setMobileTab(0)
+      }
+      return () => {
+        if (typeof window !== 'undefined') {
+          delete (window as any).switchToDetailsTab
+          delete (window as any).switchToTopicsTab
+        }
+      }
+    }, [])
+
+    const mobileContainerStyle: React.CSSProperties = {
+      display: 'flex',
+      flexDirection: 'column',
+      height: 'calc(100vh - 64px)', // Full viewport minus titlebar
+      width: '100%',
+    }
+
+    const tabContentStyle: React.CSSProperties = {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: 0, // Critical for flex children with overflow
+      width: '100%',
+      overflow: 'hidden',
+      position: 'relative',
+    }
+
+    // Tree container needs explicit height for the Tree component's height: 100% to work
+    const treeContainerStyle: React.CSSProperties = {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      width: '100%',
+      height: '100%',
+    }
+
+    const sidebarContainerStyle: React.CSSProperties = {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      width: '100%',
+      height: '100%',
+      overflow: 'auto',
+    }
+
+    return (
+      <div style={mobileContainerStyle}>
+        <MobileTabs value={mobileTab} onChange={setMobileTab} />
+        <div style={tabContentStyle}>
+          {/* Topics tab */}
+          {mobileTab === 0 && (
+            <div style={treeContainerStyle}>
+              <Tree />
+            </div>
+          )}
+          {/* Details tab */}
+          {mobileTab === 1 && (
+            <div style={sidebarContainerStyle}>
+              <Sidebar connectionId={props.connectionId} />
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  // Desktop view with split panes
   return (
     <div className={props.paneDefaults}>
       <span>
@@ -109,7 +204,12 @@ function ContentView(props: Props) {
           <div ref={widthRef} style={{ height: '100%' }}>
             <div
               className={props.paneDefaults}
-              style={{ minWidth: '250px', height: '100%', overflowY: 'auto', overflowX: 'hidden' }}
+              style={{ 
+                minWidth: '250px', 
+                height: '100%', 
+                overflowY: 'auto', 
+                overflowX: 'hidden' 
+              }}
             >
               <Sidebar connectionId={props.connectionId} />
             </div>

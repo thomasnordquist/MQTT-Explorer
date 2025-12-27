@@ -13,7 +13,7 @@ import { withStyles } from '@mui/styles'
 import { updateNotifierActions } from '../actions'
 
 import { Button, IconButton, Modal, Paper, Snackbar, SnackbarContent, Typography } from '@mui/material'
-import { rendererRpc, getAppVersion } from '../../../events'
+import { rendererRpc, getAppVersion } from '../eventBus'
 
 interface Props {
   showUpdateNotification: boolean

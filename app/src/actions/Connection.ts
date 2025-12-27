@@ -9,7 +9,7 @@ import { globalActions } from '.'
 import { resetStore as resetTreeStore, showTree } from './Tree'
 import { showError } from './Global'
 import { TopicViewModel } from '../model/TopicViewModel'
-import { addMqttConnectionEvent, makeConnectionStateEvent, removeConnection, rendererEvents } from '../../../events'
+import { addMqttConnectionEvent, makeConnectionStateEvent, removeConnection, rendererEvents } from '../eventBus'
 
 export const connect =
   (options: MqttOptions, connectionId: string) => (dispatch: Dispatch<any>, getState: () => AppState) => {
