@@ -22,6 +22,9 @@ const styles = (theme: Theme) => ({
     [theme.breakpoints.up(750)]: {
       display: 'block' as 'block',
     },
+    [theme.breakpoints.up('md')]: {
+      display: 'block' as 'block',
+    },
     whiteSpace: 'nowrap' as 'nowrap',
   },
   disconnectIcon: {
@@ -37,9 +40,17 @@ const styles = (theme: Theme) => ({
   },
   disconnect: {
     margin: 'auto 8px auto auto',
+    // Hide on mobile (<=768px)
+    [theme.breakpoints.down('md')]: {
+      display: 'none' as 'none',
+    },
   },
   logout: {
     margin: 'auto 0 auto 8px',
+    // Hide on mobile (<=768px)
+    [theme.breakpoints.down('md')]: {
+      display: 'none' as 'none',
+    },
   },
   disconnectLabel: {
     color: theme.palette.primary.contrastText,

@@ -12,6 +12,7 @@
 #   BROWSER_MODE_URL - URL for browser tests (set automatically)
 #   TESTS_MQTT_BROKER_HOST - MQTT broker host for tests (required, default: 127.0.0.1)
 #   TESTS_MQTT_BROKER_PORT - MQTT broker port for tests (default: 1883)
+#   USE_MOBILE_VIEWPORT - Enable mobile viewport (default: false, set to 'true' for mobile tests)
 #
 set -e
 
@@ -65,8 +66,15 @@ done
 export BROWSER_MODE_URL="http://localhost:${PORT}"
 export TESTS_MQTT_BROKER_HOST="${TESTS_MQTT_BROKER_HOST:-127.0.0.1}"
 export TESTS_MQTT_BROKER_PORT="${TESTS_MQTT_BROKER_PORT:-1883}"
+# Enable mobile viewport for mobile UI tests
+export USE_MOBILE_VIEWPORT="${USE_MOBILE_VIEWPORT:-false}"
 
 echo "Using MQTT broker at $TESTS_MQTT_BROKER_HOST:$TESTS_MQTT_BROKER_PORT"
+if [ "$USE_MOBILE_VIEWPORT" = "true" ]; then
+  echo "Mobile viewport: ENABLED (412x914)"
+else
+  echo "Mobile viewport: DISABLED (desktop 1280x720)"
+fi
 
 yarn test:browser
 TEST_EXIT_CODE=$?

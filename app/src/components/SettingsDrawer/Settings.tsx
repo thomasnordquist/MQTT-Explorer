@@ -2,17 +2,22 @@ import * as React from 'react'
 import BooleanSwitch from './BooleanSwitch'
 import BrokerStatistics from './BrokerStatistics'
 import ChevronRight from '@mui/icons-material/ChevronRight'
+import CloudOff from '@mui/icons-material/CloudOff'
+import Logout from '@mui/icons-material/Logout'
 import TimeLocale from './TimeLocale'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { globalActions, settingsActions } from '../../actions'
+import { globalActions, settingsActions, connectionActions } from '../../actions'
 import { shell } from 'electron'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
 import { TopicOrder } from '../../reducers/Settings'
+import { isBrowserMode } from '../../utils/browserMode'
+import { useAuth } from '../../contexts/AuthContext'
 
 import {
+  Button,
   Divider,
   Drawer,
   IconButton,
@@ -75,12 +80,26 @@ const styles = (theme: Theme) => ({
     color: theme.palette.text.secondary,
     cursor: 'pointer' as 'pointer',
   },
+  mobileButtons: {
+    padding: theme.spacing(1),
+    display: 'flex',
+    flexDirection: 'column' as 'column',
+    gap: theme.spacing(1),
+    // Only show on mobile
+    [theme.breakpoints.up('md')]: {
+      display: 'none' as 'none',
+    },
+  },
+  mobileButton: {
+    justifyContent: 'flex-start',
+  },
 })
 
 interface Props {
   actions: {
     settings: typeof settingsActions
     global: typeof globalActions
+    connection: typeof connectionActions
   }
   autoExpandLimit: number
   classes: any
@@ -219,6 +238,7 @@ class Settings extends React.PureComponent<Props, {}> {
           </Typography>
           <Divider style={{ userSelect: 'none' }} />
         </div>
+        <MobileActionButtons classes={classes} actions={actions} />
         <div>
           {this.renderAutoExpand()}
           {this.renderNodeOrder()}
@@ -238,6 +258,52 @@ class Settings extends React.PureComponent<Props, {}> {
   }
 }
 
+// Mobile action buttons component (disconnect/logout)
+function MobileActionButtons({ classes, actions }: { classes: any; actions: any }) {
+  const { authDisabled } = useAuth()
+
+  const handleLogout = async () => {
+    // Disconnect first
+    actions.connection.disconnect()
+    
+    // Clear credentials from sessionStorage
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.removeItem('mqtt-explorer-username')
+      sessionStorage.removeItem('mqtt-explorer-password')
+    }
+    
+    // Reload page to reset all state and show login dialog
+    if (typeof window !== 'undefined') {
+      window.location.reload()
+    }
+  }
+
+  return (
+    <div className={classes.mobileButtons}>
+      <Button
+        variant="outlined"
+        startIcon={<CloudOff />}
+        onClick={actions.connection.disconnect}
+        className={classes.mobileButton}
+        data-testid="mobile-disconnect-button"
+      >
+        Disconnect
+      </Button>
+      {isBrowserMode && !authDisabled && (
+        <Button
+          variant="outlined"
+          startIcon={<Logout />}
+          onClick={handleLogout}
+          className={classes.mobileButton}
+          data-testid="mobile-logout-button"
+        >
+          Logout
+        </Button>
+      )}
+    </div>
+  )
+}
+
 const mapStateToProps = (state: AppState) => {
   return {
     autoExpandLimit: state.settings.get('autoExpandLimit'),
@@ -254,6 +320,7 @@ const mapDispatchToProps = (dispatch: any) => {
     actions: {
       settings: bindActionCreators(settingsActions, dispatch),
       global: bindActionCreators(globalActions, dispatch),
+      connection: bindActionCreators(connectionActions, dispatch),
     },
   }
 }

@@ -2,7 +2,7 @@
 # Mobile demo video post-processing script
 # Converts raw mobile video to MP4 and GIF, then cuts into segments
 
-DIMENSIONS="412x915"
+DIMENSIONS="412x914"
 GIF_SCALE="412"
 
 ffmpeg -s:v $DIMENSIONS -r 20 -f rawvideo -pix_fmt yuv420p -i qrawvideorgb24-mobile.yuv app2-mobile.mp4

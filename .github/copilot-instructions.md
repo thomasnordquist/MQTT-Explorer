@@ -91,3 +91,45 @@ When modifying or creating UI components, follow the styling patterns documented
 - Access theme colors via `theme.palette.*`, spacing via `theme.spacing()`, typography via `theme.typography.*`
 - Support both light and dark modes with theme-conditional styling
 - Import Material-UI colors: `import { blueGrey, amber, green, red } from '@mui/material/colors'`
+
+## Mobile Testing Workflow
+
+**Prerequisites for mobile testing:**
+```bash
+# Install Playwright browsers
+npx playwright install --with-deps chromium
+
+# Configure mosquitto to allow anonymous connections (for local testing)
+echo "listener 1883
+allow_anonymous true" | sudo tee /etc/mosquitto/conf.d/allow-anonymous.conf
+sudo systemctl restart mosquitto
+```
+
+**Interactive testing with mobile viewport:**
+```bash
+# Set up environment
+export MQTT_EXPLORER_SKIP_AUTH=true
+export MQTT_AUTO_CONNECT_HOST=127.0.0.1
+
+# Build and start server
+yarn build:server
+node dist/src/server.js
+
+# In another terminal, run Playwright test with mobile viewport
+# Create test script with viewport: { width: 412, height: 914 }
+# Always INSPECT the rendered output, don't rely on assumptions
+```
+
+**Key lesson**: Mobile tree visibility issues often stem from:
+1. CSS flex/absolute positioning conflicts
+2. Missing Redux state updates (connection not propagated to frontend)
+3. MQTT broker authentication (mosquitto requires `allow_anonymous true` for testing)
+4. Timing issues (frontend subscribing to events after backend emits them)
+
+**Server-side auto-connect** (for testing):
+```bash
+export MQTT_AUTO_CONNECT_HOST=127.0.0.1
+export MQTT_AUTO_CONNECT_PORT=1883  # optional
+export MQTT_AUTO_CONNECT_PROTOCOL=mqtt  # optional
+```
+

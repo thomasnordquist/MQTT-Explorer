@@ -7,7 +7,7 @@ import { Browser, BrowserContext, Page, chromium } from 'playwright'
 import mockMqtt, { stop as stopMqtt } from './mock-mqtt'
 import { default as MockSparkplug } from './mock-sparkplugb'
 import { clearSearch, searchTree } from './scenarios/searchTree'
-import { clickOnHistory, createFakeMousePointer, hideText, showText, sleep } from './util'
+import { clickOn, clickOnHistory, createFakeMousePointer, hideText, showText, sleep } from './util'
 import { connectTo } from './scenarios/connect'
 import { copyTopicToClipboard } from './scenarios/copyTopicToClipboard'
 import { copyValueToClipboard } from './scenarios/copyValueToClipboard'
@@ -19,6 +19,8 @@ import { showJsonPreview } from './scenarios/showJsonPreview'
 import { showMenu } from './scenarios/showMenu'
 import { showNumericPlot } from './scenarios/showNumericPlot'
 import { showOffDiffCapability } from './scenarios/showOffDiffCapability'
+import { expandTopic } from './util/expandTopic'
+import { selectTopic } from './util/selectTopic'
 
 /**
  * Mobile Demo Video - Pixel 6 viewport
@@ -58,16 +60,29 @@ async function doStuff() {
   console.log('Starting playwright/chromium in mobile mode (Pixel 6)')
 
   // Launch Chromium browser with mobile emulation
+  // headless: false is required so the browser renders to the X display for video recording
   const browser = await chromium.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-dev-shm-usage'],
+    headless: false,
+    args: [
+      '--no-sandbox',
+      '--disable-dev-shm-usage',
+      '--app=http://localhost:3000',  // App mode - no browser UI
+      '--window-size=412,914',  // Match the mobile viewport size
+      '--window-position=0,0',
+      '--disable-features=TranslateUI',
+      '--no-first-run',
+      '--no-default-browser-check',
+      '--disable-infobars',
+      '--disable-translate',
+    ],
   })
 
   // Create browser context with Pixel 6 viewport
+  // Note: Height must be even for video encoding (h264 requirement)
   const context = await browser.newContext({
     viewport: {
       width: 412,
-      height: 915,
+      height: 914, // Changed from 915 to 914 (must be even for h264)
     },
     deviceScaleFactor: 2.625,
     isMobile: true,
@@ -85,11 +100,18 @@ async function doStuff() {
   // Print the title
   console.log(await page.title())
   
-  // Capture a screenshot
-  await page.screenshot({ path: 'intro-mobile.png' })
+  // Try to capture a screenshot (may fail in headed mode, but that's ok)
+  try {
+    await page.screenshot({ path: 'intro-mobile.png' })
+  } catch (error) {
+    console.log('Screenshot skipped (headed mode)')
+  }
   
   // Direct console to Node terminal
   page.on('console', console.log)
+  
+  // Enable the fake mouse pointer for visual cursor tracking
+  await createFakeMousePointer(page)
 
   // Handle authentication if required
   const username = process.env.MQTT_EXPLORER_USERNAME || 'admin'
@@ -136,25 +158,55 @@ async function doStuff() {
     await showText('Connect to MQTT Broker', 1500, page, 'top')
     await connectTo(brokerHost, page)
     await MockSparkplug.run() // Start sparkplug client after connect
-    await sleep(2000)
+    await sleep(3000) // Give more time for topics to load
     await hideText(page)
   })
 
   await scenes.record('mobile_browse_topics', async () => {
-    await showText('Browse Topic Tree', 1500, page, 'top')
-    await sleep(1500)
-    // Try to expand a topic in the tree
-    const firstTopic = page.locator('[data-testid="tree-node"]').first()
-    if (await firstTopic.isVisible()) {
-      await firstTopic.click()
-      await sleep(1000)
+    await showText('Browse Topics - Topics Tab', 1500, page, 'top')
+    await sleep(2000)
+    // Wait for tree nodes to be visible
+    await page.waitForSelector('[data-test-topic]', { timeout: 10000 }).catch(() => {
+      console.log('Tree nodes not found, continuing...')
+    })
+    await sleep(1000)
+    
+    try {
+      // Expand topics using the expandTopic utility
+      // On mobile, this clicks expand buttons (▶/▼) to navigate the tree
+      await showText('Expand Topic Tree', 1000, page, 'top')
+      await sleep(500)
+      await expandTopic('livingroom/lamp', page)
+      await sleep(1500)
+    } catch (error) {
+      console.log('Topic expansion failed, continuing...', error)
     }
-    await sleep(1500)
+    
+    await hideText(page)
+  })
+
+  await scenes.record('mobile_view_message', async () => {
+    await showText('Tap Topic to View Details', 1500, page, 'top')
+    await sleep(1000)
+    
+    try {
+      // Select a topic by clicking its text
+      // On mobile, this will switch to the Details tab automatically
+      await selectTopic('livingroom/lamp/state', page)
+      await sleep(2000)
+      // The mobile UI should now show the Details tab with the selected topic
+      await showText('Details Tab Activated', 1000, page, 'top')
+      await sleep(1500)
+    } catch (error) {
+      console.log('Topic selection failed, continuing...', error)
+    }
+    
     await hideText(page)
   })
 
   await scenes.record('mobile_search', async () => {
     await showText('Search Topics', 1500, page, 'top')
+    await sleep(500)
     await searchTree('temp', page)
     await sleep(1500)
     await showText('Filter Results', 1000, page, 'top')
@@ -164,46 +216,53 @@ async function doStuff() {
     await hideText(page)
   })
 
-  await scenes.record('mobile_view_message', async () => {
-    await showText('View Message Details', 1500, page, 'top')
-    await sleep(1000)
-    // Click on a topic to view details in sidebar
-    const topicNode = page.locator('[data-testid="tree-node"]').first()
-    if (await topicNode.isVisible()) {
-      await topicNode.click()
-      await sleep(2000)
-    }
-    await hideText(page)
-  })
-
   await scenes.record('mobile_json_view', async () => {
     await showText('JSON Message Formatting', 1500, page, 'top')
-    await showJsonPreview(page)
-    await sleep(2000)
-    await hideText(page)
-  })
-
-  await scenes.record('mobile_clipboard', async () => {
-    await showText('Copy to Clipboard', 1500, page, 'top')
-    await copyTopicToClipboard(page)
     await sleep(1000)
-    await copyValueToClipboard(page)
-    await sleep(1500)
+    
+    try {
+      // Navigate back to Topics tab to show tree navigation
+      const topicsTab = page.locator('button:has-text("TOPICS"), button:has-text("Topics")')
+      const topicsTabVisible = await topicsTab.isVisible().catch(() => false)
+      if (topicsTabVisible) {
+        await topicsTab.click()
+        await sleep(1000)
+      }
+      
+      // Expand and select kitchen/coffee_maker to show JSON
+      await expandTopic('kitchen/coffee_maker', page)
+      await sleep(1000)
+      await selectTopic('kitchen/coffee_maker', page)
+      await sleep(2000)
+      
+      await showText('JSON Payload View', 1000, page, 'top')
+      await sleep(1500)
+    } catch (error) {
+      console.log('JSON view navigation failed, continuing...', error)
+    }
+    
     await hideText(page)
   })
 
-  await scenes.record('mobile_plots', async () => {
-    await showText('View Numeric Plots', 1500, page, 'top')
-    await showNumericPlot(page)
-    await sleep(2500)
-    await hideText(page)
-  })
-
-  await scenes.record('mobile_menu', async () => {
-    await showText('Settings & Menu', 1500, page, 'top')
-    await showMenu(page)
-    await sleep(2000)
-    await hideText(page)
+  await scenes.record('mobile_settings', async () => {
+    try {
+      await showText('Settings with Disconnect/Logout', 1500, page, 'top')
+      await sleep(2000)
+      // Just show that settings are available, don't click
+      await hideText(page)
+    } catch (error) {
+      console.log('Settings scene failed, continuing...', error)
+      // Try to dismiss any error dialogs
+      try {
+        const closeButton = page.locator('button:has-text("Close"), button[aria-label="close"]')
+        if (await closeButton.isVisible().catch(() => false)) {
+          await closeButton.click()
+          await sleep(500)
+        }
+      } catch (e) {
+        // Ignore if we can't close dialog
+      }
+    }
   })
 
   await scenes.record('mobile_end', async () => {

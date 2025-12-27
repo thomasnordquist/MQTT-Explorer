@@ -61,6 +61,10 @@ describe('MQTT Explorer UI Tests', function () {
         throw new Error('BROWSER_MODE_URL environment variable must be set when running in browser mode')
       }
       console.log(`Browser URL: ${browserUrl}`)
+      
+      // Check if mobile viewport should be used
+      const useMobileViewport = process.env.USE_MOBILE_VIEWPORT === 'true'
+      console.log(`Mobile viewport: ${useMobileViewport}`)
 
       // Launch Chromium browser
       browser = await chromium.launch({
@@ -68,9 +72,29 @@ describe('MQTT Explorer UI Tests', function () {
         args: ['--no-sandbox', '--disable-dev-shm-usage'],
       })
 
-      browserContext = await browser.newContext({
+      // Create browser context with optional mobile viewport
+      const contextOptions: any = {
         permissions: ['clipboard-read', 'clipboard-write'],
-      })
+      }
+      
+      if (useMobileViewport) {
+        // Use same viewport as mobile demo (Pixel 6)
+        contextOptions.viewport = {
+          width: 412,
+          height: 914,
+        }
+        contextOptions.userAgent = 'Mozilla/5.0 (Linux; Android 12; Pixel 6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36'
+        console.log('Using mobile viewport: 412x914 (Pixel 6)')
+      } else {
+        // Desktop viewport - ensure width > 768px so mobile UI doesn't activate
+        contextOptions.viewport = {
+          width: 1280,
+          height: 720,
+        }
+        console.log('Using desktop viewport: 1280x720')
+      }
+
+      browserContext = await browser.newContext(contextOptions)
       page = await browserContext.newPage()
 
       // Listen for console messages
