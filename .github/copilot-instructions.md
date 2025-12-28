@@ -23,7 +23,9 @@
 
 **CI jobs:** `test`, `ui-tests`, `demo-video`, `test-browser`, `browser-ui-tests`
 
-**Important:** Browser UI tests require MQTT broker. In CI, GitHub Actions health checks ensure the mosquitto service is ready before tests run.
+**Important:** 
+- Browser UI tests require MQTT broker. In CI, GitHub Actions health checks ensure the mosquitto service is ready before tests run.
+- Demo video tests use the same test scenarios as browser tests - if browser tests pass, demo video tests should pass too (they use identical selectors in `src/spec/scenarios/`)
 
 ## Running Browser Tests Locally
 
