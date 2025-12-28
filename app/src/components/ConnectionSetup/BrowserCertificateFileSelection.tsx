@@ -8,7 +8,7 @@ import { CertificateTypes } from '../../actions/ConnectionManager'
 import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
 import { withStyles } from '@mui/styles'
-import { rendererRpc } from '../../../../events'
+import { rendererRpc } from '../../eventBus'
 import { RpcEvents } from '../../../../events/EventsV2'
 
 function BrowserCertificateFileSelection(props: {

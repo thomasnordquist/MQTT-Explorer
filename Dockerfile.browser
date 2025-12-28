@@ -1,6 +1,6 @@
 # Multi-stage build for MQTT Explorer Browser Mode
 # Stage 1: Build and prepare production dependencies
-FROM node:24-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /build
 
@@ -24,7 +24,7 @@ RUN yarn install --production --frozen-lockfile --network-timeout 100000 && \
     rm -rf /tmp/*
 
 # Stage 2: Production
-FROM node:24-alpine
+FROM node:22-alpine
 
 # Install dumb-init in a single layer
 RUN apk add --no-cache dumb-init

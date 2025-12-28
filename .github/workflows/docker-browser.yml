@@ -22,6 +22,10 @@ on:
     - cron: '0 2 1,15 * *'
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -30,21 +34,28 @@ jobs:
       packages: write
       id-token: write
 
-    services:
-      # MQTT broker for testing
-      mosquitto:
-        image: eclipse-mosquitto:2
-        ports:
-          - 1883:1883
-        options: >-
-          --health-cmd "mosquitto_sub -t '$SYS/#' -C 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+    env:
+      TESTS_MQTT_BROKER_HOST: localhost
+      TESTS_MQTT_BROKER_PORT: 1883
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Install and Start Mosquitto
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mosquitto mosquitto-clients
+          
+          # Create a minimal configuration file for testing
+          sudo tee /etc/mosquitto/conf.d/test.conf > /dev/null <<EOF
+          listener 1883
+          allow_anonymous true
+          persistence false
+          EOF
+          
+          # Start mosquitto in detached mode
+          sudo mosquitto -c /etc/mosquitto/mosquitto.conf -d
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -191,8 +202,6 @@ jobs:
           MQTT_EXPLORER_USERNAME: test
           MQTT_EXPLORER_PASSWORD: test123
           BROWSER_MODE_URL: http://localhost:3000
-          MQTT_BROKER_HOST: localhost
-          MQTT_BROKER_PORT: 1883
 
       - name: Clean up browser test container
         if: always()

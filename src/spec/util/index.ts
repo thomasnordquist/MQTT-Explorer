@@ -3,6 +3,7 @@ import * as fs from 'fs'
 import { Page, Locator } from 'playwright'
 
 export { expandTopic } from './expandTopic'
+export { selectTopic } from './selectTopic'
 
 let fast = false
 export function setFast() {
@@ -85,8 +86,10 @@ export async function moveToCenterOfElement(element: Locator) {
   try {
     const js = `window.demo.moveMouse(${targetX}, ${targetY}, ${duration});`
     await runJavascript(js, element.page())
-    await sleep(duration)
-    await sleep(250, true)
+    // IMPORTANT: Wait for animation to complete before returning
+    // The animation duration + a small buffer for frame rendering
+    await sleep(duration, true)  // Use required=true to ensure we actually wait
+    await sleep(100, true)  // Extra buffer for the last frame
   } catch (error) {
     // window.demo.moveMouse might not be available in all test environments
     // This is fine - we'll proceed with the click anyway
@@ -115,17 +118,26 @@ export async function clickOn(
   // Ensure element is visible before trying to interact
   await element.waitFor({ state: 'visible', timeout: 30000 })
 
+  // Scroll element into view first (important for mobile viewports)
+  await element.scrollIntoViewIfNeeded()
+  await sleep(100)
+
   // Skip hover when force is true (used when modal backdrop might intercept)
   if (!force) {
     try {
+      // Move the simulated mouse cursor and wait for animation to complete
       await moveToCenterOfElement(element)
+      // Now hover with the real cursor (this is instant but comes after animation)
       await element.hover()
+      // Small delay after hover for visual smoothness
+      await sleep(50, true)
     } catch (error) {
       // If custom mouse movement fails, we can still proceed with the click
       // Playwright's click will handle scrolling into view automatically
       console.log('Custom mouse movement failed, proceeding with direct click')
     }
   }
+  // Click happens after simulated cursor has reached its destination
   await element.click({ delay, button, force, clickCount: clicks })
   await sleep(50)
 }

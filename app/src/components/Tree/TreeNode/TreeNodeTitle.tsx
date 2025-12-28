@@ -52,8 +52,21 @@ export const TreeNodeTitle = (props: TreeNodeProps) => {
       return null
     }
 
+    // On mobile, the expand button has its own click handler separate from topic selection
+    // On desktop, clicking anywhere (including expander) selects and toggles via didClickTitle
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+    const onClick = isMobile ? props.toggleCollapsed : undefined
+
     return (
-      <span key="expander" className={props.classes.expander} onClick={props.toggleCollapsed}>
+      <span 
+        key="expander" 
+        className={props.classes.expander} 
+        onClick={onClick}
+        role="button"
+        aria-label={props.collapsed ? 'Expand topic' : 'Collapse topic'}
+        aria-expanded={!props.collapsed}
+        tabIndex={isMobile ? 0 : -1}
+      >
         {props.collapsed ? '▶' : '▼'}
       </span>
     )
@@ -83,27 +96,39 @@ export const TreeNodeTitle = (props: TreeNodeProps) => {
   )
 }
 
-const styles = (theme: Theme) => ({
-  value: {
-    whiteSpace: 'nowrap' as 'nowrap',
-    overflow: 'hidden' as 'hidden',
-    textOverflow: 'ellipsis' as 'ellipsis',
-    padding: '0',
-  },
-  sourceEdge: {
-    fontWeight: 'bold' as 'bold',
-    overflow: 'hidden' as 'hidden',
-  },
-  expander: {
-    color: theme.palette.mode === 'light' ? '#222' : '#eee',
-    cursor: 'pointer' as 'pointer',
-    paddingRight: theme.spacing(0.25),
-    userSelect: 'none' as 'none',
-  },
-  collapsedSubnodes: {
-    color: theme.palette.text.secondary,
-    userSelect: 'none' as 'none',
-  },
-})
+const styles = (theme: Theme) => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+  
+  return {
+    value: {
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden' as 'hidden',
+      textOverflow: 'ellipsis' as 'ellipsis',
+      padding: '0',
+      fontSize: isMobile ? '15px' : 'inherit', // Slightly larger on mobile
+    },
+    sourceEdge: {
+      fontWeight: 'bold' as 'bold',
+      overflow: 'hidden' as 'hidden',
+      fontSize: isMobile ? '16px' : 'inherit', // Base 16px on mobile to prevent zoom
+    },
+    expander: {
+      color: theme.palette.mode === 'light' ? '#222' : '#eee',
+      cursor: 'pointer' as 'pointer',
+      paddingRight: isMobile ? theme.spacing(1) : theme.spacing(0.25), // Larger touch area
+      paddingLeft: isMobile ? theme.spacing(0.5) : 0,
+      minWidth: isMobile ? '32px' : 'auto', // 40px total width on mobile for touch
+      display: 'inline-block' as 'inline-block',
+      textAlign: 'center' as 'center',
+      userSelect: 'none' as 'none',
+      fontSize: isMobile ? '18px' : 'inherit', // Larger icon on mobile
+    },
+    collapsedSubnodes: {
+      color: theme.palette.text.secondary,
+      userSelect: 'none' as 'none',
+      fontSize: isMobile ? '14px' : 'inherit',
+    },
+  }
+}
 
 export default withStyles(styles)(memo(TreeNodeTitle))

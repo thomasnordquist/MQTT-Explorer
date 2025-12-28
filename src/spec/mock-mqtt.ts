@@ -11,7 +11,14 @@ function startServer(): Promise<mqtt.MqttClient> {
 
 function connectMqtt(): Promise<mqtt.MqttClient> {
   return new Promise(resolve => {
-    const client = mqtt.connect('mqtt://127.0.0.1:1883', {
+    // Use TESTS_MQTT_BROKER_HOST from environment, default to localhost
+    const brokerHost = process.env.TESTS_MQTT_BROKER_HOST || '127.0.0.1'
+    const brokerPort = process.env.TESTS_MQTT_BROKER_PORT || '1883'
+    const brokerUrl = `mqtt://${brokerHost}:${brokerPort}`
+    
+    console.log(`Connecting to MQTT broker at ${brokerUrl}`)
+    
+    const client = mqtt.connect(brokerUrl, {
       username: '',
       password: '',
     })

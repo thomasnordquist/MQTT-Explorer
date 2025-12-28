@@ -2,6 +2,8 @@ import { blueGrey } from '@mui/material/colors'
 import { Theme } from '@mui/material/styles'
 
 export const styles = (theme: Theme) => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+  
   return {
     animationLight: {
       willChange: 'auto',
@@ -25,7 +27,7 @@ export const styles = (theme: Theme) => {
       overflow: 'hidden' as 'hidden',
       textOverflow: 'ellipsis' as 'ellipsis',
       whiteSpace: 'nowrap' as 'nowrap',
-      padding: '1px 0px 0px 0px',
+      padding: isMobile ? '1px 0px' : '1px 0px 0px 0px',
     },
     topicSelect: {
       float: 'right' as 'right',
@@ -34,7 +36,7 @@ export const styles = (theme: Theme) => {
       marginTop: '-1px',
     },
     subnodes: {
-      marginLeft: theme.spacing(1.5),
+      marginLeft: isMobile ? theme.spacing(2) : theme.spacing(1.5), // Increased indentation on mobile
     },
     selected: {
       backgroundColor: (theme.palette.mode === 'light' ? blueGrey[300] : theme.palette.primary.main) + ' !important',
@@ -42,14 +44,22 @@ export const styles = (theme: Theme) => {
     hover: {},
     title: {
       borderRadius: '4px',
-      lineHeight: '1em',
+      lineHeight: isMobile ? '1.3em' : '1em',
       display: 'inline-block' as 'inline-block',
       whiteSpace: 'nowrap' as 'nowrap',
-      height: '14px',
-      padding: '1px 4px 0 4px',
+      minHeight: isMobile ? '40px' : '14px', // 44px touch target on mobile (WCAG AA minimum)
+      height: 'auto' as 'auto',
+      padding: isMobile ? '8px 8px' : '1px 4px 0 4px', // Reduced padding, still touch-friendly
       margin: '1px 0px',
+      fontSize: isMobile ? '16px' : 'inherit', // Prevent iOS zoom on focus
+      cursor: 'pointer' as 'pointer',
       '&:hover': {
         backgroundColor: theme.palette.mode === 'light' ? blueGrey[100] : theme.palette.primary.light,
+      },
+      // Better touch feedback on mobile
+      [theme.breakpoints.down('md')]: {
+        WebkitTapHighlightColor: 'transparent',
+        touchAction: 'manipulation',
       },
     },
   }
