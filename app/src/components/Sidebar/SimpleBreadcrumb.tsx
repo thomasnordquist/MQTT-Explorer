@@ -23,8 +23,8 @@ function SimpleBreadcrumb(props: Props) {
   const branch = node.branch()
   const breadcrumbNodes = branch
     .map(n => n.sourceEdge)
-    .filter(edge => Boolean(edge))
-    .map(edge => ({ name: edge?.name || '', target: edge?.target }))
+    .filter(edge => Boolean(edge) && edge?.target)
+    .map(edge => ({ name: edge?.name || '', target: edge!.target }))
     .filter(item => item.name !== '')
 
   if (breadcrumbNodes.length === 0) {
@@ -34,13 +34,13 @@ function SimpleBreadcrumb(props: Props) {
   return (
     <div className={classes.breadcrumbContainer}>
       {breadcrumbNodes.map((item, index) => (
-        <span key={index}>
+        <span key={item.target.hash()}>
           {index > 0 && <span className={classes.separator}> / </span>}
           <Link
             component="button"
             variant="h6"
             className={classes.breadcrumbLink}
-            onClick={() => item.target && actions.selectTopic(item.target)}
+            onClick={() => actions.selectTopic(item.target)}
             underline="hover"
           >
             {item.name}
