@@ -271,7 +271,7 @@ function ConnectionSettings(props: Props) {
           </Grid>
         </Grid>
       </form>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 0', borderTop: '1px solid rgba(0, 0, 0, 0.12)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid rgba(0, 0, 0, 0.12)' }}>
         <div>
           <Tooltip title="Delete this connection permanently" arrow>
             <Button
