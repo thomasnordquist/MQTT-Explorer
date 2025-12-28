@@ -25,6 +25,45 @@
 
 **Important:** Browser UI tests require MQTT broker. In CI, GitHub Actions health checks ensure the mosquitto service is ready before tests run.
 
+## Running Browser Tests Locally
+
+**Prerequisites:**
+```bash
+# Install mosquitto (if not already installed)
+sudo apt-get install mosquitto
+
+# Start mosquitto service
+sudo systemctl start mosquitto
+sudo systemctl status mosquitto
+```
+
+**Run browser tests:**
+```bash
+# Build server and run tests
+yarn build:server
+./scripts/runBrowserTests.sh
+```
+
+The script automatically:
+- Starts a local mosquitto broker
+- Builds the TypeScript code
+- Starts the browser mode server on port 3000
+- Runs Playwright tests in browser mode
+- Cleans up processes on exit
+
+**Test environment variables:**
+- `MQTT_EXPLORER_USERNAME` - Browser auth username (default: test)
+- `MQTT_EXPLORER_PASSWORD` - Browser auth password (default: test123)
+- `PORT` - Server port (default: 3000)
+- `TESTS_MQTT_BROKER_HOST` - MQTT broker host (default: 127.0.0.1)
+- `TESTS_MQTT_BROKER_PORT` - MQTT broker port (default: 1883)
+- `USE_MOBILE_VIEWPORT` - Enable mobile viewport (default: false)
+
+**Common test failures after UI changes:**
+- Update test selectors in `src/spec/ui-tests.spec.ts` if UI structure changes
+- Use `data-testid` attributes for stable test selectors
+- Avoid using role + name selectors for dynamic content (use direct testid selectors instead)
+
 ## Browser Mode
 
 **Prerequisites:** Node.js ≥24, Yarn, Mosquitto broker (for testing)
