@@ -53,15 +53,14 @@ export const TreeNodeTitle = (props: TreeNodeProps) => {
     }
 
     // On mobile, the expand button has its own click handler separate from topic selection
-    // On desktop, clicking anywhere (including expander) selects and toggles via didClickTitle
+    // On desktop, the expander also needs onClick for the test scenario to work correctly
     const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
-    const onClick = isMobile ? props.toggleCollapsed : undefined
 
     return (
       <span 
         key="expander" 
         className={props.classes.expander} 
-        onClick={onClick}
+        onClick={props.toggleCollapsed}
         role="button"
         aria-label={props.collapsed ? 'Expand topic' : 'Collapse topic'}
         aria-expanded={!props.collapsed}

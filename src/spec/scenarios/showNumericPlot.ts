@@ -2,8 +2,6 @@ import { Page } from 'playwright'
 import { moveToCenterOfElement, clickOn, clickOnHistory, expandTopic, sleep } from '../util'
 
 export async function showNumericPlot(browser: Page) {
-  // On desktop, expandTopic will also select the topic (original behavior restored)
-  // This shows the JSON properties in the details panel where chart icons are located
   await expandTopic('kitchen/coffee_maker', browser)
   let heater = await valuePreviewGuttersShowChartIcon('heater', browser)
   await moveToCenterOfElement(heater)
@@ -32,11 +30,7 @@ export async function showNumericPlot(browser: Page) {
   await clickAway('temperature', browser)
   await sleep(2500)
 
-  try {
-    await browser.screenshot({ path: 'screen_chart_panel.png' })
-  } catch (error) {
-    // Screenshot may fail in headed mode
-  }
+  await browser.screenshot({ path: 'screen_chart_panel.png' })
 
   await removeChart('heater', browser)
   await sleep(750)
