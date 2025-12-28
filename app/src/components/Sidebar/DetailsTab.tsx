@@ -99,56 +99,26 @@ function DetailsTab(props: Props) {
         </Box>
       </Box>
 
-      {/* Stats Section - Moved up for better hierarchy */}
-      <Box className={classes.statsSection}>
-        <Box className={classes.statsGrid}>
-          <Box className={classes.statItem}>
-            <Typography variant="body2" color="textSecondary" className={classes.statLabel}>
-              Messages
-            </Typography>
-            <Typography variant="h6" className={classes.statValue}>
-              {node.messages}
-            </Typography>
-          </Box>
-          <Box className={classes.statItem}>
-            <Typography variant="body2" color="textSecondary" className={classes.statLabel}>
-              Subtopics
-            </Typography>
-            <Typography variant="h6" className={classes.statValue}>
-              {node.childTopicCount()}
-            </Typography>
-          </Box>
-          <Box className={classes.statItem}>
-            <Typography variant="body2" color="textSecondary" className={classes.statLabel}>
-              Total
-            </Typography>
-            <Typography variant="h6" className={classes.statValue}>
-              {node.leafMessageCount()}
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
-
       {/* Value Section - Simplified layout */}
       {hasValue && (
         <Box className={classes.valueSection}>
-          {/* Metadata bar */}
+          {/* Metadata bar - Date on left, Retained/QoS on right */}
           <Box className={classes.metadataBar}>
             <Box className={classes.metadataLeft}>
+              <Typography variant="caption" color="textSecondary">
+                <DateFormatter date={node.message!.received} />
+              </Typography>
+            </Box>
+            <Box className={classes.metadataRight}>
+              {node.message?.retain && (
+                <Chip label="Retained" size="small" variant="outlined" color="primary" className={classes.chip} />
+              )}
               <Chip
                 label={`QoS ${node.message?.qos ?? 0}`}
                 size="small"
                 variant="outlined"
                 className={classes.chip}
               />
-              {node.message?.retain && (
-                <Chip label="Retained" size="small" variant="outlined" color="primary" className={classes.chip} />
-              )}
-            </Box>
-            <Box className={classes.metadataRight}>
-              <Typography variant="caption" color="textSecondary">
-                <DateFormatter date={node.message!.received} />
-              </Typography>
             </Box>
           </Box>
 
@@ -177,6 +147,36 @@ function DetailsTab(props: Props) {
           {/* Message History */}
           <Box className={classes.historySection}>
             <MessageHistory onSelect={handleMessageHistorySelect} selected={compareMessage} node={node} />
+          </Box>
+
+          {/* Stats Section - Moved to end of value section */}
+          <Box className={classes.statsSection}>
+            <Box className={classes.statsGrid}>
+              <Box className={classes.statItem}>
+                <Typography variant="body2" color="textSecondary" className={classes.statLabel}>
+                  Messages
+                </Typography>
+                <Typography variant="h6" className={classes.statValue}>
+                  {node.messages}
+                </Typography>
+              </Box>
+              <Box className={classes.statItem}>
+                <Typography variant="body2" color="textSecondary" className={classes.statLabel}>
+                  Subtopics
+                </Typography>
+                <Typography variant="h6" className={classes.statValue}>
+                  {node.childTopicCount()}
+                </Typography>
+              </Box>
+              <Box className={classes.statItem}>
+                <Typography variant="body2" color="textSecondary" className={classes.statLabel}>
+                  Total
+                </Typography>
+                <Typography variant="h6" className={classes.statValue}>
+                  {node.leafMessageCount()}
+                </Typography>
+              </Box>
+            </Box>
           </Box>
         </Box>
       )}
@@ -220,8 +220,7 @@ const styles = (theme: Theme) => ({
   },
   // Stats section
   statsSection: {
-    paddingBottom: theme.spacing(2),
-    borderBottom: `1px solid ${theme.palette.divider}`,
+    marginTop: theme.spacing(2),
   },
   statsGrid: {
     display: 'grid',
