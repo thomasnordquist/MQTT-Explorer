@@ -70,14 +70,14 @@ async function doStuff() {
   // Direct Electron console to Node terminal.
   page.on('console', console.log)
 
-  // Wait for Username input to be visible
-  await page.locator('//label[contains(text(), "Username")]/..//input')
+  // Wait for the connection dialog to be ready (Username input field visible)
+  await page.locator('//label[contains(text(), "Username")]/..//input').waitFor({ state: 'visible', timeout: 10000 })
 
   const scenes = new SceneBuilder()
   await scenes.record('connect', async () => {
     await connectTo(brokerHost, page)
     await MockSparkplug.run() // Start sparkplug client after connect or birth topics will be missed
-    await sleep(3000) // Increased wait time to allow MQTT topics to be received and rendered
+    await sleep(10000) // Dramatically increased wait time to allow MQTT topics to be received and rendered
   })
 
   await scenes.record('numeric_plots', async () => {
