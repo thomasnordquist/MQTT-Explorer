@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
 
-const Publish = React.lazy(() => import('../Publish/Publish'))
+const Publish = React.lazy(() => import('./Publish/Publish'))
 
 interface Props {
   connectionId?: string

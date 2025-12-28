@@ -1,5 +1,5 @@
 import React from 'react'
-import * as q from '../../../../../backend/src/Model'
+import * as q from '../../../../backend/src/Model'
 import { Typography } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
