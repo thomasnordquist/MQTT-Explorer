@@ -154,6 +154,9 @@ function DetailsTab(props: Props) {
 
           {/* Action toolbar */}
           <Box className={classes.actionToolbar}>
+            <Typography variant="subtitle2" className={classes.valueTitle}>
+              Current Value
+            </Typography>
             <Box className={classes.actionButtons}>
               <ActionButtons />
             </Box>
@@ -284,9 +287,18 @@ const styles = (theme: Theme) => ({
     gap: theme.spacing(1),
     flexWrap: 'wrap' as 'wrap',
   },
+  valueTitle: {
+    fontWeight: 600,
+    color: theme.palette.text.primary,
+    fontSize: '0.875rem',
+    textTransform: 'uppercase' as 'uppercase',
+    letterSpacing: '0.5px',
+    flexShrink: 0,
+  },
   actionButtons: {
     display: 'flex',
     alignItems: 'center',
+    flex: 1,
   },
   valueActions: {
     display: 'flex',

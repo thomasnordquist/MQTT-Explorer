@@ -1,49 +1,87 @@
 import React from 'react'
 import * as q from '../../../../backend/src/Model'
-import { Typography } from '@mui/material'
+import { Link } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
+import { treeActions } from '../../actions'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 
 interface Props {
   node?: q.TreeNode<any>
   classes: any
+  actions: typeof treeActions
 }
 
 function SimpleBreadcrumb(props: Props) {
-  const { node, classes } = props
+  const { node, classes, actions } = props
   
   if (!node) {
     return null
   }
 
-  const breadcrumbParts = node
-    .branch()
+  const branch = node.branch()
+  const breadcrumbNodes = branch
     .map(n => n.sourceEdge)
     .filter(edge => Boolean(edge))
-    .map(edge => edge?.name || '')
-    .filter(name => name !== '')
+    .map(edge => ({ name: edge?.name || '', target: edge?.target }))
+    .filter(item => item.name !== '')
 
-  if (breadcrumbParts.length === 0) {
+  if (breadcrumbNodes.length === 0) {
     return null
   }
 
-  const breadcrumbText = breadcrumbParts.join(' / ')
-
   return (
-    <Typography variant="h6" className={classes.breadcrumb}>
-      {breadcrumbText}
-    </Typography>
+    <div className={classes.breadcrumbContainer}>
+      {breadcrumbNodes.map((item, index) => (
+        <span key={index}>
+          {index > 0 && <span className={classes.separator}> / </span>}
+          <Link
+            component="button"
+            variant="h6"
+            className={classes.breadcrumbLink}
+            onClick={() => item.target && actions.selectTopic(item.target)}
+            underline="hover"
+          >
+            {item.name}
+          </Link>
+        </span>
+      ))}
+    </div>
   )
 }
 
 const styles = (theme: Theme) => ({
-  breadcrumb: {
+  breadcrumbContainer: {
+    display: 'flex',
+    flexWrap: 'wrap' as 'wrap',
+    alignItems: 'center',
+    gap: 0,
+  },
+  breadcrumbLink: {
     fontSize: '1rem',
     fontWeight: 500,
     color: theme.palette.text.primary,
-    wordBreak: 'break-word' as 'break-word',
+    cursor: 'pointer',
+    textAlign: 'left' as 'left',
+    border: 'none',
+    background: 'none',
+    padding: 0,
     lineHeight: 1.5,
+    '&:hover': {
+      color: theme.palette.primary.main,
+    },
+  },
+  separator: {
+    color: theme.palette.text.secondary,
+    userSelect: 'none' as 'none',
   },
 })
 
-export default withStyles(styles)(SimpleBreadcrumb)
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    actions: bindActionCreators(treeActions, dispatch),
+  }
+}
+
+export default connect(null, mapDispatchToProps)(withStyles(styles)(SimpleBreadcrumb))
