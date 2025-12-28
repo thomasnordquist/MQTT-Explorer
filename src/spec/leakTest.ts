@@ -12,7 +12,7 @@ process.on('unhandledRejection' as any, (error: Error | any) => {
   process.exit(1)
 })
 
-const runningUiTestOnCi = os.platform() === 'darwin' ? [] : ['--runningUiTestOnCi']
+const runningUiTestOnCi = os.platform() === 'darwin' ? [] : ['--runningUiTestOnCi', '--no-sandbox', '--disable-dev-shm-usage']
 
 async function doStuff() {
   const brokerHost = process.env.TESTS_MQTT_BROKER_HOST || '127.0.0.1'
