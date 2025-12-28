@@ -175,8 +175,8 @@ function ConnectionSettings(props: Props) {
   const { classes, connection } = props
 
   return (
-    <div>
-      <form className={classes.container} noValidate={true} autoComplete="off">
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <form className={classes.container} noValidate={true} autoComplete="off" style={{ flex: 1, overflow: 'auto' }}>
         <Grid container={true} spacing={2}>
           <Grid item={true} xs={5}>
             <TextField
@@ -270,47 +270,47 @@ function ConnectionSettings(props: Props) {
             />
           </Grid>
         </Grid>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '24px' }}>
-          <div>
-            <Tooltip title="Delete this connection permanently" arrow>
-              <Button
-                variant="contained"
-                color="error"
-                className={classes.button}
-                onClick={handleDelete}
-                aria-label="Delete connection"
-              >
-                <Delete /> Delete
-              </Button>
-            </Tooltip>
-            <Tooltip title="Advanced connection settings" arrow>
-              <Button
-                variant="contained"
-                className={classes.button}
-                onClick={props.managerActions.toggleAdvancedSettings}
-                data-testid="advanced-button"
-                aria-label="Show advanced settings"
-              >
-                <Settings /> Advanced
-              </Button>
-            </Tooltip>
-          </div>
-          <div>
-            <Tooltip title="Save connection settings" arrow>
-              <Button
-                variant="contained"
-                color="secondary"
-                className={classes.button}
-                onClick={props.managerActions.saveConnectionSettings}
-                aria-label="Save connection"
-              >
-                <Save /> Save
-              </Button>
-            </Tooltip>
-            <ConnectButton toggle={toggleConnect} connecting={props.connecting} classes={classes} />
-          </div>
-        </div>
       </form>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 0', borderTop: '1px solid rgba(0, 0, 0, 0.12)' }}>
+        <div>
+          <Tooltip title="Delete this connection permanently" arrow>
+            <Button
+              variant="contained"
+              color="error"
+              className={classes.button}
+              onClick={handleDelete}
+              aria-label="Delete connection"
+            >
+              <Delete /> Delete
+            </Button>
+          </Tooltip>
+          <Tooltip title="Advanced connection settings" arrow>
+            <Button
+              variant="contained"
+              className={classes.button}
+              onClick={props.managerActions.toggleAdvancedSettings}
+              data-testid="advanced-button"
+              aria-label="Show advanced settings"
+            >
+              <Settings /> Advanced
+            </Button>
+          </Tooltip>
+        </div>
+        <div>
+          <Tooltip title="Save connection settings" arrow>
+            <Button
+              variant="contained"
+              color="secondary"
+              className={classes.button}
+              onClick={props.managerActions.saveConnectionSettings}
+              aria-label="Save connection"
+            >
+              <Save /> Save
+            </Button>
+          </Tooltip>
+          <ConnectButton toggle={toggleConnect} connecting={props.connecting} classes={classes} />
+        </div>
+      </div>
     </div>
   )
 }
