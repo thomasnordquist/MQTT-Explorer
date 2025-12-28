@@ -47,13 +47,20 @@ function ChartPreview(props: Props) {
         onMouseLeave={mouseOut}
         onClick={onClick}
         style={{ cursor: 'pointer', display: 'inline-flex' }}
+        data-test-type="ShowChart"
+        data-test={props.literal.path}
       >
         <ShowChart className={props.classes.icon} />
       </span>
     </Tooltip>
   ) : (
     <Tooltip title="Add to chart panel, not enough data for preview">
-      <span onClick={onClick} style={{ cursor: 'pointer', display: 'inline-flex' }}>
+      <span
+        onClick={onClick}
+        style={{ cursor: 'pointer', display: 'inline-flex' }}
+        data-test-type="ShowChart"
+        data-test={props.literal.path}
+      >
         <ShowChart className={props.classes.icon} style={{ color: '#aaa' }} />
       </span>
     </Tooltip>
@@ -61,7 +68,7 @@ function ChartPreview(props: Props) {
 
   return (
     <div style={{ display: 'inline' }}>
-      <span data-test-type="ShowChart" data-test={props.literal.path} style={{ display: 'inline-block' }}>
+      <span style={{ display: 'inline-block' }}>
         {addChartToPanelButton}
       </span>
       <Popper open={open} anchorEl={chartIconRef.current} placement="left-end">
