@@ -27,6 +27,7 @@ export interface ConnectionOptions {
   clientKey?: CertificateParameters
   clientId?: string
   subscriptions: Array<Subscription>
+  order?: number
 }
 
 export function toMqttConnection(options: ConnectionOptions): MqttOptions | undefined {
@@ -71,6 +72,7 @@ export function createEmptyConnection(): ConnectionOptions {
     host: '',
     port: 1883,
     protocol: 'mqtt',
+    order: Date.now(),
   }
 }
 
@@ -82,12 +84,14 @@ export function makeDefaultConnections() {
       id: 'mqtt.eclipseprojects.io',
       name: 'mqtt.eclipseprojects.io',
       host: 'mqtt.eclipseprojects.io',
+      order: 0,
     },
     'test.mosquitto.org': {
       ...createEmptyConnection(),
       id: 'test.mosquitto.org',
       name: 'test.mosquitto.org',
       host: 'test.mosquitto.org',
+      order: 1,
     },
   }
 }

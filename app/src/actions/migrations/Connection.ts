@@ -68,6 +68,17 @@ let migrations: Migration[] = [
       }
     },
   },
+  // Add order field for connection ordering
+  {
+    from: 1,
+    apply: (connection: ConnectionOptions): ConnectionOptions => {
+      if (connection.order !== undefined) {
+        return connection
+      }
+      // Order will be assigned during migration based on current position
+      return connection
+    },
+  },
 ]
 
 const connectionMigrator = new ConfigMigrator(migrations)
@@ -80,8 +91,14 @@ function isMigrationNecessary(connections: ConnectionDictionary): boolean {
 
 function applyMigrations(connections: ConnectionDictionary): ConnectionDictionary {
   let newConnectionDictionary: ConnectionDictionary = {}
-  Object.keys(connections).forEach(key => {
+  const connectionKeys = Object.keys(connections)
+  
+  connectionKeys.forEach((key, index) => {
     let newConnection = connectionMigrator.applyMigrations(connections[key]) as any
+    // If the migration didn't assign an order, assign one based on current position
+    if (newConnection.order === undefined) {
+      newConnection.order = index
+    }
     newConnectionDictionary[newConnection.id] = newConnection
   })
 
