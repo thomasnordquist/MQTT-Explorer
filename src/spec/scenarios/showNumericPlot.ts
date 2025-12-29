@@ -8,17 +8,17 @@ export async function showNumericPlot(browser: Page) {
   let heater = await valuePreviewGuttersShowChartIcon('heater', browser)
   await moveToCenterOfElement(heater)
   await sleep(1000)
-  // Refocus and click with force to bypass tooltip overlay
+  // Refocus and click
   heater = await valuePreviewGuttersShowChartIcon('heater', browser)
-  await heater.click({ force: true })
+  await heater.click()
 
   await sleep(1000)
   let temperature = await valuePreviewGuttersShowChartIcon('temperature', browser)
   await moveToCenterOfElement(temperature)
   await sleep(1000)
-  // Refocus and click with force to bypass tooltip overlay
+  // Refocus and click
   temperature = await valuePreviewGuttersShowChartIcon('temperature', browser)
-  await temperature.click({ force: true })
+  await temperature.click()
 
   await sleep(1000)
   await chartSettings('heater', browser)
