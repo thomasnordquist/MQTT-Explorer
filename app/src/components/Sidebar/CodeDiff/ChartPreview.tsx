@@ -59,9 +59,16 @@ function ChartPreview(props: Props) {
     </Tooltip>
   )
 
+  // Construct data-test attribute for testing: use topic name + literal path
+  // For simple values (no JSON path), use just the last segment of the topic
+  // For nested JSON values, include the dotPath
+  const topicSegments = props.treeNode.path().split('/')
+  const topicName = topicSegments[topicSegments.length - 1]
+  const dataTest = props.literal.path ? `${topicName}-${props.literal.path}` : topicName
+
   return (
     <div style={{ display: 'inline' }}>
-      <span data-test-type="ShowChart" data-test={props.literal.path} style={{ display: 'inline-block' }}>
+      <span data-test-type="ShowChart" data-test={dataTest} style={{ display: 'inline-block' }}>
         {addChartToPanelButton}
       </span>
       <Popper open={open} anchorEl={chartIconRef.current} placement="left-end">
