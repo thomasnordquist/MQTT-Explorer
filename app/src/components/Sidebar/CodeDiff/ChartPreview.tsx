@@ -37,36 +37,23 @@ function ChartPreview(props: Props) {
     setOpen(false)
   }, [])
 
-  // Construct data-test attribute for testing: use topic name + literal path
-  // For simple values (no JSON path), use just the last segment of the topic
-  // For nested JSON values, include the dotPath
-  const topicSegments = props.treeNode.path().split('/')
-  const topicName = topicSegments[topicSegments.length - 1]
-  const dataTest = props.literal.path ? `${topicName}-${props.literal.path}` : topicName
-
   const hasEnoughDataToDisplayDiagrams = props.treeNode.messageHistory.count() > 1
 
   const addChartToPanelButton = hasEnoughDataToDisplayDiagrams ? (
-    <span ref={chartIconRef} onMouseEnter={mouseOver} onMouseLeave={mouseOut}>
-      <Tooltip title="Add to chart panel">
-        <span
-          onClick={onClick}
-          data-test-type="ShowChart"
-          data-test={dataTest}
-          style={{ cursor: 'pointer', display: 'inline-flex' }}
-        >
-          <ShowChart className={props.classes.icon} />
-        </span>
-      </Tooltip>
-    </span>
-  ) : (
-    <Tooltip title="Add to chart panel, not enough data for preview">
+    <Tooltip title="Add to chart panel">
       <span
+        ref={chartIconRef}
+        onMouseEnter={mouseOver}
+        onMouseLeave={mouseOut}
         onClick={onClick}
-        data-test-type="ShowChart"
-        data-test={dataTest}
         style={{ cursor: 'pointer', display: 'inline-flex' }}
       >
+        <ShowChart className={props.classes.icon} />
+      </span>
+    </Tooltip>
+  ) : (
+    <Tooltip title="Add to chart panel, not enough data for preview">
+      <span onClick={onClick} style={{ cursor: 'pointer', display: 'inline-flex' }}>
         <ShowChart className={props.classes.icon} style={{ color: '#aaa' }} />
       </span>
     </Tooltip>
@@ -74,7 +61,9 @@ function ChartPreview(props: Props) {
 
   return (
     <div style={{ display: 'inline' }}>
-      {addChartToPanelButton}
+      <span data-test-type="ShowChart" data-test={props.literal.path} style={{ display: 'inline-block' }}>
+        {addChartToPanelButton}
+      </span>
       <Popper open={open} anchorEl={chartIconRef.current} placement="left-end">
         <Fade in={open} timeout={300}>
           <Paper style={{ width: '300px' }}>
