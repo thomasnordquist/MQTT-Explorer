@@ -35,7 +35,7 @@ When demo video tests fail in CI but you need to debug locally:
 **Prerequisites:**
 ```bash
 # Install required packages
-sudo apt-get install xvfb mosquitto tmux ffmpeg x11vnc
+sudo apt-get install xvfb mosquitto tmux ffmpeg
 
 # Ensure mosquitto is stopped (script will start its own instance)
 sudo systemctl stop mosquitto
@@ -43,21 +43,30 @@ sudo systemctl stop mosquitto
 
 **Steps to debug:**
 1. Build the project: `yarn build`
-2. Run the demo video tests: `./scripts/uiTests.sh`
+2. Run the demo video tests: `ELECTRON_DISABLE_SANDBOX=1 ./scripts/uiTests.sh`
 3. If tests fail, check the error messages for:
    - Missing `data-test` or `data-test-type` attributes
    - Elements not visible (hidden, outside viewport, or covered by overlays)
    - Click interception (tooltips, dialogs blocking clicks)
+   - XPath selector issues (check the data-test value format)
 
 **Common issues:**
 - **"locator not visible"**: Element exists but is hidden or outside viewport
 - **"locator.click intercepted"**: Another element (tooltip, dialog) is covering the click target
 - **Empty `data-test` attribute**: For simple numeric values, ensure you're using the topic name, not `props.literal.path` (which is empty for non-JSON values)
+- **"Process failed to launch"**: Electron can't start - ensure DISPLAY is set and Xvfb is running
+
+**Environment-specific notes:**
+- Demo video tests use Electron with Xvfb (virtual display)
+- Browser tests use Chromium without Electron (easier to debug locally)
+- CI environment has proper Electron setup - if local tests are flaky, trust CI results
+- Both test types use the same scenario files in `src/spec/scenarios/`
 
 **Material-UI Tooltip considerations:**
 - Tooltips wrap their children and create overlay divs
 - Test attributes (`data-test-type`, `data-test`) must be on the inner clickable element that's passed as a child to the Tooltip
-- Don't put test attributes on wrapper spans outside the Tooltip component
+- Mouse event handlers (onMouseEnter, onMouseLeave, ref) go on outer wrapper
+- onClick handler and test attributes go on the span inside the Tooltip
 - The clickable child inside the Tooltip is what Playwright should target
 
 **Example:**
@@ -70,7 +79,7 @@ sudo systemctl stop mosquitto
 </Tooltip>
 
 // ✅ CORRECT - attributes on the actual clickable child inside Tooltip
-<span onMouseEnter={...} onMouseLeave={...}>
+<span ref={ref} onMouseEnter={...} onMouseLeave={...}>
   <Tooltip title="...">
     <span onClick={...} data-test-type="Button" data-test="example">
       <Icon />
@@ -78,6 +87,11 @@ sudo systemctl stop mosquitto
   </Tooltip>
 </span>
 ```
+
+**data-test value format:**
+- ShowChart: Use last segment of topic path (e.g., "heater" for "kitchen/coffee_maker/heater")
+- ChartSettings: Use full topic + dotPath (e.g., "kitchen/coffee_maker/heater-" with trailing dash when dotPath is empty)
+- Test XPaths use `contains(@data-test, "substring")` so partial matches work
 
 ## Running Browser Tests Locally
 
