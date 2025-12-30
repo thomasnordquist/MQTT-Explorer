@@ -37,6 +37,13 @@ function ChartPreview(props: Props) {
     setOpen(false)
   }, [])
 
+  // Construct data-test attribute for testing: use topic name + literal path
+  // For simple values (no JSON path), use just the last segment of the topic
+  // For nested JSON values, include the dotPath
+  const topicSegments = props.treeNode.path().split('/')
+  const topicName = topicSegments[topicSegments.length - 1]
+  const dataTest = props.literal.path ? `${topicName}-${props.literal.path}` : topicName
+
   const hasEnoughDataToDisplayDiagrams = props.treeNode.messageHistory.count() > 1
 
   const addChartToPanelButton = hasEnoughDataToDisplayDiagrams ? (
@@ -46,6 +53,8 @@ function ChartPreview(props: Props) {
         onMouseEnter={mouseOver}
         onMouseLeave={mouseOut}
         onClick={onClick}
+        data-test-type="ShowChart"
+        data-test={dataTest}
         style={{ cursor: 'pointer', display: 'inline-flex' }}
       >
         <ShowChart className={props.classes.icon} />
@@ -53,24 +62,20 @@ function ChartPreview(props: Props) {
     </Tooltip>
   ) : (
     <Tooltip title="Add to chart panel, not enough data for preview">
-      <span onClick={onClick} style={{ cursor: 'pointer', display: 'inline-flex' }}>
+      <span
+        onClick={onClick}
+        data-test-type="ShowChart"
+        data-test={dataTest}
+        style={{ cursor: 'pointer', display: 'inline-flex' }}
+      >
         <ShowChart className={props.classes.icon} style={{ color: '#aaa' }} />
       </span>
     </Tooltip>
   )
 
-  // Construct data-test attribute for testing: use topic name + literal path
-  // For simple values (no JSON path), use just the last segment of the topic
-  // For nested JSON values, include the dotPath
-  const topicSegments = props.treeNode.path().split('/')
-  const topicName = topicSegments[topicSegments.length - 1]
-  const dataTest = props.literal.path ? `${topicName}-${props.literal.path}` : topicName
-
   return (
     <div style={{ display: 'inline' }}>
-      <span data-test-type="ShowChart" data-test={dataTest} style={{ display: 'inline-block' }}>
-        {addChartToPanelButton}
-      </span>
+      {addChartToPanelButton}
       <Popper open={open} anchorEl={chartIconRef.current} placement="left-end">
         <Fade in={open} timeout={300}>
           <Paper style={{ width: '300px' }}>
