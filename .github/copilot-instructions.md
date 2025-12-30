@@ -20,12 +20,64 @@
 - `yarn test:mcp` - Model Context Protocol tests
 - `yarn test:all` - All tests (unit + demo-video)
 - `./scripts/runBrowserTests.sh` - Browser mode UI tests (requires mosquitto service)
+- `./scripts/uiTests.sh` - Demo video tests with Electron (requires Xvfb, mosquitto)
 
 **CI jobs:** `test`, `ui-tests`, `demo-video`, `test-browser`, `browser-ui-tests`
 
 **Important:** 
 - Browser UI tests require MQTT broker. In CI, GitHub Actions health checks ensure the mosquitto service is ready before tests run.
 - Demo video tests use the same test scenarios as browser tests - if browser tests pass, demo video tests should pass too (they use identical selectors in `src/spec/scenarios/`)
+
+## Debugging Demo Video / UI Tests
+
+When demo video tests fail in CI but you need to debug locally:
+
+**Prerequisites:**
+```bash
+# Install required packages
+sudo apt-get install xvfb mosquitto tmux ffmpeg x11vnc
+
+# Ensure mosquitto is stopped (script will start its own instance)
+sudo systemctl stop mosquitto
+```
+
+**Steps to debug:**
+1. Build the project: `yarn build`
+2. Run the demo video tests: `./scripts/uiTests.sh`
+3. If tests fail, check the error messages for:
+   - Missing `data-test` or `data-test-type` attributes
+   - Elements not visible (hidden, outside viewport, or covered by overlays)
+   - Click interception (tooltips, dialogs blocking clicks)
+
+**Common issues:**
+- **"locator not visible"**: Element exists but is hidden or outside viewport
+- **"locator.click intercepted"**: Another element (tooltip, dialog) is covering the click target
+- **Empty `data-test` attribute**: For simple numeric values, ensure you're using the topic name, not `props.literal.path` (which is empty for non-JSON values)
+
+**Material-UI Tooltip considerations:**
+- Tooltips wrap their children and create overlay divs
+- Test attributes (`data-test-type`, `data-test`) must be on the inner clickable element that's passed as a child to the Tooltip
+- Don't put test attributes on wrapper spans outside the Tooltip component
+- The clickable child inside the Tooltip is what Playwright should target
+
+**Example:**
+```tsx
+// ❌ WRONG - attributes on outer wrapper, Tooltip wraps and hides them
+<Tooltip title="...">
+  <span onClick={...} data-test-type="Button" data-test="example">
+    <Icon />
+  </span>
+</Tooltip>
+
+// ✅ CORRECT - attributes on the actual clickable child inside Tooltip
+<span onMouseEnter={...} onMouseLeave={...}>
+  <Tooltip title="...">
+    <span onClick={...} data-test-type="Button" data-test="example">
+      <Icon />
+    </span>
+  </Tooltip>
+</span>
+```
 
 ## Running Browser Tests Locally
 
