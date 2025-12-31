@@ -154,7 +154,7 @@ const styles = (theme: Theme) => ({
     height: '100%',
     padding: '8px',
     flex: 1,
-    overflow: 'hidden scroll',
+    overflow: 'auto',
   },
 })
 

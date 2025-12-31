@@ -275,8 +275,11 @@ describe('MQTT Explorer UI Tests', function () {
       await expandTopic('livingroom/lamp/state', page)
       await sleep(1000)
 
-      // When: Copy topic button is clicked
-      const copyTopicButton = page.getByRole('button', { name: /Topic/i }).getByTestId('copy-button')
+      // When: Copy topic button is clicked (in the topic section at the top)
+      // The new sidebar has copy buttons in the topic section (for path) and value section (for value)
+      // We need to find the first copy button (topic path copy button)
+      const copyButtons = page.getByTestId('copy-button')
+      const copyTopicButton = copyButtons.first()
       await copyTopicButton.click()
       await sleep(500)
 
@@ -317,8 +320,9 @@ describe('MQTT Explorer UI Tests', function () {
 
     it('should copy message value to clipboard in both Electron and browser modes', async function () {
       // Given: A topic with a value is selected (reuse already expanded topic)
-      // When: Copy value button is clicked
-      const copyValueButton = page.getByRole('button', { name: /Value/i }).getByTestId('copy-button')
+      // When: Copy value button is clicked (the second copy button in the value section)
+      const copyButtons = page.getByTestId('copy-button')
+      const copyValueButton = copyButtons.nth(1) // Second copy button is for the value
       await copyValueButton.click()
       await sleep(500)
 
@@ -367,8 +371,8 @@ describe('MQTT Explorer UI Tests', function () {
         // In browser mode, set up download handling
         const downloadPromise = page.waitForEvent('download', { timeout: 10000 })
 
-        // When: Save button is clicked
-        const saveButton = page.getByRole('button', { name: /Value/i }).getByTestId('save-button')
+        // When: Save button is clicked (in the new sidebar, save button is in the value section)
+        const saveButton = page.getByTestId('save-button')
         await saveButton.click()
 
         // Then: Download should be triggered
@@ -385,7 +389,7 @@ describe('MQTT Explorer UI Tests', function () {
       } else {
         // In Electron mode, the file dialog would open
         // We can't easily test the native file dialog, but we can verify the button works
-        const saveButton = page.getByRole('button', { name: /Value/i }).getByTestId('save-button')
+        const saveButton = page.getByTestId('save-button')
         const isVisible = await saveButton.isVisible()
         expect(isVisible).to.be.true
 
