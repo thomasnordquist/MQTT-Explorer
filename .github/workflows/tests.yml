@@ -66,8 +66,12 @@ jobs:
       - name: Build
         run: yarn build
       - name: Generate Demo Video
+        id: generate_video
+        continue-on-error: true
         run: yarn ui-test
       - name: Post-processing
+        if: always()
+        continue-on-error: true
         run: ./scripts/prepareVideo.sh
       - name: Generate unique base path
         id: basepath
@@ -89,24 +93,32 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: 'eu-central-1'
       - name: Upload full video to S3
+        if: always()
+        continue-on-error: true
         env:
           AWS_BUCKET: ${{ vars.AWS_BUCKET }}
           BASEPATH: ${{ steps.basepath.outputs.basepath }}
         run: |
-          # Upload GIF
-          aws s3api put-object \
-            --bucket ${AWS_BUCKET} \
-            --key artifacts/${BASEPATH}/ui-test.gif \
-            --body ./ui-test.gif \
-            --content-type image/gif
-          
-          # Upload MP4
-          aws s3api put-object \
-            --bucket ${AWS_BUCKET} \
-            --key artifacts/${BASEPATH}/ui-test.mp4 \
-            --body ./ui-test.mp4 \
-            --content-type video/mp4
+          # Upload GIF if it exists
+          if [ -f ./ui-test.gif ]; then
+            aws s3api put-object \
+              --bucket ${AWS_BUCKET} \
+              --key artifacts/${BASEPATH}/ui-test.gif \
+              --body ./ui-test.gif \
+              --content-type image/gif
+          fi
+
+          # Upload MP4 if it exists
+          if [ -f ./ui-test.mp4 ]; then
+            aws s3api put-object \
+              --bucket ${AWS_BUCKET} \
+              --key artifacts/${BASEPATH}/ui-test.mp4 \
+              --body ./ui-test.mp4 \
+              --content-type video/mp4
+          fi
       - name: Upload video segments to S3
+        if: always()
+        continue-on-error: true
         env:
           AWS_BUCKET: ${{ vars.AWS_BUCKET }}
           BASEPATH: ${{ steps.basepath.outputs.basepath }}
@@ -124,6 +136,7 @@ jobs:
           done
           shopt -u nullglob  # Restore default behavior
       - name: Generate file URLs
+        if: always()
         id: fileurl
         env:
           AWS_BUCKET: ${{ vars.AWS_BUCKET }}
@@ -133,20 +146,24 @@ jobs:
           echo "base-url=${BASE_URL}" >> $GITHUB_OUTPUT
           echo "Uploaded to: ${BASE_URL}"
       - name: Generate markdown summary
+        if: always()
         id: markdown
         env:
           BASE_URL: ${{ steps.fileurl.outputs.base-url }}
+          TEST_STATUS: ${{ steps.generate_video.outcome }}
         run: |
-          MARKDOWN=$(node ./scripts/generateMarkdownSummary.js "${BASE_URL}")
+          MARKDOWN=$(node ./scripts/generateMarkdownSummary.js "${BASE_URL}" "${TEST_STATUS}")
           echo "markdown<<EOF" >> $GITHUB_OUTPUT
           echo "$MARKDOWN" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
       - name: Add to workflow summary
+        if: always()
         env:
           MARKDOWN: ${{ steps.markdown.outputs.markdown }}
         run: |
           echo "$MARKDOWN" >> $GITHUB_STEP_SUMMARY
       - name: Post video to PR
+        if: always()
         uses: actions/github-script@v7
         env:
           MARKDOWN: ${{ steps.markdown.outputs.markdown }}
