@@ -17,7 +17,7 @@ try {
     scenes = JSON.parse(fs.readFileSync('scenes.json', 'utf8'));
   }
 } catch (error) {
-  console.error('Warning: Could not read scenes.json:', error.message);
+  console.error('Warning: Could not read scenes.json - video segments will not be available:', error.message);
 }
 
 // Sanitize scene name to prevent path traversal

@@ -150,6 +150,7 @@ jobs:
         id: markdown
         env:
           BASE_URL: ${{ steps.fileurl.outputs.base-url }}
+          # Outcome can be: 'success', 'failure', 'cancelled', or 'skipped'
           TEST_STATUS: ${{ steps.generate_video.outcome }}
         run: |
           MARKDOWN=$(node ./scripts/generateMarkdownSummary.js "${BASE_URL}" "${TEST_STATUS}")
