@@ -86,8 +86,12 @@ function SidebarNew(props: Props) {
       </Box>
       
       <Box className={classes.tabContent}>
-        {tabValue === 0 && <DetailsTab node={node} />}
-        {tabValue === 1 && <PublishTab connectionId={props.connectionId} />}
+        <Box sx={{ display: tabValue === 0 ? 'block' : 'none' }}>
+          <DetailsTab node={node} />
+        </Box>
+        <Box sx={{ display: tabValue === 1 ? 'block' : 'none' }}>
+          <PublishTab connectionId={props.connectionId} />
+        </Box>
       </Box>
     </div>
   )
