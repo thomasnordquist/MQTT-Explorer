@@ -1,0 +1,74 @@
+name: Auto-approve Copilot Workflow Runs
+
+# This workflow automatically approves workflow runs from GitHub Copilot
+# when it pushes to a PR. This is needed because workflows using pull_request_target
+# require approval for security reasons, but Copilot is a trusted bot.
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  auto-approve:
+    runs-on: ubuntu-latest
+    # Only run if the PR author is GitHub Copilot
+    if: github.event.pull_request.user.login == 'copilot-app[bot]' || github.event.pull_request.user.login == 'github-actions[bot]'
+    
+    permissions:
+      actions: write
+      contents: read
+      pull-requests: read
+    
+    steps:
+      - name: Get pending workflow runs
+        id: get-runs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: runs } = await github.rest.actions.listWorkflowRunsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              event: 'pull_request_target',
+              status: 'waiting',
+              per_page: 100
+            });
+            
+            // Filter runs for this PR
+            const prNumber = context.payload.pull_request.number;
+            const prRuns = runs.workflow_runs.filter(run => {
+              return run.pull_requests && run.pull_requests.some(pr => pr.number === prNumber);
+            });
+            
+            console.log(`Found ${prRuns.length} waiting workflow runs for PR #${prNumber}`);
+            
+            for (const run of prRuns) {
+              console.log(`- ${run.name} (ID: ${run.id})`);
+            }
+            
+            return prRuns.map(run => run.id);
+      
+      - name: Approve workflow runs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runIds = ${{ steps.get-runs.outputs.result }};
+            
+            if (!runIds || runIds.length === 0) {
+              console.log('No workflow runs to approve');
+              return;
+            }
+            
+            for (const runId of runIds) {
+              try {
+                await github.rest.actions.approveWorkflowRun({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  run_id: runId
+                });
+                console.log(`✓ Approved workflow run ${runId}`);
+              } catch (error) {
+                console.error(`✗ Failed to approve workflow run ${runId}:`, error.message);
+              }
+            }
+            
+            console.log(`\nApproved ${runIds.length} workflow run(s) for Copilot PR #${context.payload.pull_request.number}`);
