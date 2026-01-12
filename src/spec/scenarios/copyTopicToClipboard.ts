@@ -2,7 +2,9 @@ import { Page } from 'playwright'
 import { clickOn } from '../util'
 
 export async function copyTopicToClipboard(browser: Page) {
-  // Select the copy button specifically in the Topic panel (not Value panel or MessageHistory)
-  const copyButton = browser.getByRole('button', { name: /Topic/i }).getByTestId('copy-button')
+  // Select the first copy button (topic path copy button in the new sidebar structure)
+  // The new sidebar has copy buttons in the topic section (for path) and value section (for value)
+  const copyButtons = browser.getByTestId('copy-button')
+  const copyButton = copyButtons.first()
   await clickOn(copyButton, 1)
 }
