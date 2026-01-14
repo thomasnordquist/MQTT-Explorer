@@ -45,7 +45,7 @@ setTimeout(
   60 * 10 * 1000
 )
 
-const runningUiTestOnCi = os.platform() === 'darwin' ? [] : ['--runningUiTestOnCi']
+const runningUiTestOnCi = os.platform() === 'darwin' ? [] : ['--runningUiTestOnCi', '--no-sandbox', '--disable-dev-shm-usage']
 
 async function doStuff() {
   const brokerHost = process.env.TESTS_MQTT_BROKER_HOST || '127.0.0.1'
@@ -72,6 +72,9 @@ async function doStuff() {
 
   // Wait for Username input to be visible
   await page.locator('//label[contains(text(), "Username")]/..//input')
+
+  // Wait for the connection dialog to be fully rendered (especially after react-spring upgrade)
+  await sleep(2000)
 
   const scenes = new SceneBuilder()
   await scenes.record('connect', async () => {
