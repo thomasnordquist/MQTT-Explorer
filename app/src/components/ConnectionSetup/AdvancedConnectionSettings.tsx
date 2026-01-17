@@ -73,7 +73,7 @@ const ConnectionSettings = memo(function ConnectionSettings(props: Props) {
           <Grid item={true} xs={12} style={{ padding: 0 }}>
             <SubscriptionsAny connection={props.connection} />
           </Grid>
-          <Grid item={true} xs={7} className={classes.gridPadding}>
+          <Grid item={true} xs={6} className={classes.gridPadding}>
             <TextField
               className={classes.fullWidth}
               label="MQTT Client ID"
@@ -83,19 +83,17 @@ const ConnectionSettings = memo(function ConnectionSettings(props: Props) {
             />
           </Grid>
           <Grid item={true} xs={3} className={classes.gridPadding}>
-            <div>
-              <Tooltip title="Manage tls connection certificates" placement="top">
-                <Button
-                  variant="contained"
-                  className={classes.button}
-                  onClick={() => props.managerActions.toggleCertificateSettings()}
-                >
-                  <Lock /> Certificates
-                </Button>
-              </Tooltip>
-            </div>
+            <Tooltip title="Manage tls connection certificates" placement="top">
+              <Button
+                variant="contained"
+                className={classes.button}
+                onClick={() => props.managerActions.toggleCertificateSettings()}
+              >
+                <Lock /> Certificates
+              </Button>
+            </Tooltip>
           </Grid>
-          <Grid item={true} xs={2} className={classes.gridPadding}>
+          <Grid item={true} xs={3} className={classes.gridPadding}>
             <Button
               variant="contained"
               className={classes.button}
@@ -126,7 +124,6 @@ const styles = (theme: Theme) => ({
   },
   button: {
     marginTop: theme.spacing(3),
-    float: 'right' as 'right',
   },
   qos: {
     marginTop: theme.spacing(1),
