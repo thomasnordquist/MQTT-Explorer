@@ -7,7 +7,7 @@ import * as path from 'path'
  * AboutDialog License Compliance Tests
  * 
  * These tests verify that the About dialog properly displays required
- * attribution information as mandated by the CC-BY-SA-4.0 license.
+ * attribution information as mandated by the CC-BY-ND-4.0 license.
  */
 describe('AboutDialog License Compliance', () => {
   const aboutDialogPath = path.join(__dirname, 'AboutDialog.tsx')
@@ -19,7 +19,7 @@ describe('AboutDialog License Compliance', () => {
 
   it('should contain the license notice in the component file', () => {
     expect(aboutDialogContent).to.include('LICENSE NOTICE')
-    expect(aboutDialogContent).to.include('CC-BY-SA-4.0')
+    expect(aboutDialogContent).to.include('CC-BY-ND-4.0')
   })
 
   it('should display author attribution (Thomas Nordquist)', () => {
@@ -27,9 +27,9 @@ describe('AboutDialog License Compliance', () => {
     expect(aboutDialogContent).to.match(/Author.*Thomas Nordquist/)
   })
 
-  it('should display CC-BY-SA-4.0 license', () => {
+  it('should display CC-BY-ND-4.0 license', () => {
     // Verify the license is displayed in the component
-    expect(aboutDialogContent).to.match(/License.*CC-BY-SA-4.0/)
+    expect(aboutDialogContent).to.match(/License.*CC-BY-ND-4.0/)
   })
 
   it('should have data-testid attributes for license verification', () => {
@@ -39,15 +39,15 @@ describe('AboutDialog License Compliance', () => {
   })
 
   describe('License Violation Detection', () => {
-    it('removing author attribution violates CC-BY-SA-4.0 license', () => {
+    it('removing author attribution violates CC-BY-ND-4.0 license', () => {
       // Test that the author name "Thomas Nordquist" is present
-      // Removing it would violate the Attribution requirement of CC-BY-SA-4.0
+      // Removing it would violate the Attribution requirement of CC-BY-ND-4.0
       const hasAuthor = aboutDialogContent.includes('Thomas Nordquist')
       
       if (!hasAuthor) {
         throw new Error(
           'LICENSE VIOLATION: Author attribution "Thomas Nordquist" is missing. ' +
-          'This violates the CC-BY-SA-4.0 license Attribution requirement. ' +
+          'This violates the CC-BY-ND-4.0 license Attribution requirement. ' +
           'The author must be properly credited in the About dialog.'
         )
       }
@@ -55,15 +55,15 @@ describe('AboutDialog License Compliance', () => {
       expect(hasAuthor).to.be.true
     })
 
-    it('removing license notice violates CC-BY-SA-4.0 license', () => {
-      // Test that the license "CC-BY-SA-4.0" is displayed
+    it('removing license notice violates CC-BY-ND-4.0 license', () => {
+      // Test that the license "CC-BY-ND-4.0" is displayed
       // Removing it would violate the license requirements
-      const hasLicense = aboutDialogContent.includes('CC-BY-SA-4.0')
+      const hasLicense = aboutDialogContent.includes('CC-BY-ND-4.0')
       
       if (!hasLicense) {
         throw new Error(
-          'LICENSE VIOLATION: License notice "CC-BY-SA-4.0" is missing. ' +
-          'This violates the CC-BY-SA-4.0 license requirements. ' +
+          'LICENSE VIOLATION: License notice "CC-BY-ND-4.0" is missing. ' +
+          'This violates the CC-BY-ND-4.0 license requirements. ' +
           'The license must be displayed in the About dialog.'
         )
       }
@@ -71,14 +71,14 @@ describe('AboutDialog License Compliance', () => {
       expect(hasLicense).to.be.true
     })
 
-    it('removing LICENSE NOTICE comment violates CC-BY-SA-4.0 license', () => {
+    it('removing LICENSE NOTICE comment violates CC-BY-ND-4.0 license', () => {
       // Test that the LICENSE NOTICE comment is present in the source
       const hasLicenseNotice = aboutDialogContent.includes('LICENSE NOTICE')
       
       if (!hasLicenseNotice) {
         throw new Error(
           'LICENSE VIOLATION: LICENSE NOTICE comment is missing from source code. ' +
-          'This violates the CC-BY-SA-4.0 license documentation requirements. ' +
+          'This violates the CC-BY-ND-4.0 license documentation requirements. ' +
           'The license notice must be retained in the component source.'
         )
       }
