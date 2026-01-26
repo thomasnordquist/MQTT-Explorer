@@ -1,12 +1,12 @@
 import * as q from '../../../../backend/src/Model'
 import React, { useCallback } from 'react'
-import { Box, Typography, IconButton, Chip, Tooltip } from '@mui/material'
+import { Box, Typography, IconButton, Chip, Tooltip, Button } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
 import { AppState } from '../../reducers'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { sidebarActions } from '../../actions'
+import { sidebarActions, globalActions } from '../../actions'
 import Copy from '../helper/Copy'
 import Save from '../helper/Save'
 import DateFormatter from '../helper/DateFormatter'
@@ -17,6 +17,7 @@ import DeleteSelectedTopicButton from './ValueRenderer/DeleteSelectedTopicButton
 import { useDecoder } from '../hooks/useDecoder'
 import DeleteIcon from '@mui/icons-material/Delete'
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep'
+import Info from '@mui/icons-material/Info'
 import SimpleBreadcrumb from './SimpleBreadcrumb'
 
 interface Props {
@@ -24,6 +25,7 @@ interface Props {
   classes: any
   compareMessage?: q.Message
   sidebarActions: typeof sidebarActions
+  globalActions: typeof globalActions
 }
 
 function DetailsTab(props: Props) {
@@ -67,6 +69,19 @@ function DetailsTab(props: Props) {
         <Typography variant="body2" color="textSecondary" align="center">
           Select a topic to view details
         </Typography>
+        
+        {/* About Button - always show even when no topic selected */}
+        <Box className={classes.aboutSection}>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<Info />}
+            onClick={() => props.globalActions.toggleAboutDialogVisibility()}
+            fullWidth
+          >
+            About MQTT Explorer
+          </Button>
+        </Box>
       </Box>
     )
   }
@@ -180,6 +195,19 @@ function DetailsTab(props: Props) {
           </Box>
         </Box>
       )}
+      
+      {/* About Section - always visible at bottom */}
+      <Box className={classes.aboutSection}>
+        <Button
+          variant="outlined"
+          size="small"
+          startIcon={<Info />}
+          onClick={() => props.globalActions.toggleAboutDialogVisibility()}
+          fullWidth
+        >
+          About MQTT Explorer
+        </Button>
+      </Box>
     </Box>
   )
 }
@@ -195,10 +223,17 @@ const styles = (theme: Theme) => ({
   },
   emptyState: {
     display: 'flex',
+    flexDirection: 'column' as 'column',
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: '200px',
     padding: theme.spacing(3),
+    gap: theme.spacing(3),
+  },
+  aboutSection: {
+    marginTop: theme.spacing(3),
+    paddingTop: theme.spacing(2),
+    borderTop: `1px solid ${theme.palette.divider}`,
   },
   // Topic section
   topicSection: {
@@ -321,6 +356,7 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = (dispatch: any) => {
   return {
     sidebarActions: bindActionCreators(sidebarActions, dispatch),
+    globalActions: bindActionCreators(globalActions, dispatch),
   }
 }
 
