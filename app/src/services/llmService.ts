@@ -10,28 +10,52 @@ export interface LLMMessage {
   content: string
 }
 
+export type LLMProvider = 'openai' | 'gemini'
+
 export interface LLMServiceConfig {
   apiKey?: string
   apiEndpoint?: string
   model?: string
+  provider?: LLMProvider
 }
 
 export class LLMService {
   private axiosInstance: AxiosInstance
   private model: string
+  private provider: LLMProvider
   private conversationHistory: LLMMessage[] = []
 
   constructor(config: LLMServiceConfig = {}) {
     const apiKey = config.apiKey || this.getApiKeyFromStorage()
-    const baseURL = config.apiEndpoint || 'https://api.openai.com/v1'
-    this.model = config.model || 'gpt-3.5-turbo'
+    this.provider = config.provider || this.getProviderFromStorage() || 'openai'
+    
+    // Set default endpoint and model based on provider
+    let baseURL = config.apiEndpoint
+    if (!baseURL) {
+      baseURL = this.provider === 'gemini' 
+        ? 'https://generativelanguage.googleapis.com/v1beta'
+        : 'https://api.openai.com/v1'
+    }
+    
+    this.model = config.model || (this.provider === 'gemini' ? 'gemini-1.5-flash-latest' : 'gpt-3.5-turbo')
+
+    // Configure headers based on provider
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    }
+    
+    if (apiKey) {
+      if (this.provider === 'gemini') {
+        // Gemini uses API key as query parameter, not header
+        // Will be added to URL in sendMessage
+      } else {
+        headers.Authorization = `Bearer ${apiKey}`
+      }
+    }
 
     this.axiosInstance = axios.create({
       baseURL,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(apiKey && { Authorization: `Bearer ${apiKey}` }),
-      },
+      headers,
       timeout: 30000,
     })
 
@@ -57,12 +81,29 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
     return undefined
   }
 
+  private getProviderFromStorage(): LLMProvider | undefined {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const provider = window.localStorage.getItem('llm_provider')
+      return provider === 'gemini' || provider === 'openai' ? provider : undefined
+    }
+    return undefined
+  }
+
   /**
    * Save API key to local storage
    */
   public saveApiKey(apiKey: string): void {
     if (typeof window !== 'undefined' && window.localStorage) {
       window.localStorage.setItem('llm_api_key', apiKey)
+    }
+  }
+
+  /**
+   * Save provider to local storage
+   */
+  public saveProvider(provider: LLMProvider): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      window.localStorage.setItem('llm_provider', provider)
     }
   }
 
@@ -83,36 +124,88 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
   }
 
   /**
-   * Generate context from topic data
+   * Get current provider
    */
-  public generateTopicContext(topic: { path?: () => string; message?: any; messages?: number; childTopicCount?: () => number; type?: string }): string {
+  public getProvider(): LLMProvider {
+    return this.provider
+  }
+
+  /**
+   * Generate context from topic data including neighboring topics
+   */
+  public generateTopicContext(topic: { 
+    path?: () => string
+    message?: any
+    messages?: number
+    childTopicCount?: () => number
+    type?: string
+    parent?: any
+    edgeCollection?: any
+  }): string {
     const context = []
+    const maxContextTokens = 1000 // Limit context size
     
     if (topic.path) {
       context.push(`Topic Path: ${topic.path()}`)
     }
     
-    if (topic.message) {
-      context.push(`\nLatest Message:`)
-      context.push(`- Timestamp: ${topic.message.received}`)
-      context.push(`- QoS: ${topic.message.qos}`)
-      context.push(`- Retained: ${topic.message.retain}`)
+    // Add current value
+    if (topic.message?.payload) {
+      const [value] = topic.message.payload.format(topic.type)
+      if (value !== null && value !== undefined) {
+        context.push(`Value: ${value}`)
+      }
       
-      if (topic.message.payload) {
-        const [value] = topic.message.payload.format(topic.type)
-        if (value !== null && value !== undefined) {
-          context.push(`- Value: ${value}`)
+      // Add retained status if true
+      if (topic.message.retain) {
+        context.push(`Status: Retained`)
+      }
+    }
+    
+    // Add neighboring topics (siblings and children)
+    const neighbors = []
+    
+    // Get siblings from parent
+    if (topic.parent && topic.parent.edgeCollection) {
+      const siblings = topic.parent.edgeCollection.edges || []
+      for (const edge of siblings.slice(0, 5)) { // Limit to 5 siblings
+        if (edge.name && edge.node && edge.node.message?.payload) {
+          const [siblingValue] = edge.node.message.payload.format(edge.node.type)
+          if (siblingValue !== null && siblingValue !== undefined) {
+            neighbors.push(`  ${edge.name}: ${siblingValue}`)
+          }
         }
       }
     }
     
+    // Get children
+    if (topic.edgeCollection?.edges) {
+      const children = topic.edgeCollection.edges || []
+      for (const edge of children.slice(0, 5)) { // Limit to 5 children
+        if (edge.name && edge.node && edge.node.message?.payload) {
+          const [childValue] = edge.node.message.payload.format(edge.node.type)
+          if (childValue !== null && childValue !== undefined) {
+            neighbors.push(`  ${edge.name}: ${childValue}`)
+          }
+        }
+      }
+    }
+    
+    if (neighbors.length > 0) {
+      context.push(`\nRelated Topics:`)
+      context.push(neighbors.join('\n'))
+    }
+    
+    // Add metadata
     if (topic.messages) {
       context.push(`\nMessage Count: ${topic.messages}`)
     }
     
     if (topic.childTopicCount) {
       const childCount = topic.childTopicCount()
-      context.push(`Subtopics: ${childCount}`)
+      if (childCount > 0) {
+        context.push(`Subtopics: ${childCount}`)
+      }
     }
     
     return context.join('\n')
@@ -135,19 +228,55 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
         content: messageContent,
       })
 
-      // Call the API
-      const response = await this.axiosInstance.post('/chat/completions', {
-        model: this.model,
-        messages: this.conversationHistory,
-        temperature: 0.7,
-        max_tokens: 500,
-      })
+      let assistantMessage: string
 
-      if (!response.data.choices || response.data.choices.length === 0) {
-        throw new Error('No response from AI assistant')
+      if (this.provider === 'gemini') {
+        // Gemini API format
+        const apiKey = this.getApiKeyFromStorage()
+        const contents = this.conversationHistory
+          .filter(msg => msg.role !== 'system')
+          .map(msg => ({
+            role: msg.role === 'assistant' ? 'model' : 'user',
+            parts: [{ text: msg.content }],
+          }))
+
+        // Prepend system message as first user message for Gemini
+        const systemMsg = this.conversationHistory.find(msg => msg.role === 'system')
+        if (systemMsg && contents.length > 0) {
+          contents[0].parts.unshift({ text: systemMsg.content })
+        }
+
+        const response = await this.axiosInstance.post(
+          `/models/${this.model}:generateContent?key=${apiKey}`,
+          {
+            contents,
+            generationConfig: {
+              temperature: 0.7,
+              maxOutputTokens: 500,
+            },
+          }
+        )
+
+        if (!response.data.candidates || response.data.candidates.length === 0) {
+          throw new Error('No response from AI assistant')
+        }
+
+        assistantMessage = response.data.candidates[0].content.parts[0].text
+      } else {
+        // OpenAI API format
+        const response = await this.axiosInstance.post('/chat/completions', {
+          model: this.model,
+          messages: this.conversationHistory,
+          temperature: 0.7,
+          max_tokens: 500,
+        })
+
+        if (!response.data.choices || response.data.choices.length === 0) {
+          throw new Error('No response from AI assistant')
+        }
+
+        assistantMessage = response.data.choices[0].message.content
       }
-
-      const assistantMessage = response.data.choices[0].message.content
       
       // Add assistant response to history
       this.conversationHistory.push({
@@ -167,9 +296,9 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
     } catch (error: unknown) {
       console.error('LLM Service Error:', error)
       
-      const err = error as { response?: { status?: number }; code?: string; message?: string }
+      const err = error as { response?: { status?: number; data?: any }; code?: string; message?: string }
       
-      if (err.response?.status === 401) {
+      if (err.response?.status === 401 || err.response?.status === 403) {
         throw new Error('Invalid API key. Please check your configuration.')
       } else if (err.response?.status === 429) {
         throw new Error('Rate limit exceeded. Please try again later.')

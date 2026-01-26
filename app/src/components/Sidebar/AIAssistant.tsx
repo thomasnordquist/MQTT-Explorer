@@ -19,6 +19,10 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
@@ -28,7 +32,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import SettingsIcon from '@mui/icons-material/Settings'
 import ClearIcon from '@mui/icons-material/Clear'
-import { getLLMService, LLMMessage } from '../../services/llmService'
+import { getLLMService, LLMMessage, LLMProvider } from '../../services/llmService'
 
 interface Props {
   node?: any
@@ -50,8 +54,14 @@ function AIAssistant(props: Props) {
   const [error, setError] = useState<string | null>(null)
   const [configDialogOpen, setConfigDialogOpen] = useState(false)
   const [apiKey, setApiKey] = useState('')
+  const [provider, setProvider] = useState<LLMProvider>('openai')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const llmService = getLLMService()
+
+  useEffect(() => {
+    // Initialize provider from service
+    setProvider(llmService.getProvider())
+  }, [])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -68,7 +78,7 @@ function AIAssistant(props: Props) {
 
       // Check if API key is configured
       if (!llmService.hasApiKey()) {
-        setError('Please configure your OpenAI API key first')
+        setError(`Please configure your ${provider === 'gemini' ? 'Gemini' : 'OpenAI'} API key first`)
         setConfigDialogOpen(true)
         return
       }
@@ -129,9 +139,12 @@ function AIAssistant(props: Props) {
   const handleSaveApiKey = () => {
     if (apiKey.trim()) {
       llmService.saveApiKey(apiKey.trim())
+      llmService.saveProvider(provider)
       setConfigDialogOpen(false)
       setApiKey('')
       setError(null)
+      // Reset the service to use new config
+      window.location.reload()
     }
   }
 
@@ -265,20 +278,44 @@ function AIAssistant(props: Props) {
       <Dialog open={configDialogOpen} onClose={() => setConfigDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>AI Assistant Configuration</DialogTitle>
         <DialogContent>
-          <Typography variant="body2" color="textSecondary" paragraph>
-            To use the AI assistant, you need to provide an OpenAI API key. You can get one from{' '}
-            <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer">
-              OpenAI's platform
-            </a>
-            .
+          <FormControl fullWidth margin="normal">
+            <InputLabel>AI Provider</InputLabel>
+            <Select
+              value={provider}
+              label="AI Provider"
+              onChange={(e) => setProvider(e.target.value as LLMProvider)}
+            >
+              <MenuItem value="openai">OpenAI (GPT-3.5 Turbo)</MenuItem>
+              <MenuItem value="gemini">Google Gemini (Flash)</MenuItem>
+            </Select>
+          </FormControl>
+
+          <Typography variant="body2" color="textSecondary" paragraph sx={{ mt: 2 }}>
+            {provider === 'openai' ? (
+              <>
+                Get your OpenAI API key from{' '}
+                <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer">
+                  OpenAI's platform
+                </a>
+                .
+              </>
+            ) : (
+              <>
+                Get your Gemini API key from{' '}
+                <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">
+                  Google AI Studio
+                </a>
+                .
+              </>
+            )}
           </Typography>
           <TextField
             fullWidth
-            label="OpenAI API Key"
+            label={`${provider === 'openai' ? 'OpenAI' : 'Gemini'} API Key`}
             type="password"
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
-            placeholder="sk-..."
+            placeholder={provider === 'openai' ? 'sk-...' : 'AIza...'}
             margin="normal"
             helperText="Your API key is stored locally and never sent to our servers"
           />
