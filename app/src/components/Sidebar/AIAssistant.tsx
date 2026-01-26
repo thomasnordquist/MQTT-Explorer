@@ -99,8 +99,9 @@ function AIAssistant(props: Props) {
           timestamp: new Date(),
         }
         setMessages((prev) => [...prev, assistantMessage])
-      } catch (err: any) {
-        setError(err.message || 'Failed to get response')
+      } catch (err: unknown) {
+        const error = err as { message?: string }
+        setError(error.message || 'Failed to get response')
       } finally {
         setLoading(false)
       }

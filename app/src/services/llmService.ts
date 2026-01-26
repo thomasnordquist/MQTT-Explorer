@@ -23,11 +23,11 @@ export class LLMService {
 
   constructor(config: LLMServiceConfig = {}) {
     const apiKey = config.apiKey || this.getApiKeyFromStorage()
-    const endpoint = config.apiEndpoint || 'https://api.openai.com/v1/chat/completions'
+    const baseURL = config.apiEndpoint || 'https://api.openai.com/v1'
     this.model = config.model || 'gpt-3.5-turbo'
 
     this.axiosInstance = axios.create({
-      baseURL: endpoint,
+      baseURL,
       headers: {
         'Content-Type': 'application/json',
         ...(apiKey && { Authorization: `Bearer ${apiKey}` }),
@@ -85,7 +85,7 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
   /**
    * Generate context from topic data
    */
-  public generateTopicContext(topic: any): string {
+  public generateTopicContext(topic: { path?: () => string; message?: any; messages?: number; childTopicCount?: () => number; type?: string }): string {
     const context = []
     
     if (topic.path) {
@@ -136,12 +136,16 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
       })
 
       // Call the API
-      const response = await this.axiosInstance.post('', {
+      const response = await this.axiosInstance.post('/chat/completions', {
         model: this.model,
         messages: this.conversationHistory,
         temperature: 0.7,
         max_tokens: 500,
       })
+
+      if (!response.data.choices || response.data.choices.length === 0) {
+        throw new Error('No response from AI assistant')
+      }
 
       const assistantMessage = response.data.choices[0].message.content
       
@@ -160,17 +164,19 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
       }
 
       return assistantMessage
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('LLM Service Error:', error)
       
-      if (error.response?.status === 401) {
+      const err = error as { response?: { status?: number }; code?: string; message?: string }
+      
+      if (err.response?.status === 401) {
         throw new Error('Invalid API key. Please check your configuration.')
-      } else if (error.response?.status === 429) {
+      } else if (err.response?.status === 429) {
         throw new Error('Rate limit exceeded. Please try again later.')
-      } else if (error.code === 'ECONNABORTED') {
+      } else if (err.code === 'ECONNABORTED') {
         throw new Error('Request timeout. Please try again.')
       } else {
-        throw new Error('Failed to get response from AI assistant.')
+        throw new Error(err.message || 'Failed to get response from AI assistant.')
       }
     }
   }
@@ -185,7 +191,7 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
   /**
    * Get quick suggestions based on topic
    */
-  public getQuickSuggestions(topic: any): string[] {
+  public getQuickSuggestions(topic: { message?: { payload?: any }; childTopicCount?: () => number; messages?: number }): string[] {
     const suggestions = []
     
     if (topic.message?.payload) {
