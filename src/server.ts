@@ -20,6 +20,8 @@ const CREDENTIALS_PATH = path.join(process.cwd(), 'data', 'credentials.json')
 const MAX_FILE_SIZE = 16 * 1024 * 1024 // 16MB limit for file uploads
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['*']
 const isProduction = process.env.NODE_ENV === 'production'
+// Enable upgrade-insecure-requests only when behind HTTPS reverse proxy
+const enableUpgradeInsecure = process.env.ENABLE_UPGRADE_INSECURE_REQUESTS === 'true'
 
 /**
  * Validates and sanitizes file paths to prevent path traversal attacks
@@ -83,7 +85,7 @@ async function startServer() {
           styleSrc: ["'self'", "'unsafe-inline'"], // Required for Material-UI
           connectSrc: ["'self'", 'ws:', 'wss:'], // Allow WebSocket connections
           imgSrc: ["'self'", 'data:', 'blob:'],
-          upgradeInsecureRequests: isProduction ? [] : null, // Only upgrade in production with HTTPS
+          upgradeInsecureRequests: enableUpgradeInsecure ? [] : null, // Only enable when behind HTTPS reverse proxy
         },
       },
       hsts: isProduction
@@ -93,6 +95,7 @@ async function startServer() {
             preload: true,
           }
         : false,
+      frameguard: false, // Allow iframe embedding
       // Disable cross-origin policies that cause blank pages when accessing via IP vs localhost
       // These headers can block resources and cause rendering issues on HTTP-only deployments
       crossOriginEmbedderPolicy: false, // Can block resources without proper CORP headers

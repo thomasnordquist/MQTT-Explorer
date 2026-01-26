@@ -68,6 +68,7 @@ docker-compose up -d
 | `PORT` | No | `3000` | Port the server listens on |
 | `ALLOWED_ORIGINS` | No | `*` | Comma-separated list of allowed CORS origins |
 | `NODE_ENV` | No | - | Set to `production` for production deployments |
+| `ENABLE_UPGRADE_INSECURE_REQUESTS` | No | `false` | Set to `true` to enable CSP upgrade-insecure-requests directive. **Only use when deployed behind an HTTPS reverse proxy (nginx, Traefik, etc.) with valid SSL certificates.** This upgrades all HTTP requests to HTTPS and will break direct HTTP access. |
 
 ### Authentication Modes
 
@@ -162,6 +163,18 @@ server {
     }
 }
 ```
+
+**With ENABLE_UPGRADE_INSECURE_REQUESTS:**
+```bash
+docker run -d \
+  -p 3000:3000 \
+  -e MQTT_EXPLORER_USERNAME=admin \
+  -e MQTT_EXPLORER_PASSWORD=secure_password \
+  -e ENABLE_UPGRADE_INSECURE_REQUESTS=true \
+  ghcr.io/thomasnordquist/mqtt-explorer:latest
+```
+
+⚠️ **IMPORTANT**: Only set `ENABLE_UPGRADE_INSECURE_REQUESTS=true` when the application is accessed exclusively through an HTTPS reverse proxy. This enables the Content Security Policy `upgrade-insecure-requests` directive which forces all HTTP requests to be upgraded to HTTPS. Direct HTTP access will fail with SSL errors if this is enabled without a reverse proxy.
 
 ## Troubleshooting
 
