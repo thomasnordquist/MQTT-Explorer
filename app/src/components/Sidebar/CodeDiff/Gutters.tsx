@@ -22,8 +22,9 @@ const style = (theme: Theme) => {
     verticalAlign: 'top',
     width: '12px',
     height: '12px',
-    marginTop: '2px',
+    marginTop: '0px',
     borderRadius: '50%',
+    fontSize: '12px',
   }
 
   return {
