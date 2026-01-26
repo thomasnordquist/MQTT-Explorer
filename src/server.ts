@@ -83,6 +83,7 @@ async function startServer() {
           styleSrc: ["'self'", "'unsafe-inline'"], // Required for Material-UI
           connectSrc: ["'self'", 'ws:', 'wss:'], // Allow WebSocket connections
           imgSrc: ["'self'", 'data:', 'blob:'],
+          upgradeInsecureRequests: isProduction ? [] : null, // Only upgrade in production with HTTPS
         },
       },
       hsts: isProduction
