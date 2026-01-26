@@ -79,6 +79,12 @@ class MobileConnectionSelector extends React.PureComponent<Props, {}> {
           }}
         >
           {connections.map(conn => {
+            // Show "(Connected)" only when:
+            // 1. This connection is selected in the UI (currentConnectionId)
+            // 2. There's an active MQTT connection (isConnected)
+            // 3. The active connection matches this connection (currentActiveConnectionId)
+            // This prevents showing "Connected" when a connection is selected but not connected,
+            // or when switching between connections during a disconnect/reconnect cycle.
             const showConnectedStatus =
               conn.id === currentConnectionId && isConnected && conn.id === currentActiveConnectionId
             const displayName = this.getConnectionDisplayName(conn)
@@ -128,4 +134,7 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
+// Using 'as any' here is consistent with other Material-UI + Redux connected components
+// in this codebase (see ConnectionSettings.tsx, ProfileList/index.tsx, ChartPanel/index.tsx)
+// to work around complex TypeScript type inference issues with the withStyles + connect HOCs
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(MobileConnectionSelector) as any)
