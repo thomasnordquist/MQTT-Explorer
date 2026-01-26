@@ -94,17 +94,17 @@ describe('AboutDialog License Compliance', () => {
  * These tests verify that the About dialog is accessible and functional.
  */
 describe('AboutDialog Accessibility', () => {
-  const sidebarPath = path.join(__dirname, 'Sidebar', 'Sidebar.tsx')
+  const detailsTabPath = path.join(__dirname, 'Sidebar', 'DetailsTab.tsx')
   const appPath = path.join(__dirname, 'App.tsx')
   
-  it('should be accessible from the Sidebar component', () => {
-    const sidebarContent = fs.readFileSync(sidebarPath, 'utf-8')
+  it('should be accessible from the DetailsTab component', () => {
+    const detailsTabContent = fs.readFileSync(detailsTabPath, 'utf-8')
     
-    // Verify the About panel exists in Sidebar
-    expect(sidebarContent).to.include('About')
+    // Verify the About button exists in DetailsTab
+    expect(detailsTabContent).to.include('About')
     
     // Verify it triggers the toggle action
-    expect(sidebarContent).to.include('toggleAboutDialogVisibility')
+    expect(detailsTabContent).to.include('toggleAboutDialogVisibility')
   })
 
   it('should be integrated in the App component', () => {
@@ -117,13 +117,13 @@ describe('AboutDialog Accessibility', () => {
     expect(appContent).to.include('aboutDialogVisible')
   })
 
-  it('should have About button with Info icon in Sidebar', () => {
-    const sidebarContent = fs.readFileSync(sidebarPath, 'utf-8')
+  it('should have About button with Info icon in DetailsTab', () => {
+    const detailsTabContent = fs.readFileSync(detailsTabPath, 'utf-8')
     
     // Verify the button text
-    expect(sidebarContent).to.include('About MQTT Explorer')
+    expect(detailsTabContent).to.include('About MQTT Explorer')
     
     // Verify Info icon is used
-    expect(sidebarContent).to.match(/import.*Info.*from.*@mui\/icons-material/)
+    expect(detailsTabContent).to.match(/import.*Info.*from.*@mui\/icons-material/)
   })
 })
