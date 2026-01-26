@@ -22,8 +22,8 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGIN
 const isProduction = process.env.NODE_ENV === 'production'
 // Enable upgrade-insecure-requests only when behind HTTPS reverse proxy
 const enableUpgradeInsecure = process.env.UPGRADE_INSECURE_REQUESTS === 'true'
-// Enable X-Frame-Options to prevent iframe embedding (disabled by default)
-const enableFrameguard = process.env.ENABLE_FRAMEGUARD === 'true'
+// Enable X-Frame-Options header to prevent iframe embedding (disabled by default)
+const enableXFrameOptions = process.env.X_FRAME_OPTIONS === 'true'
 
 /**
  * Validates and sanitizes file paths to prevent path traversal attacks
@@ -97,7 +97,7 @@ async function startServer() {
             preload: true,
           }
         : false,
-      frameguard: enableFrameguard ? { action: 'sameorigin' } : false, // Disabled by default to allow iframe embedding
+      frameguard: enableXFrameOptions ? { action: 'sameorigin' } : false, // Disabled by default to allow iframe embedding
       // Disable cross-origin policies that cause blank pages when accessing via IP vs localhost
       // These headers can block resources and cause rendering issues on HTTP-only deployments
       crossOriginEmbedderPolicy: false, // Can block resources without proper CORP headers
