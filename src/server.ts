@@ -21,7 +21,9 @@ const MAX_FILE_SIZE = 16 * 1024 * 1024 // 16MB limit for file uploads
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['*']
 const isProduction = process.env.NODE_ENV === 'production'
 // Enable upgrade-insecure-requests only when behind HTTPS reverse proxy
-const enableUpgradeInsecure = process.env.ENABLE_UPGRADE_INSECURE_REQUESTS === 'true'
+const enableUpgradeInsecure = process.env.UPGRADE_INSECURE_REQUESTS === 'true'
+// Enable X-Frame-Options to prevent iframe embedding (disabled by default)
+const enableFrameguard = process.env.ENABLE_FRAMEGUARD === 'true'
 
 /**
  * Validates and sanitizes file paths to prevent path traversal attacks
@@ -95,7 +97,7 @@ async function startServer() {
             preload: true,
           }
         : false,
-      frameguard: false, // Allow iframe embedding
+      frameguard: enableFrameguard ? { action: 'sameorigin' } : false, // Disabled by default to allow iframe embedding
       // Disable cross-origin policies that cause blank pages when accessing via IP vs localhost
       // These headers can block resources and cause rendering issues on HTTP-only deployments
       crossOriginEmbedderPolicy: false, // Can block resources without proper CORP headers
