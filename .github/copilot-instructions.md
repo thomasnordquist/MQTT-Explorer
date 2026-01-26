@@ -20,10 +20,117 @@
 - `yarn test:mcp` - Model Context Protocol tests
 - `yarn test:all` - All tests (unit + demo-video)
 - `./scripts/runBrowserTests.sh` - Browser mode UI tests (requires mosquitto service)
+- `./scripts/uiTests.sh` - Demo video tests with Electron (requires Xvfb, mosquitto)
 
 **CI jobs:** `test`, `ui-tests`, `demo-video`, `test-browser`, `browser-ui-tests`
 
-**Important:** Browser UI tests require MQTT broker. In CI, GitHub Actions health checks ensure the mosquitto service is ready before tests run.
+**Important:** 
+- Browser UI tests require MQTT broker. In CI, GitHub Actions health checks ensure the mosquitto service is ready before tests run.
+- Demo video tests use the same test scenarios as browser tests - if browser tests pass, demo video tests should pass too (they use identical selectors in `src/spec/scenarios/`)
+
+## Debugging Demo Video / UI Tests
+
+When demo video tests fail in CI but you need to debug locally:
+
+**Prerequisites:**
+```bash
+# Install required packages
+sudo apt-get install xvfb mosquitto tmux ffmpeg
+
+# Ensure mosquitto is stopped (script will start its own instance)
+sudo systemctl stop mosquitto
+```
+
+**Steps to debug:**
+1. Build the project: `yarn build`
+2. Run the demo video tests: `ELECTRON_DISABLE_SANDBOX=1 ./scripts/uiTests.sh`
+3. If tests fail, check the error messages for:
+   - Missing `data-test` or `data-test-type` attributes
+   - Elements not visible (hidden, outside viewport, or covered by overlays)
+   - Click interception (tooltips, dialogs blocking clicks)
+   - XPath selector issues (check the data-test value format)
+
+**Common issues:**
+- **"locator not visible"**: Element exists but is hidden or outside viewport
+- **"locator.click intercepted"**: Another element (tooltip, dialog) is covering the click target
+- **Empty `data-test` attribute**: For simple numeric values, ensure you're using the topic name, not `props.literal.path` (which is empty for non-JSON values)
+- **"Process failed to launch"**: Electron can't start - ensure DISPLAY is set and Xvfb is running
+
+**Environment-specific notes:**
+- Demo video tests use Electron with Xvfb (virtual display)
+- Browser tests use Chromium without Electron (easier to debug locally)
+- CI environment has proper Electron setup - if local tests are flaky, trust CI results
+- Both test types use the same scenario files in `src/spec/scenarios/`
+
+**Material-UI Tooltip considerations:**
+- Tooltips wrap their children and create overlay divs
+- Test attributes (`data-test-type`, `data-test`) must be on the inner clickable element that's passed as a child to the Tooltip
+- Mouse event handlers (onMouseEnter, onMouseLeave, ref) go on outer wrapper
+- onClick handler and test attributes go on the span inside the Tooltip
+- The clickable child inside the Tooltip is what Playwright should target
+
+**Example:**
+```tsx
+// ❌ WRONG - attributes on outer wrapper, Tooltip wraps and hides them
+<Tooltip title="...">
+  <span onClick={...} data-test-type="Button" data-test="example">
+    <Icon />
+  </span>
+</Tooltip>
+
+// ✅ CORRECT - attributes on the actual clickable child inside Tooltip
+<span ref={ref} onMouseEnter={...} onMouseLeave={...}>
+  <Tooltip title="...">
+    <span onClick={...} data-test-type="Button" data-test="example">
+      <Icon />
+    </span>
+  </Tooltip>
+</span>
+```
+
+**data-test value format:**
+- ShowChart: Use last segment of topic path (e.g., "heater" for "kitchen/coffee_maker/heater")
+- ChartSettings: Use full topic + dotPath (e.g., "kitchen/coffee_maker/heater-" with trailing dash when dotPath is empty)
+- Test XPaths use `contains(@data-test, "substring")` so partial matches work
+
+## Running Browser Tests Locally
+
+**Prerequisites:**
+```bash
+# Install mosquitto (if not already installed)
+sudo apt-get install mosquitto
+
+# Start mosquitto service
+sudo systemctl start mosquitto
+sudo systemctl status mosquitto
+```
+
+**Run browser tests:**
+```bash
+# Build server and run tests
+yarn build:server
+./scripts/runBrowserTests.sh
+```
+
+The script automatically:
+- Starts a local mosquitto broker
+- Builds the TypeScript code
+- Starts the browser mode server on port 3000
+- Runs Playwright tests in browser mode
+- Cleans up processes on exit
+
+**Test environment variables:**
+- `MQTT_EXPLORER_USERNAME` - Browser auth username (default: test)
+- `MQTT_EXPLORER_PASSWORD` - Browser auth password (default: test123)
+- `PORT` - Server port (default: 3000)
+- `TESTS_MQTT_BROKER_HOST` - MQTT broker host (default: 127.0.0.1)
+- `TESTS_MQTT_BROKER_PORT` - MQTT broker port (default: 1883)
+- `USE_MOBILE_VIEWPORT` - Enable mobile viewport (default: false)
+
+**Common test failures after UI changes:**
+- Update test selectors in `src/spec/ui-tests.spec.ts` if UI structure changes
+- Use `data-testid` attributes for stable test selectors
+- Avoid using role + name selectors for dynamic content (use direct testid selectors instead)
 
 ## Browser Mode
 

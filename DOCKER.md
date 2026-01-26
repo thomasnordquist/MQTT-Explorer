@@ -68,6 +68,8 @@ docker-compose up -d
 | `PORT` | No | `3000` | Port the server listens on |
 | `ALLOWED_ORIGINS` | No | `*` | Comma-separated list of allowed CORS origins |
 | `NODE_ENV` | No | - | Set to `production` for production deployments |
+| `UPGRADE_INSECURE_REQUESTS` | No | `false` | Set to `true` to enable CSP upgrade-insecure-requests directive. **Only use when deployed behind an HTTPS reverse proxy (nginx, Traefik, etc.) with valid SSL certificates.** This upgrades all HTTP requests to HTTPS and will break direct HTTP access. |
+| `X_FRAME_OPTIONS` | No | `false` | Set to `true` to enable X-Frame-Options: SAMEORIGIN header to prevent clickjacking. **Disables iframe embedding when enabled.** |
 
 ### Authentication Modes
 

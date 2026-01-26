@@ -36,6 +36,8 @@ interface Props {
   classes: any
   connections: Array<{ id: string; name?: string; host?: string }>
   currentConnectionId?: string
+  isConnected: boolean
+  currentActiveConnectionId?: string
   actions: typeof connectionManagerActions
 }
 
@@ -54,7 +56,7 @@ class MobileConnectionSelector extends React.PureComponent<Props, {}> {
   }
 
   public render() {
-    const { classes, connections, currentConnectionId } = this.props
+    const { classes, connections, currentConnectionId, isConnected, currentActiveConnectionId } = this.props
 
     if (!connections || connections.length === 0) {
       return null
@@ -77,12 +79,19 @@ class MobileConnectionSelector extends React.PureComponent<Props, {}> {
           }}
         >
           {connections.map(conn => {
-            const isConnected = conn.id === currentConnectionId
+            // Show "(Connected)" only when:
+            // 1. This connection is selected in the UI (currentConnectionId)
+            // 2. There's an active MQTT connection (isConnected)
+            // 3. The active connection matches this connection (currentActiveConnectionId)
+            // This prevents showing "Connected" when a connection is selected but not connected,
+            // or when switching between connections during a disconnect/reconnect cycle.
+            const showConnectedStatus =
+              conn.id === currentConnectionId && isConnected && conn.id === currentActiveConnectionId
             const displayName = this.getConnectionDisplayName(conn)
             return (
               <MenuItem key={conn.id} value={conn.id}>
                 {displayName}
-                {isConnected && ' (Connected)'}
+                {showConnectedStatus && ' (Connected)'}
               </MenuItem>
             )
           })}
@@ -102,17 +111,20 @@ class MobileConnectionSelector extends React.PureComponent<Props, {}> {
 
 const mapStateToProps = (state: AppState) => {
   const connectionManager = state.connectionManager
-  const connections = connectionManager && connectionManager.connections
-    ? Object.values(connectionManager.connections).map(conn => ({
-        id: conn.id,
-        name: conn.name,
-        host: conn.host,
-      }))
-    : []
+  const connections =
+    connectionManager && connectionManager.connections
+      ? Object.values(connectionManager.connections).map(conn => ({
+          id: conn.id,
+          name: conn.name,
+          host: conn.host,
+        }))
+      : []
 
   return {
     connections,
     currentConnectionId: state.connectionManager?.selected,
+    isConnected: state.connection.connected,
+    currentActiveConnectionId: state.connection.connectionId,
   }
 }
 
@@ -122,4 +134,7 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(MobileConnectionSelector))
+// Using 'as any' here is consistent with other Material-UI + Redux connected components
+// in this codebase (see ConnectionSettings.tsx, ProfileList/index.tsx, ChartPanel/index.tsx)
+// to work around complex TypeScript type inference issues with the withStyles + connect HOCs
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(MobileConnectionSelector) as any)

@@ -33,7 +33,7 @@
     "copy-text-to-clipboard": "^3.2.0",
     "d3": "^7.9.0",
     "d3-shape": "^3.2.0",
-    "diff": "^7.0.0",
+    "diff": "^8.0.3",
     "dot-prop": "^5.3.0",
     "events": "^3.3.0",
     "get-value": "^3.0.1",

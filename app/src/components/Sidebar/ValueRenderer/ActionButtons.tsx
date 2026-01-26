@@ -36,15 +36,17 @@ function ActionButtons(props: {
     >
       <ToggleButton className={props.classes.toggleButton} value="diff" id="valueRendererDisplayMode-diff">
         <Tooltip title="Show difference between the current and the last message">
-          <span>
+          <span className={props.classes.buttonContent}>
             <Code className={props.classes.toggleButtonIcon} />
+            <span className={props.classes.buttonText}>Diff</span>
           </span>
         </Tooltip>
       </ToggleButton>
       <ToggleButton className={props.classes.toggleButton} value="raw" id="valueRendererDisplayMode-raw">
         <Tooltip title="Raw / formatted JSON / formatted sparkplugb protojson">
-          <span>
+          <span className={props.classes.buttonContent}>
             <Reorder className={props.classes.toggleButtonIcon} />
+            <span className={props.classes.buttonText}>Raw</span>
           </span>
         </Tooltip>
       </ToggleButton>
@@ -55,9 +57,20 @@ function ActionButtons(props: {
 const styles = (theme: Theme) => ({
   toggleButton: {
     height: '36px',
+    padding: theme.spacing(0.5, 1.5),
   },
   toggleButtonIcon: {
     verticalAlign: 'middle',
+    fontSize: '1.25rem',
+  },
+  buttonContent: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(0.5),
+  },
+  buttonText: {
+    fontSize: '0.875rem',
+    textTransform: 'none' as 'none',
   },
 })
 
