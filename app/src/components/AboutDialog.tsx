@@ -28,11 +28,18 @@ interface AboutDialogProps {
  * This component displays application information including version, author, and license.
  * 
  * LICENSE NOTICE (CC-BY-ND-4.0):
- * This component must retain the following attribution:
+ * This component is licensed under Creative Commons Attribution-NoDerivatives 4.0 International.
+ * 
+ * REQUIRED ATTRIBUTION:
  * - Author: Thomas Nordquist
  * - License: CC-BY-ND-4.0
- * Removing or modifying this attribution violates the Creative Commons 
- * Attribution-NoDerivatives 4.0 International License.
+ * 
+ * RESTRICTIONS:
+ * - BY (Attribution): You must give appropriate credit to the author
+ * - ND (NoDerivatives): You may not create derivative works without permission
+ * 
+ * Removing or modifying this attribution violates the license terms.
+ * For full license text: https://creativecommons.org/licenses/by-nd/4.0/legalcode
  */
 export function AboutDialog(props: AboutDialogProps) {
   const [version, setVersion] = React.useState<string>(FALLBACK_VERSION)

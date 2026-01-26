@@ -8,6 +8,11 @@ import * as path from 'path'
  * 
  * These tests verify that the About dialog properly displays required
  * attribution information as mandated by the CC-BY-ND-4.0 license.
+ * 
+ * CC-BY-ND-4.0 (Creative Commons Attribution-NoDerivatives 4.0 International):
+ * - BY (Attribution): Must credit the original author (Thomas Nordquist)
+ * - ND (NoDerivatives): Cannot create derivative works without permission
+ * - Requires: Author name, license notice, and LICENSE NOTICE comment
  */
 describe('AboutDialog License Compliance', () => {
   const aboutDialogPath = path.join(__dirname, 'AboutDialog.tsx')
@@ -40,14 +45,14 @@ describe('AboutDialog License Compliance', () => {
 
   describe('License Violation Detection', () => {
     it('removing author attribution violates CC-BY-ND-4.0 license', () => {
-      // Test that the author name "Thomas Nordquist" is present
-      // Removing it would violate the Attribution requirement of CC-BY-ND-4.0
+      // CC-BY-ND-4.0 Attribution (BY) requirement:
+      // Must credit the original author "Thomas Nordquist"
       const hasAuthor = aboutDialogContent.includes('Thomas Nordquist')
       
       if (!hasAuthor) {
         throw new Error(
           'LICENSE VIOLATION: Author attribution "Thomas Nordquist" is missing. ' +
-          'This violates the CC-BY-ND-4.0 license Attribution requirement. ' +
+          'This violates the CC-BY-ND-4.0 Attribution (BY) requirement. ' +
           'The author must be properly credited in the About dialog.'
         )
       }
@@ -56,15 +61,14 @@ describe('AboutDialog License Compliance', () => {
     })
 
     it('removing license notice violates CC-BY-ND-4.0 license', () => {
-      // Test that the license "CC-BY-ND-4.0" is displayed
-      // Removing it would violate the license requirements
+      // CC-BY-ND-4.0 requires the license identifier to be displayed
       const hasLicense = aboutDialogContent.includes('CC-BY-ND-4.0')
       
       if (!hasLicense) {
         throw new Error(
           'LICENSE VIOLATION: License notice "CC-BY-ND-4.0" is missing. ' +
-          'This violates the CC-BY-ND-4.0 license requirements. ' +
-          'The license must be displayed in the About dialog.'
+          'This violates CC-BY-ND-4.0 license notice requirements. ' +
+          'The license identifier must be displayed in the About dialog.'
         )
       }
       
@@ -72,14 +76,14 @@ describe('AboutDialog License Compliance', () => {
     })
 
     it('removing LICENSE NOTICE comment violates CC-BY-ND-4.0 license', () => {
-      // Test that the LICENSE NOTICE comment is present in the source
+      // CC-BY-ND-4.0 requires attribution notice in source code
       const hasLicenseNotice = aboutDialogContent.includes('LICENSE NOTICE')
       
       if (!hasLicenseNotice) {
         throw new Error(
           'LICENSE VIOLATION: LICENSE NOTICE comment is missing from source code. ' +
-          'This violates the CC-BY-ND-4.0 license documentation requirements. ' +
-          'The license notice must be retained in the component source.'
+          'This violates CC-BY-ND-4.0 source code attribution requirements. ' +
+          'The LICENSE NOTICE comment must be retained in the component source.'
         )
       }
       
