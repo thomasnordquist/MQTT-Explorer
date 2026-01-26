@@ -18,6 +18,7 @@ import { useDecoder } from '../hooks/useDecoder'
 import DeleteIcon from '@mui/icons-material/Delete'
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep'
 import SimpleBreadcrumb from './SimpleBreadcrumb'
+import AIAssistant from './AIAssistant'
 
 interface Props {
   node?: q.TreeNode<any>
@@ -180,6 +181,9 @@ function DetailsTab(props: Props) {
           </Box>
         </Box>
       )}
+
+      {/* AI Assistant - Always available when a node is selected */}
+      {node && <AIAssistant node={node} />}
     </Box>
   )
 }
