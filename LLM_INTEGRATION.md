@@ -30,20 +30,56 @@ The AI Assistant can help you:
 
 ### Setting Up Your API Key
 
+#### Via UI (Browser/Electron)
+
 1. Click the ⚙️ settings icon in the AI Assistant panel
-2. Enter your OpenAI API key
-3. Click "Save"
+2. Select your preferred provider (OpenAI or Gemini)
+3. Enter your API key
+4. Click "Save"
 
 Your API key is stored locally in your browser's localStorage and is never sent to MQTT Explorer's servers.
 
-### Getting an OpenAI API Key
+#### Via Environment Variables (Server Mode)
+
+For server deployments, you can configure the AI Assistant using environment variables:
+
+```bash
+# Provider selection (optional, defaults to 'openai')
+export LLM_PROVIDER=openai  # or 'gemini'
+
+# API Keys - provider-specific or generic
+export OPENAI_API_KEY=sk-...        # For OpenAI
+export GEMINI_API_KEY=AIza...       # For Gemini
+export LLM_API_KEY=...              # Generic fallback for either provider
+
+# Token limit for neighboring topics context (optional, defaults to 100)
+export LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT=100
+```
+
+**Environment Variable Priority:**
+1. Provider-specific keys (`OPENAI_API_KEY`, `GEMINI_API_KEY`) are checked first
+2. Generic `LLM_API_KEY` is used as fallback
+3. UI-configured keys in localStorage are used if no environment variables are set
+
+### Getting API Keys
+
+#### OpenAI API Key
 
 1. Visit [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 2. Sign up or log in to your OpenAI account
 3. Create a new API key
-4. Copy the key and paste it into MQTT Explorer's configuration dialog
+4. Copy the key and paste it into MQTT Explorer's configuration dialog or set `OPENAI_API_KEY` environment variable
 
 **Note**: Using the AI Assistant will consume OpenAI API credits based on your usage. Please review OpenAI's pricing at [https://openai.com/pricing](https://openai.com/pricing).
+
+#### Google Gemini API Key
+
+1. Visit [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
+2. Sign in with your Google account
+3. Create a new API key
+4. Copy the key and paste it into MQTT Explorer's configuration dialog or set `GEMINI_API_KEY` environment variable
+
+**Note**: Google Gemini offers a generous free tier. Review Google's pricing at [https://ai.google.dev/pricing](https://ai.google.dev/pricing).
 
 ## Usage
 
@@ -72,6 +108,17 @@ The AI Assistant provides contextual suggestions based on the selected topic:
 - **"What does this value mean?"**: Understand specific measurements or states
 - **"Summarize all subtopics"**: Get an overview of nested topic hierarchies
 - **"What can I do with this topic?"**: Discover possible actions and integrations
+
+### Context Intelligence
+
+The AI Assistant automatically includes relevant context with your questions:
+
+- **Current Topic**: The selected topic path and its current value (with preview for large payloads)
+- **Neighboring Topics**: Related topics (siblings and children) with their values, limited to 100 tokens by default
+- **Topic Metadata**: Message count, subtopic count, and retained status
+- **Smart Truncation**: Large values and topic lists are intelligently truncated to stay within token limits
+
+The neighboring topics context can be adjusted using the `LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT` environment variable for server deployments.
 
 ## Privacy & Security
 

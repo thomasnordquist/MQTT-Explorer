@@ -17,6 +17,7 @@ export interface LLMServiceConfig {
   apiEndpoint?: string
   model?: string
   provider?: LLMProvider
+  neighboringTopicsTokenLimit?: number
 }
 
 export class LLMService {
@@ -24,10 +25,12 @@ export class LLMService {
   private model: string
   private provider: LLMProvider
   private conversationHistory: LLMMessage[] = []
+  private neighboringTopicsTokenLimit: number
 
   constructor(config: LLMServiceConfig = {}) {
-    const apiKey = config.apiKey || this.getApiKeyFromStorage()
-    this.provider = config.provider || this.getProviderFromStorage() || 'openai'
+    const apiKey = config.apiKey || this.getApiKeyFromStorage() || this.getApiKeyFromEnv()
+    this.provider = config.provider || this.getProviderFromStorage() || this.getProviderFromEnv() || 'openai'
+    this.neighboringTopicsTokenLimit = config.neighboringTopicsTokenLimit || this.getNeighboringTopicsTokenLimitFromEnv() || 100
     
     // Set default endpoint and model based on provider
     let baseURL = config.apiEndpoint
@@ -81,10 +84,38 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
     return undefined
   }
 
+  private getApiKeyFromEnv(): string | undefined {
+    if (typeof process !== 'undefined' && process.env) {
+      // Try provider-specific env vars first, then fall back to generic
+      if (this.provider === 'gemini') {
+        return process.env.GEMINI_API_KEY || process.env.LLM_API_KEY
+      } else {
+        return process.env.OPENAI_API_KEY || process.env.LLM_API_KEY
+      }
+    }
+    return undefined
+  }
+
   private getProviderFromStorage(): LLMProvider | undefined {
     if (typeof window !== 'undefined' && window.localStorage) {
       const provider = window.localStorage.getItem('llm_provider')
       return provider === 'gemini' || provider === 'openai' ? provider : undefined
+    }
+    return undefined
+  }
+
+  private getProviderFromEnv(): LLMProvider | undefined {
+    if (typeof process !== 'undefined' && process.env) {
+      const provider = process.env.LLM_PROVIDER
+      return provider === 'gemini' || provider === 'openai' ? provider : undefined
+    }
+    return undefined
+  }
+
+  private getNeighboringTopicsTokenLimitFromEnv(): number | undefined {
+    if (typeof process !== 'undefined' && process.env) {
+      const limit = parseInt(process.env.LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT || '', 10)
+      return isNaN(limit) ? undefined : limit
     }
     return undefined
   }
@@ -131,6 +162,33 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
   }
 
   /**
+   * Estimate tokens in text (rough approximation: ~4 characters per token)
+   */
+  private estimateTokens(text: string): number {
+    // Simple estimation: average ~4 characters per token
+    // This is a rough approximation for both OpenAI and Gemini
+    return Math.ceil(text.length / 4)
+  }
+
+  /**
+   * Truncate text to fit within token limit
+   */
+  private truncateToTokenLimit(text: string, tokenLimit: number): string {
+    const estimatedTokens = this.estimateTokens(text)
+    if (estimatedTokens <= tokenLimit) {
+      return text
+    }
+    
+    // Truncate to approximate character count
+    const maxChars = tokenLimit * 4
+    if (text.length <= maxChars) {
+      return text
+    }
+    
+    return text.substring(0, maxChars - 3) + '...'
+  }
+
+  /**
    * Generate context from topic data including neighboring topics
    */
   public generateTopicContext(topic: { 
@@ -143,17 +201,18 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
     edgeCollection?: any
   }): string {
     const context = []
-    const maxContextTokens = 1000 // Limit context size
     
     if (topic.path) {
       context.push(`Topic Path: ${topic.path()}`)
     }
     
-    // Add current value
+    // Add current value with preview
     if (topic.message?.payload) {
       const [value] = topic.message.payload.format(topic.type)
       if (value !== null && value !== undefined) {
-        context.push(`Value: ${value}`)
+        const valueStr = typeof value === 'object' ? JSON.stringify(value) : String(value)
+        const preview = this.truncateToTokenLimit(valueStr, 50) // Limit value preview to ~50 tokens
+        context.push(`Value: ${preview}`)
       }
       
       // Add retained status if true
@@ -162,37 +221,60 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
       }
     }
     
-    // Add neighboring topics (siblings and children)
-    const neighbors = []
+    // Add neighboring topics (siblings and children) up to token limit
+    const neighbors: string[] = []
+    let neighborsTokenCount = 0
+    const tokenLimit = this.neighboringTopicsTokenLimit
+    
+    // Helper function to add a neighbor if within token limit
+    const addNeighbor = (name: string, value: any, type?: string): boolean => {
+      const valueStr = typeof value === 'object' ? JSON.stringify(value) : String(value)
+      const preview = this.truncateToTokenLimit(valueStr, 20) // Limit each neighbor to ~20 tokens
+      const neighborEntry = `  ${name}: ${preview}`
+      const tokens = this.estimateTokens(neighborEntry)
+      
+      if (neighborsTokenCount + tokens <= tokenLimit) {
+        neighbors.push(neighborEntry)
+        neighborsTokenCount += tokens
+        return true
+      }
+      return false
+    }
     
     // Get siblings from parent
     if (topic.parent && topic.parent.edgeCollection) {
       const siblings = topic.parent.edgeCollection.edges || []
-      for (const edge of siblings.slice(0, 5)) { // Limit to 5 siblings
+      for (const edge of siblings) {
+        if (neighborsTokenCount >= tokenLimit) break
         if (edge.name && edge.node && edge.node.message?.payload) {
           const [siblingValue] = edge.node.message.payload.format(edge.node.type)
           if (siblingValue !== null && siblingValue !== undefined) {
-            neighbors.push(`  ${edge.name}: ${siblingValue}`)
+            if (!addNeighbor(edge.name, siblingValue, edge.node.type)) {
+              break
+            }
           }
         }
       }
     }
     
     // Get children
-    if (topic.edgeCollection?.edges) {
+    if (topic.edgeCollection?.edges && neighborsTokenCount < tokenLimit) {
       const children = topic.edgeCollection.edges || []
-      for (const edge of children.slice(0, 5)) { // Limit to 5 children
+      for (const edge of children) {
+        if (neighborsTokenCount >= tokenLimit) break
         if (edge.name && edge.node && edge.node.message?.payload) {
           const [childValue] = edge.node.message.payload.format(edge.node.type)
           if (childValue !== null && childValue !== undefined) {
-            neighbors.push(`  ${edge.name}: ${childValue}`)
+            if (!addNeighbor(edge.name, childValue, edge.node.type)) {
+              break
+            }
           }
         }
       }
     }
     
     if (neighbors.length > 0) {
-      context.push(`\nRelated Topics:`)
+      context.push(`\nRelated Topics (${neighbors.length} shown):`)
       context.push(neighbors.join('\n'))
     }
     
