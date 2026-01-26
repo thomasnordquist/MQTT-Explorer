@@ -74,6 +74,16 @@ async function startServer() {
   const app = express()
 
   // Apply security headers with helmet
+  // Note: Despite disabling 4 advanced isolation features (designed for HTTPS-only environments),
+  // Helmet still provides significant security value by setting 8+ important headers:
+  // - Content-Security-Policy (customized to prevent XSS/injection)
+  // - X-Frame-Options: SAMEORIGIN (prevents clickjacking)
+  // - X-Content-Type-Options: nosniff (prevents MIME sniffing)
+  // - Referrer-Policy: no-referrer (protects privacy)
+  // - X-DNS-Prefetch-Control: off (reduces privacy leaks)
+  // - X-Download-Options: noopen (IE protection)
+  // - X-Permitted-Cross-Domain-Policies: none (Flash/PDF protection)
+  // - Removes X-Powered-By header (reduces fingerprinting)
   app.use(
     helmet({
       contentSecurityPolicy: {
