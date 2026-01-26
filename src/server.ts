@@ -92,6 +92,12 @@ async function startServer() {
             preload: true,
           }
         : false,
+      // Disable cross-origin policies that cause blank pages when accessing via IP vs localhost
+      // These headers can block resources and cause rendering issues on HTTP-only deployments
+      crossOriginEmbedderPolicy: false, // Can block resources without proper CORP headers
+      crossOriginOpenerPolicy: false, // Can cause blank pages and window isolation issues
+      crossOriginResourcePolicy: false, // Can block cross-origin resource loading
+      originAgentCluster: false, // Causes issues when switching between localhost and IP address origins
     })
   )
 
