@@ -180,6 +180,25 @@ docker logs mqtt-explorer
 2. Check the port mapping: `docker port mqtt-explorer`
 3. Test connectivity: `curl http://localhost:3000`
 
+### Blank page when accessing via IP address
+
+If you see a blank page when accessing via `http://your-ip:3000` but `http://localhost:3000` works:
+
+1. **Clear browser cache**: The browser may have cached old security headers. Try:
+   - Hard refresh: `Ctrl+Shift+R` (Windows/Linux) or `Cmd+Shift+R` (Mac)
+   - Or use an incognito/private window
+   - Or clear site data in browser DevTools → Application → Clear storage
+
+2. **Use HTTP, not HTTPS**: Make sure you're accessing `http://` and not `https://`. The server runs HTTP-only by default.
+
+3. **Check for reverse proxies**: If you have a reverse proxy (nginx, Traefik), ensure it's configured correctly:
+   - Don't add HTTPS upgrade headers unless the proxy provides HTTPS
+   - Set `UPGRADE_INSECURE_REQUESTS=true` only when behind an HTTPS reverse proxy with valid certificates
+
+4. **Verify browser console**: Open DevTools (F12) and check for errors like:
+   - `ERR_SSL_PROTOCOL_ERROR` - You're trying to access via HTTPS on HTTP-only server
+   - `Origin-Agent-Cluster` errors - Clear browser cache/use incognito mode
+
 ### Authentication issues
 
 1. Check generated credentials in logs: `docker logs mqtt-explorer`
