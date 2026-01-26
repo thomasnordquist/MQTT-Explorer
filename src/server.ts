@@ -80,7 +80,8 @@ async function startServer() {
   // Apply security headers with helmet
   // Get Helmet's default CSP directives and remove upgrade-insecure-requests
   // This ensures the directive is never added, even in edge cases
-  const defaultCspDirectives = helmet.contentSecurityPolicy.getDefaultDirectives()
+  // Create a copy to avoid mutating Helmet's defaults
+  const defaultCspDirectives = { ...helmet.contentSecurityPolicy.getDefaultDirectives() }
   delete defaultCspDirectives['upgrade-insecure-requests']
   
   // Build custom CSP directives, overriding defaults as needed
