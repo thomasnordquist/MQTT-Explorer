@@ -20,10 +20,18 @@ interface Props {
   children?: any
 }
 
+function csvEscape(value: string): string {
+  // Normalize newlines and escape double quotes for CSV/text export
+  const normalized = value.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+  const withoutNewlines = normalized.replace(/\n/g, ' ')
+  const escapedQuotes = withoutNewlines.replace(/"/g, '""')
+  return `"${escapedQuotes}"`
+}
+
 function dowloadHistoryAsFile(props: Props) {
   var filename = "save.txt"
   const elementsText = props.items.map((element) => (
-    '"' + element.key + '";"' + element.value + '";\r\n'
+    csvEscape(element.key) + ';' + csvEscape(element.value) + ';\r\n'
   ))
   var element = document.createElement('a')
   element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(elementsText.join('')))
