@@ -166,10 +166,10 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
   }
 
   /**
-   * Check if API key is configured
+   * Check if API key is configured (from localStorage or environment)
    */
   public hasApiKey(): boolean {
-    return !!this.getApiKeyFromStorage()
+    return !!(this.getApiKeyFromStorage() || this.getApiKeyFromEnv())
   }
 
   /**
