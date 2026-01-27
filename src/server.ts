@@ -519,7 +519,7 @@ async function startServer() {
         response = geminiResponse.data.candidates[0].content.parts[0].text
       } else {
         // OpenAI API
-        const model = 'gpt-3.5-turbo'
+        const model = 'gpt-4o-mini'
         const openaiResponse = await axios.post(
           'https://api.openai.com/v1/chat/completions',
           {

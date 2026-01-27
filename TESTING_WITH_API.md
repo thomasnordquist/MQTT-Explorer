@@ -177,7 +177,7 @@ For a topic like `zigbee2mqtt/bedroom_light`:
 Per full test run:
 - **API Calls:** ~11 requests
 - **Tokens:** ~5,000-8,000 total
-- **Cost:** ~$0.01-0.02 USD (GPT-3.5 Turbo)
+- **Cost:** ~$0.001-0.002 USD (GPT-4o Mini is ~10x cheaper than GPT-3.5 Turbo)
 
 ## Documentation
 

@@ -145,7 +145,7 @@ The neighboring topics context can be adjusted using the `LLM_NEIGHBORING_TOPICS
 
 - **Frontend**: React component with Material-UI styling
 - **Service Layer**: Singleton LLM service for API communication
-- **API Integration**: OpenAI Chat Completions API (GPT-3.5-turbo by default)
+- **API Integration**: OpenAI Chat Completions API (GPT-4o Mini by default)
 - **Context Generation**: Automatic extraction of topic metadata for relevant queries
 
 ### Configuration Options
@@ -153,7 +153,7 @@ The neighboring topics context can be adjusted using the `LLM_NEIGHBORING_TOPICS
 The LLM service supports:
 
 - **Custom API Endpoints**: Can be configured to use compatible APIs
-- **Model Selection**: Defaults to `gpt-3.5-turbo` but can be customized
+- **Model Selection**: Defaults to `gpt-4o-mini` but can be customized
 - **Conversation History**: Automatically manages context (keeps last 10 messages)
 - **Timeout Handling**: 30-second timeout for API requests
 
