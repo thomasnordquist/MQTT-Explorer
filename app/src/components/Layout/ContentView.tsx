@@ -10,6 +10,8 @@ import { Sidebar } from '../Sidebar'
 import { useResizeDetector } from 'react-resize-detector'
 import MobileTabs from './MobileTabs'
 import PublishTab from '../Sidebar/PublishTab'
+import { setMobileTab } from '../../actions/Global'
+import { Dispatch } from 'redux'
 
 // Type cast to any to work around React 18 compatibility issues with react-split-pane 0.1.x
 const ReactSplitPane = ReactSplitPaneImport as any
@@ -19,13 +21,14 @@ interface Props {
   paneDefaults: any
   connectionId?: string
   chartPanelItems: List<ChartParameters>
+  mobileTab: number
+  dispatch: Dispatch<any>
 }
 
 function ContentView(props: Props) {
   // Use different defaults for mobile viewports (<=768px width)
   // Use state for mobile detection that updates on resize
   const [isMobile, setIsMobile] = React.useState(() => typeof window !== 'undefined' && window.innerWidth <= 768)
-  const [mobileTab, setMobileTab] = React.useState(0) // 0 = topics, 1 = details, 2 = publish, 3 = charts
   const [height, setHeight] = React.useState<string | number>('100%')
   const [sidebarWidth, setSidebarWidth] = React.useState<string | number>(isMobile ? '100%' : '40%')
   const [detectedHeight, setDetectedHeight] = React.useState(0)
@@ -87,25 +90,6 @@ function ContentView(props: Props) {
     }
   }, [props.chartPanelItems])
 
-  // Expose tab switching functions for other components to call (mobile only)
-  // This effect must be outside the conditional render to avoid React hooks rules violation
-  React.useEffect(() => {
-    if (isMobile && typeof window !== 'undefined') {
-      (window as any).switchToDetailsTab = () => setMobileTab(1)
-      (window as any).switchToTopicsTab = () => setMobileTab(0)
-      ;(window as any).switchToPublishTab = () => setMobileTab(2)
-      ;(window as any).switchToChartsTab = () => setMobileTab(3)
-    }
-    return () => {
-      if (typeof window !== 'undefined') {
-        delete (window as any).switchToDetailsTab
-        delete (window as any).switchToTopicsTab
-        delete (window as any).switchToPublishTab
-        delete (window as any).switchToChartsTab
-      }
-    }
-  }, [isMobile])
-
   // Mobile view with tab switcher
   if (isMobile) {
 
@@ -150,28 +134,28 @@ function ContentView(props: Props) {
 
     return (
       <div style={mobileContainerStyle}>
-        <MobileTabs value={mobileTab} onChange={setMobileTab} />
+        <MobileTabs value={props.mobileTab} onChange={(tab) => props.dispatch(setMobileTab(tab))} />
         <div style={tabContentStyle}>
           {/* Topics tab */}
-          {mobileTab === 0 && (
+          {props.mobileTab === 0 && (
             <div style={treeContainerStyle}>
               <Tree />
             </div>
           )}
           {/* Details tab */}
-          {mobileTab === 1 && (
+          {props.mobileTab === 1 && (
             <div style={sidebarContainerStyle}>
               <Sidebar connectionId={props.connectionId} />
             </div>
           )}
           {/* Publish tab */}
-          {mobileTab === 2 && (
+          {props.mobileTab === 2 && (
             <div style={sidebarContainerStyle}>
               <PublishTab connectionId={props.connectionId} />
             </div>
           )}
           {/* Charts tab */}
-          {mobileTab === 3 && (
+          {props.mobileTab === 3 && (
             <div style={sidebarContainerStyle}>
               <ChartPanel />
             </div>
@@ -242,6 +226,7 @@ function ContentView(props: Props) {
 const mapStateToProps = (state: AppState) => {
   return {
     chartPanelItems: state.charts.get('charts'),
+    mobileTab: state.globalState.get('mobileTab'),
   }
 }
 
