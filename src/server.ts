@@ -12,7 +12,7 @@ import ConfigStorage from '../backend/src/ConfigStorage'
 import { SocketIOServerEventBus } from '../events/EventSystem/SocketIOServerEventBus'
 import { Rpc } from '../events/EventSystem/Rpc'
 import { makeOpenDialogRpc, makeSaveDialogRpc } from '../events/OpenDialogRequest'
-import { getAppVersion, writeToFile, readFromFile } from '../events'
+import { getAppVersion, writeToFile, readFromFile, addMqttConnectionEvent } from '../events'
 import { RpcEvents } from '../events/EventsV2'
 
 const PORT = process.env.PORT || 3000
@@ -20,6 +20,10 @@ const CREDENTIALS_PATH = path.join(process.cwd(), 'data', 'credentials.json')
 const MAX_FILE_SIZE = 16 * 1024 * 1024 // 16MB limit for file uploads
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['*']
 const isProduction = process.env.NODE_ENV === 'production'
+// Enable upgrade-insecure-requests only when behind HTTPS reverse proxy
+const enableUpgradeInsecure = process.env.UPGRADE_INSECURE_REQUESTS === 'true'
+// Enable X-Frame-Options header to prevent iframe embedding (disabled by default)
+const enableXFrameOptions = process.env.X_FRAME_OPTIONS === 'true'
 
 /**
  * Validates and sanitizes file paths to prevent path traversal attacks
@@ -74,16 +78,34 @@ async function startServer() {
   const app = express()
 
   // Apply security headers with helmet
+  // Get Helmet's default CSP directives and remove upgrade-insecure-requests
+  // This ensures the directive is never added, even in edge cases
+  // Create a copy to avoid mutating Helmet's defaults
+  const defaultCspDirectives = { ...helmet.contentSecurityPolicy.getDefaultDirectives() }
+  delete defaultCspDirectives['upgrade-insecure-requests']
+  
+  // Build custom CSP directives, overriding defaults as needed
+  const cspDirectives = {
+    ...defaultCspDirectives,
+    // Override default-src from defaults
+    'default-src': ["'self'"],
+    // Override script-src for webpack
+    'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // unsafe-eval required for webpack runtime
+    // Override style-src for Material-UI
+    'style-src': ["'self'", "'unsafe-inline'"], // Required for Material-UI
+    // Add WebSocket support
+    'connect-src': ["'self'", 'ws:', 'wss:'], // Allow WebSocket connections
+    // Allow data URIs for images
+    'img-src': ["'self'", 'data:', 'blob:'],
+    // Only add upgrade-insecure-requests if explicitly enabled via env var
+    ...(enableUpgradeInsecure && { 'upgrade-insecure-requests': [] }),
+  }
+
   app.use(
     helmet({
       contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // unsafe-eval required for webpack runtime
-          styleSrc: ["'self'", "'unsafe-inline'"], // Required for Material-UI
-          connectSrc: ["'self'", 'ws:', 'wss:'], // Allow WebSocket connections
-          imgSrc: ["'self'", 'data:', 'blob:'],
-        },
+        useDefaults: false, // Don't merge with Helmet's defaults to ensure full control
+        directives: cspDirectives,
       },
       hsts: isProduction
         ? {
@@ -92,6 +114,13 @@ async function startServer() {
             preload: true,
           }
         : false,
+      frameguard: enableXFrameOptions ? { action: 'sameorigin' } : false, // Disabled by default to allow iframe embedding
+      // Disable cross-origin policies that cause blank pages when accessing via IP vs localhost
+      // These headers can block resources and cause rendering issues on HTTP-only deployments
+      crossOriginEmbedderPolicy: false, // Can block resources without proper CORP headers
+      crossOriginOpenerPolicy: false, // Can cause blank pages and window isolation issues
+      crossOriginResourcePolicy: false, // Can block cross-origin resource loading
+      originAgentCluster: false, // Causes issues when switching between localhost and IP address origins
     })
   )
 
@@ -215,17 +244,6 @@ async function startServer() {
     next()
   })
 
-  // Send auth status to clients on connection
-  io.on('connection', (socket) => {
-    // Inform client about auth status
-    const authDisabled = (socket as any).authDisabled === true
-    socket.emit('auth-status', { authDisabled })
-    
-    if (!isProduction) {
-      console.log(`Client connected, auth disabled: ${authDisabled}`)
-    }
-  })
-
   // Initialize backend event bus with Socket.io
   const backendEvents = new SocketIOServerEventBus(io)
   const backendRpc = new Rpc(backendEvents)
@@ -237,6 +255,59 @@ async function startServer() {
   // Initialize config storage
   const configStorage = new ConfigStorage(path.join(process.cwd(), 'data', 'settings.json'), backendRpc)
   configStorage.init()
+
+  // Send auth status to clients on connection
+  io.on('connection', (socket) => {
+    // Inform client about auth status
+    const authDisabled = (socket as any).authDisabled === true
+    socket.emit('auth-status', { authDisabled })
+    
+    if (!isProduction) {
+      console.log(`Client connected, auth disabled: ${authDisabled}`)
+    }
+    
+    // Auto-connect to MQTT broker if configured via environment variables
+    const autoConnectHost = process.env.MQTT_AUTO_CONNECT_HOST
+    if (autoConnectHost) {
+      const connectionId = 'auto-connect-' + Date.now()
+      
+      // Notify client immediately that auto-connect will happen
+      socket.emit('auto-connect-initiated', { connectionId })
+      
+      // Delay auto-connect to give client time to subscribe to events
+      setTimeout(() => {
+        const protocol = process.env.MQTT_AUTO_CONNECT_PROTOCOL || 'mqtt'
+        const port = parseInt(process.env.MQTT_AUTO_CONNECT_PORT || '1883')
+        const tls = protocol.endsWith('s') // mqtts or wss
+        const url = `${protocol}://${autoConnectHost}:${port}`
+        
+        const autoConnectConfig = {
+          id: connectionId,
+          options: {
+            url,
+            username: process.env.MQTT_AUTO_CONNECT_USERNAME,
+            password: process.env.MQTT_AUTO_CONNECT_PASSWORD,
+            tls,
+            certValidation: false,
+            clientId: process.env.MQTT_AUTO_CONNECT_CLIENT_ID || 'mqtt-explorer-' + Math.random().toString(16).substr(2, 8),
+            subscriptions: [{ topic: '#', qos: 0 as 0 | 1 | 2 }], // Subscribe to all topics
+          }
+        }
+        
+        if (!isProduction) {
+          console.log('Auto-connecting to MQTT broker:', {
+            connectionId,
+            url: autoConnectConfig.options.url,
+            clientId: autoConnectConfig.options.clientId,
+            username: autoConnectConfig.options.username || '(none)',
+          })
+        }
+        
+        // Trigger connection via backend events
+        backendEvents.emit(addMqttConnectionEvent, autoConnectConfig)
+      }, 1000) // 1 second delay to allow client to set up event subscriptions
+    }
+  })
 
   // Setup RPC handlers for file operations
   backendRpc.on(makeOpenDialogRpc(), async request => {

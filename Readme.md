@@ -99,6 +99,8 @@ yarn dev:server
 
 The `app` directory contains all the rendering logic, the `backend` directory currently contains the models, tests, connection management, `src` contains all the electron bindings. [mqttjs](https://github.com/mqttjs/MQTT.js) is used to facilitate communication to MQTT brokers.
 
+For information on styling conventions and visual design patterns, see [STYLING.md](STYLING.md).
+
 ## Automated Tests
 
 MQTT Explorer uses multiple test suites to ensure reliability and quality:
@@ -185,6 +187,34 @@ yarn build
 
 This script handles Xvfb setup, mosquitto startup, video recording, and cleanup.
 
+### Mobile Demo Video
+
+A mobile-focused demo video showcases MQTT Explorer in a mobile viewport (Pixel 6: 412x915px):
+
+```bash
+yarn build
+yarn test:demo-video:mobile
+```
+
+Or with full recording setup:
+```bash
+yarn build
+./scripts/uiTestsMobile.sh
+```
+
+This demonstrates the mobile compatibility features and responsive design improvements. See [MOBILE_COMPATIBILITY.md](MOBILE_COMPATIBILITY.md) for the mobile strategy and implementation details.
+
+## Mobile Compatibility
+
+MQTT Explorer supports mobile devices through its browser mode with responsive design enhancements:
+
+- **Target Device**: Google Pixel 6 (412x915px viewport)
+- **Touch-Friendly UI**: Minimum 44px tap targets for better mobile UX
+- **Responsive Layout**: Sidebar and panels adapt to mobile viewports
+- **Browser Mode**: Access via mobile browser or install as PWA
+
+For the complete mobile compatibility concept, implementation phases, and future roadmap, see [MOBILE_COMPATIBILITY.md](MOBILE_COMPATIBILITY.md).
+
 ## Create a release
 
 Create a PR to `release` branch.
@@ -223,7 +253,9 @@ The readme will be generated from the docs.
 
 ## License
 
-![CC-BY-Nc 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-blue.svg)  
-[CC-BY-Nc 4.0](https://creativecommons.org/licenses/by-nC/4.0/)
+![CC BY-SA 4.0](https://img.shields.io/badge/License-CC%20BY--SA%204.0-blue.svg)  
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 
-The license allows for anyone to adapt, share, and redistribute the material, as long as it is non-commercial.
+**Special requirement:** When distributing, the attribution and donation page may not be altered or made less accessible without explicit approval.
+
+The license allows for anyone to adapt, share, and redistribute the material, as long as they give appropriate credit and distribute any derivative works under the same license.

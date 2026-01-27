@@ -9,7 +9,11 @@ export async function showMenu(browser: Page) {
   // moveToCenterOfElement(brokerStatistics, browser)
   await sleep(2000)
 
-  await browser.screenshot({ path: 'screen4.png' })
+  try {
+    await browser.screenshot({ path: 'screen4.png' })
+  } catch (error) {
+    // Screenshot may fail in headed mode
+  }
 
   const topicOrder = await browser.locator('//input[@name="node-order"]/../div')
   await clickOn(topicOrder)
@@ -24,7 +28,11 @@ export async function showMenu(browser: Page) {
   const themeSwitch = await browser.locator('[data-testid="dark-mode-toggle"]')
   await clickOn(themeSwitch)
   await sleep(3000)
-  await browser.screenshot({ path: 'screen_dark_mode.png' })
+  try {
+    await browser.screenshot({ path: 'screen_dark_mode.png' })
+  } catch (error) {
+    // Screenshot may fail in headed mode
+  }
   await clickOn(themeSwitch)
 
   await clickOn(menuButton)

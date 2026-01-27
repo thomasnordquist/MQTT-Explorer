@@ -46,10 +46,15 @@ function mapWidth(width: 'big' | 'medium' | 'small' | undefined, calculatedSpaci
   }
 }
 
+
+// Helper function to generate unique keys for charts
+const getChartKey = (chart: ChartParameters) => `${chart.topic}-${chart.dotPath || ''}`
+
 function ChartPanel(props: Props) {
   const chartsInView = props.charts.count()
 
   const [spacing, setSpacing] = React.useState(spacingForChartCount(chartsInView))
+  const nodeRefsMap = React.useRef<Map<string, React.RefObject<HTMLDivElement>>>(new Map())
 
   React.useEffect(() => {
     props.actions.chart.loadCharts()
@@ -65,17 +70,42 @@ function ChartPanel(props: Props) {
     }
   }, [chartsInView])
 
-  const charts = props.charts.map(chartParameters => (
-    <CSSTransition
-      key={`${chartParameters.topic}-${chartParameters.dotPath || ''}`}
-      timeout={{ enter: 500, exit: 500 }}
-      classNames="example"
-    >
-      <Grid item xs={mapWidth(chartParameters.width, spacing)}>
-        <ChartWithTreeNode tree={props.tree} parameters={chartParameters} />
-      </Grid>
-    </CSSTransition>
-  ))
+  // Clean up refs for removed charts
+  React.useEffect(() => {
+    const currentKeys = new Set(props.charts.map(getChartKey).toArray())
+    const refsToDelete: string[] = []
+    
+    nodeRefsMap.current.forEach((_, key) => {
+      if (!currentKeys.has(key)) {
+        refsToDelete.push(key)
+      }
+    })
+    
+    refsToDelete.forEach(key => nodeRefsMap.current.delete(key))
+  }, [props.charts])
+
+  const charts = props.charts.map(chartParameters => {
+    const key = getChartKey(chartParameters)
+    
+    // Get or create a ref for this specific chart
+    if (!nodeRefsMap.current.has(key)) {
+      nodeRefsMap.current.set(key, React.createRef<HTMLDivElement>())
+    }
+    const nodeRef = nodeRefsMap.current.get(key)!
+    
+    return (
+      <CSSTransition
+        key={key}
+        timeout={{ enter: 500, exit: 500 }}
+        classNames="example"
+        nodeRef={nodeRef}
+      >
+        <Grid item xs={mapWidth(chartParameters.width, spacing)} ref={nodeRef}>
+          <ChartWithTreeNode tree={props.tree} parameters={chartParameters} />
+        </Grid>
+      </CSSTransition>
+    )
+  })
 
   return (
     <div className={props.classes.container}>
@@ -124,7 +154,7 @@ const styles = (theme: Theme) => ({
     height: '100%',
     padding: '8px',
     flex: 1,
-    overflow: 'hidden scroll',
+    overflow: 'auto',
   },
 })
 

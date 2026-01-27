@@ -68,6 +68,9 @@ export function BrowserAuthWrapper(props: BrowserAuthWrapperProps) {
       const errorMessage = event.detail?.message || 'Authentication failed'
       console.error('Authentication error:', errorMessage)
       
+      // Mark auth check as complete - we now know auth is required
+      setAuthCheckComplete(true)
+      
       // Clear authentication state
       setIsAuthenticated(false)
       setShowLogin(true)

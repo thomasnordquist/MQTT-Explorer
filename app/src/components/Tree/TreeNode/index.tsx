@@ -61,8 +61,22 @@ function TreeNodeComponent(props: Props) {
   const didClickTitle = React.useCallback(
     (event: React.MouseEvent) => {
       event.stopPropagation()
-      didSelectTopic()
-      setCollapsedOverride(!isCollapsed)
+      
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+      
+      if (isMobile) {
+        // Mobile: Only select the topic (no toggle)
+        // Expanding is handled by the separate expand button click
+        didSelectTopic()
+        // Switch to details tab on mobile after selecting a topic
+        if (typeof window !== 'undefined' && (window as any).switchToDetailsTab) {
+          (window as any).switchToDetailsTab()
+        }
+      } else {
+        // Desktop: Original behavior - select AND toggle (click anywhere works)
+        didSelectTopic()
+        setCollapsedOverride(!isCollapsed)
+      }
     },
     [isCollapsed, didSelectTopic]
   )
@@ -122,6 +136,10 @@ function TreeNodeComponent(props: Props) {
           onClick={didClickTitle}
           tabIndex={-1}
           onKeyDown={deleteTopicCallback}
+          role="treeitem"
+          aria-selected={selected}
+          aria-expanded={!isCollapsed}
+          aria-label={`Topic: ${name || treeNode.sourceEdge?.name || 'root'}`}
         >
           <TreeNodeTitle
             lastUpdate={treeNode.lastUpdate}

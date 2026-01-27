@@ -24,7 +24,7 @@ export const TopicTypeButton = (props: { node?: q.TreeNode<any> }) => {
 
   const selectOption = useCallback(
     (decoder: MessageDecoder, format: string) => {
-      if (!node) {
+      if (!node || !node.viewModel) {
         return
       }
 
@@ -55,7 +55,7 @@ export const TopicTypeButton = (props: { node?: q.TreeNode<any> }) => {
 
   return (
     <Button onClick={handleToggle}>
-      {props.node?.viewModel.decoder?.format ?? props.node?.type}
+      {props.node?.viewModel?.decoder?.format ?? props.node?.type}
       <Popper open={open} anchorEl={anchorEl} role={undefined} transition>
         {({ TransitionProps, placement }) => (
           <Grow

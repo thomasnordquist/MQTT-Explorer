@@ -1,4 +1,4 @@
-import { rendererRpc } from '../../../events'
+import { rendererRpc } from '../eventBus'
 
 import { storageStoreEvent, storageLoadEvent, storageClearEvent } from '../../../events/StorageEvents'
 

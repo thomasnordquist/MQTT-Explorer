@@ -10,6 +10,17 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
+# Configure mosquitto for anonymous access (required for tests)
+RUN mkdir -p /etc/mosquitto/conf.d && \
+    echo "listener 1883" > /etc/mosquitto/conf.d/default.conf && \
+    echo "allow_anonymous true" >> /etc/mosquitto/conf.d/default.conf && \
+    echo "persistence false" >> /etc/mosquitto/conf.d/default.conf
+
+# Install Playwright and browsers
+# This ensures Playwright browsers are pre-installed in the container
+RUN npm install -g playwright@1.57.0 && \
+    npx playwright install --with-deps chromium
+
 CMD /bin/bash
 
 VOLUME /app
