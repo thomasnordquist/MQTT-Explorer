@@ -1,7 +1,7 @@
 import React, { memo } from 'react'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../../../../backend/src/Model'
 import { TopicViewModel } from '../../../model/TopicViewModel'
 import { useDecoder } from '../../hooks/useDecoder'
 

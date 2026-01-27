@@ -8,7 +8,7 @@ import MenuItem from '@mui/material/MenuItem'
 import MenuList from '@mui/material/MenuList'
 import WarningRounded from '@mui/icons-material/WarningRounded'
 import { Tooltip } from '@mui/material'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../../../../backend/src/Model'
 import { MessageDecoder, decoders } from '../../../decoders'
 
 export function TopicTypeButton(props: { node?: q.TreeNode<any> }) {

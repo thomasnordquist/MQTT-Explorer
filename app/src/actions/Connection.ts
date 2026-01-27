@@ -1,7 +1,7 @@
 import * as url from 'url'
 import { DataSourceState, MqttOptions } from 'mqtt-explorer-backend/src/DataSource/DataSource'
 import { Dispatch } from 'redux'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../../backend/src/Model'
 import { Action, ActionTypes } from '../reducers/Connection'
 import { ActionTypes as SettingsActionTypes } from '../reducers/Settings'
 import { AppState } from '../reducers'

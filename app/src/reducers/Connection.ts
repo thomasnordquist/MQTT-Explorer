@@ -1,4 +1,4 @@
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../../backend/src/Model'
 import { MqttOptions } from 'mqtt-explorer-backend/src/DataSource/DataSource'
 import { createReducer } from './lib'
 import { TopicViewModel } from '../model/TopicViewModel'

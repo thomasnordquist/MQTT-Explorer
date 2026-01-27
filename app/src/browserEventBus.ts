@@ -1,8 +1,8 @@
 // Browser-specific EventBus implementation using Socket.io
 // This file contains the socket.io-client dependency which belongs in the app layer
 import io, { Socket } from 'socket.io-client'
-import { SocketIOClientEventBus } from 'MQTT-Explorer/events/EventSystem/SocketIOClientEventBus'
-import { Rpc } from 'MQTT-Explorer/events/EventSystem/Rpc'
+import { SocketIOClientEventBus } from '../../events/EventSystem/SocketIOClientEventBus'
+import { Rpc } from '../../events/EventSystem/Rpc'
 
 // Get auth from sessionStorage or use empty (will show login dialog)
 let username = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('mqtt-explorer-username') || '' : ''
@@ -174,7 +174,7 @@ export const backendEvents = rendererEvents
 export const backendRpc = rendererRpc
 
 // Re-export all events from the events module so imports work correctly
-export * from 'MQTT-Explorer/events/Events'
-export * from 'MQTT-Explorer/events/EventsV2'
-export * from 'MQTT-Explorer/events/EventSystem/EventDispatcher'
-export * from 'MQTT-Explorer/events/EventSystem/EventBusInterface'
+export * from '../../events/Events'
+export * from '../../events/EventsV2'
+export * from '../../events/EventSystem/EventDispatcher'
+export * from '../../events/EventSystem/EventBusInterface'

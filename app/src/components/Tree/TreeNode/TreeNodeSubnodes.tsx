@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../../../../backend/src/Model'
 import TreeNode from '.'
 import { SettingsState } from '../../../reducers/Settings'
 import { sortedNodes } from '../../../sortedNodes'

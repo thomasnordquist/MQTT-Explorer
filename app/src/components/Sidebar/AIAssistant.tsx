@@ -27,7 +27,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ClearIcon from '@mui/icons-material/Clear'
 import PublishIcon from '@mui/icons-material/Publish'
-import { Base64Message } from 'mqtt-explorer-backend/src/Model/Base64Message'
+import { Base64Message } from '../../../../backend/src/Model/Base64Message'
 import { getLLMService, LLMMessage, MessageProposal, QuestionProposal } from '../../services/llmService'
 import { makePublishEvent, rendererEvents } from '../../eventBus'
 

@@ -4,7 +4,7 @@ import Check from '@mui/icons-material/Check'
 
 import { SaveAlt } from '@mui/icons-material'
 import { bindActionCreators } from 'redux'
-import { makeSaveDialogRpc } from 'MQTT-Explorer/events/OpenDialogRequest'
+import { makeSaveDialogRpc } from '../../../../events/OpenDialogRequest'
 import CustomIconButton from './CustomIconButton'
 import { rendererRpc, writeToFile } from '../../eventBus'
 import { isBrowserMode } from '../../utils/browserMode'

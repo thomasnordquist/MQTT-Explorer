@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
 import { Tooltip } from '@mui/material'
-import { Message } from 'mqtt-explorer-backend/src/Model/Model'
+import { Message } from '../../../../backend/src/Model'
 
 export const MessageId = memo((props: { message: Message; addComma?: boolean }) => {
   const { message, addComma } = props

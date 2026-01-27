@@ -1,6 +1,6 @@
 import { get } from 'sparkplug-payload'
-import { Base64Message } from 'mqtt-explorer-backend/src/Model/Base64Message'
-import { Decoder } from 'mqtt-explorer-backend/src/Model/Decoder'
+import { Base64Message } from '../../../backend/src/Model/Base64Message'
+import { Decoder } from '../../../backend/src/Model/Decoder'
 import { MessageDecoder } from './MessageDecoder'
 
 const sparkplug = get('spBv1.0')

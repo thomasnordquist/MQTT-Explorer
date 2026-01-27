@@ -4,7 +4,7 @@ import { withStyles } from '@mui/styles'
 import { Theme } from '@mui/material/styles'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../../../../backend/src/Model'
 import { treeActions } from '../../../actions'
 import { TopicViewModel } from '../../../model/TopicViewModel'
 

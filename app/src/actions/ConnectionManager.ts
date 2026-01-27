@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux'
 import * as path from 'path'
 import { Subscription } from 'mqtt-explorer-backend/src/DataSource/MqttSource'
-import { makeOpenDialogRpc } from 'MQTT-Explorer/events/OpenDialogRequest'
+import { makeOpenDialogRpc } from '../../../events/OpenDialogRequest'
 import { AppState } from '../reducers'
 import { clearLegacyConnectionOptions, loadLegacyConnectionOptions } from '../model/LegacyConnectionSettings'
 import {

@@ -1,4 +1,4 @@
-import { storageStoreEvent, storageLoadEvent, storageClearEvent } from 'MQTT-Explorer/events/StorageEvents'
+import { storageStoreEvent, storageLoadEvent, storageClearEvent } from '../../../events/StorageEvents'
 import { rendererRpc } from '../eventBus'
 
 export interface StorageIdentifier<Model> {

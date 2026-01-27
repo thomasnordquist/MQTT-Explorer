@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
-import { Decoder } from 'mqtt-explorer-backend/src/Model/Decoder'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import { Decoder } from '../../../../backend/src/Model/Decoder'
+import * as q from '../../../../backend/src/Model'
 import { TopicViewModel } from '../../model/TopicViewModel'
 import { useSubscription } from './useSubscription'
 import { useViewModel } from '../Tree/TreeNode/effects/useViewModel'

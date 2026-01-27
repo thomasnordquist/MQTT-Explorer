@@ -1,7 +1,7 @@
 import Delete from '@mui/icons-material/Delete'
 import React, { useCallback } from 'react'
 import { Badge } from '@mui/material'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../../../../backend/src/Model'
 import CustomIconButton from '../../helper/CustomIconButton'
 
 export function RecursiveTopicDeleteButton(props: {

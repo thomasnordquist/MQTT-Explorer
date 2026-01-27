@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../../backend/src/Model'
 import { ActionTypes } from '../reducers/Sidebar'
 import { AppState } from '../reducers'
 import { clearTopic } from './clearTopic'

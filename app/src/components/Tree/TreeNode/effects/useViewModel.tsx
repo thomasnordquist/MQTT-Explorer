@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from 'TEMP_BACKENDsrc/Model/Model'
 import { TopicViewModel } from '../../../../model/TopicViewModel'
 
 export function useViewModel(treeNode: q.TreeNode<TopicViewModel> | undefined) {

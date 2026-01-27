@@ -1,6 +1,6 @@
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../../backend/src/Model'
 import { Destroyable } from 'mqtt-explorer-backend/src/Model/Destroyable'
-import { EventDispatcher } from 'MQTT-Explorer/events/events'
+import { EventDispatcher } from '../../../events/Events'
 import { MessageDecoder, decoders } from '../decoders'
 
 function findDecoder<T extends Destroyable>(node: q.TreeNode<T>): TopicDecoder | undefined {

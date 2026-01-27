@@ -1,7 +1,7 @@
 // Auto-connect handler for browser mode
 // This file is loaded early in the app initialization to handle server-initiated auto-connect
 
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../backend/src/Model'
 import { DataSourceState } from 'mqtt-explorer-backend/src/DataSource/DataSource'
 import { store } from './store'
 import { TopicViewModel } from './model/TopicViewModel'

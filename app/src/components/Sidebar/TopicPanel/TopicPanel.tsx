@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../../../../backend/src/Model'
 import Copy from '../../helper/Copy'
 import Panel from '../Panel'
 import Topic from './Topic'

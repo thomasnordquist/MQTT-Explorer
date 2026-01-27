@@ -1,5 +1,5 @@
 import React from 'react'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../../../backend/src/Model'
 import TopicChart from './TopicChart'
 import { ChartParameters } from '../../reducers/Charts'
 import { usePollingToFetchTreeNode } from '../helper/usePollingToFetchTreeNode'

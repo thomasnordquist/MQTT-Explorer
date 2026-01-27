@@ -1,7 +1,7 @@
 import { AnyAction, Dispatch } from 'redux'
 import { batchActions } from 'redux-batched-actions'
 import debounce from 'lodash.debounce'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../../backend/src/Model'
 import { ActionTypes } from '../reducers/Tree'
 import { ActionTypes as SidebarActionTypes } from '../reducers/Sidebar'
 import { AppState } from '../reducers'

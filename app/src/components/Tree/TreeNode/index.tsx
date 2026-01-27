@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../../../../backend/src/Model'
 import TreeNodeSubnodes from './TreeNodeSubnodes'
 import TreeNodeTitle from './TreeNodeTitle'
 import { SettingsState } from '../../../reducers/Settings'

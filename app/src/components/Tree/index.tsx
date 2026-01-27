@@ -1,7 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../../../backend/src/Model'
 import TreeNode from './TreeNode'
 import { AppState } from '../../reducers'
 import { KeyCodes } from '../../utils/KeyCodes'

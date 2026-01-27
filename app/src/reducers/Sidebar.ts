@@ -1,6 +1,6 @@
 import { Action as ReduxAction } from 'redux'
 import { Record } from 'immutable'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from '../../../backend/src/Model'
 import { createReducer } from './lib'
 
 interface SidebarModel {

@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import * as q from 'mqtt-explorer-backend/src/Model/Model'
+import * as q from 'TEMP_BACKENDsrc/Model/Model'
 import { KeyCodes } from '../../../../utils/KeyCodes'
 import { treeActions } from '../../../../actions'
 

@@ -7,8 +7,8 @@
  * This module uses dynamic imports to avoid bundling unused dependencies.
  */
 
-import type { Rpc } from 'MQTT-Explorer/events/EventSystem/Rpc'
-import type { EventBusInterface } from 'MQTT-Explorer/events/EventSystem/EventBusInterface'
+import type { Rpc } from '../../events/EventSystem/Rpc'
+import type { EventBusInterface } from '../../events/EventSystem/EventBusInterface'
 import { isBrowserMode } from './utils/browserMode'
 
 let rendererRpcInstance: Rpc<any> | null = null
@@ -128,7 +128,7 @@ export const backendEvents = new Proxy({} as EventBusInterface, {
 })
 
 // Re-export all event definitions that are shared
-export * from 'MQTT-Explorer/events/Events'
-export * from 'MQTT-Explorer/events/EventsV2'
-export * from 'MQTT-Explorer/events/EventSystem/EventDispatcher'
-export * from 'MQTT-Explorer/events/EventSystem/EventBusInterface'
+export * from '../../events/Events'
+export * from '../../events/EventsV2'
+export * from '../../events/EventSystem/EventDispatcher'
+export * from '../../events/EventSystem/EventBusInterface'
