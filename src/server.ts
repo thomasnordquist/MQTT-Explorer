@@ -7,9 +7,9 @@ import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import { body, validationResult } from 'express-validator'
 import axios from 'axios'
+import { ConnectionManager } from 'mqtt-explorer-backend/src/index'
+import ConfigStorage from 'mqtt-explorer-backend/src/ConfigStorage'
 import { AuthManager } from './AuthManager'
-import { ConnectionManager } from '../backend/src/index'
-import ConfigStorage from '../backend/src/ConfigStorage'
 import { SocketIOServerEventBus } from '../events/EventSystem/SocketIOServerEventBus'
 import { Rpc } from '../events/EventSystem/Rpc'
 import { makeOpenDialogRpc, makeSaveDialogRpc } from '../events/OpenDialogRequest'
@@ -84,7 +84,7 @@ async function startServer() {
   // Create a copy to avoid mutating Helmet's defaults
   const defaultCspDirectives = { ...helmet.contentSecurityPolicy.getDefaultDirectives() }
   delete defaultCspDirectives['upgrade-insecure-requests']
-  
+
   // Build custom CSP directives, overriding defaults as needed
   const cspDirectives = {
     ...defaultCspDirectives,
@@ -212,7 +212,11 @@ async function startServer() {
 
       if (remainingWaitTime > 0) {
         const secondsRemaining = Math.ceil(remainingWaitTime / 1000)
-        return next(new Error(`Too many failed authentication attempts. Please wait ${secondsRemaining} seconds before trying again.`))
+        return next(
+          new Error(
+            `Too many failed authentication attempts. Please wait ${secondsRemaining} seconds before trying again.`
+          )
+        )
       }
     }
 
@@ -228,11 +232,11 @@ async function startServer() {
       attempts.count++
       attempts.lastAttempt = now
       failedAttempts.set(clientIp, attempts)
-      
+
       // Calculate next wait time for informational purposes
       const nextBackoff = calculateBackoffTime(attempts.count)
       const nextWaitSeconds = Math.ceil(nextBackoff / 1000)
-      
+
       return next(new Error(`Invalid credentials. Next attempt allowed in ${nextWaitSeconds} seconds.`))
     }
 
@@ -258,45 +262,41 @@ async function startServer() {
   configStorage.init()
 
   // Send auth status to clients on connection
-  io.on('connection', (socket) => {
+  io.on('connection', socket => {
     // Inform client about auth status
     const authDisabled = (socket as any).authDisabled === true
     socket.emit('auth-status', { authDisabled })
-    
+
     if (!isProduction) {
       console.log(`Client connected, auth disabled: ${authDisabled}`)
     }
-    
+
     // Send LLM availability status to clients (don't leak credentials)
-    const llmAvailable = !!(
-      process.env.OPENAI_API_KEY ||
-      process.env.GEMINI_API_KEY ||
-      process.env.LLM_API_KEY
-    )
-    
+    const llmAvailable = !!(process.env.OPENAI_API_KEY || process.env.GEMINI_API_KEY || process.env.LLM_API_KEY)
+
     if (llmAvailable) {
       socket.emit('llm-available', { available: true })
-      
+
       if (!isProduction) {
         console.log('LLM service is available on backend')
       }
     }
-    
+
     // Auto-connect to MQTT broker if configured via environment variables
     const autoConnectHost = process.env.MQTT_AUTO_CONNECT_HOST
     if (autoConnectHost) {
-      const connectionId = 'auto-connect-' + Date.now()
-      
+      const connectionId = `auto-connect-${Date.now()}`
+
       // Notify client immediately that auto-connect will happen
       socket.emit('auto-connect-initiated', { connectionId })
-      
+
       // Delay auto-connect to give client time to subscribe to events
       setTimeout(() => {
         const protocol = process.env.MQTT_AUTO_CONNECT_PROTOCOL || 'mqtt'
         const port = parseInt(process.env.MQTT_AUTO_CONNECT_PORT || '1883')
         const tls = protocol.endsWith('s') // mqtts or wss
         const url = `${protocol}://${autoConnectHost}:${port}`
-        
+
         const autoConnectConfig = {
           id: connectionId,
           options: {
@@ -305,11 +305,12 @@ async function startServer() {
             password: process.env.MQTT_AUTO_CONNECT_PASSWORD,
             tls,
             certValidation: false,
-            clientId: process.env.MQTT_AUTO_CONNECT_CLIENT_ID || 'mqtt-explorer-' + Math.random().toString(16).substr(2, 8),
+            clientId:
+              process.env.MQTT_AUTO_CONNECT_CLIENT_ID || `mqtt-explorer-${Math.random().toString(16).substr(2, 8)}`,
             subscriptions: [{ topic: '#', qos: 0 as 0 | 1 | 2 }], // Subscribe to all topics
-          }
+          },
         }
-        
+
         if (!isProduction) {
           console.log('Auto-connecting to MQTT broker:', {
             connectionId,
@@ -318,7 +319,7 @@ async function startServer() {
             username: autoConnectConfig.options.username || '(none)',
           })
         }
-        
+
         // Trigger connection via backend events
         backendEvents.emit(addMqttConnectionEvent, autoConnectConfig)
       }, 1000) // 1 second delay to allow client to set up event subscriptions
@@ -326,16 +327,16 @@ async function startServer() {
   })
 
   // Setup RPC handlers for file operations
-  backendRpc.on(makeOpenDialogRpc(), async request => {
+  backendRpc.on(makeOpenDialogRpc(), async request =>
     // In browser mode, file selection is handled client-side via upload
     // Return empty result as this will be handled differently
-    return { canceled: true, filePaths: [] }
-  })
+    ({ canceled: true, filePaths: [] })
+  )
 
-  backendRpc.on(makeSaveDialogRpc(), async request => {
+  backendRpc.on(makeSaveDialogRpc(), async request =>
     // In browser mode, file saving is handled client-side via download
-    return { canceled: true, filePath: '' }
-  })
+    ({ canceled: true, filePath: '' })
+  )
 
   backendRpc.on(getAppVersion, async () => {
     // Return version from package.json
@@ -456,7 +457,7 @@ async function startServer() {
       // Get LLM configuration from environment
       const envProvider = process.env.LLM_PROVIDER
       let provider: 'openai' | 'gemini' = 'openai'
-      
+
       // Validate provider
       if (envProvider === 'gemini' || envProvider === 'openai') {
         provider = envProvider
@@ -464,10 +465,11 @@ async function startServer() {
         // Invalid provider specified
         console.warn(`Invalid LLM_PROVIDER: ${envProvider}, using default: openai`)
       }
-      
-      const apiKey = provider === 'gemini'
-        ? (process.env.GEMINI_API_KEY || process.env.LLM_API_KEY)
-        : (process.env.OPENAI_API_KEY || process.env.LLM_API_KEY)
+
+      const apiKey =
+        provider === 'gemini'
+          ? process.env.GEMINI_API_KEY || process.env.LLM_API_KEY
+          : process.env.OPENAI_API_KEY || process.env.LLM_API_KEY
 
       if (!apiKey) {
         throw new Error('LLM service not configured')
@@ -528,7 +530,7 @@ async function startServer() {
           },
           {
             headers: {
-              'Authorization': `Bearer ${apiKey}`,
+              Authorization: `Bearer ${apiKey}`,
               'Content-Type': 'application/json',
             },
             timeout: 30000,
@@ -544,10 +546,9 @@ async function startServer() {
 
       // Return the response
       return { response }
-
     } catch (error: any) {
       console.error('LLM RPC error:', error.message)
-      
+
       if (error.response?.status === 401 || error.response?.status === 403) {
         throw new Error('Invalid API key configuration')
       } else if (error.response?.status === 429) {

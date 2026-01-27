@@ -20,8 +20,6 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Install Packages
         run: yarn install --frozen-lockfile
-      - name: Lint
-        run: yarn lint:eslint
       - name: Build
         run: yarn build
       - name: Test

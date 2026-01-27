@@ -4,7 +4,7 @@ import { MessageProposal } from '../llmService'
 
 /**
  * Integration tests for LLM proposal quality
- * 
+ *
  * These tests validate that:
  * 1. Proposals have valid MQTT topic format
  * 2. Payloads are properly formatted (JSON or simple values)
@@ -28,9 +28,7 @@ describe('LLM Proposal Validation', () => {
     })
 
     it('should validate topic does not contain wildcards', () => {
-      const validateTopic = (topic: string) => {
-        return !topic.includes('#') && !topic.includes('+')
-      }
+      const validateTopic = (topic: string) => !topic.includes('#') && !topic.includes('+')
 
       const validTopic = 'home/livingroom/light/set'
       const invalidTopic1 = 'home/+/light/set'
@@ -105,14 +103,7 @@ describe('LLM Proposal Validation', () => {
     })
 
     it('should validate tasmota payloads', () => {
-      const tasmotaPayloads = [
-        'ON',
-        'OFF',
-        'TOGGLE',
-        '1',
-        '0',
-        '{"POWER": "ON"}',
-      ]
+      const tasmotaPayloads = ['ON', 'OFF', 'TOGGLE', '1', '0', '{"POWER": "ON"}']
 
       tasmotaPayloads.forEach(payload => {
         // All should be valid strings
@@ -123,9 +114,7 @@ describe('LLM Proposal Validation', () => {
 
   describe('QoS Validation', () => {
     it('should validate QoS is 0, 1, or 2', () => {
-      const validateQoS = (qos: number) => {
-        return qos === 0 || qos === 1 || qos === 2
-      }
+      const validateQoS = (qos: number) => qos === 0 || qos === 1 || qos === 2
 
       expect(validateQoS(0)).to.be.true
       expect(validateQoS(1)).to.be.true
@@ -149,9 +138,7 @@ describe('LLM Proposal Validation', () => {
 
   describe('Description Validation', () => {
     it('should have non-empty description', () => {
-      const validateDescription = (description: string) => {
-        return !!(description && description.trim().length > 0)
-      }
+      const validateDescription = (description: string) => !!(description && description.trim().length > 0)
 
       expect(validateDescription('Turn on the light')).to.be.true
       expect(validateDescription('')).to.be.false
@@ -211,11 +198,7 @@ describe('LLM Proposal Validation', () => {
     })
 
     it('should recognize tasmota topic patterns', () => {
-      const tasmotaPatterns = [
-        'cmnd/tasmota/POWER',
-        'cmnd/sonoff/POWER1',
-        'stat/tasmota/RESULT',
-      ]
+      const tasmotaPatterns = ['cmnd/tasmota/POWER', 'cmnd/sonoff/POWER1', 'stat/tasmota/RESULT']
 
       tasmotaPatterns.forEach(topic => {
         expect(topic).to.match(/^(cmnd|stat|tele)\//)
@@ -223,10 +206,7 @@ describe('LLM Proposal Validation', () => {
     })
 
     it('should recognize homie topic patterns', () => {
-      const homiePatterns = [
-        'homie/device-id/light/power/set',
-        'homie/device-id/sensor/temperature/target',
-      ]
+      const homiePatterns = ['homie/device-id/light/power/set', 'homie/device-id/sensor/temperature/target']
 
       homiePatterns.forEach(topic => {
         expect(topic).to.match(/^homie\//)
@@ -250,16 +230,13 @@ describe('LLM Proposal Validation', () => {
     })
 
     it('should validate proposal structure', () => {
-      const validateProposal = (proposal: MessageProposal) => {
-        return (
-          typeof proposal.topic === 'string' &&
-          proposal.topic.length > 0 &&
-          typeof proposal.payload === 'string' &&
-          (proposal.qos === 0 || proposal.qos === 1 || proposal.qos === 2) &&
-          typeof proposal.description === 'string' &&
-          proposal.description.length > 0
-        )
-      }
+      const validateProposal = (proposal: MessageProposal) =>
+        typeof proposal.topic === 'string' &&
+        proposal.topic.length > 0 &&
+        typeof proposal.payload === 'string' &&
+        (proposal.qos === 0 || proposal.qos === 1 || proposal.qos === 2) &&
+        typeof proposal.description === 'string' &&
+        proposal.description.length > 0
 
       const valid: MessageProposal = {
         topic: 'test/topic',
@@ -276,14 +253,8 @@ describe('LLM Proposal Validation', () => {
     it('should not contain command injection attempts', () => {
       const validateNoInjection = (payload: string) => {
         // Check for common injection patterns
-        const dangerousPatterns = [
-          '; rm -rf',
-          '&& cat',
-          '| bash',
-          '$(whoami)',
-          '`ls`',
-        ]
-        
+        const dangerousPatterns = ['; rm -rf', '&& cat', '| bash', '$(whoami)', '`ls`']
+
         return !dangerousPatterns.some(pattern => payload.includes(pattern))
       }
 
@@ -293,9 +264,7 @@ describe('LLM Proposal Validation', () => {
     })
 
     it('should have reasonable payload size', () => {
-      const validatePayloadSize = (payload: string) => {
-        return payload.length < 10000 // 10KB limit
-      }
+      const validatePayloadSize = (payload: string) => payload.length < 10000 // 10KB limit
 
       expect(validatePayloadSize('{"state": "ON"}')).to.be.true
       expect(validatePayloadSize('x'.repeat(20000))).to.be.false

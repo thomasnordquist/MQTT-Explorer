@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { EventDispatcher } from '../../../../events'
+import { EventDispatcher } from 'MQTT-Explorer/events/events'
 
 export function useSubscription<T>(dispatcher: EventDispatcher<T> | undefined, callback: (value: T) => void) {
   useEffect(() => {

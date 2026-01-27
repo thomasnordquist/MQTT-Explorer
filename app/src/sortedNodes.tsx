@@ -1,4 +1,4 @@
-import * as q from '../../backend/src/Model'
+import * as q from 'mqtt-explorer-backend/src/Model/Model'
 import { SettingsState, TopicOrder } from './reducers/Settings'
 import { TopicViewModel } from './model/TopicViewModel'
 

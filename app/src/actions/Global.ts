@@ -1,5 +1,5 @@
-import { ActionTypes, ConfirmationRequest } from '../reducers/Global'
 import { Dispatch } from 'redux'
+import { ActionTypes, ConfirmationRequest } from '../reducers/Global'
 
 export const showError = (error?: string | unknown) => ({
   error,
@@ -27,8 +27,8 @@ export const toggleAboutDialogVisibility = () => (dispatch: Dispatch<any>) => {
   })
 }
 
-export const requestConfirmation = (title: string, inquiry: string) => (dispatch: Dispatch<any>) => {
-  return new Promise(resolve => {
+export const requestConfirmation = (title: string, inquiry: string) => (dispatch: Dispatch<any>) =>
+  new Promise(resolve => {
     const confirmationRequest = {
       title,
       inquiry,
@@ -43,13 +43,11 @@ export const requestConfirmation = (title: string, inquiry: string) => (dispatch
       type: ActionTypes.requestConfirmation,
     })
   })
-}
 
-export const removeConfirmationRequest = (confirmationRequest: ConfirmationRequest) => (dispatch: Dispatch<any>) => {
-  return new Promise((resolve, reject) => {
+export const removeConfirmationRequest = (confirmationRequest: ConfirmationRequest) => (dispatch: Dispatch<any>) =>
+  new Promise((resolve, reject) => {
     dispatch({
       confirmationRequest,
       type: ActionTypes.removeConfirmationRequest,
     })
   })
-}

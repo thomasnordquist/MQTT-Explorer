@@ -27,9 +27,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ClearIcon from '@mui/icons-material/Clear'
 import PublishIcon from '@mui/icons-material/Publish'
+import { Base64Message } from 'mqtt-explorer-backend/src/Model/Base64Message'
 import { getLLMService, LLMMessage, MessageProposal } from '../../services/llmService'
 import { makePublishEvent, rendererEvents } from '../../eventBus'
-import { Base64Message } from '../../../../backend/src/Model/Base64Message'
 
 interface Props {
   node?: any
@@ -71,8 +71,9 @@ function AIAssistant(props: Props) {
     if (expanded && node && nodePath && nodePath !== previousNodePathRef.current && llmService.hasApiKey()) {
       previousNodePathRef.current = nodePath
       setLoadingSuggestions(true)
-      
-      llmService.generateSuggestedQuestions(node)
+
+      llmService
+        .generateSuggestedQuestions(node)
         .then(questions => {
           setSuggestedQuestions(questions)
         })
@@ -106,7 +107,7 @@ function AIAssistant(props: Props) {
         content: text,
         timestamp: new Date(),
       }
-      setMessages((prev) => [...prev, userMessage])
+      setMessages(prev => [...prev, userMessage])
 
       try {
         // Generate topic context if available
@@ -125,7 +126,7 @@ function AIAssistant(props: Props) {
           timestamp: new Date(),
           proposals: parsed.proposals,
         }
-        setMessages((prev) => [...prev, assistantMessage])
+        setMessages(prev => [...prev, assistantMessage])
       } catch (err: unknown) {
         const error = err as { message?: string }
         setError(error.message || 'Failed to get response')
@@ -153,37 +154,43 @@ function AIAssistant(props: Props) {
     setError(null)
   }
 
-  const handlePublishProposal = useCallback((proposal: MessageProposal) => {
-    if (!connectionId) {
-      setError('No active connection to publish message')
-      return
-    }
-
-    try {
-      const publishEvent = makePublishEvent(connectionId)
-      const mqttMessage = {
-        topic: proposal.topic,
-        payload: Base64Message.fromString(proposal.payload),
-        retain: false,
-        qos: proposal.qos,
+  const handlePublishProposal = useCallback(
+    (proposal: MessageProposal) => {
+      if (!connectionId) {
+        setError('No active connection to publish message')
+        return
       }
-      
-      rendererEvents.emit(publishEvent, mqttMessage)
-      
-      // Show success feedback
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: `✓ Published to ${proposal.topic}`,
-        timestamp: new Date(),
-      }])
-    } catch (err) {
-      setError(`Failed to publish message: ${err}`)
-    }
-  }, [connectionId])
+
+      try {
+        const publishEvent = makePublishEvent(connectionId)
+        const mqttMessage = {
+          topic: proposal.topic,
+          payload: Base64Message.fromString(proposal.payload),
+          retain: false,
+          qos: proposal.qos,
+        }
+
+        rendererEvents.emit(publishEvent, mqttMessage)
+
+        // Show success feedback
+        setMessages(prev => [
+          ...prev,
+          {
+            role: 'assistant',
+            content: `✓ Published to ${proposal.topic}`,
+            timestamp: new Date(),
+          },
+        ])
+      } catch (err) {
+        setError(`Failed to publish message: ${err}`)
+      }
+    },
+    [connectionId]
+  )
 
   const suggestions = node ? llmService.getQuickSuggestions(node) : []
   const allSuggestions = [...suggestions, ...suggestedQuestions]
-  
+
   // Check if backend LLM service is available
   const hasApiKey = llmService.hasApiKey()
 
@@ -203,9 +210,7 @@ function AIAssistant(props: Props) {
           </Typography>
           <Chip label="Beta" size="small" color="primary" className={classes.betaChip} />
         </Box>
-        <Box className={classes.headerRight}>
-          {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-        </Box>
+        <Box className={classes.headerRight}>{expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}</Box>
       </Box>
 
       {/* Chat Interface */}
@@ -252,9 +257,7 @@ function AIAssistant(props: Props) {
 
             {messages.map((msg, idx) => (
               <Box key={idx}>
-                <Box
-                  className={msg.role === 'user' ? classes.userMessage : classes.assistantMessage}
-                >
+                <Box className={msg.role === 'user' ? classes.userMessage : classes.assistantMessage}>
                   <Typography variant="body2" className={classes.messageText}>
                     {msg.content}
                   </Typography>
@@ -262,7 +265,7 @@ function AIAssistant(props: Props) {
                     {msg.timestamp.toLocaleTimeString()}
                   </Typography>
                 </Box>
-                
+
                 {/* Render proposals if any */}
                 {msg.proposals && msg.proposals.length > 0 && (
                   <Box className={classes.proposalsContainer}>
@@ -327,7 +330,7 @@ function AIAssistant(props: Props) {
               size="small"
               placeholder="Ask about this topic..."
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={e => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               disabled={loading}
               className={classes.input}
@@ -393,7 +396,7 @@ const styles = (theme: Theme) => ({
   content: {
     padding: theme.spacing(2),
     display: 'flex',
-    flexDirection: 'column' as 'column',
+    flexDirection: 'column' as const,
     gap: theme.spacing(1.5),
   },
   alert: {
@@ -408,7 +411,7 @@ const styles = (theme: Theme) => ({
   },
   suggestionChips: {
     display: 'flex',
-    flexWrap: 'wrap' as 'wrap',
+    flexWrap: 'wrap' as const,
     gap: theme.spacing(0.5),
   },
   suggestionChip: {
@@ -420,14 +423,14 @@ const styles = (theme: Theme) => ({
   },
   messages: {
     maxHeight: '300px',
-    overflowY: 'auto' as 'auto',
+    overflowY: 'auto' as const,
     display: 'flex',
-    flexDirection: 'column' as 'column',
+    flexDirection: 'column' as const,
     gap: theme.spacing(1),
   },
   emptyState: {
     display: 'flex',
-    flexDirection: 'column' as 'column',
+    flexDirection: 'column' as const,
     alignItems: 'center',
     justifyContent: 'center',
     padding: theme.spacing(4),
@@ -455,8 +458,8 @@ const styles = (theme: Theme) => ({
     borderBottomLeftRadius: theme.spacing(0.5),
   },
   messageText: {
-    whiteSpace: 'pre-wrap' as 'pre-wrap',
-    wordBreak: 'break-word' as 'break-word',
+    whiteSpace: 'pre-wrap' as const,
+    wordBreak: 'break-word' as const,
   },
   messageTime: {
     display: 'block',
@@ -486,13 +489,11 @@ const styles = (theme: Theme) => ({
     marginTop: theme.spacing(1),
     marginLeft: theme.spacing(6),
     display: 'flex',
-    flexDirection: 'column' as 'column',
+    flexDirection: 'column' as const,
     gap: theme.spacing(1),
   },
   proposalCard: {
-    backgroundColor: theme.palette.mode === 'dark' 
-      ? 'rgba(144, 202, 249, 0.08)' 
-      : 'rgba(25, 118, 210, 0.04)',
+    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(144, 202, 249, 0.08)' : 'rgba(25, 118, 210, 0.04)',
     borderColor: theme.palette.primary.main,
   },
   proposalContent: {
@@ -504,7 +505,7 @@ const styles = (theme: Theme) => ({
   proposalDetails: {
     marginTop: theme.spacing(1),
     display: 'flex',
-    flexDirection: 'column' as 'column',
+    flexDirection: 'column' as const,
     gap: theme.spacing(0.5),
     '& code': {
       backgroundColor: theme.palette.action.hover,

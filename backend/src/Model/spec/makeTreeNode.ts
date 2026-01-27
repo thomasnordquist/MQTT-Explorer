@@ -1,7 +1,7 @@
-import { TreeNodeFactory } from '../'
+import { MqttMessage } from 'MQTT-Explorer/events/events'
+import { TreeNodeFactory } from '..'
 import { Base64Message } from '../Base64Message'
 import { TreeNode } from '../TreeNode'
-import { MqttMessage } from '../../../../events'
 
 export function makeTreeNode(topic: string, message?: string): TreeNode<any> {
   const mqttMessage: MqttMessage = {

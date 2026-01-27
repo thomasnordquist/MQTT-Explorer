@@ -4,16 +4,16 @@ import { MessageProposal } from '../llmService'
 
 /**
  * Live LLM Integration Tests
- * 
+ *
  * These tests make actual calls to the LLM API to validate proposal quality.
- * 
+ *
  * Requirements:
  * - OPENAI_API_KEY environment variable must be set
  * - RUN_LLM_TESTS environment variable must be set to 'true'
- * 
+ *
  * Usage:
  *   RUN_LLM_TESTS=true OPENAI_API_KEY=sk-... yarn test
- * 
+ *
  * These tests are skipped by default to avoid:
  * - API costs during regular testing
  * - Test failures due to missing API key
@@ -23,11 +23,11 @@ import { MessageProposal } from '../llmService'
 const shouldRunLLMTests = process.env.RUN_LLM_TESTS === 'true'
 const hasApiKey = !!process.env.OPENAI_API_KEY || !!process.env.GEMINI_API_KEY || !!process.env.LLM_API_KEY
 
-describe('LLM Integration Tests (Live API)', function() {
+describe('LLM Integration Tests (Live API)', function () {
   // Increase timeout for API calls
   this.timeout(30000)
 
-  before(function() {
+  before(function () {
     if (!shouldRunLLMTests) {
       this.skip()
     }
@@ -54,11 +54,11 @@ Child Topics:
       // 1. Recognizes zigbee2mqtt pattern
       // 2. Proposes actions with correct topic format
       // 3. Uses valid zigbee2mqtt payloads
-      
+
       // In a real test, you would call the LLM service here
       // const response = await llmService.sendMessage('How can I turn this on?', topicContext)
       // const parsed = llmService.parseResponse(response)
-      
+
       // For now, we validate the expected structure
       const expectedProposal: MessageProposal = {
         topic: 'zigbee2mqtt/living_room_light/set',
@@ -121,7 +121,7 @@ Related Topics:
       // - Turn OFF
       // - Adjust brightness
       // - etc.
-      
+
       const topicContext = `
 Topic: zigbee2mqtt/dimmable_light
 Current Value: {"state": "ON", "brightness": 128, "color_temp": 370}
@@ -129,7 +129,7 @@ Current Value: {"state": "ON", "brightness": 128, "color_temp": 370}
 
       // Expected: Multiple proposals for different actions
       const expectedProposalCount = 2 // At least ON/OFF
-      
+
       expect(expectedProposalCount).to.be.at.least(2)
     })
 

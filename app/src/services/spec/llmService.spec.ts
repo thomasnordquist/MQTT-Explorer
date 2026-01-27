@@ -219,7 +219,7 @@ After`
 
     it('should return true when backend indicates availability', () => {
       if (typeof window !== 'undefined') {
-        (window as any).__llmAvailable = true
+        ;(window as any).__llmAvailable = true
       }
 
       const hasKey = service.hasApiKey()

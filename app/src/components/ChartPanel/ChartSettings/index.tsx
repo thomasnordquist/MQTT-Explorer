@@ -1,17 +1,17 @@
 import BarChart from '@mui/icons-material/BarChart'
 import Clear from '@mui/icons-material/Refresh'
 import ColorLens from '@mui/icons-material/ColorLens'
+import MultilineChart from '@mui/icons-material/MultilineChart'
+import React, { memo } from 'react'
+import Sort from '@mui/icons-material/Sort'
+import { Menu, MenuItem, ListItemIcon, Typography } from '@mui/material'
 import ColorSettings from './ColorSettings'
 import InterpolationSettings from './InterpolationSettings'
 import MoveUp from './MoveUp'
-import MultilineChart from '@mui/icons-material/MultilineChart'
 import RangeSettings from './RangeSettings'
-import React, { memo } from 'react'
 import Size from './Size'
-import Sort from '@mui/icons-material/Sort'
 import TimeRangeSettings from './TimeRangeSettings'
 import { ChartParameters } from '../../../reducers/Charts'
-import { Menu, MenuItem, ListItemIcon, Typography } from '@mui/material'
 
 function ChartSettings(props: {
   open: boolean
@@ -25,7 +25,7 @@ function ChartSettings(props: {
   const [interpolationVisible, setInterpolationVisible] = React.useState(false)
   const [sizeVisible, setSizeVisible] = React.useState(false)
   const [colorVisible, setColorVisible] = React.useState(false)
-  const open = props.open
+  const { open } = props
 
   const toggleRange = React.useCallback(() => {
     if (open) {

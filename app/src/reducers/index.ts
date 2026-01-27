@@ -1,5 +1,5 @@
-import { chartsReducer, ChartsState } from './Charts'
 import { combineReducers } from 'redux'
+import { chartsReducer, ChartsState } from './Charts'
 import { connectionManagerReducer, ConnectionManagerState } from './ConnectionManager'
 import { connectionReducer, ConnectionState } from './Connection'
 import { GlobalState, globalState } from './Global'

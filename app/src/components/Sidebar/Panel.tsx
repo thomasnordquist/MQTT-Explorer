@@ -12,14 +12,14 @@ const styles = (theme: Theme) => ({
   },
 })
 
-const Panel = (props: {
+function Panel(props: {
   classes: any
   children: [React.ReactElement, React.ReactElement]
   disabled?: boolean
   detailsHidden?: boolean
-}) => {
+}) {
   return (
-    <Accordion defaultExpanded={true} disabled={props.disabled}>
+    <Accordion defaultExpanded disabled={props.disabled}>
       <AccordionSummary expandIcon={<ExpandMore />} className={props.classes.summary}>
         <Typography className={props.classes.heading}>{props.children[0]}</Typography>
       </AccordionSummary>

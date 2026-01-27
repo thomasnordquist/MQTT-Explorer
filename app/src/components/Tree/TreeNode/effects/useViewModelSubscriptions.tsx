@@ -1,5 +1,5 @@
-import * as q from '../../../../../../backend/src/Model'
 import React, { useCallback } from 'react'
+import * as q from 'mqtt-explorer-backend/src/Model/Model'
 import { TopicViewModel } from '../../../../model/TopicViewModel'
 import { useSubscription } from '../../../hooks/useSubscription'
 import { useViewModel } from './useViewModel'

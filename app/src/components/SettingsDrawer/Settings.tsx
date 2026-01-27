@@ -1,21 +1,12 @@
 import * as React from 'react'
-import BooleanSwitch from './BooleanSwitch'
-import BrokerStatistics from './BrokerStatistics'
 import ChevronRight from '@mui/icons-material/ChevronRight'
 import CloudOff from '@mui/icons-material/CloudOff'
 import Logout from '@mui/icons-material/Logout'
-import TimeLocale from './TimeLocale'
-import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { globalActions, settingsActions, connectionActions } from '../../actions'
 import { shell } from 'electron'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
-import { TopicOrder } from '../../reducers/Settings'
-import { isBrowserMode } from '../../utils/browserMode'
-import { useAuth } from '../../contexts/AuthContext'
-
 import {
   Button,
   Divider,
@@ -29,6 +20,15 @@ import {
   Typography,
   Tooltip,
 } from '@mui/material'
+import TimeLocale from './TimeLocale'
+import { AppState } from '../../reducers'
+import { globalActions, settingsActions, connectionActions } from '../../actions'
+import { TopicOrder } from '../../reducers/Settings'
+import { isBrowserMode } from '../../utils/browserMode'
+import { useAuth } from '../../contexts/AuthContext'
+
+import BrokerStatistics from './BrokerStatistics'
+import BooleanSwitch from './BooleanSwitch'
 
 export const autoExpandLimitSet = [
   {
@@ -61,7 +61,7 @@ const styles = (theme: Theme) => ({
   drawer: {
     backgroundColor: theme.palette.background.default,
     flexShrink: 0,
-    userSelect: 'none' as 'none',
+    userSelect: 'none' as const,
   },
   paper: {
     width: '300px',
@@ -78,16 +78,16 @@ const styles = (theme: Theme) => ({
   author: {
     margin: 'auto 8px 8px auto',
     color: theme.palette.text.secondary,
-    cursor: 'pointer' as 'pointer',
+    cursor: 'pointer' as const,
   },
   mobileButtons: {
     padding: theme.spacing(1),
     display: 'flex',
-    flexDirection: 'column' as 'column',
+    flexDirection: 'column' as const,
     gap: theme.spacing(1),
     // Only show on mobile
     [theme.breakpoints.up('md')]: {
-      display: 'none' as 'none',
+      display: 'none' as const,
     },
   },
   mobileButton: {
@@ -205,7 +205,7 @@ class Settings extends React.PureComponent<Props, {}> {
           value={topicOrder}
           onChange={this.onChangeSorting}
           input={<Input name="node-order" id="node-order-label-placeholder" />}
-          displayEmpty={true}
+          displayEmpty
           name="node-order"
           className={classes.input}
           style={{ flex: '1' }}
@@ -265,13 +265,13 @@ function MobileActionButtons({ classes, actions }: { classes: any; actions: any 
   const handleLogout = async () => {
     // Disconnect first
     actions.connection.disconnect()
-    
+
     // Clear credentials from sessionStorage
     if (typeof sessionStorage !== 'undefined') {
       sessionStorage.removeItem('mqtt-explorer-username')
       sessionStorage.removeItem('mqtt-explorer-password')
     }
-    
+
     // Reload page to reset all state and show login dialog
     if (typeof window !== 'undefined') {
       window.location.reload()
@@ -304,25 +304,21 @@ function MobileActionButtons({ classes, actions }: { classes: any; actions: any 
   )
 }
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    autoExpandLimit: state.settings.get('autoExpandLimit'),
-    topicOrder: state.settings.get('topicOrder'),
-    visible: state.globalState.get('settingsVisible'),
-    highlightTopicUpdates: state.settings.get('highlightTopicUpdates'),
-    selectTopicWithMouseOver: state.settings.get('selectTopicWithMouseOver'),
-    theme: state.settings.get('theme'),
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  autoExpandLimit: state.settings.get('autoExpandLimit'),
+  topicOrder: state.settings.get('topicOrder'),
+  visible: state.globalState.get('settingsVisible'),
+  highlightTopicUpdates: state.settings.get('highlightTopicUpdates'),
+  selectTopicWithMouseOver: state.settings.get('selectTopicWithMouseOver'),
+  theme: state.settings.get('theme'),
+})
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: {
-      settings: bindActionCreators(settingsActions, dispatch),
-      global: bindActionCreators(globalActions, dispatch),
-      connection: bindActionCreators(connectionActions, dispatch),
-    },
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: {
+    settings: bindActionCreators(settingsActions, dispatch),
+    global: bindActionCreators(globalActions, dispatch),
+    connection: bindActionCreators(connectionActions, dispatch),
+  },
+})
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Settings))

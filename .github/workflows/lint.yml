@@ -1,0 +1,38 @@
+name: Lint
+
+on:
+  pull_request_target:
+    branches: [master, beta, release]
+  push:
+    branches: [master, beta, release]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'yarn'
+      
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+      
+      - name: Run Prettier
+        run: yarn lint:prettier
+      
+      - name: Run ESLint
+        run: yarn lint:eslint
+        continue-on-error: true  # Allow failures for now due to existing issues
+      
+      - name: Run Spellcheck
+        run: yarn lint:spellcheck

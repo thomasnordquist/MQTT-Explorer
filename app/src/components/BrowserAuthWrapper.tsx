@@ -29,7 +29,7 @@ export function BrowserAuthWrapper(props: BrowserAuthWrapperProps) {
     const handleAuthStatus = (event: CustomEvent) => {
       const { authDisabled } = event.detail
       setAuthDisabled(authDisabled)
-      
+
       if (authDisabled) {
         // Authentication is disabled on server
         console.log('Authentication is disabled on server, skipping login')
@@ -39,7 +39,7 @@ export function BrowserAuthWrapper(props: BrowserAuthWrapperProps) {
       } else {
         // Authentication is enabled, check if we have credentials
         setAuthCheckComplete(true)
-        
+
         const username = sessionStorage.getItem('mqtt-explorer-username')
         const password = sessionStorage.getItem('mqtt-explorer-password')
 
@@ -67,15 +67,15 @@ export function BrowserAuthWrapper(props: BrowserAuthWrapperProps) {
     const handleAuthError = (event: CustomEvent) => {
       const errorMessage = event.detail?.message || 'Authentication failed'
       console.error('Authentication error:', errorMessage)
-      
+
       // Mark auth check as complete - we now know auth is required
       setAuthCheckComplete(true)
-      
+
       // Clear authentication state
       setIsAuthenticated(false)
       setShowLogin(true)
       setIsConnecting(false)
-      
+
       // Extract wait time from error message (e.g., "Please wait 30 seconds")
       const waitTimeMatch = errorMessage.match(/(\d+)\s+seconds?/)
       if (waitTimeMatch) {
@@ -85,7 +85,7 @@ export function BrowserAuthWrapper(props: BrowserAuthWrapperProps) {
       } else {
         setWaitTimeSeconds(undefined)
       }
-      
+
       // Set user-friendly error message based on error type
       // Error messages from server already include wait times
       if (errorMessage.includes('Too many failed authentication attempts')) {
@@ -121,7 +121,7 @@ export function BrowserAuthWrapper(props: BrowserAuthWrapperProps) {
       setLoginError(undefined)
       setWaitTimeSeconds(undefined)
       setIsConnecting(true)
-      
+
       // Update socket auth and reconnect (no page reload needed)
       updateSocketAuth(username, password)
     } catch (error) {

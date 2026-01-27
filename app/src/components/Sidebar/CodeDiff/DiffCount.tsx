@@ -22,11 +22,13 @@ function changeAmount(props: Props) {
       <span>
         Comparing with <b>{props.nameOfCompareMessage}</b> message:&nbsp;
         <span className={props.classes.additions}>
-          + {additions} line{additions === 1 ? '' : 's'}
+          + {additions} line
+          {additions === 1 ? '' : 's'}
         </span>
         ,{' '}
         <span className={props.classes.deletions}>
-          - {deletions} line{deletions === 1 ? '' : 's'}
+          - {deletions} line
+          {deletions === 1 ? '' : 's'}
         </span>
       </span>
     </span>

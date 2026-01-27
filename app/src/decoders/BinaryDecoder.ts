@@ -1,5 +1,5 @@
-import { Base64Message } from '../../../backend/src/Model/Base64Message'
-import { Decoder } from '../../../backend/src/Model/Decoder'
+import { Base64Message } from 'mqtt-explorer-backend/src/Model/Base64Message'
+import { Decoder } from 'mqtt-explorer-backend/src/Model/Decoder'
 import { DecoderEnvelope } from './DecoderEnvelope'
 import { MessageDecoder } from './MessageDecoder'
 
@@ -37,7 +37,7 @@ export const BinaryDecoder: MessageDecoder<BinaryFormats> = {
     const [readNumber, bytesToRead] = decodingOption[format]
 
     const buf = input.toBuffer()
-    let str: String[] = []
+    const str: string[] = []
     if (buf.length % bytesToRead !== 0) {
       return {
         error: 'Data type does not align with message',

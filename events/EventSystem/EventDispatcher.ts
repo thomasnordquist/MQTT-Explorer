@@ -7,6 +7,7 @@ interface CallbackStore {
 
 export class EventDispatcher<Message> {
   private emitter = new EventEmitter()
+
   private callbacks: Array<CallbackStore> = []
 
   public dispatch(msg: Message) {

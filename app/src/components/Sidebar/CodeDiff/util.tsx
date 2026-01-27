@@ -56,7 +56,7 @@ export function toPlottableValue(value: any): number | undefined {
       return value.toLowerCase() === 'on' ? 1 : 0
     }
     if (/^[0-9]*,[0-9]+$/.test(value)) {
-      let parsedFloat = parseFloat(value.replace(',', '.'))
+      const parsedFloat = parseFloat(value.replace(',', '.'))
       if (!isNaN(parsedFloat)) {
         return parsedFloat
       }

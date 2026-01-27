@@ -1,10 +1,11 @@
+import { MqttMessage } from 'MQTT-Explorer/events/events'
 import { Destroyable } from './Destroyable'
-import { Edge, Tree, TreeNode } from './'
-import { MqttMessage } from '../../../events'
+import { Edge, Tree, TreeNode } from '.'
 import { Base64Message } from './Base64Message'
 
 export abstract class TreeNodeFactory {
   private static messageCounter = 0
+
   public static insertNodeAtPosition<ViewModel extends Destroyable>(
     edgeNames: Array<string>,
     node: TreeNode<ViewModel>

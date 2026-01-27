@@ -3,8 +3,8 @@
  * Provides AI assistance to help users understand and interact with MQTT topics
  */
 
+import { RpcEvents } from 'MQTT-Explorer/events/EventsV2'
 import { backendRpc } from '../browserEventBus'
-import { RpcEvents } from '../../../events/EventsV2'
 
 // Topic node interface for type safety
 export interface TopicNode {
@@ -58,13 +58,15 @@ export interface ParsedResponse {
 
 export class LLMService {
   private conversationHistory: LLMMessage[] = []
+
   private neighboringTopicsTokenLimit: number
 
   constructor(config: LLMServiceConfig = {}) {
     // In new architecture, we don't need API key or provider on client
     // Backend handles all LLM API calls
-    this.neighboringTopicsTokenLimit = config.neighboringTopicsTokenLimit || this.getNeighboringTopicsTokenLimitFromEnv() || 100
-    
+    this.neighboringTopicsTokenLimit =
+      config.neighboringTopicsTokenLimit || this.getNeighboringTopicsTokenLimitFromEnv() || 100
+
     // Initialize with system message that sets MQTT and automation context
     this.conversationHistory.push({
       role: 'system',
@@ -152,16 +154,16 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
     if (estimatedTokens <= tokenLimit) {
       return { text, truncated: false }
     }
-    
+
     // Truncate to approximate character count
     const maxChars = tokenLimit * 4
     if (text.length <= maxChars) {
       return { text, truncated: false }
     }
-    
-    return { 
-      text: text.substring(0, maxChars - 3) + '...', 
-      truncated: true 
+
+    return {
+      text: `${text.substring(0, maxChars - 3)}...`,
+      truncated: true,
     }
   }
 
@@ -171,11 +173,11 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
    */
   private escapeToSingleLine(text: string): string {
     return text
-      .replace(/\\/g, '\\\\')  // Escape backslashes first
-      .replace(/\n/g, '\\n')   // Encode newlines
-      .replace(/\r/g, '\\r')   // Encode carriage returns
-      .replace(/\t/g, '\\t')   // Encode tabs
-      .replace(/"/g, '\\"')    // Escape quotes
+      .replace(/\\/g, '\\\\') // Escape backslashes first
+      .replace(/\n/g, '\\n') // Encode newlines
+      .replace(/\r/g, '\\r') // Encode carriage returns
+      .replace(/\t/g, '\\t') // Encode tabs
+      .replace(/"/g, '\\"') // Escape quotes
   }
 
   /**
@@ -183,24 +185,24 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
    */
   private formatValueForContext(value: any, tokenLimit: number, markTruncation: boolean = true): string {
     let valueStr: string
-    
+
     if (typeof value === 'object' && value !== null) {
       // For objects, use JSON.stringify which handles escaping
       valueStr = JSON.stringify(value)
     } else {
       valueStr = String(value)
     }
-    
+
     // Escape to single line
     const escaped = this.escapeToSingleLine(valueStr)
-    
+
     // Truncate if needed
     const result = this.truncateToTokenLimit(escaped, tokenLimit)
-    
+
     if (result.truncated && markTruncation) {
       return `[TRUNCATED] ${result.text}`
     }
-    
+
     return result.text
   }
 
@@ -209,11 +211,11 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
    */
   public generateTopicContext(topic: TopicNode): string {
     const context = []
-    
+
     if (topic.path) {
       context.push(`Topic: ${topic.path()}`)
     }
-    
+
     // Add current value with preview (allow more tokens for main topic - 200 tokens)
     if (topic.message?.payload) {
       const [value] = topic.message.payload.format(topic.type)
@@ -222,26 +224,26 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
         const formattedValue = this.formatValueForContext(value, 200, true)
         context.push(`Value: ${formattedValue}`)
       }
-      
+
       // Add retained status if true
       if (topic.message.retain) {
-        context.push(`Retained: true`)
+        context.push('Retained: true')
       }
     }
-    
+
     // Add neighboring topics (siblings and children) up to token limit
     // Full topic paths with single-line previews
     const neighbors: string[] = []
     let neighborsTokenCount = 0
     const tokenLimit = this.neighboringTopicsTokenLimit
-    
+
     // Helper function to add a neighbor if within token limit
     const addNeighbor = (fullPath: string, value: any): boolean => {
       // Format value as single-line preview (no newlines)
       const preview = this.formatValueForContext(value, 20, false) // 20 tokens per neighbor
       const neighborEntry = `  ${fullPath}: ${preview}`
       const tokens = this.estimateTokens(neighborEntry)
-      
+
       if (neighborsTokenCount + tokens <= tokenLimit) {
         neighbors.push(neighborEntry)
         neighborsTokenCount += tokens
@@ -249,10 +251,10 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
       }
       return false
     }
-    
+
     // Get parent path for constructing full paths
     const parentPath = topic.parent?.path ? topic.parent.path() : ''
-    
+
     // Get siblings from parent
     if (topic.parent && topic.parent.edgeCollection) {
       const siblings = topic.parent.edgeCollection.edges || []
@@ -269,7 +271,7 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
         }
       }
     }
-    
+
     // Get children
     const currentPath = topic.path ? topic.path() : ''
     if (topic.edgeCollection?.edges && neighborsTokenCount < tokenLimit) {
@@ -287,24 +289,24 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
         }
       }
     }
-    
+
     if (neighbors.length > 0) {
       context.push(`\nRelated Topics (${neighbors.length}):`)
       context.push(neighbors.join('\n'))
     }
-    
+
     // Add metadata
     if (topic.messages) {
       context.push(`\nMessages: ${topic.messages}`)
     }
-    
+
     if (topic.childTopicCount) {
       const childCount = topic.childTopicCount()
       if (childCount > 0) {
         context.push(`Subtopics: ${childCount}`)
       }
     }
-    
+
     return context.join('\n')
   }
 
@@ -337,7 +339,7 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
       }
 
       const assistantMessage = result.response
-      
+
       // Add assistant response to history
       this.conversationHistory.push({
         role: 'assistant',
@@ -355,9 +357,9 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
       return assistantMessage
     } catch (error: unknown) {
       console.error('LLM Service Error:', error)
-      
+
       const err = error as { message?: string }
-      
+
       // Error messages come from RPC handler
       throw new Error(err.message || 'Failed to get response from AI assistant.')
     }
@@ -402,14 +404,14 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
   public async generateSuggestedQuestions(topic: TopicNode): Promise<string[]> {
     try {
       const topicContext = this.generateTopicContext(topic)
-      
+
       // Sanitize context to prevent prompt injection
       // Remove any potential instruction-like phrases that could manipulate the LLM
       const sanitizedContext = topicContext
         .replace(/```/g, '｀｀｀') // Replace backticks to prevent code block escape
         .replace(/system:|assistant:|user:/gi, '') // Remove role markers
         .slice(0, 2000) // Limit context length
-      
+
       // Create a temporary conversation for question generation
       const questionPrompt = `Based on this MQTT topic and its context, suggest 3-5 brief, relevant questions a user might want to ask. Return ONLY a JSON array of question strings, nothing else.
 
@@ -421,7 +423,7 @@ Format: ["question 1", "question 2", "question 3"]`
       const response = await backendRpc.call(RpcEvents.llmChat, {
         messages: [
           this.conversationHistory[0], // System message
-          { role: 'user', content: questionPrompt }
+          { role: 'user', content: questionPrompt },
         ],
       })
 
@@ -462,22 +464,22 @@ Format: ["question 1", "question 2", "question 3"]`
    */
   public getQuickSuggestions(topic: TopicNode): string[] {
     const suggestions = []
-    
+
     if (topic.message?.payload) {
       suggestions.push('Explain this data structure')
       suggestions.push('What does this value mean?')
     }
-    
+
     if (topic.childTopicCount && topic.childTopicCount() > 0) {
       suggestions.push('Summarize all subtopics')
     }
-    
+
     if (topic.messages && topic.messages > 1) {
       suggestions.push('Analyze message patterns')
     }
-    
+
     suggestions.push('What can I do with this topic?')
-    
+
     return suggestions
   }
 }

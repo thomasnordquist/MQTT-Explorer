@@ -4,15 +4,15 @@ import React from 'react'
 import axios from 'axios'
 import Close from '@mui/icons-material/Close'
 import CloudDownload from '@mui/icons-material/CloudDownload'
-import { AppState } from '../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { green } from '@mui/material/colors'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
+import { Button, IconButton, Modal, Paper, Snackbar, SnackbarContent, Typography } from '@mui/material'
 import { updateNotifierActions } from '../actions'
 
-import { Button, IconButton, Modal, Paper, Snackbar, SnackbarContent, Typography } from '@mui/material'
+import { AppState } from '../reducers'
 import { rendererRpc, getAppVersion } from '../eventBus'
 
 interface Props {
@@ -153,7 +153,7 @@ class UpdateNotifier extends React.PureComponent<Props, State> {
       .join('<hr />')
 
     return (
-      <Modal open={this.props.showUpdateDetails} disableAutoFocus={true} onClose={this.hideDetails}>
+      <Modal open={this.props.showUpdateDetails} disableAutoFocus onClose={this.hideDetails}>
         <Paper className={this.props.classes.root}>
           <Typography variant="h6" className={this.props.classes.title}>
             Version {latestUpdate.tag_name}
@@ -212,7 +212,8 @@ class UpdateNotifier extends React.PureComponent<Props, State> {
       <div>
         <Button className={this.props.classes.download} onClick={() => this.openUrl(asset.browser_download_url)}>
           <CloudDownload />
-          &nbsp;{asset.name}
+          &nbsp;
+          {asset.name}
         </Button>
       </div>
     ))
@@ -266,17 +267,13 @@ const styles = (theme: Theme) => ({
   },
 })
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    showUpdateNotification: state.globalState.get('showUpdateNotification'),
-    showUpdateDetails: state.globalState.get('showUpdateDetails'),
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  showUpdateNotification: state.globalState.get('showUpdateNotification'),
+  showUpdateDetails: state.globalState.get('showUpdateDetails'),
+})
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: bindActionCreators(updateNotifierActions, dispatch),
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: bindActionCreators(updateNotifierActions, dispatch),
+})
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(UpdateNotifier))

@@ -1,8 +1,8 @@
 import React, { memo } from 'react'
-import { ChartParameters } from '../../../reducers/Charts'
 import { Menu, MenuItem, TextField, Typography } from '@mui/material'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { ChartParameters } from '../../../reducers/Charts'
 import { chartActions } from '../../../actions'
 
 function Size(props: {
@@ -39,12 +39,10 @@ function Size(props: {
   )
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: {
-      chart: bindActionCreators(chartActions, dispatch),
-    },
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: {
+    chart: bindActionCreators(chartActions, dispatch),
+  },
+})
 
 export default connect(undefined, mapDispatchToProps)(memo(Size))
