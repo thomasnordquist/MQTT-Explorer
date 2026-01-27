@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { settingsActions, sidebarActions } from '../../actions'
+import { globalActions, settingsActions, sidebarActions } from '../../actions'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
 import { TopicViewModel } from '../../model/TopicViewModel'
@@ -18,6 +18,7 @@ interface Props {
   nodePath?: string
   tree?: q.Tree<TopicViewModel>
   actions: typeof sidebarActions
+  globalActions: typeof globalActions
   settingsActions: typeof settingsActions
   classes: any
   connectionId?: string
@@ -108,6 +109,7 @@ const mapStateToProps = (state: AppState) => {
 const mapDispatchToProps = (dispatch: any) => {
   return {
     actions: bindActionCreators(sidebarActions, dispatch),
+    globalActions: bindActionCreators(globalActions, dispatch),
     settingsActions: bindActionCreators(settingsActions, dispatch),
   }
 }

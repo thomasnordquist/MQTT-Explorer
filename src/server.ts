@@ -20,6 +20,10 @@ const CREDENTIALS_PATH = path.join(process.cwd(), 'data', 'credentials.json')
 const MAX_FILE_SIZE = 16 * 1024 * 1024 // 16MB limit for file uploads
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['*']
 const isProduction = process.env.NODE_ENV === 'production'
+// Enable upgrade-insecure-requests only when behind HTTPS reverse proxy
+const enableUpgradeInsecure = process.env.UPGRADE_INSECURE_REQUESTS === 'true'
+// Enable X-Frame-Options header to prevent iframe embedding (disabled by default)
+const enableXFrameOptions = process.env.X_FRAME_OPTIONS === 'true'
 
 /**
  * Validates and sanitizes file paths to prevent path traversal attacks
@@ -74,16 +78,34 @@ async function startServer() {
   const app = express()
 
   // Apply security headers with helmet
+  // Get Helmet's default CSP directives and remove upgrade-insecure-requests
+  // This ensures the directive is never added, even in edge cases
+  // Create a copy to avoid mutating Helmet's defaults
+  const defaultCspDirectives = { ...helmet.contentSecurityPolicy.getDefaultDirectives() }
+  delete defaultCspDirectives['upgrade-insecure-requests']
+  
+  // Build custom CSP directives, overriding defaults as needed
+  const cspDirectives = {
+    ...defaultCspDirectives,
+    // Override default-src from defaults
+    'default-src': ["'self'"],
+    // Override script-src for webpack
+    'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // unsafe-eval required for webpack runtime
+    // Override style-src for Material-UI
+    'style-src': ["'self'", "'unsafe-inline'"], // Required for Material-UI
+    // Add WebSocket support
+    'connect-src': ["'self'", 'ws:', 'wss:'], // Allow WebSocket connections
+    // Allow data URIs for images
+    'img-src': ["'self'", 'data:', 'blob:'],
+    // Only add upgrade-insecure-requests if explicitly enabled via env var
+    ...(enableUpgradeInsecure && { 'upgrade-insecure-requests': [] }),
+  }
+
   app.use(
     helmet({
       contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // unsafe-eval required for webpack runtime
-          styleSrc: ["'self'", "'unsafe-inline'"], // Required for Material-UI
-          connectSrc: ["'self'", 'ws:', 'wss:'], // Allow WebSocket connections
-          imgSrc: ["'self'", 'data:', 'blob:'],
-        },
+        useDefaults: false, // Don't merge with Helmet's defaults to ensure full control
+        directives: cspDirectives,
       },
       hsts: isProduction
         ? {
@@ -92,6 +114,7 @@ async function startServer() {
             preload: true,
           }
         : false,
+      frameguard: enableXFrameOptions ? { action: 'sameorigin' } : false, // Disabled by default to allow iframe embedding
       // Disable cross-origin policies that cause blank pages when accessing via IP vs localhost
       // These headers can block resources and cause rendering issues on HTTP-only deployments
       crossOriginEmbedderPolicy: false, // Can block resources without proper CORP headers

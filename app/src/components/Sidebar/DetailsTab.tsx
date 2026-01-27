@@ -70,6 +70,19 @@ function DetailsTab(props: Props) {
         <Typography variant="body2" color="textSecondary" align="center">
           Select a topic to view details
         </Typography>
+        
+        {/* About Button - always show even when no topic selected */}
+        <Box className={classes.aboutSection}>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<Info />}
+            onClick={() => props.globalActions.toggleAboutDialogVisibility()}
+            fullWidth
+          >
+            About MQTT Explorer
+          </Button>
+        </Box>
       </Box>
     )
   }
@@ -214,10 +227,17 @@ const styles = (theme: Theme) => ({
   },
   emptyState: {
     display: 'flex',
+    flexDirection: 'column' as 'column',
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: '200px',
     padding: theme.spacing(3),
+    gap: theme.spacing(3),
+  },
+  aboutSection: {
+    marginTop: theme.spacing(3),
+    paddingTop: theme.spacing(2),
+    borderTop: `1px solid ${theme.palette.divider}`,
   },
   aboutSection: {
     marginTop: theme.spacing(3),
