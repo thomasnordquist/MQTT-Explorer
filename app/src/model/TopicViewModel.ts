@@ -1,5 +1,5 @@
 import * as q from '../../../backend/src/Model'
-import { Destroyable } from 'mqtt-explorer-backend/src/Model/Destroyable'
+import { Destroyable } from '../../../backend/src/Model/Destroyable'
 import { EventDispatcher } from '../../../events/Events'
 import { MessageDecoder, decoders } from '../decoders'
 
