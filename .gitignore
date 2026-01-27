@@ -68,3 +68,17 @@ publish-test*.js
 verify-mobile-tree.js
 interactive-mobile-test.js
 long-wait-test.js
+
+# Test scripts (ESM)
+test-*.mjs
+check-*.mjs
+debug-*.mjs
+inspect-*.mjs
+final-*.mjs
+publish-test*.mjs
+verify-*.mjs
+interactive-*.mjs
+comprehensive-*.mjs
+integration-*.mjs
+working-*.mjs
+direct-*.mjs
