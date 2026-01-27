@@ -22,14 +22,11 @@ interface Props {
 
 function csvEscape(value: string): string {
   // Normalize newlines and escape double quotes for CSV/text export
-  const normalized = value.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
-  const withoutNewlines = normalized.replace(/\n/g, ' ')
-  const escapedQuotes = withoutNewlines.replace(/"/g, '""')
-  return `"${escapedQuotes}"`
+  return value.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n/g, ' ').replace(/"/g, '""')
 }
 
 function downloadHistoryAsFile(props: Props) {
-  var filename = "save.csv"
+  const filename = 'save.csv'
   const elementsText = props.items.map((element) => (
     csvEscape(element.key) + ';' + csvEscape(element.value) + ';\r\n'
   ))
@@ -130,7 +127,7 @@ function HistoryDrawer(props: Props) {
           }}
         >
           <Typography component={'span'} onClick={saveHistory} style={{ cursor: 'pointer', display: 'flex' }}>
-            <span style={{ flexGrow: 1 }} tabIndex={0}>
+            <span style={{ flexGrow: 1 }}>
               <Badge
                 classes={{ badge: props.classes.badge }}
                 invisible={true}
