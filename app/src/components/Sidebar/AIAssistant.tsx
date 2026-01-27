@@ -55,7 +55,7 @@ function AIAssistant(props: Props) {
   const [loadingSuggestions, setLoadingSuggestions] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const llmService = getLLMService()
-  const previousNodeRef = useRef<any>(null)
+  const previousNodePathRef = useRef<string>('')
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -67,8 +67,9 @@ function AIAssistant(props: Props) {
 
   // Auto-generate questions when node changes or chat is expanded
   useEffect(() => {
-    if (expanded && node && node !== previousNodeRef.current && llmService.hasApiKey()) {
-      previousNodeRef.current = node
+    const nodePath = node?.path?.()
+    if (expanded && node && nodePath && nodePath !== previousNodePathRef.current && llmService.hasApiKey()) {
+      previousNodePathRef.current = nodePath
       setLoadingSuggestions(true)
       
       llmService.generateSuggestedQuestions(node)

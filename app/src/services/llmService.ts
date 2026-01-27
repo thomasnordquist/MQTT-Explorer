@@ -6,6 +6,22 @@
 import { backendRpc } from '../browserEventBus'
 import { RpcEvents } from '../../../events/EventsV2'
 
+// Topic node interface for type safety
+export interface TopicNode {
+  path?: () => string
+  message?: any
+  messages?: number
+  childTopicCount?: () => number
+  type?: string
+  parent?: any
+  edgeCollection?: {
+    edges?: Array<{
+      name?: string
+      node?: TopicNode
+    }>
+  }
+}
+
 // Extend Window interface to include LLM availability flag
 declare global {
   interface Window {
@@ -191,13 +207,7 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
   /**
    * Generate context from topic data including neighboring topics
    */
-  public generateTopicContext(topic: { 
-    path?: () => string
-    message?: any
-    messages?: number
-    childTopicCount?: () => number
-    type?: string
-    parent?: any
+  public generateTopicContext(topic: TopicNode): string {
     edgeCollection?: any
   }): string {
     const context = []
@@ -391,15 +401,22 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
   /**
    * Generate suggested questions for a topic using LLM
    */
-  public async generateSuggestedQuestions(topic: any): Promise<string[]> {
+  public async generateSuggestedQuestions(topic: TopicNode): Promise<string[]> {
     try {
       const topicContext = this.generateTopicContext(topic)
+      
+      // Sanitize context to prevent prompt injection
+      // Remove any potential instruction-like phrases that could manipulate the LLM
+      const sanitizedContext = topicContext
+        .replace(/```/g, '｀｀｀') // Replace backticks to prevent code block escape
+        .replace(/system:|assistant:|user:/gi, '') // Remove role markers
+        .slice(0, 2000) // Limit context length
       
       // Create a temporary conversation for question generation
       const questionPrompt = `Based on this MQTT topic and its context, suggest 3-5 brief, relevant questions a user might want to ask. Return ONLY a JSON array of question strings, nothing else.
 
 Context:
-${topicContext}
+${sanitizedContext}
 
 Format: ["question 1", "question 2", "question 3"]`
 
@@ -408,7 +425,6 @@ Format: ["question 1", "question 2", "question 3"]`
           this.conversationHistory[0], // System message
           { role: 'user', content: questionPrompt }
         ],
-        topicContext,
       })
 
       if (!response || !response.response) {
@@ -446,7 +462,7 @@ Format: ["question 1", "question 2", "question 3"]`
   /**
    * Get quick suggestions based on topic
    */
-  public getQuickSuggestions(topic: { message?: { payload?: any }; childTopicCount?: () => number; messages?: number }): string[] {
+  public getQuickSuggestions(topic: TopicNode): string[] {
     const suggestions = []
     
     if (topic.message?.payload) {
@@ -458,7 +474,7 @@ Format: ["question 1", "question 2", "question 3"]`
       suggestions.push('Summarize all subtopics')
     }
     
-    if (topic.messages > 1) {
+    if (topic.messages && topic.messages > 1) {
       suggestions.push('Analyze message patterns')
     }
     
