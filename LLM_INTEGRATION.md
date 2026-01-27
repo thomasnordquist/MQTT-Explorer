@@ -30,18 +30,11 @@ The AI Assistant can help you:
 
 ### Setting Up Your API Key
 
-#### Via UI (Browser/Electron)
+The AI Assistant uses a **backend proxy architecture** for security. API keys are configured server-side only and are never exposed to the frontend.
 
-1. Click the ⚙️ settings icon in the AI Assistant panel
-2. Select your preferred provider (OpenAI or Gemini)
-3. Enter your API key
-4. Click "Save"
+#### For Server/Docker Deployments
 
-Your API key is stored locally in your browser's localStorage and is never sent to MQTT Explorer's servers.
-
-#### Via Environment Variables (Server Mode)
-
-For server deployments, you can configure the AI Assistant using environment variables:
+Configure the AI Assistant using environment variables:
 
 ```bash
 # Provider selection (optional, defaults to 'openai')
@@ -54,12 +47,22 @@ export LLM_API_KEY=...              # Generic fallback for either provider
 
 # Token limit for neighboring topics context (optional, defaults to 100)
 export LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT=100
+
+# Start the server
+node dist/src/server.js
 ```
+
+**Architecture**:
+- Backend reads API keys from environment variables
+- Backend proxies all LLM API requests via `/api/llm/chat` endpoint
+- Frontend only receives an availability flag (no credentials)
+- API keys never leave the server
 
 **Environment Variable Priority:**
 1. Provider-specific keys (`OPENAI_API_KEY`, `GEMINI_API_KEY`) are checked first
 2. Generic `LLM_API_KEY` is used as fallback
-3. UI-configured keys in localStorage are used if no environment variables are set
+
+**Note**: If no LLM environment variables are set, the AI Assistant feature will be completely hidden from all users.
 
 ### Getting API Keys
 
@@ -68,7 +71,7 @@ export LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT=100
 1. Visit [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 2. Sign up or log in to your OpenAI account
 3. Create a new API key
-4. Copy the key and paste it into MQTT Explorer's configuration dialog or set `OPENAI_API_KEY` environment variable
+4. Set `OPENAI_API_KEY` environment variable on your server
 
 **Note**: Using the AI Assistant will consume OpenAI API credits based on your usage. Please review OpenAI's pricing at [https://openai.com/pricing](https://openai.com/pricing).
 
