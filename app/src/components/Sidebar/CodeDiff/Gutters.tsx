@@ -66,7 +66,7 @@ function tokensForLine(change: diff.Change, line: number, props: Props) {
   if (change.added) {
     return [chartPreview, <span key="add" className={classes.icon}>+</span>]
   } else if (change.removed) {
-    return [<span key="remove" className={classes.icon}>−</span>]
+    return [<span key="remove" className={classes.icon}>-</span>]
   } else {
     return [
       chartPreview,
