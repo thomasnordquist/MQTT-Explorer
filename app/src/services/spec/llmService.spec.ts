@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import 'mocha'
-import { LLMService, MessageProposal, ParsedResponse } from '../llmService'
+import { LLMService, MessageProposal, QuestionProposal, ParsedResponse } from '../llmService'
 
 describe('LLMService', () => {
   describe('parseResponse', () => {
@@ -142,6 +142,78 @@ After`
       expect(parsed.text).to.include('Before')
       expect(parsed.text).to.include('Middle')
       expect(parsed.text).to.include('After')
+    })
+
+    it('should extract question proposals from response', () => {
+      const response = `This is a smart light.
+
+\`\`\`question-proposal
+{
+  "question": "Can I set the brightness level?",
+  "category": "control"
+}
+\`\`\`
+
+\`\`\`question-proposal
+{
+  "question": "What other states does this support?",
+  "category": "analysis"
+}
+\`\`\`
+
+These are helpful follow-up questions.`
+
+      const parsed = service.parseResponse(response)
+
+      expect(parsed.questions).to.have.lengthOf(2)
+      expect(parsed.questions[0].question).to.equal('Can I set the brightness level?')
+      expect(parsed.questions[0].category).to.equal('control')
+      expect(parsed.questions[1].question).to.equal('What other states does this support?')
+      expect(parsed.questions[1].category).to.equal('analysis')
+      expect(parsed.text).to.not.include('```question-proposal')
+    })
+
+    it('should handle response with both proposals and questions', () => {
+      const response = `Here's what you can do:
+
+\`\`\`proposal
+{
+  "topic": "home/light/set",
+  "payload": "ON",
+  "qos": 0,
+  "description": "Turn on the light"
+}
+\`\`\`
+
+\`\`\`question-proposal
+{
+  "question": "Can I dim the light?",
+  "category": "control"
+}
+\`\`\`
+
+Both actions and questions provided.`
+
+      const parsed = service.parseResponse(response)
+
+      expect(parsed.proposals).to.have.lengthOf(1)
+      expect(parsed.questions).to.have.lengthOf(1)
+      expect(parsed.text).to.not.include('```proposal')
+      expect(parsed.text).to.not.include('```question-proposal')
+    })
+
+    it('should handle question without category', () => {
+      const response = `\`\`\`question-proposal
+{
+  "question": "What is the message frequency?"
+}
+\`\`\``
+
+      const parsed = service.parseResponse(response)
+
+      expect(parsed.questions).to.have.lengthOf(1)
+      expect(parsed.questions[0].question).to.equal('What is the message frequency?')
+      expect(parsed.questions[0].category).to.be.undefined
     })
   })
 

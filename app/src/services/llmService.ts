@@ -51,9 +51,15 @@ export interface MessageProposal {
   description: string
 }
 
+export interface QuestionProposal {
+  question: string
+  category?: string // 'analysis', 'control', 'troubleshooting', 'optimization'
+}
+
 export interface ParsedResponse {
   text: string
   proposals: MessageProposal[]
+  questions: QuestionProposal[]
 }
 
 export class LLMService {
@@ -82,11 +88,12 @@ export class LLMService {
 - Troubleshooting connectivity, message delivery, and data quality issues
 
 **Your Communication Style:**
-- Be CONCISE and practical - keep answers brief and focused (2-3 sentences maximum)
+- Keep your TEXT response CONCISE and practical (2-3 sentences maximum for the explanation)
 - Use clear technical language appropriate for users familiar with MQTT
 - When analyzing data, identify patterns, anomalies, or potential issues quickly
 - Suggest practical next steps or automations when relevant
 - Reference common MQTT ecosystems and standards when applicable
+- NOTE: Proposals and question suggestions are OUTSIDE the sentence limit - always include them when relevant
 
 **Context You Receive:**
 Users will ask about specific MQTT topics and their data. You'll receive:
@@ -96,7 +103,7 @@ Users will ask about specific MQTT topics and their data. You'll receive:
 - Metadata (message count, subtopics, retained status)
 
 **Actionable Proposals:**
-When you detect home automation systems (Home Assistant, zigbee2mqtt, tasmota, homie, etc.) or controllable devices, you MAY propose MQTT messages that users can send.
+When you detect home automation systems (Home Assistant, zigbee2mqtt, tasmota, homie, etc.) or controllable devices, you should ALWAYS propose MQTT messages that users can send. Include proposals regardless of response length.
 To propose an action, include a JSON block in your response with this exact format:
 
 \`\`\`proposal
@@ -108,7 +115,19 @@ To propose an action, include a JSON block in your response with this exact form
 }
 \`\`\`
 
-You can include multiple proposals if there are multiple relevant actions. Only propose actions when it makes sense based on the topic structure and user's question.
+You can include multiple proposals if there are multiple relevant actions. Always propose actions when you detect controllable devices.
+
+**Follow-Up Questions:**
+After answering, suggest 1-3 relevant follow-up questions to help users explore further. Use this format:
+
+\`\`\`question-proposal
+{
+  "question": "Your suggested question here?",
+  "category": "analysis"
+}
+\`\`\`
+
+Categories: "analysis" (understanding data), "control" (device actions), "troubleshooting" (problems), "optimization" (improvements).
 
 **Your Goal:**
 Help users understand their MQTT data, troubleshoot issues, optimize their automation setups, and discover insights about their connected devices. Provide concise, actionable responses.`,
@@ -366,10 +385,11 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
   }
 
   /**
-   * Parse LLM response to extract proposals and clean text
+   * Parse LLM response to extract proposals, questions, and clean text
    */
   public parseResponse(response: string): ParsedResponse {
     const proposals: MessageProposal[] = []
+    const questions: QuestionProposal[] = []
     let cleanText = response
 
     // Match proposal blocks: ```proposal\n{...}\n```
@@ -392,10 +412,27 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
       }
     }
 
-    // Remove proposal blocks from display text
-    cleanText = cleanText.replace(/```proposal\s*\n[\s\S]*?\n```/g, '').trim()
+    // Match question proposal blocks: ```question-proposal\n{...}\n```
+    const questionRegex = /```question-proposal\s*\n([\s\S]*?)\n```/g
+    while ((match = questionRegex.exec(response)) !== null) {
+      try {
+        const questionJson = JSON.parse(match[1])
+        if (questionJson.question) {
+          questions.push({
+            question: questionJson.question,
+            category: questionJson.category,
+          })
+        }
+      } catch (e) {
+        console.warn('Failed to parse question proposal:', match[1])
+      }
+    }
 
-    return { text: cleanText, proposals }
+    // Remove proposal and question blocks from display text
+    cleanText = cleanText.replace(/```proposal\s*\n[\s\S]*?\n```/g, '').trim()
+    cleanText = cleanText.replace(/```question-proposal\s*\n[\s\S]*?\n```/g, '').trim()
+
+    return { text: cleanText, proposals, questions }
   }
 
   /**

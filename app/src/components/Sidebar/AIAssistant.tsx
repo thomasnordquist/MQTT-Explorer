@@ -28,7 +28,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ClearIcon from '@mui/icons-material/Clear'
 import PublishIcon from '@mui/icons-material/Publish'
 import { Base64Message } from 'mqtt-explorer-backend/src/Model/Base64Message'
-import { getLLMService, LLMMessage, MessageProposal } from '../../services/llmService'
+import { getLLMService, LLMMessage, MessageProposal, QuestionProposal } from '../../services/llmService'
 import { makePublishEvent, rendererEvents } from '../../eventBus'
 
 interface Props {
@@ -42,6 +42,7 @@ interface ChatMessage {
   content: string
   timestamp: Date
   proposals?: MessageProposal[]
+  questionProposals?: QuestionProposal[]
 }
 
 function AIAssistant(props: Props) {
@@ -116,15 +117,16 @@ function AIAssistant(props: Props) {
         // Send to LLM
         const response = await llmService.sendMessage(text, topicContext)
 
-        // Parse response for proposals
+        // Parse response for proposals and questions
         const parsed = llmService.parseResponse(response)
 
-        // Add assistant response to UI with proposals
+        // Add assistant response to UI with proposals and questions
         const assistantMessage: ChatMessage = {
           role: 'assistant',
           content: parsed.text,
           timestamp: new Date(),
           proposals: parsed.proposals,
+          questionProposals: parsed.questions,
         }
         setMessages(prev => [...prev, assistantMessage])
       } catch (err: unknown) {
@@ -223,8 +225,8 @@ function AIAssistant(props: Props) {
             </Alert>
           )}
 
-          {/* Quick Suggestions */}
-          {hasApiKey && messages.length === 0 && allSuggestions.length > 0 && (
+          {/* Quick Suggestions - Always shown when available */}
+          {hasApiKey && allSuggestions.length > 0 && (
             <Box className={classes.suggestions}>
               <Typography variant="caption" color="textSecondary" className={classes.suggestionsTitle}>
                 {loadingSuggestions ? 'Generating questions...' : 'Suggested questions:'}
@@ -301,6 +303,34 @@ function AIAssistant(props: Props) {
                         </CardActions>
                       </Card>
                     ))}
+                  </Box>
+                )}
+
+                {/* Render question proposals if any */}
+                {msg.questionProposals && msg.questionProposals.length > 0 && (
+                  <Box className={classes.questionProposalsContainer}>
+                    <Typography variant="caption" color="textSecondary" gutterBottom>
+                      Follow-up questions:
+                    </Typography>
+                    <Box className={classes.suggestionChips}>
+                      {msg.questionProposals.map((qProposal, qIdx) => (
+                        <Chip
+                          key={qIdx}
+                          label={qProposal.question}
+                          size="small"
+                          color="secondary"
+                          onClick={() => handleSuggestionClick(qProposal.question)}
+                          className={classes.questionProposalChip}
+                          icon={
+                            qProposal.category ? (
+                              <Typography variant="caption" component="span">
+                                {qProposal.category}:
+                              </Typography>
+                            ) : undefined
+                          }
+                        />
+                      ))}
+                    </Box>
                   </Box>
                 )}
               </Box>
@@ -517,6 +547,19 @@ const styles = (theme: Theme) => ({
   proposalActions: {
     padding: theme.spacing(1, 2),
     paddingTop: 0,
+  },
+  questionProposalsContainer: {
+    marginTop: theme.spacing(1),
+    marginLeft: theme.spacing(6),
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: theme.spacing(0.5),
+  },
+  questionProposalChip: {
+    cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.dark,
+    },
   },
 })
 
