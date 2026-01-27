@@ -107,14 +107,14 @@ async function createWindow() {
   })
 
   mainWindow.on('hide', () => {
-    tray = new Tray(path.join(__dirname, '..', '..', 'icon.png'));
+    if(!tray) tray = new Tray(path.join(__dirname, '..', '..', 'icon.png'))
     tray.setContextMenu(Menu.buildFromTemplate([
       {
         label: 'Show App', click: function () {
-          mainWindow?.show();
+          mainWindow?.show()
         }
       },
-    ]));
+    ]))
   })
 
   mainWindow.on('show', () => {

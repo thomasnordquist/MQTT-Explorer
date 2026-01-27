@@ -29,7 +29,7 @@ function csvEscape(value: string): string {
 }
 
 function downloadHistoryAsFile(props: Props) {
-  var filename = "save.txt"
+  var filename = "save.csv"
   const elementsText = props.items.map((element) => (
     csvEscape(element.key) + ';' + csvEscape(element.value) + ';\r\n'
   ))
@@ -63,7 +63,7 @@ function HistoryDrawer(props: Props) {
   }
 
   const saveHistory = () => {
-    dowloadHistoryAsFile(props)
+    downloadHistoryAsFile(props)
   }
 
   function renderHistory() {
@@ -130,7 +130,7 @@ function HistoryDrawer(props: Props) {
           }}
         >
           <Typography component={'span'} onClick={saveHistory} style={{ cursor: 'pointer', display: 'flex' }}>
-            <span style={{ flexGrow: 1 }}>
+            <span style={{ flexGrow: 1 }} tabIndex={0}>
               <Badge
                 classes={{ badge: props.classes.badge }}
                 invisible={true}
