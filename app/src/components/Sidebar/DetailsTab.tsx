@@ -19,6 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep'
 import Info from '@mui/icons-material/Info'
 import SimpleBreadcrumb from './SimpleBreadcrumb'
+import AIAssistant from './AIAssistant'
 
 interface Props {
   node?: q.TreeNode<any>
@@ -195,7 +196,10 @@ function DetailsTab(props: Props) {
           </Box>
         </Box>
       )}
-      
+
+      {/* AI Assistant - Always available when a node is selected */}
+      {node && <AIAssistant node={node} />}
+
       {/* About Section - always visible at bottom */}
       <Box className={classes.aboutSection}>
         <Button
@@ -229,6 +233,11 @@ const styles = (theme: Theme) => ({
     minHeight: '200px',
     padding: theme.spacing(3),
     gap: theme.spacing(3),
+  },
+  aboutSection: {
+    marginTop: theme.spacing(3),
+    paddingTop: theme.spacing(2),
+    borderTop: `1px solid ${theme.palette.divider}`,
   },
   aboutSection: {
     marginTop: theme.spacing(3),
