@@ -21,6 +21,7 @@ const style = (theme: Theme) => {
     width: '12px',
     height: '12px',
     marginTop: 0,
+    paddingTop: '2px',
     borderRadius: '50%',
     fontSize: '16px',
     display: 'inline-block',
