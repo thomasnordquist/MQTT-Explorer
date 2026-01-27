@@ -4,15 +4,20 @@ import {
   AddMqttConnection,
   MqttMessage,
   addMqttConnectionEvent,
-  backendEvents,
   makeConnectionMessageEvent,
   makeConnectionStateEvent,
   makePublishEvent,
   removeConnection,
 } from '../../events'
+import { EventBusInterface } from '../../events/EventSystem/EventBusInterface'
 
 export class ConnectionManager {
   private connections: { [s: string]: DataSource<any> } = {}
+  private backendEvents: EventBusInterface
+
+  constructor(backendEvents: EventBusInterface) {
+    this.backendEvents = backendEvents
+  }
 
   private handleConnectionRequest = (event: AddMqttConnection) => {
     const connectionId = event.id
@@ -28,12 +33,12 @@ export class ConnectionManager {
 
     const connectionStateEvent = makeConnectionStateEvent(connectionId)
     connection.stateMachine.onUpdate.subscribe(state => {
-      backendEvents.emit(connectionStateEvent, state)
+      this.backendEvents.emit(connectionStateEvent, state)
     })
 
     connection.connect(options)
     this.handleNewMessagesForConnection(connectionId, connection)
-    backendEvents.subscribe(makePublishEvent(connectionId), (msg: MqttMessage) => {
+    this.backendEvents.subscribe(makePublishEvent(connectionId), (msg: MqttMessage) => {
       this.connections[connectionId].publish(msg)
     })
   }
@@ -49,7 +54,7 @@ export class ConnectionManager {
       let decoded_payload = null
       decoded_payload = Base64Message.fromBuffer(buffer)
 
-      backendEvents.emit(messageEvent, {
+      this.backendEvents.emit(messageEvent, {
         topic,
         payload: decoded_payload,
         qos: packet.qos,
@@ -60,8 +65,8 @@ export class ConnectionManager {
   }
 
   public manageConnections() {
-    backendEvents.subscribe(addMqttConnectionEvent, this.handleConnectionRequest)
-    backendEvents.subscribe(removeConnection, (connectionId: string) => {
+    this.backendEvents.subscribe(addMqttConnectionEvent, this.handleConnectionRequest)
+    this.backendEvents.subscribe(removeConnection, (connectionId: string) => {
       this.removeConnection(connectionId)
     })
   }
@@ -69,7 +74,7 @@ export class ConnectionManager {
   public removeConnection(connectionId: string) {
     const connection = this.connections[connectionId]
     if (connection) {
-      backendEvents.unsubscribeAll(makePublishEvent(connectionId))
+      this.backendEvents.unsubscribeAll(makePublishEvent(connectionId))
       connection.disconnect()
       delete this.connections[connectionId]
       connection.stateMachine.onUpdate.removeAllListeners()

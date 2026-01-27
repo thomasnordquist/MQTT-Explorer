@@ -1,19 +1,19 @@
-import compareVersions from 'compare-versions'
+import { compareVersions } from 'compare-versions'
 import electron from 'electron'
-import os from 'os'
 import React from 'react'
 import axios from 'axios'
-import Close from '@material-ui/icons/Close'
-import CloudDownload from '@material-ui/icons/CloudDownload'
+import Close from '@mui/icons-material/Close'
+import CloudDownload from '@mui/icons-material/CloudDownload'
 import { AppState } from '../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { green } from '@material-ui/core/colors'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { green } from '@mui/material/colors'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 import { updateNotifierActions } from '../actions'
 
-import { Button, IconButton, Modal, Paper, Snackbar, SnackbarContent, Typography } from '@material-ui/core'
-import { rendererRpc, getAppVersion } from '../../../events'
+import { Button, IconButton, Modal, Paper, Snackbar, SnackbarContent, Typography } from '@mui/material'
+import { rendererRpc, getAppVersion } from '../eventBus'
 
 interface Props {
   showUpdateNotification: boolean
@@ -84,7 +84,7 @@ class UpdateNotifier extends React.PureComponent<Props, State> {
     return res.data as Array<GithubRelease>
   }
 
-  private onCloseNotification = (event: React.SyntheticEvent<any>, reason: string) => {
+  private onCloseNotification = (event: any, reason: any) => {
     if (reason === 'clickaway') {
       return
     }
@@ -182,15 +182,24 @@ class UpdateNotifier extends React.PureComponent<Props, State> {
 
   private assetForCurrentPlatform(asset: GithubAsset) {
     let regex: RegExp
-    if (os.platform() === 'darwin') {
+    const platform = this.getPlatform()
+    if (platform === 'darwin') {
       regex = /\.dmg$/
-    } else if (os.platform() === 'win32') {
+    } else if (platform === 'win32') {
       regex = /\.exe$/
     } else {
       regex = /\.AppImage$/
     }
 
     return regex.test(asset.name)
+  }
+
+  private getPlatform(): string {
+    if (typeof window === 'undefined') return 'linux'
+    const userAgent = window.navigator.userAgent.toLowerCase()
+    if (userAgent.includes('mac')) return 'darwin'
+    if (userAgent.includes('win')) return 'win32'
+    return 'linux'
   }
 
   private renderDownloads() {

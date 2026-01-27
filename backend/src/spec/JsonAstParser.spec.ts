@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { parseJson } from '../JsonAstParser'
 import 'mocha'
 
-const dotProp = require('dot-prop')
+import dotProp from 'dot-prop'
 
 describe('access JSON values via dot property paths', () => {
   it('object with literal', () => {

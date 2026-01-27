@@ -1,17 +1,19 @@
 import ConfirmationDialog from './ConfirmationDialog'
 import ConnectionSetup from './ConnectionSetup/ConnectionSetup'
-import CssBaseline from '@material-ui/core/CssBaseline'
+import CssBaseline from '@mui/material/CssBaseline'
 import ErrorBoundary from './ErrorBoundary'
 import Notification from './Layout/Notification'
 import React from 'react'
 import TitleBar from './Layout/TitleBar'
 import UpdateNotifier from './UpdateNotifier'
+import { AboutDialog } from './AboutDialog'
 import { AppState } from '../reducers'
 import { bindActionCreators } from 'redux'
 import { ConfirmationRequest } from '../reducers/Global'
 import { connect } from 'react-redux'
 import { globalActions, settingsActions } from '../actions'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 ;(window as any).global = window
 
 const Settings = React.lazy(() => import('./SettingsDrawer/Settings'))
@@ -27,6 +29,7 @@ interface Props {
   settingsActions: typeof settingsActions
   launching: boolean
   confirmationRequests: Array<ConfirmationRequest>
+  aboutDialogVisible: boolean
 }
 
 class App extends React.PureComponent<Props, {}> {
@@ -74,6 +77,10 @@ class App extends React.PureComponent<Props, {}> {
         <CssBaseline />
         <ErrorBoundary>
           <ConfirmationDialog confirmationRequests={this.props.confirmationRequests} />
+          <AboutDialog
+            open={this.props.aboutDialogVisible}
+            onClose={() => this.props.actions.toggleAboutDialogVisibility()}
+          />
           {this.renderNotification()}
           <React.Suspense fallback={<div></div>}>
             <Settings {...anyProps} />
@@ -157,6 +164,7 @@ const mapStateToProps = (state: AppState) => {
     highlightTopicUpdates: state.settings.get('highlightTopicUpdates'),
     launching: state.globalState.get('launching'),
     confirmationRequests: state.globalState.get('confirmationRequests'),
+    aboutDialogVisible: state.globalState.get('aboutDialogVisible'),
   }
 }
 

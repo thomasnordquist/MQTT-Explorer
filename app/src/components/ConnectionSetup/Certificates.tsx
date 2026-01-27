@@ -1,12 +1,18 @@
 import * as React from 'react'
 import CertificateFileSelection from './CertificateFileSelection'
-import Undo from '@material-ui/icons/Undo'
+import BrowserCertificateFileSelection from './BrowserCertificateFileSelection'
+import Undo from '@mui/icons-material/Undo'
 import { bindActionCreators } from 'redux'
-import { Button, Grid } from '@material-ui/core'
+import { Button, Grid } from '@mui/material'
 import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
 import { ConnectionOptions } from '../../model/ConnectionOptions'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
+import { isBrowserMode } from '../../utils/browserMode'
+
+// Use browser or desktop file selection based on mode
+const CertSelector: any = isBrowserMode ? BrowserCertificateFileSelection : CertificateFileSelection
 
 interface Props {
   connection: ConnectionOptions
@@ -45,7 +51,7 @@ class Certificates extends React.PureComponent<Props, State> {
         <form noValidate={true} autoComplete="off">
           <Grid container={true} spacing={3}>
             <Grid item={true} xs={12} className={classes.gridPadding}>
-              <CertificateFileSelection
+              <CertSelector
                 connection={this.props.connection}
                 certificate={this.props.connection.selfSignedCertificate}
                 title="Server Certificate (CA)"
@@ -53,7 +59,7 @@ class Certificates extends React.PureComponent<Props, State> {
               />
             </Grid>
             <Grid item={true} xs={12} className={classes.gridPadding}>
-              <CertificateFileSelection
+              <CertSelector
                 connection={this.props.connection}
                 certificate={this.props.connection.clientCertificate}
                 title="Client Certificate"
@@ -61,7 +67,7 @@ class Certificates extends React.PureComponent<Props, State> {
               />
             </Grid>
             <Grid item={true} xs={12} className={classes.gridPadding}>
-              <CertificateFileSelection
+              <CertSelector
                 connection={this.props.connection}
                 certificate={this.props.connection.clientKey}
                 title="Client Key"
@@ -104,4 +110,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(undefined, mapDispatchToProps)(withStyles(styles)(Certificates))
+export default connect(undefined, mapDispatchToProps)(withStyles(styles)(Certificates) as any)

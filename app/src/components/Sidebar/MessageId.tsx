@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
 import { Message } from '../../../../backend/src/Model'
-import { Tooltip } from '@material-ui/core'
+import { Tooltip } from '@mui/material'
 
 export const MessageId = memo(function MessageId(props: { message: Message; addComma?: boolean }) {
   const { message, addComma } = props

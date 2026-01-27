@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:24
 
 RUN DEBIAN_FRONTEND="noninteractive" apt-get update \
   && apt-get install -y --no-install-recommends ca-certificates nano ffmpeg xvfb git-core tmux locales mosquitto x11vnc
@@ -9,6 +9,17 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && loca
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+
+# Configure mosquitto for anonymous access (required for tests)
+RUN mkdir -p /etc/mosquitto/conf.d && \
+    echo "listener 1883" > /etc/mosquitto/conf.d/default.conf && \
+    echo "allow_anonymous true" >> /etc/mosquitto/conf.d/default.conf && \
+    echo "persistence false" >> /etc/mosquitto/conf.d/default.conf
+
+# Install Playwright and browsers
+# This ensures Playwright browsers are pre-installed in the container
+RUN npm install -g playwright@1.57.0 && \
+    npx playwright install --with-deps chromium
 
 CMD /bin/bash
 

@@ -1,12 +1,15 @@
 import * as React from 'react'
-import { IconButton, Tooltip } from '@material-ui/core'
-import { Theme, withStyles } from '@material-ui/core/styles'
+import { IconButton, Tooltip } from '@mui/material'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 
 interface Props {
   onClick: any
   tooltip: string
   classes: any
   style?: React.CSSProperties
+  children?: React.ReactNode
+  'data-testid'?: string
 }
 
 const styles = (theme: Theme) => ({
@@ -36,7 +39,12 @@ class CustomIconButton extends React.PureComponent<Props, {}> {
 
   public render() {
     return (
-      <IconButton className={this.props.classes.button} style={this.props.style} onClick={this.onClick}>
+      <IconButton
+        className={this.props.classes.button}
+        style={this.props.style}
+        onClick={this.onClick}
+        data-testid={this.props['data-testid']}
+      >
         <Tooltip title={this.props.tooltip} classes={{ popper: this.props.classes.tooltip }}>
           <span className={this.props.classes.label}>{this.props.children}</span>
         </Tooltip>

@@ -1,15 +1,15 @@
 import React, { useCallback, useMemo } from 'react'
 import * as q from '../../../../../backend/src/Model'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
-import Grow from '@material-ui/core/Grow'
-import Button from '@material-ui/core/Button'
-import Paper from '@material-ui/core/Paper'
-import Popper from '@material-ui/core/Popper'
-import MenuItem from '@material-ui/core/MenuItem'
-import MenuList from '@material-ui/core/MenuList'
-import WarningRounded from '@material-ui/icons/WarningRounded'
+import ClickAwayListener from '@mui/material/ClickAwayListener'
+import Grow from '@mui/material/Grow'
+import Button from '@mui/material/Button'
+import Paper from '@mui/material/Paper'
+import Popper from '@mui/material/Popper'
+import MenuItem from '@mui/material/MenuItem'
+import MenuList from '@mui/material/MenuList'
+import WarningRounded from '@mui/icons-material/WarningRounded'
 import { MessageDecoder, decoders } from '../../../decoders'
-import { Tooltip } from '@material-ui/core'
+import { Tooltip } from '@mui/material'
 
 export const TopicTypeButton = (props: { node?: q.TreeNode<any> }) => {
   const { node } = props
@@ -24,7 +24,7 @@ export const TopicTypeButton = (props: { node?: q.TreeNode<any> }) => {
 
   const selectOption = useCallback(
     (decoder: MessageDecoder, format: string) => {
-      if (!node) {
+      if (!node || !node.viewModel) {
         return
       }
 
@@ -46,7 +46,7 @@ export const TopicTypeButton = (props: { node?: q.TreeNode<any> }) => {
     [open]
   )
 
-  const handleClose = useCallback((event: React.MouseEvent<Document, MouseEvent>) => {
+  const handleClose = useCallback((event: any) => {
     if (anchorEl && anchorEl.contains(event.target as HTMLElement)) {
       return
     }
@@ -55,7 +55,7 @@ export const TopicTypeButton = (props: { node?: q.TreeNode<any> }) => {
 
   return (
     <Button onClick={handleToggle}>
-      {props.node?.viewModel.decoder?.format ?? props.node?.type}
+      {props.node?.viewModel?.decoder?.format ?? props.node?.type}
       <Popper open={open} anchorEl={anchorEl} role={undefined} transition>
         {({ TransitionProps, placement }) => (
           <Grow

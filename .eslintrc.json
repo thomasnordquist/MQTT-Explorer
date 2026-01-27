@@ -1,17 +1,318 @@
 {
-    "env": {
-        "browser": true,
-        "commonjs": true,
-        "es6": true
-    },
-    "extends": "eslint:recommended",
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
-    },
-    "parserOptions": {
-        "ecmaVersion": 2018
-    },
-    "rules": {
+  "root": true,
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
     }
+  },
+  "extends": [
+    "airbnb-base",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/typescript"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "import"
+  ],
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true
+      },
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
+  "rules": {
+    "@typescript-eslint/semi": ["error", "never"],
+    "semi": "off",
+    "max-len": "warn",
+    "@typescript-eslint/explicit-member-accessibility": "warn",
+    "no-else-return": "warn",
+    "indent": "off",
+    "@typescript-eslint/indent": "warn",
+    "import/prefer-default-export": "warn",
+    "@typescript-eslint/naming-convention": "warn",
+    "@typescript-eslint/comma-dangle": "warn",
+    "comma-dangle": "off",
+    "arrow-parens": "warn",
+    "import/no-extraneous-dependencies": ["warn", {
+      "devDependencies": ["**/*.spec.ts", "**/*.spec.tsx", "**/__tests__/**", "scripts/**", "src/spec/**"],
+      "optionalDependencies": true,
+      "peerDependencies": false
+    }],
+    "@typescript-eslint/no-non-null-assertion": "warn",
+    "@typescript-eslint/no-unused-expressions": ["warn", {
+      "allowShortCircuit": true,
+      "allowTernary": true
+    }],
+    "object-shorthand": "warn",
+    "prefer-template": "warn",
+    "no-plusplus": "warn",
+    "class-methods-use-this": "warn",
+    "consistent-return": "warn",
+    "@typescript-eslint/lines-between-class-members": "warn",
+    "import/extensions": "warn",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "warn",
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": "warn",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+    "import/no-cycle": "warn",
+    "import/no-relative-packages": "warn",
+    "operator-linebreak": "warn",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "prefer-destructuring": "warn",
+    "arrow-body-style": "warn",
+    "import/order": "warn",
+    "object-curly-newline": "warn",
+    "import/no-named-default": "warn",
+    "no-console": "warn",
+    "func-names": "warn",
+    "no-await-in-loop": "warn",
+    "no-restricted-syntax": "warn",
+    "no-continue": "warn",
+    "no-promise-executor-return": "warn",
+    "no-eval": "error",
+    "@typescript-eslint/default-param-last": "warn",
+    "radix": "warn",
+    "no-param-reassign": "warn",
+    "no-underscore-dangle": "warn",
+    "no-restricted-globals": "warn",
+    "@typescript-eslint/no-useless-constructor": "warn",
+    "@typescript-eslint/ban-types": "warn",
+    "global-require": "warn",
+    "@typescript-eslint/no-var-requires": "warn",
+    "eqeqeq": ["warn", "always", {"null": "ignore"}],
+    "no-var": "warn",
+    "prefer-const": "warn",
+    "no-unused-expressions": "off",
+    "curly": "warn",
+    "no-duplicate-imports": "warn",
+    "react-hooks/rules-of-hooks": "warn",
+    "@typescript-eslint/prefer-as-const": "warn",
+    "prefer-arrow-callback": "warn",
+    "react/jsx-boolean-value": "warn",
+    "react/jsx-one-expression-per-line": "warn",
+    "react/function-component-definition": "warn",
+    "react/no-unescaped-entities": "warn",
+    "no-trailing-spaces": "warn",
+    "padded-blocks": "warn",
+    "brace-style": "off",
+    "@typescript-eslint/brace-style": "warn",
+    "object-curly-spacing": "warn",
+    "space-before-function-paren": "off",
+    "@typescript-eslint/space-before-function-paren": "warn",
+    "keyword-spacing": "warn",
+    "space-infix-ops": "off",
+    "@typescript-eslint/space-infix-ops": "warn",
+    "comma-spacing": "off",
+    "@typescript-eslint/comma-spacing": "warn",
+    "quotes": "off",
+    "@typescript-eslint/quotes": "warn",
+    "linebreak-style": "warn"
+  },
+  "overrides": [
+    {
+      "files": ["src/**/*.ts", "scripts/**/*.ts", "events/**/*.ts"],
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      },
+      "extends": [
+        "airbnb-base",
+        "airbnb-typescript/base"
+      ],
+      "rules": {
+        "@typescript-eslint/semi": ["error", "never"],
+        "semi": "off",
+        "max-len": "warn",
+        "@typescript-eslint/indent": "warn",
+        "@typescript-eslint/no-throw-literal": "warn",
+        "arrow-parens": "warn",
+        "@typescript-eslint/comma-dangle": "warn",
+        "arrow-body-style": "warn",
+        "@typescript-eslint/no-use-before-define": "warn",
+        "object-curly-newline": "warn",
+        "no-trailing-spaces": "warn",
+        "operator-linebreak": "warn",
+        "no-await-in-loop": "warn",
+        "import/prefer-default-export": "warn",
+        "no-promise-executor-return": "warn",
+        "import/no-cycle": "warn",
+        "no-restricted-globals": "warn",
+        "import/no-extraneous-dependencies": ["warn", {
+          "devDependencies": ["**/*.spec.ts", "**/*.spec.tsx", "**/__tests__/**", "scripts/**", "src/spec/**"],
+          "optionalDependencies": true,
+          "peerDependencies": false
+        }],
+        "prefer-template": "warn",
+        "prefer-arrow-callback": "warn",
+        "import/no-relative-packages": "warn",
+        "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }]
+      }
+    },
+    {
+      "files": ["app/**/*.ts", "app/**/*.tsx"],
+      "parserOptions": {
+        "project": "./app/tsconfig.json"
+      },
+      "extends": [
+        "airbnb-base",
+        "airbnb-typescript/base"
+      ],
+      "rules": {
+        "@typescript-eslint/semi": ["error", "never"],
+        "semi": "off",
+        "max-len": "warn",
+        "@typescript-eslint/indent": "warn",
+        "@typescript-eslint/no-throw-literal": "warn",
+        "arrow-parens": "warn",
+        "@typescript-eslint/comma-dangle": "warn",
+        "arrow-body-style": "warn",
+        "@typescript-eslint/no-use-before-define": "warn",
+        "object-curly-newline": "warn",
+        "no-trailing-spaces": "warn",
+        "operator-linebreak": "warn",
+        "no-await-in-loop": "warn",
+        "import/prefer-default-export": "warn",
+        "no-promise-executor-return": "warn",
+        "import/no-cycle": "warn",
+        "no-restricted-globals": "warn",
+        "import/no-extraneous-dependencies": ["warn", {
+          "devDependencies": ["**/*.spec.ts", "**/*.spec.tsx", "**/__tests__/**", "scripts/**", "src/spec/**"],
+          "optionalDependencies": true,
+          "peerDependencies": false
+        }],
+        "prefer-template": "warn",
+        "prefer-arrow-callback": "warn",
+        "import/no-relative-packages": "warn",
+        "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }]
+      }
+    },
+    {
+      "files": ["app/**/*.tsx"],
+      "parserOptions": {
+        "project": "./app/tsconfig.json"
+      },
+      "extends": [
+        "airbnb",
+        "airbnb-typescript",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended"
+      ],
+      "plugins": [
+        "react",
+        "react-hooks",
+        "jsx-a11y"
+      ],
+      "settings": {
+        "react": {
+          "version": "detect"
+        }
+      },
+      "rules": {
+        "@typescript-eslint/semi": ["error", "never"],
+        "semi": "off",
+        "max-len": "off",
+        "@typescript-eslint/indent": "off",
+        "@typescript-eslint/no-throw-literal": "warn",
+        "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
+        "react/prop-types": "off",
+        "react/react-in-jsx-scope": "off",
+        "react/jsx-props-no-spreading": "warn",
+        "jsx-a11y/click-events-have-key-events": "warn",
+        "jsx-a11y/no-static-element-interactions": "warn",
+        "react/destructuring-assignment": "warn",
+        "react/no-access-state-in-setstate": "warn",
+        "react/sort-comp": "warn",
+        "react/no-unused-state": "warn",
+        "react/state-in-constructor": "warn",
+        "react/static-property-placement": "warn",
+        "react/no-array-index-key": "warn",
+        "react/display-name": "warn",
+        "react-compiler/react-compiler": "off",
+        "react/require-default-props": "warn",
+        "react/jsx-no-bind": "warn",
+        "arrow-parens": "warn",
+        "@typescript-eslint/comma-dangle": "warn",
+        "arrow-body-style": "warn",
+        "@typescript-eslint/no-use-before-define": "warn",
+        "object-curly-newline": "warn",
+        "no-trailing-spaces": "warn",
+        "operator-linebreak": "warn",
+        "no-await-in-loop": "warn",
+        "import/prefer-default-export": "warn",
+        "no-promise-executor-return": "warn",
+        "import/no-cycle": "warn",
+        "no-restricted-globals": "warn",
+        "import/no-extraneous-dependencies": ["warn", {
+          "devDependencies": ["**/*.spec.ts", "**/*.spec.tsx", "**/__tests__/**", "scripts/**", "src/spec/**"],
+          "optionalDependencies": true,
+          "peerDependencies": false
+        }],
+        "prefer-template": "warn",
+        "prefer-arrow-callback": "warn",
+        "import/no-relative-packages": "warn",
+        "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+        "react/jsx-boolean-value": "warn",
+        "react/jsx-one-expression-per-line": "warn"
+      }
+    },
+    {
+      "files": ["backend/**/*.ts"],
+      "parserOptions": {
+        "project": "./backend/tsconfig.json"
+      },
+      "extends": [
+        "airbnb-base",
+        "airbnb-typescript/base"
+      ],
+      "rules": {
+        "@typescript-eslint/semi": ["error", "never"],
+        "semi": "off",
+        "max-len": "warn",
+        "@typescript-eslint/indent": "warn",
+        "@typescript-eslint/no-throw-literal": "warn",
+        "arrow-parens": "warn",
+        "@typescript-eslint/comma-dangle": "warn",
+        "arrow-body-style": "warn",
+        "@typescript-eslint/no-use-before-define": "warn",
+        "object-curly-newline": "warn",
+        "no-trailing-spaces": "warn",
+        "operator-linebreak": "warn",
+        "no-await-in-loop": "warn",
+        "import/prefer-default-export": "warn",
+        "no-promise-executor-return": "warn",
+        "import/no-cycle": "warn",
+        "no-restricted-globals": "warn",
+        "import/no-extraneous-dependencies": ["warn", {
+          "devDependencies": ["**/*.spec.ts", "**/*.spec.tsx", "**/__tests__/**", "scripts/**", "src/spec/**"],
+          "optionalDependencies": true,
+          "peerDependencies": false
+        }],
+        "prefer-template": "warn",
+        "prefer-arrow-callback": "warn",
+        "import/no-relative-packages": "warn",
+        "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }]
+      }
+    },
+    {
+      "files": ["*.spec.ts", "*.spec.tsx", "**/__tests__/**"],
+      "rules": {
+        "@typescript-eslint/no-unused-expressions": "off",
+        "import/no-extraneous-dependencies": "off"
+      }
+    }
+  ]
 }

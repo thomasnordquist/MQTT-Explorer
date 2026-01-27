@@ -1,6 +1,6 @@
 import { Destroyable } from './Destroyable'
 import { Hashable, TreeNode } from './'
-const sha1 = require('sha1')
+import sha1 from 'sha1'
 
 export class Edge<ViewModel extends Destroyable> implements Hashable {
   public name: string

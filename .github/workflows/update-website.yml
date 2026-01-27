@@ -2,6 +2,10 @@ name: Update Website
 
 on: [release, workflow_dispatch]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   update-website:
     runs-on: ubuntu-latest
@@ -11,7 +15,7 @@ jobs:
           ref: gh-pages
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '24'
       - run: npm install
       - run: npm run readme
       - uses: stefanzweifel/git-auto-commit-action@v5

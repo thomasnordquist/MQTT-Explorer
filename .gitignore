@@ -9,3 +9,62 @@ test.png
 .awcache
 .scannerwork
 screen*.png
+
+# MCP introspection artifacts
+mqtt-explorer-mcp-screenshot.png
+screenshot-mcp-*.png
+test-mcp-introspection.js
+
+/data
+test-screenshot-*.png
+test-expand-*.png
+browser-debug-screenshot.png
+
+app/.webpack-cache
+
+# Temporary files
+/tmp
+
+# Demo video artifacts
+scenes.json
+scenes-mobile.json
+segment-*.mp4
+segment-*.gif
+ui-test.mp4
+ui-test.gif
+ui-test-mobile.mp4
+ui-test-mobile.gif
+app.mp4
+app2.mp4
+app-mobile.mp4
+app2-mobile.mp4
+app720.gif
+qrawvideorgb24.yuv
+qrawvideorgb24-mobile.yuv
+intro.png
+intro-mobile.png
+palette.png
+palette-mobile.png
+ffmpeg_info
+ffmpeg_info_mobile# Mobile test artifacts
+qrawvideorgb24-mobile.yuv
+*.yuv
+segment-mobile-*.gif
+mobile-demo.mp4
+mobile-demo.gif
+final-mobile-tree.png
+mobile-tree-debug.png
+mobile-render-debug.png
+tree-state-check.png
+server*.log
+
+# Test scripts
+test-mobile-tree.js
+check-*.js
+debug-*.js
+inspect-*.js
+final-*.js
+publish-test*.js
+verify-mobile-tree.js
+interactive-mobile-test.js
+long-wait-test.js

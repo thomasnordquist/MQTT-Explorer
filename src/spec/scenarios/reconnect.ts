@@ -2,8 +2,8 @@ import { Page } from 'playwright'
 import { clickOn } from '../util'
 
 export async function reconnect(browser: Page) {
-  const disconnectButton = await browser.locator('//button/span[contains(text(),"Disconnect")]')
+  const disconnectButton = browser.locator('[data-testid="disconnect-button"]')
   await clickOn(disconnectButton)
-  const connectButton = await browser.locator('//button/span[contains(text(),"Connect")]')
+  const connectButton = browser.locator('[data-testid="connect-button"]')
   await clickOn(connectButton)
 }

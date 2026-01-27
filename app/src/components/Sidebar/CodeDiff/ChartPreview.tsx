@@ -1,11 +1,11 @@
 import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
-import ShowChart from '@material-ui/icons/ShowChart'
+import ShowChart from '@mui/icons-material/ShowChart'
 import TopicPlot from '../../TopicPlot'
 import { bindActionCreators } from 'redux'
 import { chartActions } from '../../../actions'
 import { connect } from 'react-redux'
-import { Fade, Paper, Popper, Tooltip } from '@material-ui/core'
+import { Fade, Paper, Popper, Tooltip } from '@mui/material'
 import { JsonPropertyLocation } from '../../../../../backend/src/JsonAstParser'
 
 interface Props {
@@ -41,39 +41,41 @@ function ChartPreview(props: Props) {
 
   const addChartToPanelButton = hasEnoughDataToDisplayDiagrams ? (
     <Tooltip title="Add to chart panel">
-      <ShowChart
+      <span
         ref={chartIconRef}
-        className={props.classes.icon}
         onMouseEnter={mouseOver}
         onMouseLeave={mouseOut}
         onClick={onClick}
-        data-test-type="ShowChart"
-        data-test={props.literal.path}
-      />
+        style={{ cursor: 'pointer', display: 'inline-flex' }}
+      >
+        <ShowChart className={props.classes.icon} />
+      </span>
     </Tooltip>
   ) : (
-      <Tooltip title="Add to chart panel, not enough data for preview">
-        <ShowChart
-          onClick={onClick}
-          className={props.classes.icon}
-          style={{ color: '#aaa' }}
-          data-test-type="ShowChart"
-          data-test={props.literal.path}
-        />
-      </Tooltip>
-    )
+    <Tooltip title="Add to chart panel, not enough data for preview">
+      <span onClick={onClick} style={{ cursor: 'pointer', display: 'inline-flex' }}>
+        <ShowChart className={props.classes.icon} style={{ color: '#aaa' }} />
+      </span>
+    </Tooltip>
+  )
 
   return (
-    <span>
-      {addChartToPanelButton}
+    <div style={{ display: 'inline' }}>
+      <span data-test-type="ShowChart" data-test={props.literal.path} style={{ display: 'inline-block' }}>
+        {addChartToPanelButton}
+      </span>
       <Popper open={open} anchorEl={chartIconRef.current} placement="left-end">
         <Fade in={open} timeout={300}>
           <Paper style={{ width: '300px' }}>
-            {open ? <TopicPlot node={props.treeNode} history={props.treeNode.messageHistory} dotPath={props.literal.path} /> : <span />}
+            {open ? (
+              <TopicPlot node={props.treeNode} history={props.treeNode.messageHistory} dotPath={props.literal.path} />
+            ) : (
+              <span />
+            )}
           </Paper>
         </Fade>
       </Popper>
-    </span>
+    </div>
   )
 }
 

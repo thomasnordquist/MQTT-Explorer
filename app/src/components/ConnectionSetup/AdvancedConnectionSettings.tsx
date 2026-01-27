@@ -1,17 +1,19 @@
 import * as React from 'react'
 import { useState, useCallback, memo } from 'react'
-import Add from '@material-ui/icons/Add'
-import Lock from '@material-ui/icons/Lock'
-import Undo from '@material-ui/icons/Undo'
+import Add from '@mui/icons-material/Add'
+import Lock from '@mui/icons-material/Lock'
+import Undo from '@mui/icons-material/Undo'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
 import { ConnectionOptions } from '../../model/ConnectionOptions'
-import { Theme, withStyles } from '@material-ui/core/styles'
-import { Button, Grid, TextField, Tooltip } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
+import { Button, Grid, TextField, Tooltip } from '@mui/material'
 import { QosSelect } from '../QosSelect'
 import { QoS } from '../../../../backend/src/DataSource/MqttSource'
 import Subscriptions from './Subscriptions'
+const SubscriptionsAny = Subscriptions as any
 
 interface Props {
   connection: ConnectionOptions
@@ -63,12 +65,13 @@ const ConnectionSettings = memo(function ConnectionSettings(props: Props) {
               color="secondary"
               onClick={() => props.managerActions.addSubscription({ topic, qos }, props.connection.id)}
               variant="contained"
+              data-testid="add-subscription-button"
             >
               <Add /> Add
             </Button>
           </Grid>
           <Grid item={true} xs={12} style={{ padding: 0 }}>
-            <Subscriptions connection={props.connection} />
+            <SubscriptionsAny connection={props.connection} />
           </Grid>
           <Grid item={true} xs={7} className={classes.gridPadding}>
             <TextField
@@ -97,6 +100,7 @@ const ConnectionSettings = memo(function ConnectionSettings(props: Props) {
               variant="contained"
               className={classes.button}
               onClick={props.managerActions.toggleAdvancedSettings}
+              data-testid="back-button"
             >
               <Undo /> Back
             </Button>
@@ -129,4 +133,4 @@ const styles = (theme: Theme) => ({
   },
 })
 
-export default connect(undefined, mapDispatchToProps)(withStyles(styles)(ConnectionSettings))
+export default connect(undefined, mapDispatchToProps)(withStyles(styles)(ConnectionSettings) as any)

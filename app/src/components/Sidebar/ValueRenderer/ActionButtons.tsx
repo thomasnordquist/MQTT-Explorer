@@ -1,10 +1,12 @@
 import React, { useCallback } from 'react'
-import Code from '@material-ui/icons/Code'
-import Reorder from '@material-ui/icons/Reorder'
-import ToggleButton from '@material-ui/lab/ToggleButton'
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
+import Code from '@mui/icons-material/Code'
+import Reorder from '@mui/icons-material/Reorder'
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { settingsActions } from '../../../actions'
-import { Tooltip, withStyles, Theme } from '@material-ui/core'
+import { Tooltip } from '@mui/material'
+import { withStyles } from '@mui/styles'
+import { Theme } from '@mui/material/styles'
 import { bindActionCreators } from 'redux'
 import { AppState } from '../../../reducers'
 import { connect } from 'react-redux'
@@ -34,15 +36,17 @@ function ActionButtons(props: {
     >
       <ToggleButton className={props.classes.toggleButton} value="diff" id="valueRendererDisplayMode-diff">
         <Tooltip title="Show difference between the current and the last message">
-          <span>
+          <span className={props.classes.buttonContent}>
             <Code className={props.classes.toggleButtonIcon} />
+            <span className={props.classes.buttonText}>Diff</span>
           </span>
         </Tooltip>
       </ToggleButton>
       <ToggleButton className={props.classes.toggleButton} value="raw" id="valueRendererDisplayMode-raw">
         <Tooltip title="Raw / formatted JSON / formatted sparkplugb protojson">
-          <span>
+          <span className={props.classes.buttonContent}>
             <Reorder className={props.classes.toggleButtonIcon} />
+            <span className={props.classes.buttonText}>Raw</span>
           </span>
         </Tooltip>
       </ToggleButton>
@@ -53,9 +57,20 @@ function ActionButtons(props: {
 const styles = (theme: Theme) => ({
   toggleButton: {
     height: '36px',
+    padding: theme.spacing(0.5, 1.5),
   },
   toggleButtonIcon: {
     verticalAlign: 'middle',
+    fontSize: '1.25rem',
+  },
+  buttonContent: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(0.5),
+  },
+  buttonText: {
+    fontSize: '0.875rem',
+    textTransform: 'none' as 'none',
   },
 })
 
@@ -73,4 +88,4 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ActionButtons))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ActionButtons) as any)

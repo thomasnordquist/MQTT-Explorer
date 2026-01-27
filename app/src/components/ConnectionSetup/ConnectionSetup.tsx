@@ -1,15 +1,20 @@
 import * as React from 'react'
 import ConnectionSettings from './ConnectionSettings'
+const ConnectionSettingsAny = ConnectionSettings as any
 import ProfileList from './ProfileList'
+import MobileConnectionSelector from './MobileConnectionSelector'
 import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
 import { ConnectionOptions, toMqttConnection } from '../../model/ConnectionOptions'
-import { Theme, withStyles } from '@material-ui/core/styles'
-import { Modal, Paper, Toolbar, Typography, Collapse } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
+import { Modal, Paper, Toolbar, Typography, Collapse } from '@mui/material'
 import AdvancedConnectionSettings from './AdvancedConnectionSettings'
+const AdvancedConnectionSettingsAny = AdvancedConnectionSettings as any
 import Certificates from './Certificates'
+const CertificatesAny = Certificates as any
 
 interface Props {
   actions: any
@@ -34,13 +39,13 @@ class ConnectionSetup extends React.PureComponent<Props, {}> {
     return (
       <div>
         <Collapse in={!showAdvancedSettings && !showCertificateSettings}>
-          <ConnectionSettings connection={connection} />
+          <ConnectionSettingsAny connection={connection} />
         </Collapse>
         <Collapse in={showAdvancedSettings && !showCertificateSettings}>
-          <AdvancedConnectionSettings connection={connection} />
+          <AdvancedConnectionSettingsAny connection={connection} />
         </Collapse>
         <Collapse in={showCertificateSettings}>
-          <Certificates connection={connection} />
+          <CertificatesAny connection={connection} />
         </Collapse>
       </div>
     )
@@ -62,10 +67,15 @@ class ConnectionSetup extends React.PureComponent<Props, {}> {
             </div>
             <div className={classes.right} key={connection && connection.id}>
               <Toolbar>
-                <Typography className={classes.title} variant="h6" color="inherit">
-                  MQTT Connection
-                </Typography>
-                <Typography className={classes.connectionUri}>{mqttConnection && mqttConnection.url}</Typography>
+                <div className={classes.toolbarContent}>
+                  <div className={classes.desktopTitle}>
+                    <Typography className={classes.title} variant="h6" color="inherit">
+                      MQTT Connection
+                    </Typography>
+                    <Typography className={classes.connectionUri}>{mqttConnection && mqttConnection.url}</Typography>
+                  </div>
+                  <MobileConnectionSelector />
+                </div>
               </Toolbar>
               {this.renderSettings()}
             </div>
@@ -82,6 +92,20 @@ const styles = (theme: Theme) => ({
     color: theme.palette.text.primary,
     whiteSpace: 'nowrap' as 'nowrap',
   },
+  toolbarContent: {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  desktopTitle: {
+    display: 'flex',
+    alignItems: 'center',
+    flex: 1,
+    // Hide on mobile - connection selector will take its place
+    [theme.breakpoints.down('md')]: {
+      display: 'none' as 'none',
+    },
+  },
   root: {
     margin: `calc((100vh - ${connectionHeight}) / 2) auto 0 auto`,
     minWidth: '800px',
@@ -89,6 +113,14 @@ const styles = (theme: Theme) => ({
     height: connectionHeight,
     outline: 'none' as 'none',
     display: 'flex' as 'flex',
+    // Mobile responsive adjustments
+    [theme.breakpoints.down('md')]: {
+      minWidth: '95vw',
+      maxWidth: '95vw',
+      height: '85vh',
+      margin: '7.5vh auto 0 auto',
+      flexDirection: 'column' as 'column',
+    },
   },
   left: {
     borderRightStyle: 'dotted' as 'dotted',
@@ -99,19 +131,28 @@ const styles = (theme: Theme) => ({
     backgroundColor: theme.palette.background.default,
     color: theme.palette.text.primary,
     overflowY: 'auto' as 'auto',
+    // Mobile: hide profile list to save space
+    [theme.breakpoints.down('md')]: {
+      display: 'none' as 'none',
+    },
   },
   right: {
     borderRadius: `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0`,
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(2),
     flex: 10,
+    // Mobile: enable scrolling
+    [theme.breakpoints.down('md')]: {
+      borderRadius: `${theme.shape.borderRadius}px`,
+      overflowY: 'auto' as 'auto',
+    },
   },
   connectionUri: {
     width: '27em',
     textOverflow: 'ellipsis' as 'ellipsis',
     whiteSpace: 'nowrap' as 'nowrap',
     overflow: 'hidden' as 'hidden',
-    color: theme.palette.text.hint,
+    color: theme.palette.text.secondary,
     fontSize: '0.9em',
     marginLeft: theme.spacing(4),
   },
@@ -134,4 +175,4 @@ const mapDispatchToProps = (dispatch: any) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ConnectionSetup))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ConnectionSetup) as any)

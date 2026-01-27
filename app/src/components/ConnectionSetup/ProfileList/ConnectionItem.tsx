@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
-import { ListItem, Typography } from '@material-ui/core'
+import { ListItem, Typography } from '@mui/material'
 import { toMqttConnection, ConnectionOptions } from '../../../model/ConnectionOptions'
-import { withStyles, Theme } from '@material-ui/core/styles'
+import { withStyles } from '@mui/styles'
+import { Theme } from '@mui/material/styles'
 import { bindActionCreators } from 'redux'
 import { connectionActions, connectionManagerActions } from '../../../actions'
 
@@ -62,9 +63,9 @@ export const connectionItemStyle = (theme: Theme) => ({
     textOverflow: 'ellipsis' as 'ellipsis',
     whiteSpace: 'nowrap' as 'nowrap',
     overflow: 'hidden' as 'hidden',
-    color: theme.palette.text.hint,
+    color: theme.palette.text.secondary,
     fontSize: '0.7em',
   },
 })
 
-export default connect(null, mapDispatchToProps)(withStyles(connectionItemStyle)(ConnectionItem))
+export default connect(null, mapDispatchToProps)(withStyles(connectionItemStyle)(ConnectionItem) as any)

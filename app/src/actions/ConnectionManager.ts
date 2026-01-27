@@ -13,7 +13,7 @@ import * as path from 'path'
 import { ActionTypes, Action } from '../reducers/ConnectionManager'
 import { Subscription } from '../../../backend/src/DataSource/MqttSource'
 import { connectionsMigrator } from './migrations/Connection'
-import { rendererRpc, readFromFile } from '../../../events'
+import { rendererRpc, readFromFile } from '../eventBus'
 import { makeOpenDialogRpc } from '../../../events/OpenDialogRequest'
 
 export interface ConnectionDictionary {
@@ -46,6 +46,9 @@ export const loadConnectionSettings = () => async (dispatch: Dispatch<any>, getS
   const firstKey = Object.keys(connections)[0]
   if (firstKey) {
     dispatch(selectConnection(firstKey))
+  } else {
+    // No connections exist - create a default one
+    dispatch(createConnection())
   }
 }
 

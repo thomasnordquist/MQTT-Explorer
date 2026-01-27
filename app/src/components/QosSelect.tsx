@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { TextField, MenuItem, Tooltip } from '@material-ui/core'
+import { TextField, MenuItem, Tooltip } from '@mui/material'
 import { QoS } from '../../../backend/src/DataSource/MqttSource'
 
 export function QosSelect(props: { selected: QoS; onChange: (value: QoS) => void; label?: string }) {

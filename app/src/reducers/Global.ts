@@ -11,6 +11,7 @@ export enum ActionTypes {
   toggleSettingsVisibility = 'TOGGLE_SETTINGS_VISIBILITY',
   requestConfirmation = 'REQUEST_CONFIRMATION',
   removeConfirmationRequest = 'REMOVE_CONFIRMATION_REQUEST',
+  toggleAboutDialogVisibility = 'TOGGLE_ABOUT_DIALOG_VISIBILITY',
 }
 
 export interface ConfirmationRequest {
@@ -36,6 +37,7 @@ interface GlobalStateInterface {
   launching: boolean
   settingsVisible: boolean
   confirmationRequests: Array<ConfirmationRequest>
+  aboutDialogVisible: boolean
 }
 
 export type GlobalState = Record<GlobalStateInterface>
@@ -48,6 +50,7 @@ const initialStateFactory = Record<GlobalStateInterface>({
   launching: true,
   settingsVisible: false,
   confirmationRequests: [],
+  aboutDialogVisible: false,
 })
 
 export const globalState: Reducer<Record<GlobalStateInterface>, GlobalAction> = (
@@ -62,6 +65,9 @@ export const globalState: Reducer<Record<GlobalStateInterface>, GlobalAction> = 
 
     case ActionTypes.toggleSettingsVisibility:
       return state.set('settingsVisible', !state.get('settingsVisible'))
+
+    case ActionTypes.toggleAboutDialogVisibility:
+      return state.set('aboutDialogVisible', !state.get('aboutDialogVisible'))
 
     case ActionTypes.showError:
       return state.set('error', action.error)

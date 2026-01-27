@@ -1,7 +1,8 @@
 import React, { useCallback, useState, useEffect, memo } from 'react'
-import { Badge, Typography } from '@material-ui/core'
+import { Badge, Typography } from '@mui/material'
 import { selectTextWithCtrlA } from '../../utils/handleTextSelectWithCtrlA'
-import { Theme, withStyles, emphasize } from '@material-ui/core/styles'
+import { Theme, emphasize } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
 
 interface HistoryItem {
   key: string
@@ -110,6 +111,7 @@ function HistoryDrawer(props: Props) {
                 invisible={!visible}
                 badgeContent={props.items.length}
                 color="primary"
+                data-testid="message-history"
               >
                 {expanded ? '▼ History' : '▶ History'}
               </Badge>
