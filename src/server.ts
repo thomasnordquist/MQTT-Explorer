@@ -6,6 +6,7 @@ import { promises as fsPromise } from 'fs'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import { body, validationResult } from 'express-validator'
+import axios from 'axios'
 import { AuthManager } from './AuthManager'
 import { ConnectionManager } from '../backend/src/index'
 import ConfigStorage from '../backend/src/ConfigStorage'
@@ -266,58 +267,18 @@ async function startServer() {
       console.log(`Client connected, auth disabled: ${authDisabled}`)
     }
     
-    // Send LLM configuration from environment variables (if set)
-    const llmConfig: {
-      provider?: string
-      apiKey?: string
-      neighboringTopicsTokenLimit?: number
-    } = {}
+    // Send LLM availability status to clients (don't leak credentials)
+    const llmAvailable = !!(
+      process.env.OPENAI_API_KEY ||
+      process.env.GEMINI_API_KEY ||
+      process.env.LLM_API_KEY
+    )
     
-    // Get provider from env
-    const envProvider = process.env.LLM_PROVIDER
-    if (envProvider === 'openai' || envProvider === 'gemini') {
-      llmConfig.provider = envProvider
-    }
-    
-    // Get API key from env (provider-specific or generic)
-    const openaiKey = process.env.OPENAI_API_KEY
-    const geminiKey = process.env.GEMINI_API_KEY
-    const genericKey = process.env.LLM_API_KEY
-    
-    if (llmConfig.provider === 'gemini') {
-      llmConfig.apiKey = geminiKey || genericKey
-    } else if (llmConfig.provider === 'openai') {
-      llmConfig.apiKey = openaiKey || genericKey
-    } else {
-      // No provider specified, check both provider-specific keys
-      llmConfig.apiKey = openaiKey || geminiKey || genericKey
-      if (llmConfig.apiKey) {
-        // Infer provider from which key is set (only if provider-specific key is used)
-        if (openaiKey) {
-          llmConfig.provider = 'openai'
-        } else if (geminiKey) {
-          llmConfig.provider = 'gemini'
-        }
-        // If only genericKey is set, provider remains undefined - user must set LLM_PROVIDER
-      }
-    }
-    
-    // Get token limit from env
-    const tokenLimit = parseInt(process.env.LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT || '', 10)
-    if (!isNaN(tokenLimit)) {
-      llmConfig.neighboringTopicsTokenLimit = tokenLimit
-    }
-    
-    // Only send if any LLM config is available
-    if (llmConfig.provider || llmConfig.apiKey || llmConfig.neighboringTopicsTokenLimit) {
-      socket.emit('llm-config', llmConfig)
+    if (llmAvailable) {
+      socket.emit('llm-available', { available: true })
       
       if (!isProduction) {
-        console.log('Sent LLM config to client:', {
-          provider: llmConfig.provider,
-          hasApiKey: !!llmConfig.apiKey,
-          tokenLimit: llmConfig.neighboringTopicsTokenLimit,
-        })
+        console.log('LLM service is available on backend')
       }
     }
     
@@ -488,6 +449,116 @@ async function startServer() {
       throw new Error('Failed to upload certificate')
     }
   })
+
+  // LLM Chat API endpoint - backend proxies requests to LLM providers
+  app.post(
+    '/api/llm/chat',
+    express.json({ limit: '1mb' }),
+    async (req: Request, res: Response) => {
+      try {
+        // Get LLM configuration from environment
+        const provider = (process.env.LLM_PROVIDER || 'openai') as 'openai' | 'gemini'
+        const apiKey = provider === 'gemini'
+          ? (process.env.GEMINI_API_KEY || process.env.LLM_API_KEY)
+          : (process.env.OPENAI_API_KEY || process.env.LLM_API_KEY)
+
+        if (!apiKey) {
+          return res.status(503).json({ error: 'LLM service not configured' })
+        }
+
+        const { messages, topicContext } = req.body
+
+        if (!messages || !Array.isArray(messages)) {
+          return res.status(400).json({ error: 'Invalid request: messages required' })
+        }
+
+        // Rate limiting check - use IP-based tracking
+        const clientIp = req.ip || req.socket.remoteAddress || 'unknown'
+        // TODO: Add more sophisticated rate limiting if needed
+
+        // Call appropriate LLM provider
+        let response: string
+
+        if (provider === 'gemini') {
+          // Gemini API
+          const model = 'gemini-1.5-flash-latest'
+          const contents = messages
+            .filter((msg: any) => msg.role !== 'system')
+            .map((msg: any) => ({
+              role: msg.role === 'assistant' ? 'model' : 'user',
+              parts: [{ text: msg.content }],
+            }))
+
+          // Prepend system message to first user message
+          const systemMsg = messages.find((msg: any) => msg.role === 'system')
+          if (systemMsg && contents.length > 0) {
+            contents[0].parts.unshift({ text: systemMsg.content })
+          }
+
+          const geminiResponse = await axios.post(
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+            {
+              contents,
+              generationConfig: {
+                temperature: 0.7,
+                maxOutputTokens: 500,
+              },
+            },
+            {
+              timeout: 30000,
+            }
+          )
+
+          if (!geminiResponse.data.candidates || geminiResponse.data.candidates.length === 0) {
+            throw new Error('No response from Gemini')
+          }
+
+          response = geminiResponse.data.candidates[0].content.parts[0].text
+        } else {
+          // OpenAI API
+          const model = 'gpt-3.5-turbo'
+          const openaiResponse = await axios.post(
+            'https://api.openai.com/v1/chat/completions',
+            {
+              model,
+              messages,
+              temperature: 0.7,
+              max_tokens: 500,
+            },
+            {
+              headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+              },
+              timeout: 30000,
+            }
+          )
+
+          if (!openaiResponse.data.choices || openaiResponse.data.choices.length === 0) {
+            throw new Error('No response from OpenAI')
+          }
+
+          response = openaiResponse.data.choices[0].message.content
+        }
+
+        // Return the response to the client
+        res.json({ response })
+
+      } catch (error: any) {
+        console.error('LLM API error:', error.message)
+        
+        if (error.response?.status === 401 || error.response?.status === 403) {
+          return res.status(503).json({ error: 'Invalid API key configuration' })
+        } else if (error.response?.status === 429) {
+          return res.status(429).json({ error: 'Rate limit exceeded. Please try again later.' })
+        } else if (error.code === 'ECONNABORTED') {
+          return res.status(504).json({ error: 'Request timeout. Please try again.' })
+        } else {
+          return res.status(500).json({ error: 'Failed to get response from LLM service' })
+        }
+      }
+    }
+  )
 
   // Serve static files
   app.use(express.static(path.join(__dirname, '..', '..', 'app', 'build')))

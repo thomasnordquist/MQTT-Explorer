@@ -13,6 +13,7 @@ declare global {
       apiKey?: string
       neighboringTopicsTokenLimit?: number
     }
+    __llmAvailable?: boolean
   }
 }
 
@@ -32,47 +33,14 @@ export interface LLMServiceConfig {
 }
 
 export class LLMService {
-  private axiosInstance: AxiosInstance
-  private model: string
-  private provider: LLMProvider
   private conversationHistory: LLMMessage[] = []
   private neighboringTopicsTokenLimit: number
 
   constructor(config: LLMServiceConfig = {}) {
-    const apiKey = config.apiKey || this.getApiKeyFromStorage() || this.getApiKeyFromEnv()
-    this.provider = config.provider || this.getProviderFromStorage() || this.getProviderFromEnv() || 'openai'
+    // In new architecture, we don't need API key or provider on client
+    // Backend handles all LLM API calls
     this.neighboringTopicsTokenLimit = config.neighboringTopicsTokenLimit || this.getNeighboringTopicsTokenLimitFromEnv() || 100
     
-    // Set default endpoint and model based on provider
-    let baseURL = config.apiEndpoint
-    if (!baseURL) {
-      baseURL = this.provider === 'gemini' 
-        ? 'https://generativelanguage.googleapis.com/v1beta'
-        : 'https://api.openai.com/v1'
-    }
-    
-    this.model = config.model || (this.provider === 'gemini' ? 'gemini-1.5-flash-latest' : 'gpt-3.5-turbo')
-
-    // Configure headers based on provider
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    }
-    
-    if (apiKey) {
-      if (this.provider === 'gemini') {
-        // Gemini uses API key as query parameter, not header
-        // Will be added to URL in sendMessage
-      } else {
-        headers.Authorization = `Bearer ${apiKey}`
-      }
-    }
-
-    this.axiosInstance = axios.create({
-      baseURL,
-      headers,
-      timeout: 30000,
-    })
-
     // Initialize with system message that sets MQTT and automation context
     this.conversationHistory.push({
       role: 'system',
@@ -116,55 +84,6 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
     return undefined
   }
 
-  private getApiKeyFromStorage(): string | undefined {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      return window.localStorage.getItem('llm_api_key') || undefined
-    }
-    return undefined
-  }
-
-  private getApiKeyFromEnv(): string | undefined {
-    // In browser mode, check if server provided config via window object
-    const serverConfig = this.getServerConfig()
-    if (serverConfig?.apiKey) {
-      return serverConfig.apiKey
-    }
-    
-    // Fallback to process.env (only works in Electron/Node.js context)
-    if (typeof process !== 'undefined' && process.env) {
-      // Try provider-specific env vars first, then fall back to generic
-      if (this.provider === 'gemini') {
-        return process.env.GEMINI_API_KEY || process.env.LLM_API_KEY
-      } else {
-        return process.env.OPENAI_API_KEY || process.env.LLM_API_KEY
-      }
-    }
-    return undefined
-  }
-
-  private getProviderFromStorage(): LLMProvider | undefined {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const provider = window.localStorage.getItem('llm_provider')
-      return provider === 'gemini' || provider === 'openai' ? provider : undefined
-    }
-    return undefined
-  }
-
-  private getProviderFromEnv(): LLMProvider | undefined {
-    // In browser mode, check if server provided config via window object
-    const serverConfig = this.getServerConfig()
-    if (serverConfig?.provider === 'gemini' || serverConfig?.provider === 'openai') {
-      return serverConfig.provider
-    }
-    
-    // Fallback to process.env (only works in Electron/Node.js context)
-    if (typeof process !== 'undefined' && process.env) {
-      const provider = process.env.LLM_PROVIDER
-      return provider === 'gemini' || provider === 'openai' ? provider : undefined
-    }
-    return undefined
-  }
-
   private getNeighboringTopicsTokenLimitFromEnv(): number | undefined {
     // In browser mode, check if server provided config via window object
     const serverConfig = this.getServerConfig()
@@ -181,44 +100,15 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
   }
 
   /**
-   * Save API key to local storage
-   */
-  public saveApiKey(apiKey: string): void {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      window.localStorage.setItem('llm_api_key', apiKey)
-    }
-  }
-
-  /**
-   * Save provider to local storage
-   */
-  public saveProvider(provider: LLMProvider): void {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      window.localStorage.setItem('llm_provider', provider)
-    }
-  }
-
-  /**
-   * Clear API key from local storage
-   */
-  public clearApiKey(): void {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      window.localStorage.removeItem('llm_api_key')
-    }
-  }
-
-  /**
-   * Check if API key is configured (from localStorage or environment)
+   * Check if LLM service is available (backend has API key configured)
    */
   public hasApiKey(): boolean {
-    return !!(this.getApiKeyFromStorage() || this.getApiKeyFromEnv())
-  }
-
-  /**
-   * Get current provider
-   */
-  public getProvider(): LLMProvider {
-    return this.provider
+    // In new architecture, check if backend has LLM service available
+    if (typeof window !== 'undefined' && window.__llmAvailable !== undefined) {
+      return window.__llmAvailable
+    }
+    // Default to false if not set (feature hidden until server confirms)
+    return false
   }
 
   /**
@@ -405,6 +295,7 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
 
   /**
    * Send a message to the LLM and get a response
+   * Messages are proxied through the backend server for security
    */
   public async sendMessage(userMessage: string, topicContext?: string): Promise<string> {
     try {
@@ -420,55 +311,19 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
         content: messageContent,
       })
 
-      let assistantMessage: string
+      // Call backend API endpoint instead of calling LLM directly
+      const response = await axios.post('/api/llm/chat', {
+        messages: this.conversationHistory,
+        topicContext,
+      }, {
+        timeout: 35000, // Slightly longer than backend timeout
+      })
 
-      if (this.provider === 'gemini') {
-        // Gemini API format
-        const apiKey = this.getApiKeyFromStorage()
-        const contents = this.conversationHistory
-          .filter(msg => msg.role !== 'system')
-          .map(msg => ({
-            role: msg.role === 'assistant' ? 'model' : 'user',
-            parts: [{ text: msg.content }],
-          }))
-
-        // Prepend system message as first user message for Gemini
-        const systemMsg = this.conversationHistory.find(msg => msg.role === 'system')
-        if (systemMsg && contents.length > 0) {
-          contents[0].parts.unshift({ text: systemMsg.content })
-        }
-
-        const response = await this.axiosInstance.post(
-          `/models/${this.model}:generateContent?key=${apiKey}`,
-          {
-            contents,
-            generationConfig: {
-              temperature: 0.7,
-              maxOutputTokens: 500,
-            },
-          }
-        )
-
-        if (!response.data.candidates || response.data.candidates.length === 0) {
-          throw new Error('No response from AI assistant')
-        }
-
-        assistantMessage = response.data.candidates[0].content.parts[0].text
-      } else {
-        // OpenAI API format
-        const response = await this.axiosInstance.post('/chat/completions', {
-          model: this.model,
-          messages: this.conversationHistory,
-          temperature: 0.7,
-          max_tokens: 500,
-        })
-
-        if (!response.data.choices || response.data.choices.length === 0) {
-          throw new Error('No response from AI assistant')
-        }
-
-        assistantMessage = response.data.choices[0].message.content
+      if (!response.data || !response.data.response) {
+        throw new Error('No response from AI assistant')
       }
+
+      const assistantMessage = response.data.response
       
       // Add assistant response to history
       this.conversationHistory.push({
@@ -490,12 +345,16 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
       
       const err = error as { response?: { status?: number; data?: any }; code?: string; message?: string }
       
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        throw new Error('Invalid API key. Please check your configuration.')
+      if (err.response?.status === 503) {
+        throw new Error('LLM service not configured on server. Please contact your administrator.')
+      } else if (err.response?.status === 401 || err.response?.status === 403) {
+        throw new Error('Invalid API key configuration on server.')
       } else if (err.response?.status === 429) {
         throw new Error('Rate limit exceeded. Please try again later.')
       } else if (err.code === 'ECONNABORTED') {
         throw new Error('Request timeout. Please try again.')
+      } else if (err.response?.data?.error) {
+        throw new Error(err.response.data.error)
       } else {
         throw new Error(err.message || 'Failed to get response from AI assistant.')
       }

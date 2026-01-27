@@ -119,6 +119,21 @@ socket.on('llm-config', (config: { provider?: string; apiKey?: string; neighbori
   }
 })
 
+// Listen for LLM availability from server (new architecture)
+socket.on('llm-available', (data: { available: boolean }) => {
+  console.log('LLM availability received from server:', data.available)
+  
+  // Store availability flag in window object
+  if (typeof window !== 'undefined') {
+    window.__llmAvailable = data.available
+    
+    // Dispatch custom event for components to react
+    window.dispatchEvent(new CustomEvent('llm-availability-changed', { 
+      detail: { available: data.available }
+    }))
+  }
+})
+
 /**
  * Update socket authentication credentials and attempt to reconnect
  * @param newUsername New username
