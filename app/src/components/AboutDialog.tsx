@@ -12,7 +12,7 @@ import {
   Divider,
 } from '@mui/material'
 import FavoriteIcon from '@mui/icons-material/Favorite'
-import { rendererRpc, getAppVersion } from '../../../events/Events'
+import { rendererRpc, getAppVersion } from '../eventBus'
 
 // Fallback version if RPC call fails (e.g., in browser mode during initialization)
 const FALLBACK_VERSION = '0.4.0-beta.5'
