@@ -13,6 +13,9 @@ const MovingAverage = require('moving-average')
 const averagingTimeInterval = 10 * 1000
 const average = MovingAverage(averagingTimeInterval)
 
+// Mobile viewport breakpoint - matches CSS media queries in ContentView
+const MOBILE_BREAKPOINT = 768
+
 declare var window: any
 
 interface Props {
@@ -54,6 +57,7 @@ function useArrowKeyEventHandler(actions: typeof treeActions) {
 
 class TreeComponent extends React.PureComponent<Props, State> {
   private updateTimer?: any
+  private resizeTimer?: any
   private perf: number = 0
   private renderTime = 0
 
@@ -61,7 +65,7 @@ class TreeComponent extends React.PureComponent<Props, State> {
     super(props)
     this.state = { 
       lastUpdate: 0,
-      isMobile: typeof window !== 'undefined' && window.innerWidth <= 768,
+      isMobile: typeof window !== 'undefined' && window.innerWidth <= MOBILE_BREAKPOINT,
     }
   }
 
@@ -71,10 +75,18 @@ class TreeComponent extends React.PureComponent<Props, State> {
   }
 
   private handleResize = () => {
-    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
-    if (this.state.isMobile !== isMobile) {
-      this.setState({ isMobile })
+    // Throttle resize events to avoid excessive re-renders
+    if (this.resizeTimer) {
+      return
     }
+
+    this.resizeTimer = setTimeout(() => {
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= MOBILE_BREAKPOINT
+      if (this.state.isMobile !== isMobile) {
+        this.setState({ isMobile })
+      }
+      this.resizeTimer = undefined
+    }, 150) // Throttle to 150ms
   }
 
   public componentDidMount() {
@@ -99,6 +111,11 @@ class TreeComponent extends React.PureComponent<Props, State> {
     this.props.tree && this.props.tree.didUpdate.unsubscribe(this.throttledTreeUpdate)
     if (typeof window !== 'undefined') {
       window.removeEventListener('resize', this.handleResize)
+    }
+    // Clean up any pending timers
+    if (this.resizeTimer) {
+      clearTimeout(this.resizeTimer)
+      this.resizeTimer = undefined
     }
   }
 
