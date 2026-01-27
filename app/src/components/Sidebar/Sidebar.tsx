@@ -1,10 +1,6 @@
 import * as q from '../../../../backend/src/Model'
 import React, { useState, useEffect, useCallback } from 'react'
 import { AppState } from '../../reducers'
-<<<<<<< HEAD
-import { AccordionDetails, Button } from '@mui/material'
-=======
->>>>>>> origin/master
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { globalActions, settingsActions, sidebarActions } from '../../actions'
@@ -12,13 +8,9 @@ import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
 import { TopicViewModel } from '../../model/TopicViewModel'
 import { usePollingToFetchTreeNode } from '../helper/usePollingToFetchTreeNode'
-<<<<<<< HEAD
-import Info from '@mui/icons-material/Info'
-=======
 import { Tabs, Tab, Box, useMediaQuery, useTheme } from '@mui/material'
 import DetailsTab from './DetailsTab'
 import PublishTab from './PublishTab'
->>>>>>> origin/master
 
 const throttle = require('lodash.throttle')
 
@@ -61,37 +53,6 @@ function SidebarNew(props: Props) {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
-<<<<<<< HEAD
-  return (
-    <div id="Sidebar" className={classes.drawer}>
-      <div>
-        <TopicPanel node={node} />
-        <ValuePanelAny lastUpdate={node ? node.lastUpdate : 0} />
-        <Panel>
-          <span>Publish</span>
-          <Publish connectionId={props.connectionId} />
-        </Panel>
-        <Panel detailsHidden={!node}>
-          <span>Stats</span>
-          <AccordionDetails className={classes.details}>
-            <NodeStats node={node} />
-          </AccordionDetails>
-        </Panel>
-        <Panel>
-          <span>About</span>
-          <AccordionDetails className={classes.details}>
-            <Button
-              variant="text"
-              size="small"
-              startIcon={<Info />}
-              onClick={() => props.globalActions.toggleAboutDialogVisibility()}
-              fullWidth
-            >
-              About MQTT Explorer
-            </Button>
-          </AccordionDetails>
-        </Panel>
-=======
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
   }
@@ -104,7 +65,6 @@ function SidebarNew(props: Props) {
         <Box className={classes.mobileContent}>
           <DetailsTab node={node} />
         </Box>
->>>>>>> origin/master
       </div>
     )
   }
