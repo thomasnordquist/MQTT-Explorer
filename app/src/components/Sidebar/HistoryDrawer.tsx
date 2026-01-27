@@ -31,7 +31,7 @@ function downloadHistoryAsFile(props: Props) {
   const elementsText = props.items.map((element) => (
     csvEscape(element.key) + ';' + csvEscape(element.value) + ';\r\n'
   ))
-  var element = document.createElement('a')
+  let element = document.createElement('a')
   element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(elementsText.join('')))
   element.setAttribute('download', filename)
   element.style.display = 'none'
