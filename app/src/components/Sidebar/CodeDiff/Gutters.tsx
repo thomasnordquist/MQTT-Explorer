@@ -22,7 +22,7 @@ const style = (theme: Theme) => {
     verticalAlign: 'top',
     width: '12px',
     height: '12px',
-    marginTop: '0px',
+    marginTop: 0,
     borderRadius: '50%',
   }
 
@@ -30,7 +30,7 @@ const style = (theme: Theme) => {
     icon,
     iconButton: {
       ...icon,
-      marginTop: '0px',
+      marginTop: 0,
       width: '16px',
       height: '16px',
       padding: '2px',
@@ -48,6 +48,8 @@ const style = (theme: Theme) => {
   }
 }
 
+const iconStyle = { fontSize: '12px' }
+
 function tokensForLine(change: diff.Change, line: number, props: Props) {
   const { classes, literalPositions } = props
   const literal = literalPositions[line]
@@ -62,9 +64,9 @@ function tokensForLine(change: diff.Change, line: number, props: Props) {
   ) : null
 
   if (change.added) {
-    return [chartPreview, <Add key="add" className={classes.icon} style={{ fontSize: '12px' }} />]
+    return [chartPreview, <Add key="add" className={classes.icon} style={iconStyle} />]
   } else if (change.removed) {
-    return [<Remove key="remove" className={classes.icon} style={{ fontSize: '12px' }} />]
+    return [<Remove key="remove" className={classes.icon} style={iconStyle} />]
   } else {
     return [
       chartPreview,
