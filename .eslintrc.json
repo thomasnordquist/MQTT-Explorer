@@ -62,18 +62,9 @@
     "class-methods-use-this": "off",
     "consistent-return": "off",
     "@typescript-eslint/lines-between-class-members": "off",
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      {
-        "js": "never",
-        "jsx": "never",
-        "ts": "never",
-        "tsx": "never"
-      }
-    ],
+    "import/extensions": "off",
     "no-shadow": "off",
-    "@typescript-eslint/no-shadow": "error",
+    "@typescript-eslint/no-shadow": "off",
     "no-use-before-define": "off",
     "@typescript-eslint/no-use-before-define": "off",
     "no-unused-vars": "off",
