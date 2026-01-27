@@ -45,8 +45,9 @@ export OPENAI_API_KEY=sk-...        # For OpenAI
 export GEMINI_API_KEY=AIza...       # For Gemini
 export LLM_API_KEY=...              # Generic fallback for either provider
 
-# Token limit for neighboring topics context (optional, defaults to 100)
-export LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT=100
+# Token limit for neighboring topics context (optional, defaults to 500)
+# Increased from 100 to 500 for better device relationship and hierarchy detection
+export LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT=500
 
 # Start the server
 node dist/src/server.js
@@ -118,11 +119,11 @@ The AI Assistant provides contextual suggestions based on the selected topic:
 The AI Assistant automatically includes relevant context with your questions:
 
 - **Current Topic**: The selected topic path and its current value (with preview for large payloads)
-- **Neighboring Topics**: Related topics (siblings and children) with their values, limited to 100 tokens by default
+- **Neighboring Topics**: Related topics with hierarchical context (parent, siblings, children, grandchildren, cousins), limited to 500 tokens by default (increased from 100 for better device relationship detection)
 - **Topic Metadata**: Message count, subtopic count, and retained status
 - **Smart Truncation**: Large values and topic lists are intelligently truncated to stay within token limits
 
-The neighboring topics context can be adjusted using the `LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT` environment variable for server deployments.
+The neighboring topics context can be adjusted using the `LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT` environment variable. We recommend 500-1000 tokens for production deployments to enable better multi-device and room-level automation proposals.
 
 ## Privacy & Security
 

@@ -173,8 +173,8 @@ RUN_LLM_TESTS=true
 # Provider selection (default: openai)
 LLM_PROVIDER=openai  # or 'gemini'
 
-# Token limits
-LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT=100
+# Token limits (increased default for better device detection)
+LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT=500
 ```
 
 ## Running Tests

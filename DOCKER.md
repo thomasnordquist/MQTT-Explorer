@@ -79,7 +79,7 @@ docker-compose up -d
 | `OPENAI_API_KEY` | No | - | OpenAI API key for AI Assistant (provider-specific) |
 | `GEMINI_API_KEY` | No | - | Google Gemini API key for AI Assistant (provider-specific) |
 | `LLM_API_KEY` | No | - | Generic API key for AI Assistant (works with either provider) |
-| `LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT` | No | `100` | Token limit for neighboring topics context in AI queries |
+| `LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT` | No | `500` | Token limit for neighboring topics context in AI queries (increased for better device relationship detection) |
 
 **Architecture**: The backend proxies all LLM API requests via WebSocket RPC. API keys are **never** sent to the frontend - only an availability flag is transmitted. The frontend calls the backend via WebSocket RPC (`llm/chat` event), and the backend makes requests to OpenAI/Gemini on behalf of the client.
 
@@ -100,7 +100,7 @@ docker run -d \
   -e MQTT_EXPLORER_PASSWORD=secret \
   -e LLM_PROVIDER=openai \
   -e OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxxxx \
-  -e LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT=150 \
+  -e LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT=500 \
   ghcr.io/thomasnordquist/mqtt-explorer:latest
 ```
 

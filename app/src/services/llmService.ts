@@ -3,8 +3,18 @@
  * Provides AI assistance to help users understand and interact with MQTT topics
  */
 
-import { RpcEvents } from 'MQTT-Explorer/events/EventsV2'
-import { backendRpc } from '../browserEventBus'
+import { RpcEvents } from '../../../events/EventsV2'
+
+// Import backendRpc conditionally to avoid socket.io-client in test environment
+let backendRpc: any
+try {
+  const browserEventBus = require('../browserEventBus')
+  backendRpc = browserEventBus.backendRpc
+} catch (e) {
+  // In test environment, socket.io-client may not be available
+  // backendRpc will be undefined, which is fine for tests that don't use it
+  backendRpc = undefined
+}
 
 // Topic node interface for type safety
 export interface TopicNode {
@@ -71,7 +81,7 @@ export class LLMService {
     // In new architecture, we don't need API key or provider on client
     // Backend handles all LLM API calls
     this.neighboringTopicsTokenLimit =
-      config.neighboringTopicsTokenLimit || this.getNeighboringTopicsTokenLimitFromEnv() || 100
+      config.neighboringTopicsTokenLimit || this.getNeighboringTopicsTokenLimitFromEnv() || 500
 
     // Initialize with system message that sets MQTT and automation context
     this.conversationHistory.push({
@@ -227,6 +237,7 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
 
   /**
    * Generate context from topic data including neighboring topics
+   * Provides hierarchical context with parent, siblings, children, grandchildren, and cousins
    */
   public generateTopicContext(topic: TopicNode): string {
     const context = []
@@ -250,16 +261,17 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
       }
     }
 
-    // Add neighboring topics (siblings and children) up to token limit
+    // Add neighboring topics with expanded scope (parent, siblings, children, grandchildren, cousins)
     // Full topic paths with single-line previews
     const neighbors: string[] = []
     let neighborsTokenCount = 0
     const tokenLimit = this.neighboringTopicsTokenLimit
 
     // Helper function to add a neighbor if within token limit
-    const addNeighbor = (fullPath: string, value: any): boolean => {
+    // Increased from 20 to 30 tokens per neighbor for better value previews
+    const addNeighbor = (fullPath: string, value: any, tokenAllocation: number = 30): boolean => {
       // Format value as single-line preview (no newlines)
-      const preview = this.formatValueForContext(value, 20, false) // 20 tokens per neighbor
+      const preview = this.formatValueForContext(value, tokenAllocation, false)
       const neighborEntry = `  ${fullPath}: ${preview}`
       const tokens = this.estimateTokens(neighborEntry)
 
@@ -271,10 +283,18 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
       return false
     }
 
+    // Priority 1: Add parent topic value (for hierarchical context)
+    if (topic.parent && topic.parent.message?.payload && neighborsTokenCount < tokenLimit) {
+      const [parentValue] = topic.parent.message.payload.format(topic.parent.type)
+      if (parentValue !== null && parentValue !== undefined && topic.parent.path) {
+        addNeighbor(topic.parent.path(), parentValue, 30)
+      }
+    }
+
     // Get parent path for constructing full paths
     const parentPath = topic.parent?.path ? topic.parent.path() : ''
 
-    // Get siblings from parent
+    // Priority 2: Get siblings from parent (same level as current topic)
     if (topic.parent && topic.parent.edgeCollection) {
       const siblings = topic.parent.edgeCollection.edges || []
       for (const edge of siblings) {
@@ -291,8 +311,9 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
       }
     }
 
-    // Get children
+    // Priority 3: Get children (direct children of current topic)
     const currentPath = topic.path ? topic.path() : ''
+    const childNodes: Array<{ name: string; node: TopicNode }> = []
     if (topic.edgeCollection?.edges && neighborsTokenCount < tokenLimit) {
       const children = topic.edgeCollection.edges || []
       for (const edge of children) {
@@ -303,6 +324,56 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
             const fullPath = currentPath ? `${currentPath}/${edge.name}` : edge.name
             if (!addNeighbor(fullPath, childValue)) {
               break
+            }
+            // Store child nodes for grandchildren traversal
+            if (edge.node) {
+              childNodes.push({ name: edge.name, node: edge.node })
+            }
+          }
+        }
+      }
+    }
+
+    // Priority 4: Get grandchildren (children's children, 2 levels deep)
+    for (const child of childNodes) {
+      if (neighborsTokenCount >= tokenLimit) break
+      if (child.node.edgeCollection?.edges) {
+        const grandchildren = child.node.edgeCollection.edges || []
+        for (const edge of grandchildren) {
+          if (neighborsTokenCount >= tokenLimit) break
+          if (edge.name && edge.node && edge.node.message?.payload) {
+            const [grandchildValue] = edge.node.message.payload.format(edge.node.type)
+            if (grandchildValue !== null && grandchildValue !== undefined) {
+              const fullPath = currentPath ? `${currentPath}/${child.name}/${edge.name}` : `${child.name}/${edge.name}`
+              if (!addNeighbor(fullPath, grandchildValue)) {
+                break
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Priority 5: Get cousins (siblings' children) when space available
+    if (topic.parent && topic.parent.edgeCollection && neighborsTokenCount < tokenLimit) {
+      const siblings = topic.parent.edgeCollection.edges || []
+      for (const sibling of siblings) {
+        if (neighborsTokenCount >= tokenLimit) break
+        if (sibling.node && sibling.node.edgeCollection?.edges) {
+          const cousinEdges = sibling.node.edgeCollection.edges || []
+          for (const edge of cousinEdges) {
+            if (neighborsTokenCount >= tokenLimit) break
+            if (edge.name && edge.node && edge.node.message?.payload) {
+              const [cousinValue] = edge.node.message.payload.format(edge.node.type)
+              if (cousinValue !== null && cousinValue !== undefined) {
+                const fullPath = parentPath
+                  ? `${parentPath}/${sibling.name}/${edge.name}`
+                  : `${sibling.name}/${edge.name}`
+                if (!addNeighbor(fullPath, cousinValue, 25)) {
+                  // Slightly lower token allocation for cousins
+                  break
+                }
+              }
             }
           }
         }
