@@ -22,7 +22,7 @@ const style = (theme: Theme) => {
     height: '12px',
     marginTop: 0,
     borderRadius: '50%',
-    fontSize: '12px',
+    fontSize: '14px',
     display: 'inline-block',
     textAlign: 'center' as 'center',
     lineHeight: '12px',
