@@ -208,8 +208,6 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
    * Generate context from topic data including neighboring topics
    */
   public generateTopicContext(topic: TopicNode): string {
-    edgeCollection?: any
-  }): string {
     const context = []
     
     if (topic.path) {
