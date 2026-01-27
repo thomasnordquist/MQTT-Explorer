@@ -127,30 +127,46 @@ class TreeComponent extends React.PureComponent<Props, State> {
       return null
     }
 
+    // Detect mobile viewport for horizontal scrolling behavior
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+
     const style: React.CSSProperties = {
       lineHeight: '1.1',
       cursor: 'default',
       overflowY: 'scroll',
-      overflowX: 'hidden',
+      overflowX: isMobile ? 'auto' : 'hidden', // Enable horizontal scrolling on mobile
       height: '100%',
       width: '100%',
       outline: '24px black !important',
       paddingBottom: '16px', // avoid conflict with chart panel Resizer
+      // Scroll snap to default position on mobile
+      ...(isMobile && {
+        scrollSnapType: 'x mandatory',
+        WebkitOverflowScrolling: 'touch', // Smooth scrolling on iOS
+      }),
     }
+
+    // Wrapper to create snap point at the start
+    const wrapperStyle: React.CSSProperties = isMobile ? {
+      scrollSnapAlign: 'start',
+      minWidth: '100%',
+    } : {}
 
     return (
       <div style={style} tabIndex={0} onKeyDown={this.keyEventHandler}>
-        <TreeNode
-          key={tree.hash()}
-          isRoot={true}
-          treeNode={tree}
-          name={this.props.host}
-          collapsed={false}
-          settings={this.props.settings}
-          lastUpdate={tree.lastUpdate}
-          actions={this.props.actions}
-          selectTopicAction={this.props.actions.selectTopic}
-        />
+        <div style={wrapperStyle}>
+          <TreeNode
+            key={tree.hash()}
+            isRoot={true}
+            treeNode={tree}
+            name={this.props.host}
+            collapsed={false}
+            settings={this.props.settings}
+            lastUpdate={tree.lastUpdate}
+            actions={this.props.actions}
+            selectTopicAction={this.props.actions.selectTopic}
+          />
+        </div>
       </div>
     )
   }
