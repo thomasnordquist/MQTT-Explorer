@@ -31,6 +31,7 @@
     "dev:server:backend": "tsc && node dist/src/server.js",
     "lint": "npm-run-all --parallel lint:prettier lint:tslint lint:spellcheck",
     "lint:fix": "npm-run-all lint:tslint:fix lint:prettier:fix",
+    "lint:eslint": "tslint -p ./",
     "lint:prettier": "prettier --check \"**/*.ts{x,}\"",
     "lint:prettier:fix": "prettier --write \"**/*.ts{x,}\"",
     "lint:tslint": "tslint -p ./",
