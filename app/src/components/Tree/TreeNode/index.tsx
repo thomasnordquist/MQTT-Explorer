@@ -69,16 +69,14 @@ function TreeNodeComponent(props: Props) {
         // Expanding is handled by the separate expand button click
         didSelectTopic()
         // Switch to details tab on mobile after selecting a topic
-        if (typeof window !== 'undefined' && (window as any).switchToDetailsTab) {
-          (window as any).switchToDetailsTab()
-        }
+        actions.setMobileTab(1)
       } else {
         // Desktop: Original behavior - select AND toggle (click anywhere works)
         didSelectTopic()
         setCollapsedOverride(!isCollapsed)
       }
     },
-    [isCollapsed, didSelectTopic]
+    [isCollapsed, didSelectTopic, actions]
   )
 
   const toggleCollapsed = useCallback(

@@ -12,6 +12,8 @@ export { clearTopic } from './clearTopic'
 
 export { moveSelectionUpOrDownwards, moveInward, moveOutward } from './visibleTreeTraversal'
 
+export { setMobileTab } from './Global'
+
 export const selectTopic =
   (topic: q.TreeNode<TopicViewModel>) => (dispatch: Dispatch<any>, getState: () => AppState) => {
     debouncedSelectTopic(topic, dispatch, getState)

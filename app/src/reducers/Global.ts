@@ -12,6 +12,7 @@ export enum ActionTypes {
   requestConfirmation = 'REQUEST_CONFIRMATION',
   removeConfirmationRequest = 'REMOVE_CONFIRMATION_REQUEST',
   toggleAboutDialogVisibility = 'TOGGLE_ABOUT_DIALOG_VISIBILITY',
+  setMobileTab = 'SET_MOBILE_TAB',
 }
 
 export interface ConfirmationRequest {
@@ -27,6 +28,7 @@ export interface GlobalAction extends Action {
   error?: string
   notification?: string
   confirmationRequest?: ConfirmationRequest
+  mobileTab?: number
 }
 
 interface GlobalStateInterface {
@@ -38,6 +40,7 @@ interface GlobalStateInterface {
   settingsVisible: boolean
   confirmationRequests: Array<ConfirmationRequest>
   aboutDialogVisible: boolean
+  mobileTab: number // 0 = topics, 1 = details, 2 = publish, 3 = charts
 }
 
 export type GlobalState = Record<GlobalStateInterface>
@@ -51,6 +54,7 @@ const initialStateFactory = Record<GlobalStateInterface>({
   settingsVisible: false,
   confirmationRequests: [],
   aboutDialogVisible: false,
+  mobileTab: 0,
 })
 
 export const globalState: Reducer<Record<GlobalStateInterface>, GlobalAction> = (
@@ -98,6 +102,12 @@ export const globalState: Reducer<Record<GlobalStateInterface>, GlobalAction> = 
         'confirmationRequests',
         state.get('confirmationRequests').filter(a => a !== action.confirmationRequest)
       )
+
+    case ActionTypes.setMobileTab:
+      if (action.mobileTab === undefined) {
+        return state
+      }
+      return state.set('mobileTab', action.mobileTab)
 
     default:
       return state

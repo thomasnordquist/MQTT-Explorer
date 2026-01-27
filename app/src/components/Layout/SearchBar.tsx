@@ -5,7 +5,7 @@ import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { InputBase } from '@mui/material'
-import { settingsActions } from '../../actions'
+import { settingsActions, globalActions } from '../../actions'
 import { alpha as fade, Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
 import { useGlobalKeyEventHandler } from '../../effects/useGlobalKeyEventHandler'
@@ -17,6 +17,7 @@ function SearchBar(props: {
   hasConnection: boolean
   actions: {
     settings: typeof settingsActions
+    global: typeof globalActions
   }
 }) {
   const { actions, classes, hasConnection, topicFilter } = props
@@ -27,11 +28,9 @@ function SearchBar(props: {
     setHasFocus(true)
     // On mobile, switch to Topics tab when search is focused
     if (typeof window !== 'undefined' && window.innerWidth <= 768) {
-      if ((window as any).switchToTopicsTab) {
-        (window as any).switchToTopicsTab()
-      }
+      actions.global.setMobileTab(0)
     }
-  }, [])
+  }, [actions])
   const onBlur = useCallback(() => setHasFocus(false), [])
 
   const clearFilter = useCallback(() => {
@@ -101,6 +100,7 @@ const mapDispatchToProps = (dispatch: any) => {
   return {
     actions: {
       settings: bindActionCreators(settingsActions, dispatch),
+      global: bindActionCreators(globalActions, dispatch),
     },
   }
 }

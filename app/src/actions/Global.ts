@@ -53,3 +53,8 @@ export const removeConfirmationRequest = (confirmationRequest: ConfirmationReque
     })
   })
 }
+
+export const setMobileTab = (tabIndex: number) => ({
+  mobileTab: tabIndex,
+  type: ActionTypes.setMobileTab,
+})
