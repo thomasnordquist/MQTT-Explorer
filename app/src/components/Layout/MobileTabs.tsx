@@ -2,6 +2,10 @@ import * as React from 'react'
 import { Tabs, Tab, Box } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
+import AccountTreeIcon from '@mui/icons-material/AccountTree'
+import InfoIcon from '@mui/icons-material/Info'
+import SendIcon from '@mui/icons-material/Send'
+import ShowChartIcon from '@mui/icons-material/ShowChart'
 
 interface Props {
   classes: any
@@ -22,9 +26,10 @@ function MobileTabs(props: Props) {
         variant="fullWidth"
         indicatorColor="primary"
         textColor="primary"
-        aria-label="Topics and Details tabs"
+        aria-label="Topics, Details, Publish and Charts tabs"
       >
         <Tab 
+          icon={<AccountTreeIcon />}
           label="Topics" 
           data-testid="mobile-tab-topics"
           aria-label="View topics tree"
@@ -32,11 +37,28 @@ function MobileTabs(props: Props) {
           aria-controls="mobile-tabpanel-0"
         />
         <Tab 
+          icon={<InfoIcon />}
           label="Details" 
           data-testid="mobile-tab-details"
           aria-label="View topic details"
           id="mobile-tab-1"
           aria-controls="mobile-tabpanel-1"
+        />
+        <Tab 
+          icon={<SendIcon />}
+          label="Publish" 
+          data-testid="mobile-tab-publish"
+          aria-label="Publish messages"
+          id="mobile-tab-2"
+          aria-controls="mobile-tabpanel-2"
+        />
+        <Tab 
+          icon={<ShowChartIcon />}
+          label="Charts" 
+          data-testid="mobile-tab-charts"
+          aria-label="View charts"
+          id="mobile-tab-3"
+          aria-controls="mobile-tabpanel-3"
         />
       </Tabs>
     </Box>
