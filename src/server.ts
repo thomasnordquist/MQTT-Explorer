@@ -451,17 +451,8 @@ async function startServer() {
   })
 
   // LLM Chat RPC handler - proxies requests to LLM providers via WebSocket
-  // Rate limiting is handled per-socket connection
-  const llmRateLimitMap = new Map<string, { count: number; resetTime: number }>()
-  const LLM_RATE_LIMIT = 10 // requests per minute
-  const LLM_RATE_WINDOW = 60 * 1000 // 1 minute
-
   backendRpc.on(RpcEvents.llmChat, async ({ messages, topicContext }) => {
     try {
-      // Get socket ID for rate limiting (per connection)
-      // Note: This is a simplified rate limiting - in production might want more sophisticated tracking
-      const now = Date.now()
-      
       // Get LLM configuration from environment
       const envProvider = process.env.LLM_PROVIDER
       let provider: 'openai' | 'gemini' = 'openai'
