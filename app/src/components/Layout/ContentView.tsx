@@ -25,7 +25,7 @@ function ContentView(props: Props) {
   // Use different defaults for mobile viewports (<=768px width)
   // Use state for mobile detection that updates on resize
   const [isMobile, setIsMobile] = React.useState(() => typeof window !== 'undefined' && window.innerWidth <= 768)
-  const [mobileTab, setMobileTab] = React.useState(0) // 0 = topics, 1 = details, 2 = publish
+  const [mobileTab, setMobileTab] = React.useState(0) // 0 = topics, 1 = details, 2 = publish, 3 = charts
   const [height, setHeight] = React.useState<string | number>('100%')
   const [sidebarWidth, setSidebarWidth] = React.useState<string | number>(isMobile ? '100%' : '40%')
   const [detectedHeight, setDetectedHeight] = React.useState(0)
@@ -95,12 +95,14 @@ function ContentView(props: Props) {
         (window as any).switchToDetailsTab = () => setMobileTab(1)
         (window as any).switchToTopicsTab = () => setMobileTab(0)
         ;(window as any).switchToPublishTab = () => setMobileTab(2)
+        ;(window as any).switchToChartsTab = () => setMobileTab(3)
       }
       return () => {
         if (typeof window !== 'undefined') {
           delete (window as any).switchToDetailsTab
           delete (window as any).switchToTopicsTab
           delete (window as any).switchToPublishTab
+          delete (window as any).switchToChartsTab
         }
       }
     }, [])
@@ -164,6 +166,12 @@ function ContentView(props: Props) {
           {mobileTab === 2 && (
             <div style={sidebarContainerStyle}>
               <PublishTab connectionId={props.connectionId} />
+            </div>
+          )}
+          {/* Charts tab */}
+          {mobileTab === 3 && (
+            <div style={sidebarContainerStyle}>
+              <ChartPanel />
             </div>
           )}
         </div>
