@@ -266,6 +266,56 @@ async function startServer() {
       console.log(`Client connected, auth disabled: ${authDisabled}`)
     }
     
+    // Send LLM configuration from environment variables (if set)
+    const llmConfig: {
+      provider?: string
+      apiKey?: string
+      neighboringTopicsTokenLimit?: number
+    } = {}
+    
+    // Get provider from env
+    const envProvider = process.env.LLM_PROVIDER
+    if (envProvider === 'openai' || envProvider === 'gemini') {
+      llmConfig.provider = envProvider
+    }
+    
+    // Get API key from env (provider-specific or generic)
+    const openaiKey = process.env.OPENAI_API_KEY
+    const geminiKey = process.env.GEMINI_API_KEY
+    const genericKey = process.env.LLM_API_KEY
+    
+    if (llmConfig.provider === 'gemini') {
+      llmConfig.apiKey = geminiKey || genericKey
+    } else if (llmConfig.provider === 'openai') {
+      llmConfig.apiKey = openaiKey || genericKey
+    } else {
+      // No provider specified, check both provider-specific keys
+      llmConfig.apiKey = openaiKey || geminiKey || genericKey
+      if (llmConfig.apiKey) {
+        // Infer provider from which key is set
+        llmConfig.provider = openaiKey ? 'openai' : geminiKey ? 'gemini' : 'openai'
+      }
+    }
+    
+    // Get token limit from env
+    const tokenLimit = parseInt(process.env.LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT || '', 10)
+    if (!isNaN(tokenLimit)) {
+      llmConfig.neighboringTopicsTokenLimit = tokenLimit
+    }
+    
+    // Only send if any LLM config is available
+    if (llmConfig.provider || llmConfig.apiKey || llmConfig.neighboringTopicsTokenLimit) {
+      socket.emit('llm-config', llmConfig)
+      
+      if (!isProduction) {
+        console.log('Sent LLM config to client:', {
+          provider: llmConfig.provider,
+          hasApiKey: !!llmConfig.apiKey,
+          tokenLimit: llmConfig.neighboringTopicsTokenLimit,
+        })
+      }
+    }
+    
     // Auto-connect to MQTT broker if configured via environment variables
     const autoConnectHost = process.env.MQTT_AUTO_CONNECT_HOST
     if (autoConnectHost) {

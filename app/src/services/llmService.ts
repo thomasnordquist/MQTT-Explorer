@@ -103,6 +103,15 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
   }
 
   private getApiKeyFromEnv(): string | undefined {
+    // In browser mode, check if server provided config via window object
+    if (typeof window !== 'undefined' && (window as any).__llmConfigFromServer) {
+      const serverConfig = (window as any).__llmConfigFromServer
+      if (serverConfig.apiKey) {
+        return serverConfig.apiKey
+      }
+    }
+    
+    // Fallback to process.env (only works in Electron/Node.js context)
     if (typeof process !== 'undefined' && process.env) {
       // Try provider-specific env vars first, then fall back to generic
       if (this.provider === 'gemini') {
@@ -123,6 +132,15 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
   }
 
   private getProviderFromEnv(): LLMProvider | undefined {
+    // In browser mode, check if server provided config via window object
+    if (typeof window !== 'undefined' && (window as any).__llmConfigFromServer) {
+      const serverConfig = (window as any).__llmConfigFromServer
+      if (serverConfig.provider === 'gemini' || serverConfig.provider === 'openai') {
+        return serverConfig.provider
+      }
+    }
+    
+    // Fallback to process.env (only works in Electron/Node.js context)
     if (typeof process !== 'undefined' && process.env) {
       const provider = process.env.LLM_PROVIDER
       return provider === 'gemini' || provider === 'openai' ? provider : undefined
@@ -131,6 +149,15 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
   }
 
   private getNeighboringTopicsTokenLimitFromEnv(): number | undefined {
+    // In browser mode, check if server provided config via window object
+    if (typeof window !== 'undefined' && (window as any).__llmConfigFromServer) {
+      const serverConfig = (window as any).__llmConfigFromServer
+      if (serverConfig.neighboringTopicsTokenLimit) {
+        return serverConfig.neighboringTopicsTokenLimit
+      }
+    }
+    
+    // Fallback to process.env (only works in Electron/Node.js context)
     if (typeof process !== 'undefined' && process.env) {
       const limit = parseInt(process.env.LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT || '', 10)
       return isNaN(limit) ? undefined : limit

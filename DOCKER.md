@@ -71,6 +71,30 @@ docker-compose up -d
 | `UPGRADE_INSECURE_REQUESTS` | No | `false` | Set to `true` to enable CSP upgrade-insecure-requests directive. **Only use when deployed behind an HTTPS reverse proxy (nginx, Traefik, etc.) with valid SSL certificates.** This upgrades all HTTP requests to HTTPS and will break direct HTTP access. |
 | `X_FRAME_OPTIONS` | No | `false` | Set to `true` to enable X-Frame-Options: SAMEORIGIN header to prevent clickjacking. **Disables iframe embedding when enabled.** |
 
+### AI Assistant / LLM Configuration
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `LLM_PROVIDER` | No | `openai` | AI provider to use (`openai` or `gemini`) |
+| `OPENAI_API_KEY` | No | - | OpenAI API key for AI Assistant (provider-specific) |
+| `GEMINI_API_KEY` | No | - | Google Gemini API key for AI Assistant (provider-specific) |
+| `LLM_API_KEY` | No | - | Generic API key for AI Assistant (works with either provider) |
+| `LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT` | No | `100` | Token limit for neighboring topics context in AI queries |
+
+**Note**: If LLM environment variables are set, they will be securely passed to connected clients at connection time. The API key is not embedded in the client bundle. Users can still configure their own API keys via the UI, which will override server-provided configuration.
+
+**Example with AI Assistant**:
+```bash
+docker run -d \
+  -p 3000:3000 \
+  -e MQTT_EXPLORER_USERNAME=admin \
+  -e MQTT_EXPLORER_PASSWORD=secret \
+  -e LLM_PROVIDER=openai \
+  -e OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxxxx \
+  -e LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT=150 \
+  ghcr.io/thomasnordquist/mqtt-explorer:latest
+```
+
 ### Authentication Modes
 
 **Standard Mode (Default):**

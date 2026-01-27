@@ -96,6 +96,25 @@ socket.on('auto-connect-initiated', (data: { connectionId: string }) => {
   }
 })
 
+// Listen for LLM config from server
+socket.on('llm-config', (config: { provider?: string; apiKey?: string; neighboringTopicsTokenLimit?: number }) => {
+  console.log('LLM config received from server:', { 
+    provider: config.provider, 
+    hasApiKey: !!config.apiKey,
+    neighboringTopicsTokenLimit: config.neighboringTopicsTokenLimit
+  })
+  
+  // Store in window object for LLM service to access
+  if (typeof window !== 'undefined') {
+    (window as any).__llmConfigFromServer = config
+    
+    // Dispatch custom event so LLM service can update if already initialized
+    window.dispatchEvent(new CustomEvent('llm-config-received', { 
+      detail: config
+    }))
+  }
+})
+
 /**
  * Update socket authentication credentials and attempt to reconnect
  * @param newUsername New username
