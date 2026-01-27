@@ -22,7 +22,7 @@ function MobileTabs(props: Props) {
         variant="fullWidth"
         indicatorColor="primary"
         textColor="primary"
-        aria-label="Topics and Details tabs"
+        aria-label="Topics, Details and Publish tabs"
       >
         <Tab 
           label="Topics" 
@@ -37,6 +37,13 @@ function MobileTabs(props: Props) {
           aria-label="View topic details"
           id="mobile-tab-1"
           aria-controls="mobile-tabpanel-1"
+        />
+        <Tab 
+          label="Publish" 
+          data-testid="mobile-tab-publish"
+          aria-label="Publish messages"
+          id="mobile-tab-2"
+          aria-controls="mobile-tabpanel-2"
         />
       </Tabs>
     </Box>
