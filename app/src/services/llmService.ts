@@ -5,6 +5,17 @@
 
 import axios, { AxiosInstance } from 'axios'
 
+// Extend Window interface to include server-provided LLM config
+declare global {
+  interface Window {
+    __llmConfigFromServer?: {
+      provider?: LLMProvider
+      apiKey?: string
+      neighboringTopicsTokenLimit?: number
+    }
+  }
+}
+
 export interface LLMMessage {
   role: 'system' | 'user' | 'assistant'
   content: string
@@ -95,6 +106,16 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
     })
   }
 
+  /**
+   * Get server-provided LLM configuration (browser mode only)
+   */
+  private getServerConfig() {
+    if (typeof window !== 'undefined' && window.__llmConfigFromServer) {
+      return window.__llmConfigFromServer
+    }
+    return undefined
+  }
+
   private getApiKeyFromStorage(): string | undefined {
     if (typeof window !== 'undefined' && window.localStorage) {
       return window.localStorage.getItem('llm_api_key') || undefined
@@ -104,11 +125,9 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
 
   private getApiKeyFromEnv(): string | undefined {
     // In browser mode, check if server provided config via window object
-    if (typeof window !== 'undefined' && (window as any).__llmConfigFromServer) {
-      const serverConfig = (window as any).__llmConfigFromServer
-      if (serverConfig.apiKey) {
-        return serverConfig.apiKey
-      }
+    const serverConfig = this.getServerConfig()
+    if (serverConfig?.apiKey) {
+      return serverConfig.apiKey
     }
     
     // Fallback to process.env (only works in Electron/Node.js context)
@@ -133,11 +152,9 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
 
   private getProviderFromEnv(): LLMProvider | undefined {
     // In browser mode, check if server provided config via window object
-    if (typeof window !== 'undefined' && (window as any).__llmConfigFromServer) {
-      const serverConfig = (window as any).__llmConfigFromServer
-      if (serverConfig.provider === 'gemini' || serverConfig.provider === 'openai') {
-        return serverConfig.provider
-      }
+    const serverConfig = this.getServerConfig()
+    if (serverConfig?.provider === 'gemini' || serverConfig?.provider === 'openai') {
+      return serverConfig.provider
     }
     
     // Fallback to process.env (only works in Electron/Node.js context)
@@ -150,11 +167,9 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
 
   private getNeighboringTopicsTokenLimitFromEnv(): number | undefined {
     // In browser mode, check if server provided config via window object
-    if (typeof window !== 'undefined' && (window as any).__llmConfigFromServer) {
-      const serverConfig = (window as any).__llmConfigFromServer
-      if (serverConfig.neighboringTopicsTokenLimit) {
-        return serverConfig.neighboringTopicsTokenLimit
-      }
+    const serverConfig = this.getServerConfig()
+    if (serverConfig?.neighboringTopicsTokenLimit) {
+      return serverConfig.neighboringTopicsTokenLimit
     }
     
     // Fallback to process.env (only works in Electron/Node.js context)

@@ -106,7 +106,11 @@ socket.on('llm-config', (config: { provider?: string; apiKey?: string; neighbori
   
   // Store in window object for LLM service to access
   if (typeof window !== 'undefined') {
-    (window as any).__llmConfigFromServer = config
+    window.__llmConfigFromServer = {
+      provider: config.provider as 'openai' | 'gemini' | undefined,
+      apiKey: config.apiKey,
+      neighboringTopicsTokenLimit: config.neighboringTopicsTokenLimit,
+    }
     
     // Dispatch custom event so LLM service can update if already initialized
     window.dispatchEvent(new CustomEvent('llm-config-received', { 

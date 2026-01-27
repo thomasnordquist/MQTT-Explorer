@@ -292,8 +292,13 @@ async function startServer() {
       // No provider specified, check both provider-specific keys
       llmConfig.apiKey = openaiKey || geminiKey || genericKey
       if (llmConfig.apiKey) {
-        // Infer provider from which key is set
-        llmConfig.provider = openaiKey ? 'openai' : geminiKey ? 'gemini' : 'openai'
+        // Infer provider from which key is set (only if provider-specific key is used)
+        if (openaiKey) {
+          llmConfig.provider = 'openai'
+        } else if (geminiKey) {
+          llmConfig.provider = 'gemini'
+        }
+        // If only genericKey is set, provider remains undefined - user must set LLM_PROVIDER
       }
     }
     
