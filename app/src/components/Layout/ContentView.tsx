@@ -107,6 +107,19 @@ function ContentView(props: Props) {
       }
     }, [])
 
+    // Scroll to selected topic when returning to tree tab
+    React.useEffect(() => {
+      if (mobileTab === 0) {
+        // Delay to ensure DOM is rendered
+        setTimeout(() => {
+          const selectedNode = document.querySelector('.tree .selected')
+          if (selectedNode) {
+            selectedNode.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          }
+        }, 100)
+      }
+    }, [mobileTab])
+
     const mobileContainerStyle: React.CSSProperties = {
       display: 'flex',
       flexDirection: 'column',
@@ -150,30 +163,22 @@ function ContentView(props: Props) {
       <div style={mobileContainerStyle}>
         <MobileTabs value={mobileTab} onChange={setMobileTab} />
         <div style={tabContentStyle}>
-          {/* Topics tab */}
-          {mobileTab === 0 && (
-            <div style={treeContainerStyle}>
-              <Tree />
-            </div>
-          )}
-          {/* Details tab */}
-          {mobileTab === 1 && (
-            <div style={sidebarContainerStyle}>
-              <Sidebar connectionId={props.connectionId} />
-            </div>
-          )}
-          {/* Publish tab */}
-          {mobileTab === 2 && (
-            <div style={sidebarContainerStyle}>
-              <PublishTab connectionId={props.connectionId} />
-            </div>
-          )}
-          {/* Charts tab */}
-          {mobileTab === 3 && (
-            <div style={sidebarContainerStyle}>
-              <ChartPanel />
-            </div>
-          )}
+          {/* Topics tab - keep mounted, toggle visibility */}
+          <div style={{ ...treeContainerStyle, display: mobileTab === 0 ? 'block' : 'none' }}>
+            <Tree />
+          </div>
+          {/* Details tab - keep mounted, toggle visibility */}
+          <div style={{ ...sidebarContainerStyle, display: mobileTab === 1 ? 'block' : 'none' }}>
+            <Sidebar connectionId={props.connectionId} />
+          </div>
+          {/* Publish tab - keep mounted, toggle visibility */}
+          <div style={{ ...sidebarContainerStyle, display: mobileTab === 2 ? 'block' : 'none' }}>
+            <PublishTab connectionId={props.connectionId} />
+          </div>
+          {/* Charts tab - keep mounted, toggle visibility */}
+          <div style={{ ...sidebarContainerStyle, display: mobileTab === 3 ? 'block' : 'none' }}>
+            <ChartPanel />
+          </div>
         </div>
       </div>
     )
