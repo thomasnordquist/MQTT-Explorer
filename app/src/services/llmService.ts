@@ -3,7 +3,8 @@
  * Provides AI assistance to help users understand and interact with MQTT topics
  */
 
-import axios, { AxiosInstance } from 'axios'
+import { backendRpc } from '../browserEventBus'
+import { RpcEvents } from '../../../events/EventsV2'
 
 // Extend Window interface to include LLM availability flag
 declare global {
@@ -274,7 +275,7 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
 
   /**
    * Send a message to the LLM and get a response
-   * Messages are proxied through the backend server for security
+   * Messages are proxied through the backend server via WebSocket for security
    */
   public async sendMessage(userMessage: string, topicContext?: string): Promise<string> {
     try {
@@ -290,19 +291,17 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
         content: messageContent,
       })
 
-      // Call backend API endpoint instead of calling LLM directly
-      const response = await axios.post('/api/llm/chat', {
+      // Call backend via RPC (WebSocket) instead of HTTP
+      const result = await backendRpc.call(RpcEvents.llmChat, {
         messages: this.conversationHistory,
         topicContext,
-      }, {
-        timeout: 35000, // Slightly longer than backend timeout
       })
 
-      if (!response.data || !response.data.response) {
+      if (!result || !result.response) {
         throw new Error('No response from AI assistant')
       }
 
-      const assistantMessage = response.data.response
+      const assistantMessage = result.response
       
       // Add assistant response to history
       this.conversationHistory.push({
@@ -322,21 +321,10 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
     } catch (error: unknown) {
       console.error('LLM Service Error:', error)
       
-      const err = error as { response?: { status?: number; data?: any }; code?: string; message?: string }
+      const err = error as { message?: string }
       
-      if (err.response?.status === 503) {
-        throw new Error('LLM service not configured on server. Please contact your administrator.')
-      } else if (err.response?.status === 401 || err.response?.status === 403) {
-        throw new Error('Invalid API key configuration on server.')
-      } else if (err.response?.status === 429) {
-        throw new Error('Rate limit exceeded. Please try again later.')
-      } else if (err.code === 'ECONNABORTED') {
-        throw new Error('Request timeout. Please try again.')
-      } else if (err.response?.data?.error) {
-        throw new Error(err.response.data.error)
-      } else {
-        throw new Error(err.message || 'Failed to get response from AI assistant.')
-      }
+      // Error messages come from RPC handler
+      throw new Error(err.message || 'Failed to get response from AI assistant.')
     }
   }
 

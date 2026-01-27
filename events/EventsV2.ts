@@ -36,6 +36,7 @@ export const RpcEvents = {
   openDialog: { topic: 'openDialog' } as RpcEvent<OpenDialogOptionsV2, OpenDialogReturnValueV2>,
   saveDialog: { topic: 'saveDialog' } as RpcEvent<SaveDialogOptionsV2, SaveDialogReturnValueV2>,
   uploadCertificate: { topic: 'uploadCertificate' } as RpcEvent<CertificateUploadRequest, CertificateUploadResponse>,
+  llmChat: { topic: 'llm/chat' } as RpcEvent<LlmChatRequest, LlmChatResponse>,
 }
 
 // Type definitions
@@ -60,6 +61,18 @@ export interface CertificateUploadRequest {
 export interface CertificateUploadResponse {
   name: string
   data: string // base64 encoded
+}
+
+export interface LlmChatRequest {
+  messages: Array<{
+    role: 'system' | 'user' | 'assistant'
+    content: string
+  }>
+  topicContext?: string
+}
+
+export interface LlmChatResponse {
+  response: string
 }
 
 // Dialog types (browser-compatible versions)
