@@ -153,11 +153,6 @@ function AIAssistant(props: Props) {
   // Check if API key is available (from localStorage or environment)
   const hasApiKey = llmService.hasApiKey()
 
-  // Don't render the component at all if no API key is available
-  if (!hasApiKey) {
-    return null
-  }
-
   return (
     <Box className={classes.root}>
       {/* Header */}
@@ -195,7 +190,7 @@ function AIAssistant(props: Props) {
           )}
 
           {/* Quick Suggestions */}
-          {messages.length === 0 && suggestions.length > 0 && (
+          {hasApiKey && messages.length === 0 && suggestions.length > 0 && (
             <Box className={classes.suggestions}>
               <Typography variant="caption" color="textSecondary" className={classes.suggestionsTitle}>
                 Quick questions:
@@ -216,7 +211,24 @@ function AIAssistant(props: Props) {
 
           {/* Messages */}
           <Box className={classes.messages}>
-            {messages.length === 0 && !error && (
+            {messages.length === 0 && !error && !hasApiKey && (
+              <Box className={classes.emptyState}>
+                <SmartToyIcon className={classes.emptyIcon} />
+                <Typography variant="body2" color="textSecondary" align="center">
+                  Configure your API key to start using the AI Assistant
+                </Typography>
+                <Button
+                  variant="contained"
+                  size="small"
+                  startIcon={<SettingsIcon />}
+                  onClick={() => setConfigDialogOpen(true)}
+                  sx={{ mt: 1 }}
+                >
+                  Configure API Key
+                </Button>
+              </Box>
+            )}
+            {messages.length === 0 && !error && hasApiKey && (
               <Box className={classes.emptyState}>
                 <SmartToyIcon className={classes.emptyIcon} />
                 <Typography variant="body2" color="textSecondary" align="center">
