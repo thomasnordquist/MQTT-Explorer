@@ -21,7 +21,7 @@ const style = (theme: Theme) => {
     width: '12px',
     height: '12px',
     marginTop: 0,
-    marginRight: '2px',
+    marginRight: '6px',
     paddingTop: '2px',
     borderRadius: '50%',
     fontSize: '16px',
@@ -34,7 +34,7 @@ const style = (theme: Theme) => {
     icon,
     iconButton: {
       ...icon,
-      marginTop: '-2px',
+      marginTop: '-3px',
       marginRight: 0,
       width: '16px',
       height: '16px',
