@@ -36,43 +36,22 @@
   "rules": {
     "@typescript-eslint/semi": ["error", "never"],
     "semi": "off",
-    "max-len": ["error", { "code": 200 }],
+    "max-len": "off",
     "@typescript-eslint/explicit-member-accessibility": "off",
     "no-else-return": "off",
     "indent": "off",
-    "@typescript-eslint/indent": ["error", 2],
+    "@typescript-eslint/indent": "off",
     "import/prefer-default-export": "off",
-    "@typescript-eslint/naming-convention": [
-      "error",
-      {
-        "selector": "variable",
-        "format": ["camelCase", "PascalCase", "UPPER_CASE"],
-        "leadingUnderscore": "allow"
-      },
-      {
-        "selector": "function",
-        "format": ["camelCase", "PascalCase"]
-      },
-      {
-        "selector": "typeLike",
-        "format": ["PascalCase"]
-      }
-    ],
-    "@typescript-eslint/comma-dangle": ["error", {
-      "arrays": "always-multiline",
-      "objects": "always-multiline",
-      "imports": "always-multiline",
-      "exports": "always-multiline",
-      "functions": "never"
-    }],
+    "@typescript-eslint/naming-convention": "off",
+    "@typescript-eslint/comma-dangle": "off",
     "comma-dangle": "off",
-    "arrow-parens": ["error", "as-needed"],
+    "arrow-parens": "off",
     "import/no-extraneous-dependencies": ["error", {
-      "devDependencies": true,
+      "devDependencies": ["**/*.spec.ts", "**/*.spec.tsx", "**/__tests__/**", "scripts/**", "src/spec/**"],
       "optionalDependencies": true,
       "peerDependencies": false
     }],
-    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-non-null-assertion": "warn",
     "@typescript-eslint/no-unused-expressions": ["error", {
       "allowShortCircuit": true,
       "allowTernary": true
@@ -98,34 +77,53 @@
     "no-use-before-define": "off",
     "@typescript-eslint/no-use-before-define": "off",
     "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
     "import/no-cycle": "warn",
     "import/no-relative-packages": "off",
     "operator-linebreak": "off",
     "@typescript-eslint/no-explicit-any": "warn",
     "prefer-destructuring": "off",
     "arrow-body-style": "off",
-    "import/order": ["error", {
-      "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
-      "newlines-between": "never"
-    }],
+    "import/order": "off",
     "object-curly-newline": "off",
     "import/no-named-default": "off",
     "no-console": "off",
     "func-names": "off",
     "no-await-in-loop": "off",
     "no-restricted-syntax": "off",
-    "import/prefer-default-export": "off",
     "no-continue": "off",
     "no-promise-executor-return": "off",
-    "no-eval": "warn",
+    "no-eval": "error",
     "@typescript-eslint/default-param-last": "off",
     "radix": "off",
     "no-param-reassign": "off",
     "no-underscore-dangle": "off",
     "no-restricted-globals": "off",
     "@typescript-eslint/no-useless-constructor": "off",
-    "@typescript-eslint/ban-types": "warn"
+    "@typescript-eslint/ban-types": "warn",
+    "global-require": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "eqeqeq": ["error", "always", {"null": "ignore"}],
+    "no-var": "error",
+    "prefer-const": "error",
+    "no-unused-expressions": "off",
+    "curly": "off",
+    "no-duplicate-imports": "error",
+    "no-trailing-spaces": "off",
+    "padded-blocks": "off",
+    "brace-style": "off",
+    "@typescript-eslint/brace-style": "off",
+    "object-curly-spacing": "off",
+    "space-before-function-paren": "off",
+    "@typescript-eslint/space-before-function-paren": "off",
+    "keyword-spacing": "off",
+    "space-infix-ops": "off",
+    "@typescript-eslint/space-infix-ops": "off",
+    "comma-spacing": "off",
+    "@typescript-eslint/comma-spacing": "off",
+    "quotes": "off",
+    "@typescript-eslint/quotes": "off",
+    "linebreak-style": "off"
   },
   "overrides": [
     {
@@ -140,7 +138,9 @@
       "rules": {
         "@typescript-eslint/semi": ["error", "never"],
         "semi": "off",
-        "max-len": ["error", { "code": 200 }]
+        "max-len": "off",
+        "@typescript-eslint/indent": "off",
+        "@typescript-eslint/no-throw-literal": "error"
       }
     },
     {
@@ -155,7 +155,9 @@
       "rules": {
         "@typescript-eslint/semi": ["error", "never"],
         "semi": "off",
-        "max-len": ["error", { "code": 200 }]
+        "max-len": "off",
+        "@typescript-eslint/indent": "off",
+        "@typescript-eslint/no-throw-literal": "error"
       }
     },
     {
@@ -182,7 +184,9 @@
       "rules": {
         "@typescript-eslint/semi": ["error", "never"],
         "semi": "off",
-        "max-len": ["error", { "code": 200 }],
+        "max-len": "off",
+        "@typescript-eslint/indent": "off",
+        "@typescript-eslint/no-throw-literal": "error",
         "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
         "react/prop-types": "off",
         "react/react-in-jsx-scope": "off",
@@ -197,7 +201,9 @@
         "react/static-property-placement": "off",
         "react/no-array-index-key": "warn",
         "react/display-name": "off",
-        "react-compiler/react-compiler": "off"
+        "react-compiler/react-compiler": "off",
+        "react/require-default-props": "off",
+        "react/jsx-no-bind": "off"
       }
     },
     {
@@ -212,7 +218,9 @@
       "rules": {
         "@typescript-eslint/semi": ["error", "never"],
         "semi": "off",
-        "max-len": ["error", { "code": 200 }]
+        "max-len": "off",
+        "@typescript-eslint/indent": "off",
+        "@typescript-eslint/no-throw-literal": "error"
       }
     },
     {
