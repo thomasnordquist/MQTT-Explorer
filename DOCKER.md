@@ -81,13 +81,14 @@ docker-compose up -d
 | `LLM_API_KEY` | No | - | Generic API key for AI Assistant (works with either provider) |
 | `LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT` | No | `100` | Token limit for neighboring topics context in AI queries |
 
-**Architecture**: The backend proxies all LLM API requests. API keys are **never** sent to the frontend - only an availability flag is transmitted. The frontend calls `/api/llm/chat` which the backend uses to make requests to OpenAI/Gemini on behalf of the client.
+**Architecture**: The backend proxies all LLM API requests via WebSocket RPC. API keys are **never** sent to the frontend - only an availability flag is transmitted. The frontend calls the backend via WebSocket RPC (`llm/chat` event), and the backend makes requests to OpenAI/Gemini on behalf of the client.
 
 **Security**: 
 - ✅ API keys remain server-side only
 - ✅ Keys never embedded in client bundles
-- ✅ Keys never transmitted over websockets
+- ✅ Keys never transmitted to frontend
 - ✅ Backend controls all LLM access
+- ✅ Communication via secure WebSocket RPC
 
 **Note**: If no LLM environment variables are set, the AI Assistant feature will be completely hidden from users.
 

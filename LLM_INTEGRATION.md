@@ -54,9 +54,10 @@ node dist/src/server.js
 
 **Architecture**:
 - Backend reads API keys from environment variables
-- Backend proxies all LLM API requests via `/api/llm/chat` endpoint
+- Backend proxies all LLM API requests via WebSocket RPC (`llm/chat` event)
 - Frontend only receives an availability flag (no credentials)
 - API keys never leave the server
+- Communication happens over the existing WebSocket connection
 
 **Environment Variable Priority:**
 1. Provider-specific keys (`OPENAI_API_KEY`, `GEMINI_API_KEY`) are checked first
