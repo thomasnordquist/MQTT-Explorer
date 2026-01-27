@@ -2,6 +2,26 @@
 
 This directory contains comprehensive tests for the LLM (Large Language Model) integration in MQTT Explorer.
 
+## Quick Start
+
+**Run offline tests (default):**
+```bash
+cd app && yarn test
+```
+
+**Run live tests with API key:**
+```bash
+# Using the helper script (recommended)
+OPENAI_API_KEY=sk-your-key ./scripts/run-llm-tests.sh
+
+# Or manually
+export OPENAI_API_KEY=sk-your-key
+export RUN_LLM_TESTS=true
+cd app && yarn test
+```
+
+For detailed test results and examples, see [docs/LLM_TEST_RESULTS.md](../../../docs/LLM_TEST_RESULTS.md).
+
 ## Test Structure
 
 ### 1. Unit Tests (`llmService.spec.ts`)
