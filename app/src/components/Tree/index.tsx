@@ -75,9 +75,9 @@ class TreeComponent extends React.PureComponent<Props, State> {
   }
 
   private handleResize = () => {
-    // Throttle resize events to avoid excessive re-renders
+    // Debounce resize events - only update after user stops resizing
     if (this.resizeTimer) {
-      return
+      clearTimeout(this.resizeTimer)
     }
 
     this.resizeTimer = setTimeout(() => {
@@ -86,7 +86,7 @@ class TreeComponent extends React.PureComponent<Props, State> {
         this.setState({ isMobile })
       }
       this.resizeTimer = undefined
-    }, 150) // Throttle to 150ms
+    }, 150) // Wait 150ms after last resize event
   }
 
   public componentDidMount() {
@@ -112,10 +112,14 @@ class TreeComponent extends React.PureComponent<Props, State> {
     if (typeof window !== 'undefined') {
       window.removeEventListener('resize', this.handleResize)
     }
-    // Clean up any pending timers
+    // Clean up any pending timers to prevent memory leaks
     if (this.resizeTimer) {
       clearTimeout(this.resizeTimer)
       this.resizeTimer = undefined
+    }
+    if (this.updateTimer) {
+      clearTimeout(this.updateTimer)
+      this.updateTimer = undefined
     }
   }
 
