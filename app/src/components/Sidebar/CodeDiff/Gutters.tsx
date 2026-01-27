@@ -24,7 +24,6 @@ const style = (theme: Theme) => {
     height: '12px',
     marginTop: '0px',
     borderRadius: '50%',
-    fontSize: '12px',
   }
 
   return {
@@ -63,9 +62,9 @@ function tokensForLine(change: diff.Change, line: number, props: Props) {
   ) : null
 
   if (change.added) {
-    return [chartPreview, <Add key="add" className={classes.icon} />]
+    return [chartPreview, <Add key="add" className={classes.icon} style={{ fontSize: '12px' }} />]
   } else if (change.removed) {
-    return [<Remove key="remove" className={classes.icon} />]
+    return [<Remove key="remove" className={classes.icon} style={{ fontSize: '12px' }} />]
   } else {
     return [
       chartPreview,
