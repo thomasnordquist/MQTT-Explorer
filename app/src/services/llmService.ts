@@ -5,14 +5,9 @@
 
 import axios, { AxiosInstance } from 'axios'
 
-// Extend Window interface to include server-provided LLM config
+// Extend Window interface to include LLM availability flag
 declare global {
   interface Window {
-    __llmConfigFromServer?: {
-      provider?: LLMProvider
-      apiKey?: string
-      neighboringTopicsTokenLimit?: number
-    }
     __llmAvailable?: boolean
   }
 }
@@ -74,23 +69,7 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
     })
   }
 
-  /**
-   * Get server-provided LLM configuration (browser mode only)
-   */
-  private getServerConfig() {
-    if (typeof window !== 'undefined' && window.__llmConfigFromServer) {
-      return window.__llmConfigFromServer
-    }
-    return undefined
-  }
-
   private getNeighboringTopicsTokenLimitFromEnv(): number | undefined {
-    // In browser mode, check if server provided config via window object
-    const serverConfig = this.getServerConfig()
-    if (serverConfig?.neighboringTopicsTokenLimit) {
-      return serverConfig.neighboringTopicsTokenLimit
-    }
-    
     // Fallback to process.env (only works in Electron/Node.js context)
     if (typeof process !== 'undefined' && process.env) {
       const limit = parseInt(process.env.LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT || '', 10)

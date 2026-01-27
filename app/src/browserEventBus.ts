@@ -96,29 +96,6 @@ socket.on('auto-connect-initiated', (data: { connectionId: string }) => {
   }
 })
 
-// Listen for LLM config from server
-socket.on('llm-config', (config: { provider?: string; apiKey?: string; neighboringTopicsTokenLimit?: number }) => {
-  console.log('LLM config received from server:', { 
-    provider: config.provider, 
-    hasApiKey: !!config.apiKey,
-    neighboringTopicsTokenLimit: config.neighboringTopicsTokenLimit
-  })
-  
-  // Store in window object for LLM service to access
-  if (typeof window !== 'undefined') {
-    window.__llmConfigFromServer = {
-      provider: config.provider as 'openai' | 'gemini' | undefined,
-      apiKey: config.apiKey,
-      neighboringTopicsTokenLimit: config.neighboringTopicsTokenLimit,
-    }
-    
-    // Dispatch custom event so LLM service can update if already initialized
-    window.dispatchEvent(new CustomEvent('llm-config-received', { 
-      detail: config
-    }))
-  }
-})
-
 // Listen for LLM availability from server (new architecture)
 socket.on('llm-available', (data: { available: boolean }) => {
   console.log('LLM availability received from server:', data.available)

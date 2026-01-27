@@ -450,14 +450,34 @@ async function startServer() {
     }
   })
 
+  // Rate limiting for LLM API endpoint
+  const llmLimiter = rateLimit({
+    windowMs: 60 * 1000, // 1 minute
+    max: 10, // Limit each IP to 10 requests per minute
+    message: 'Too many LLM requests. Please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
+  })
+
   // LLM Chat API endpoint - backend proxies requests to LLM providers
   app.post(
     '/api/llm/chat',
+    llmLimiter,
     express.json({ limit: '1mb' }),
     async (req: Request, res: Response) => {
       try {
         // Get LLM configuration from environment
-        const provider = (process.env.LLM_PROVIDER || 'openai') as 'openai' | 'gemini'
+        const envProvider = process.env.LLM_PROVIDER
+        let provider: 'openai' | 'gemini' = 'openai'
+        
+        // Validate provider
+        if (envProvider === 'gemini' || envProvider === 'openai') {
+          provider = envProvider
+        } else if (envProvider) {
+          // Invalid provider specified
+          console.warn(`Invalid LLM_PROVIDER: ${envProvider}, using default: openai`)
+        }
+        
         const apiKey = provider === 'gemini'
           ? (process.env.GEMINI_API_KEY || process.env.LLM_API_KEY)
           : (process.env.OPENAI_API_KEY || process.env.LLM_API_KEY)
@@ -471,10 +491,6 @@ async function startServer() {
         if (!messages || !Array.isArray(messages)) {
           return res.status(400).json({ error: 'Invalid request: messages required' })
         }
-
-        // Rate limiting check - use IP-based tracking
-        const clientIp = req.ip || req.socket.remoteAddress || 'unknown'
-        // TODO: Add more sophisticated rate limiting if needed
 
         // Call appropriate LLM provider
         let response: string
