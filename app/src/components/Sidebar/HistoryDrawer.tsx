@@ -23,7 +23,7 @@ interface Props {
 
 function csvEscape(value: string): string {
   // Normalize newlines and escape double quotes for CSV/text export
-  return value.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n/g, ' ').replace(/"/g, '""')
+  return value.replace(/\r\n|\r|\n/g, ' ').replace(/"/g, '""')
 }
 
 function downloadHistoryAsFile(props: Props) {
