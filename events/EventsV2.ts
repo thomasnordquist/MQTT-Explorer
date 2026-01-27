@@ -7,12 +7,9 @@
  */
 
 import { UpdateInfo } from 'builder-util-runtime'
-import { Base64MessageDTO } from 'mqtt-explorer-backend/src/Model/Base64Message'
-import { DataSourceState, MqttOptions } from 'mqtt-explorer-backend/src/DataSource/DataSource'
+import { Base64MessageDTO } from '../backend/src/Model/Base64Message'
+import { DataSourceState, MqttOptions } from '../backend/src/DataSource'
 import { RpcEvent } from './EventSystem/Rpc'
-
-// Dialog types (browser-compatible versions)
-import type { OpenDialogOptions, OpenDialogReturnValue, SaveDialogOptions, SaveDialogReturnValue } from './DialogTypes'
 
 export type EventV2<MessageType> = {
   topic: string
@@ -66,6 +63,7 @@ export interface CertificateUploadResponse {
   data: string // base64 encoded
 }
 
+// LLM Chat RPC types
 export interface LlmChatRequest {
   messages: Array<{
     role: 'system' | 'user' | 'assistant'
@@ -77,6 +75,9 @@ export interface LlmChatRequest {
 export interface LlmChatResponse {
   response: string
 }
+
+// Dialog types (browser-compatible versions)
+import type { OpenDialogOptions, OpenDialogReturnValue, SaveDialogOptions, SaveDialogReturnValue } from './DialogTypes'
 
 export type OpenDialogOptionsV2 = OpenDialogOptions
 export type OpenDialogReturnValueV2 = OpenDialogReturnValue

@@ -2,14 +2,12 @@ import FileAsync from 'lowdb/adapters/FileAsync'
 import fs from 'fs-extra'
 import lowdb from 'lowdb'
 import path from 'path'
-import { Rpc } from 'MQTT-Explorer/events/EventSystem/Rpc'
-import { storageClearEvent, storageLoadEvent, storageStoreEvent } from 'MQTT-Explorer/events/StorageEvents'
+import { Rpc } from '../../events/EventSystem/Rpc'
+import { storageClearEvent, storageLoadEvent, storageStoreEvent } from '../../events/StorageEvents'
 
 export default class ConfigStorage {
   private file: string
-
   private database: any
-
   private rpc: Rpc
 
   constructor(file: string, rpc: Rpc) {
@@ -34,6 +32,7 @@ export default class ConfigStorage {
     this.rpc.on(storageStoreEvent, async event => {
       const db = await this.getDb()
       await db.set(event.store, event.data).write()
+      return
     })
 
     this.rpc.on(storageLoadEvent, async event => {

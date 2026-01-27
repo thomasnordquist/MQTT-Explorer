@@ -1,6 +1,6 @@
 import { UpdateInfo } from 'builder-util-runtime'
-import { Base64MessageDTO } from 'mqtt-explorer-backend/src/Model/Base64Message'
-import { DataSourceState, MqttOptions } from 'mqtt-explorer-backend/src/DataSource/DataSource'
+import { Base64MessageDTO } from '../backend/src/Model/Base64Message'
+import { DataSourceState, MqttOptions } from '../backend/src/DataSource'
 import { RpcEvent } from './EventSystem/Rpc'
 
 export type Event<MessageType> = {

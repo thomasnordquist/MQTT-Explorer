@@ -1,5 +1,5 @@
-import { MqttMessage } from 'MQTT-Explorer/events/events'
-import { DataSourceStateMachine } from '.'
+import { DataSourceStateMachine } from './'
+import { MqttMessage } from '../../../events'
 
 type MessageCallback = (topic: string, payload: Buffer, packet: any) => void
 

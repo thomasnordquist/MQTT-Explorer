@@ -1,4 +1,4 @@
-import { MqttMessage } from 'MQTT-Explorer/events/events'
+import { MqttMessage } from '../../../events'
 
 interface BufferedMessage {
   message: MqttMessage
@@ -7,13 +7,9 @@ interface BufferedMessage {
 
 export class ChangeBuffer {
   private buffer: Array<BufferedMessage> = []
-
   private size = 0
-
   private maxSize = 100_000_000 // ~100MB
-
   public length = 0
-
   public estimatedMessageOverhead = 24
 
   public push(val: MqttMessage) {

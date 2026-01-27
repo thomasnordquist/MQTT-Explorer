@@ -5,7 +5,6 @@ export type Base64MessageDTO = Pick<Base64Message, 'base64Message'>
 
 export class Base64Message {
   public base64Message: string
-
   private _unicodeValue: string | undefined
 
   // Todo: Rename to `encodedLength`
@@ -59,15 +58,15 @@ export class Base64Message {
   public format(type: TopicDataType = 'string'): [string, 'json' | undefined] {
     try {
       switch (type) {
-        case 'json': {
+      case 'json': {
           const json = JSON.parse(this.toUnicodeString())
           return [JSON.stringify(json, undefined, '  '), 'json']
         }
-        case 'hex': {
+      case 'hex': {
           const hex = Base64Message.toHex(this)
           return [hex, undefined]
         }
-        default: {
+      default: {
           const str = this.toUnicodeString()
           return [str, undefined]
         }
@@ -84,7 +83,7 @@ export class Base64Message {
     let str: string = ''
     buf.forEach(element => {
       const hex = element.toString(16).toUpperCase()
-      str += `0x${hex.length < 2 ? `0${hex}` : hex} `
+      str += `0x${hex.length < 2 ? '0' + hex : hex} `
     })
     return str.trimRight()
   }
