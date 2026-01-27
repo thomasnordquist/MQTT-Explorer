@@ -25,6 +25,7 @@ interface Props {
   node?: q.TreeNode<any>
   classes: any
   compareMessage?: q.Message
+  connectionId?: string
   sidebarActions: typeof sidebarActions
   globalActions: typeof globalActions
 }
@@ -198,7 +199,7 @@ function DetailsTab(props: Props) {
       )}
 
       {/* AI Assistant - Always available when a node is selected */}
-      {node && <AIAssistant node={node} />}
+      {node && <AIAssistant node={node} connectionId={props.connectionId} />}
 
       {/* About Section - always visible at bottom */}
       <Box className={classes.aboutSection}>

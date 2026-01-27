@@ -63,7 +63,7 @@ function SidebarNew(props: Props) {
     return (
       <div id="Sidebar" className={classes.root}>
         <Box className={classes.mobileContent}>
-          <DetailsTab node={node} />
+          <DetailsTab node={node} connectionId={props.connectionId} />
         </Box>
       </div>
     )
@@ -88,7 +88,7 @@ function SidebarNew(props: Props) {
       
       <Box className={classes.tabContent}>
         <Box sx={{ display: tabValue === 0 ? 'block' : 'none' }}>
-          <DetailsTab node={node} />
+          <DetailsTab node={node} connectionId={props.connectionId} />
         </Box>
         <Box sx={{ display: tabValue === 1 ? 'block' : 'none' }}>
           <PublishTab connectionId={props.connectionId} />

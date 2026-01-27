@@ -28,6 +28,18 @@ export interface LLMServiceConfig {
   neighboringTopicsTokenLimit?: number
 }
 
+export interface MessageProposal {
+  topic: string
+  payload: string
+  qos: 0 | 1 | 2
+  description: string
+}
+
+export interface ParsedResponse {
+  text: string
+  proposals: MessageProposal[]
+}
+
 export class LLMService {
   private conversationHistory: LLMMessage[] = []
   private neighboringTopicsTokenLimit: number
@@ -45,16 +57,16 @@ export class LLMService {
 **Your Core Expertise:**
 - MQTT protocol: topics, QoS levels, retained messages, wildcards, last will and testament
 - IoT and smart home ecosystems: devices, sensors, actuators, and controllers
-- Home automation platforms: Home Assistant, openHAB, Node-RED, MQTT brokers
+- Home automation platforms: Home Assistant, openHAB, Node-RED, MQTT brokers, zigbee2mqtt, tasmota
 - Common MQTT topic patterns and naming conventions (e.g., zigbee2mqtt, tasmota, homie)
 - Data formats: JSON payloads, binary data, sensor readings, state messages
 - Time-series data analysis and pattern recognition
 - Troubleshooting connectivity, message delivery, and data quality issues
 
 **Your Communication Style:**
-- Be concise and practical - focus on actionable insights
+- Be CONCISE and practical - keep answers brief and focused (2-3 sentences maximum)
 - Use clear technical language appropriate for users familiar with MQTT
-- When analyzing data, identify patterns, anomalies, or potential issues
+- When analyzing data, identify patterns, anomalies, or potential issues quickly
 - Suggest practical next steps or automations when relevant
 - Reference common MQTT ecosystems and standards when applicable
 
@@ -65,8 +77,23 @@ Users will ask about specific MQTT topics and their data. You'll receive:
 - Related/neighboring topics with their values
 - Metadata (message count, subtopics, retained status)
 
+**Actionable Proposals:**
+When you detect home automation systems (Home Assistant, zigbee2mqtt, tasmota, homie, etc.) or controllable devices, you MAY propose MQTT messages that users can send.
+To propose an action, include a JSON block in your response with this exact format:
+
+\`\`\`proposal
+{
+  "topic": "the/mqtt/topic",
+  "payload": "message payload",
+  "qos": 0,
+  "description": "Brief description of what this does"
+}
+\`\`\`
+
+You can include multiple proposals if there are multiple relevant actions. Only propose actions when it makes sense based on the topic structure and user's question.
+
 **Your Goal:**
-Help users understand their MQTT data, troubleshoot issues, optimize their automation setups, and discover insights about their connected devices and systems.`,
+Help users understand their MQTT data, troubleshoot issues, optimize their automation setups, and discover insights about their connected devices. Provide concise, actionable responses.`,
     })
   }
 
@@ -325,6 +352,87 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
       
       // Error messages come from RPC handler
       throw new Error(err.message || 'Failed to get response from AI assistant.')
+    }
+  }
+
+  /**
+   * Parse LLM response to extract proposals and clean text
+   */
+  public parseResponse(response: string): ParsedResponse {
+    const proposals: MessageProposal[] = []
+    let cleanText = response
+
+    // Match proposal blocks: ```proposal\n{...}\n```
+    const proposalRegex = /```proposal\s*\n([\s\S]*?)\n```/g
+    let match
+
+    while ((match = proposalRegex.exec(response)) !== null) {
+      try {
+        const proposalJson = JSON.parse(match[1])
+        if (proposalJson.topic && proposalJson.payload !== undefined && proposalJson.description) {
+          proposals.push({
+            topic: proposalJson.topic,
+            payload: proposalJson.payload,
+            qos: proposalJson.qos || 0,
+            description: proposalJson.description,
+          })
+        }
+      } catch (e) {
+        console.warn('Failed to parse proposal:', match[1])
+      }
+    }
+
+    // Remove proposal blocks from display text
+    cleanText = cleanText.replace(/```proposal\s*\n[\s\S]*?\n```/g, '').trim()
+
+    return { text: cleanText, proposals }
+  }
+
+  /**
+   * Generate suggested questions for a topic using LLM
+   */
+  public async generateSuggestedQuestions(topic: any): Promise<string[]> {
+    try {
+      const topicContext = this.generateTopicContext(topic)
+      
+      // Create a temporary conversation for question generation
+      const questionPrompt = `Based on this MQTT topic and its context, suggest 3-5 brief, relevant questions a user might want to ask. Return ONLY a JSON array of question strings, nothing else.
+
+Context:
+${topicContext}
+
+Format: ["question 1", "question 2", "question 3"]`
+
+      const response = await backendRpc.call(RpcEvents.llmChat, {
+        messages: [
+          this.conversationHistory[0], // System message
+          { role: 'user', content: questionPrompt }
+        ],
+        topicContext,
+      })
+
+      if (!response || !response.response) {
+        return []
+      }
+
+      // Try to parse JSON array from response
+      try {
+        // Extract JSON array from response (might have markdown or extra text)
+        const jsonMatch = response.response.match(/\[[\s\S]*\]/)
+        if (jsonMatch) {
+          const questions = JSON.parse(jsonMatch[0])
+          if (Array.isArray(questions)) {
+            return questions.slice(0, 5) // Max 5 questions
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to parse suggested questions:', e)
+      }
+
+      return []
+    } catch (error) {
+      console.error('Error generating suggested questions:', error)
+      return []
     }
   }
 

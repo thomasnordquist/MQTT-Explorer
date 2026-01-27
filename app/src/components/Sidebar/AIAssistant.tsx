@@ -15,6 +15,9 @@ import {
   Collapse,
   Alert,
   Button,
+  Card,
+  CardContent,
+  CardActions,
 } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
@@ -23,10 +26,14 @@ import SmartToyIcon from '@mui/icons-material/SmartToy'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ClearIcon from '@mui/icons-material/Clear'
-import { getLLMService, LLMMessage } from '../../services/llmService'
+import PublishIcon from '@mui/icons-material/Publish'
+import { getLLMService, LLMMessage, MessageProposal } from '../../services/llmService'
+import { makePublishEvent, rendererEvents } from '../../eventBus'
+import { Base64Message } from '../../../../backend/src/Model/Base64Message'
 
 interface Props {
   node?: any
+  connectionId?: string
   classes: any
 }
 
@@ -34,17 +41,21 @@ interface ChatMessage {
   role: 'user' | 'assistant' | 'system'
   content: string
   timestamp: Date
+  proposals?: MessageProposal[]
 }
 
 function AIAssistant(props: Props) {
-  const { node, classes } = props
+  const { node, connectionId, classes } = props
   const [expanded, setExpanded] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [inputValue, setInputValue] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([])
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const llmService = getLLMService()
+  const previousNodeRef = useRef<any>(null)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -53,6 +64,25 @@ function AIAssistant(props: Props) {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Auto-generate questions when node changes or chat is expanded
+  useEffect(() => {
+    if (expanded && node && node !== previousNodeRef.current && llmService.hasApiKey()) {
+      previousNodeRef.current = node
+      setLoadingSuggestions(true)
+      
+      llmService.generateSuggestedQuestions(node)
+        .then(questions => {
+          setSuggestedQuestions(questions)
+        })
+        .catch(err => {
+          console.error('Failed to generate suggested questions:', err)
+        })
+        .finally(() => {
+          setLoadingSuggestions(false)
+        })
+    }
+  }, [expanded, node, llmService])
 
   const handleSendMessage = useCallback(
     async (messageText?: string) => {
@@ -84,11 +114,15 @@ function AIAssistant(props: Props) {
         // Send to LLM
         const response = await llmService.sendMessage(text, topicContext)
 
-        // Add assistant response to UI
+        // Parse response for proposals
+        const parsed = llmService.parseResponse(response)
+
+        // Add assistant response to UI with proposals
         const assistantMessage: ChatMessage = {
           role: 'assistant',
-          content: response,
+          content: parsed.text,
           timestamp: new Date(),
+          proposals: parsed.proposals,
         }
         setMessages((prev) => [...prev, assistantMessage])
       } catch (err: unknown) {
@@ -118,7 +152,36 @@ function AIAssistant(props: Props) {
     setError(null)
   }
 
+  const handlePublishProposal = useCallback((proposal: MessageProposal) => {
+    if (!connectionId) {
+      setError('No active connection to publish message')
+      return
+    }
+
+    try {
+      const publishEvent = makePublishEvent(connectionId)
+      const mqttMessage = {
+        topic: proposal.topic,
+        payload: Base64Message.fromString(proposal.payload),
+        retain: false,
+        qos: proposal.qos,
+      }
+      
+      rendererEvents.emit(publishEvent, mqttMessage)
+      
+      // Show success feedback
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: `✓ Published to ${proposal.topic}`,
+        timestamp: new Date(),
+      }])
+    } catch (err) {
+      setError(`Failed to publish message: ${err}`)
+    }
+  }, [connectionId])
+
   const suggestions = node ? llmService.getQuickSuggestions(node) : []
+  const allSuggestions = [...suggestions, ...suggestedQuestions]
   
   // Check if backend LLM service is available
   const hasApiKey = llmService.hasApiKey()
@@ -155,19 +218,20 @@ function AIAssistant(props: Props) {
           )}
 
           {/* Quick Suggestions */}
-          {hasApiKey && messages.length === 0 && suggestions.length > 0 && (
+          {hasApiKey && messages.length === 0 && allSuggestions.length > 0 && (
             <Box className={classes.suggestions}>
               <Typography variant="caption" color="textSecondary" className={classes.suggestionsTitle}>
-                Quick questions:
+                {loadingSuggestions ? 'Generating questions...' : 'Suggested questions:'}
               </Typography>
               <Box className={classes.suggestionChips}>
-                {suggestions.slice(0, 4).map((suggestion, idx) => (
+                {allSuggestions.slice(0, 6).map((suggestion, idx) => (
                   <Chip
                     key={idx}
                     label={suggestion}
                     size="small"
                     onClick={() => handleSuggestionClick(suggestion)}
                     className={classes.suggestionChip}
+                    disabled={loadingSuggestions}
                   />
                 ))}
               </Box>
@@ -186,16 +250,55 @@ function AIAssistant(props: Props) {
             )}
 
             {messages.map((msg, idx) => (
-              <Box
-                key={idx}
-                className={msg.role === 'user' ? classes.userMessage : classes.assistantMessage}
-              >
-                <Typography variant="body2" className={classes.messageText}>
-                  {msg.content}
-                </Typography>
-                <Typography variant="caption" color="textSecondary" className={classes.messageTime}>
-                  {msg.timestamp.toLocaleTimeString()}
-                </Typography>
+              <Box key={idx}>
+                <Box
+                  className={msg.role === 'user' ? classes.userMessage : classes.assistantMessage}
+                >
+                  <Typography variant="body2" className={classes.messageText}>
+                    {msg.content}
+                  </Typography>
+                  <Typography variant="caption" color="textSecondary" className={classes.messageTime}>
+                    {msg.timestamp.toLocaleTimeString()}
+                  </Typography>
+                </Box>
+                
+                {/* Render proposals if any */}
+                {msg.proposals && msg.proposals.length > 0 && (
+                  <Box className={classes.proposalsContainer}>
+                    {msg.proposals.map((proposal, pIdx) => (
+                      <Card key={pIdx} className={classes.proposalCard} variant="outlined">
+                        <CardContent className={classes.proposalContent}>
+                          <Typography variant="caption" color="primary" fontWeight="bold">
+                            Proposed Action
+                          </Typography>
+                          <Typography variant="body2" gutterBottom>
+                            {proposal.description}
+                          </Typography>
+                          <Box className={classes.proposalDetails}>
+                            <Typography variant="caption" color="textSecondary">
+                              Topic: <code>{proposal.topic}</code>
+                            </Typography>
+                            <Typography variant="caption" color="textSecondary">
+                              Payload: <code>{proposal.payload}</code>
+                            </Typography>
+                          </Box>
+                        </CardContent>
+                        <CardActions className={classes.proposalActions}>
+                          <Button
+                            size="small"
+                            variant="contained"
+                            color="primary"
+                            startIcon={<PublishIcon />}
+                            onClick={() => handlePublishProposal(proposal)}
+                            disabled={!connectionId}
+                          >
+                            Send Message
+                          </Button>
+                        </CardActions>
+                      </Card>
+                    ))}
+                  </Box>
+                )}
               </Box>
             ))}
 
@@ -377,6 +480,41 @@ const styles = (theme: Theme) => ({
   },
   sendButton: {
     padding: theme.spacing(1),
+  },
+  proposalsContainer: {
+    marginTop: theme.spacing(1),
+    marginLeft: theme.spacing(6),
+    display: 'flex',
+    flexDirection: 'column' as 'column',
+    gap: theme.spacing(1),
+  },
+  proposalCard: {
+    backgroundColor: theme.palette.mode === 'dark' 
+      ? 'rgba(144, 202, 249, 0.08)' 
+      : 'rgba(25, 118, 210, 0.04)',
+    borderColor: theme.palette.primary.main,
+  },
+  proposalContent: {
+    paddingBottom: theme.spacing(1),
+    '&:last-child': {
+      paddingBottom: theme.spacing(1),
+    },
+  },
+  proposalDetails: {
+    marginTop: theme.spacing(1),
+    display: 'flex',
+    flexDirection: 'column' as 'column',
+    gap: theme.spacing(0.5),
+    '& code': {
+      backgroundColor: theme.palette.action.hover,
+      padding: theme.spacing(0.25, 0.5),
+      borderRadius: theme.shape.borderRadius,
+      fontSize: '0.85em',
+    },
+  },
+  proposalActions: {
+    padding: theme.spacing(1, 2),
+    paddingTop: 0,
   },
 })
 
