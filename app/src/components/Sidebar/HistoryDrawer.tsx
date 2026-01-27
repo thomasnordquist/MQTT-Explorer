@@ -28,7 +28,7 @@ function csvEscape(value: string): string {
   return `"${escapedQuotes}"`
 }
 
-function dowloadHistoryAsFile(props: Props) {
+function downloadHistoryAsFile(props: Props) {
   var filename = "save.txt"
   const elementsText = props.items.map((element) => (
     csvEscape(element.key) + ';' + csvEscape(element.value) + ';\r\n'
@@ -62,9 +62,9 @@ function HistoryDrawer(props: Props) {
     event.stopPropagation()
   }
 
-  const saveHistory = (() => {
-    dowloadHistoryAsFile(props);
-  })
+  const saveHistory = () => {
+    dowloadHistoryAsFile(props)
+  }
 
   function renderHistory() {
     const style = (element: HistoryItem) => ({

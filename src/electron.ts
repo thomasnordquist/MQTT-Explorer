@@ -118,8 +118,8 @@ async function createWindow() {
   })
 
   mainWindow.on('show', () => {
-    tray?.removeBalloon()
     tray?.destroy()
+    tray = undefined
   })
 }
 

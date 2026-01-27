@@ -24,7 +24,7 @@ const applicationMenu: MenuItemConstructorOptions = {
       label: 'Minimize to tray',
       click: () => {
         BrowserWindow.getFocusedWindow()?.hide()
-      }
+      },
     },
     {
       label: 'Dev Tools',
