@@ -116,7 +116,7 @@ function AIAssistant(props: Props) {
         setLoading(false)
       }
     },
-    [inputValue, node, llmService]
+    [inputValue, node, llmService, provider]
   )
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
