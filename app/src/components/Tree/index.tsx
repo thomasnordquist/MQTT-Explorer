@@ -26,6 +26,7 @@ interface Props {
 
 interface State {
   lastUpdate: number
+  isMobile: boolean
 }
 
 function useArrowKeyEventHandler(actions: typeof treeActions) {
@@ -58,12 +59,28 @@ class TreeComponent extends React.PureComponent<Props, State> {
 
   constructor(props: any) {
     super(props)
-    this.state = { lastUpdate: 0 }
+    this.state = { 
+      lastUpdate: 0,
+      isMobile: typeof window !== 'undefined' && window.innerWidth <= 768,
+    }
   }
 
   private keyEventHandler = useArrowKeyEventHandler(this.props.actions)
   private performanceCallback = (ms: number) => {
     average.push(Date.now(), ms)
+  }
+
+  private handleResize = () => {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+    if (this.state.isMobile !== isMobile) {
+      this.setState({ isMobile })
+    }
+  }
+
+  public componentDidMount() {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', this.handleResize)
+    }
   }
 
   public componentWillReceiveProps(nextProps: Props) {
@@ -80,6 +97,9 @@ class TreeComponent extends React.PureComponent<Props, State> {
 
   public componentWillUnmount() {
     this.props.tree && this.props.tree.didUpdate.unsubscribe(this.throttledTreeUpdate)
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', this.handleResize)
+    }
   }
 
   public throttledTreeUpdate = () => {
@@ -127,8 +147,7 @@ class TreeComponent extends React.PureComponent<Props, State> {
       return null
     }
 
-    // Detect mobile viewport for horizontal scrolling behavior
-    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+    const { isMobile } = this.state
 
     const style: React.CSSProperties = {
       lineHeight: '1.1',
@@ -146,27 +165,29 @@ class TreeComponent extends React.PureComponent<Props, State> {
       }),
     }
 
-    // Wrapper to create snap point at the start
-    const wrapperStyle: React.CSSProperties = isMobile ? {
-      scrollSnapAlign: 'start',
-      minWidth: '100%',
-    } : {}
+    const treeNode = (
+      <TreeNode
+        key={tree.hash()}
+        isRoot={true}
+        treeNode={tree}
+        name={this.props.host}
+        collapsed={false}
+        settings={this.props.settings}
+        lastUpdate={tree.lastUpdate}
+        actions={this.props.actions}
+        selectTopicAction={this.props.actions.selectTopic}
+      />
+    )
 
     return (
       <div style={style} tabIndex={0} onKeyDown={this.keyEventHandler}>
-        <div style={wrapperStyle}>
-          <TreeNode
-            key={tree.hash()}
-            isRoot={true}
-            treeNode={tree}
-            name={this.props.host}
-            collapsed={false}
-            settings={this.props.settings}
-            lastUpdate={tree.lastUpdate}
-            actions={this.props.actions}
-            selectTopicAction={this.props.actions.selectTopic}
-          />
-        </div>
+        {isMobile ? (
+          <div style={{ scrollSnapAlign: 'start', minWidth: '100%' }}>
+            {treeNode}
+          </div>
+        ) : (
+          treeNode
+        )}
       </div>
     )
   }
