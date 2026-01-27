@@ -1,6 +1,6 @@
 import * as q from '../../../backend/src/Model'
 import { Destroyable } from '../../../backend/src/Model/Destroyable'
-import { EventDispatcher } from '../../../events/Events'
+import { EventDispatcher } from '../../../events'
 import { MessageDecoder, decoders } from '../decoders'
 
 function findDecoder<T extends Destroyable>(node: q.TreeNode<T>): TopicDecoder | undefined {
