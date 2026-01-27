@@ -87,25 +87,27 @@ function ContentView(props: Props) {
     }
   }, [props.chartPanelItems])
 
+  // Expose tab switching functions for other components to call (mobile only)
+  // This effect must be outside the conditional render to avoid React hooks rules violation
+  React.useEffect(() => {
+    if (isMobile && typeof window !== 'undefined') {
+      (window as any).switchToDetailsTab = () => setMobileTab(1)
+      (window as any).switchToTopicsTab = () => setMobileTab(0)
+      ;(window as any).switchToPublishTab = () => setMobileTab(2)
+      ;(window as any).switchToChartsTab = () => setMobileTab(3)
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        delete (window as any).switchToDetailsTab
+        delete (window as any).switchToTopicsTab
+        delete (window as any).switchToPublishTab
+        delete (window as any).switchToChartsTab
+      }
+    }
+  }, [isMobile])
+
   // Mobile view with tab switcher
   if (isMobile) {
-    // Expose tab switching functions for other components to call
-    React.useEffect(() => {
-      if (typeof window !== 'undefined') {
-        (window as any).switchToDetailsTab = () => setMobileTab(1)
-        (window as any).switchToTopicsTab = () => setMobileTab(0)
-        ;(window as any).switchToPublishTab = () => setMobileTab(2)
-        ;(window as any).switchToChartsTab = () => setMobileTab(3)
-      }
-      return () => {
-        if (typeof window !== 'undefined') {
-          delete (window as any).switchToDetailsTab
-          delete (window as any).switchToTopicsTab
-          delete (window as any).switchToPublishTab
-          delete (window as any).switchToChartsTab
-        }
-      }
-    }, [])
 
     const mobileContainerStyle: React.CSSProperties = {
       display: 'flex',
