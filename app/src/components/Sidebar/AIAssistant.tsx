@@ -149,6 +149,14 @@ function AIAssistant(props: Props) {
   }
 
   const suggestions = node ? llmService.getQuickSuggestions(node) : []
+  
+  // Check if API key is available (from localStorage or environment)
+  const hasApiKey = llmService.hasApiKey()
+
+  // Don't render the component at all if no API key is available
+  if (!hasApiKey) {
+    return null
+  }
 
   return (
     <Box className={classes.root}>

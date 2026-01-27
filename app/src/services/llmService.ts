@@ -172,20 +172,63 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
 
   /**
    * Truncate text to fit within token limit
+   * Returns object with truncated text and flag indicating if truncation occurred
    */
-  private truncateToTokenLimit(text: string, tokenLimit: number): string {
+  private truncateToTokenLimit(text: string, tokenLimit: number): { text: string; truncated: boolean } {
     const estimatedTokens = this.estimateTokens(text)
     if (estimatedTokens <= tokenLimit) {
-      return text
+      return { text, truncated: false }
     }
     
     // Truncate to approximate character count
     const maxChars = tokenLimit * 4
     if (text.length <= maxChars) {
-      return text
+      return { text, truncated: false }
     }
     
-    return text.substring(0, maxChars - 3) + '...'
+    return { 
+      text: text.substring(0, maxChars - 3) + '...', 
+      truncated: true 
+    }
+  }
+
+  /**
+   * Escape string for single-line representation (no newlines)
+   * Encodes newlines and other special characters similar to JSON string encoding
+   */
+  private escapeToSingleLine(text: string): string {
+    return text
+      .replace(/\\/g, '\\\\')  // Escape backslashes first
+      .replace(/\n/g, '\\n')   // Encode newlines
+      .replace(/\r/g, '\\r')   // Encode carriage returns
+      .replace(/\t/g, '\\t')   // Encode tabs
+      .replace(/"/g, '\\"')    // Escape quotes
+  }
+
+  /**
+   * Format value for LLM context (machine-friendly, single-line)
+   */
+  private formatValueForContext(value: any, tokenLimit: number, markTruncation: boolean = true): string {
+    let valueStr: string
+    
+    if (typeof value === 'object' && value !== null) {
+      // For objects, use JSON.stringify which handles escaping
+      valueStr = JSON.stringify(value)
+    } else {
+      valueStr = String(value)
+    }
+    
+    // Escape to single line
+    const escaped = this.escapeToSingleLine(valueStr)
+    
+    // Truncate if needed
+    const result = this.truncateToTokenLimit(escaped, tokenLimit)
+    
+    if (result.truncated && markTruncation) {
+      return `[TRUNCATED] ${result.text}`
+    }
+    
+    return result.text
   }
 
   /**
@@ -203,34 +246,35 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
     const context = []
     
     if (topic.path) {
-      context.push(`Topic Path: ${topic.path()}`)
+      context.push(`Topic: ${topic.path()}`)
     }
     
-    // Add current value with preview
+    // Add current value with preview (allow more tokens for main topic - 200 tokens)
     if (topic.message?.payload) {
       const [value] = topic.message.payload.format(topic.type)
       if (value !== null && value !== undefined) {
-        const valueStr = typeof value === 'object' ? JSON.stringify(value) : String(value)
-        const preview = this.truncateToTokenLimit(valueStr, 50) // Limit value preview to ~50 tokens
-        context.push(`Value: ${preview}`)
+        // Main topic value can contain newlines, format for LLM
+        const formattedValue = this.formatValueForContext(value, 200, true)
+        context.push(`Value: ${formattedValue}`)
       }
       
       // Add retained status if true
       if (topic.message.retain) {
-        context.push(`Status: Retained`)
+        context.push(`Retained: true`)
       }
     }
     
     // Add neighboring topics (siblings and children) up to token limit
+    // Full topic paths with single-line previews
     const neighbors: string[] = []
     let neighborsTokenCount = 0
     const tokenLimit = this.neighboringTopicsTokenLimit
     
     // Helper function to add a neighbor if within token limit
-    const addNeighbor = (name: string, value: any, type?: string): boolean => {
-      const valueStr = typeof value === 'object' ? JSON.stringify(value) : String(value)
-      const preview = this.truncateToTokenLimit(valueStr, 20) // Limit each neighbor to ~20 tokens
-      const neighborEntry = `  ${name}: ${preview}`
+    const addNeighbor = (fullPath: string, value: any): boolean => {
+      // Format value as single-line preview (no newlines)
+      const preview = this.formatValueForContext(value, 20, false) // 20 tokens per neighbor
+      const neighborEntry = `  ${fullPath}: ${preview}`
       const tokens = this.estimateTokens(neighborEntry)
       
       if (neighborsTokenCount + tokens <= tokenLimit) {
@@ -241,6 +285,9 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
       return false
     }
     
+    // Get parent path for constructing full paths
+    const parentPath = topic.parent?.path ? topic.parent.path() : ''
+    
     // Get siblings from parent
     if (topic.parent && topic.parent.edgeCollection) {
       const siblings = topic.parent.edgeCollection.edges || []
@@ -249,7 +296,8 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
         if (edge.name && edge.node && edge.node.message?.payload) {
           const [siblingValue] = edge.node.message.payload.format(edge.node.type)
           if (siblingValue !== null && siblingValue !== undefined) {
-            if (!addNeighbor(edge.name, siblingValue, edge.node.type)) {
+            const fullPath = parentPath ? `${parentPath}/${edge.name}` : edge.name
+            if (!addNeighbor(fullPath, siblingValue)) {
               break
             }
           }
@@ -258,6 +306,7 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
     }
     
     // Get children
+    const currentPath = topic.path ? topic.path() : ''
     if (topic.edgeCollection?.edges && neighborsTokenCount < tokenLimit) {
       const children = topic.edgeCollection.edges || []
       for (const edge of children) {
@@ -265,7 +314,8 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
         if (edge.name && edge.node && edge.node.message?.payload) {
           const [childValue] = edge.node.message.payload.format(edge.node.type)
           if (childValue !== null && childValue !== undefined) {
-            if (!addNeighbor(edge.name, childValue, edge.node.type)) {
+            const fullPath = currentPath ? `${currentPath}/${edge.name}` : edge.name
+            if (!addNeighbor(fullPath, childValue)) {
               break
             }
           }
@@ -274,13 +324,13 @@ Provide clear, concise, and helpful responses. When analyzing topic data, focus 
     }
     
     if (neighbors.length > 0) {
-      context.push(`\nRelated Topics (${neighbors.length} shown):`)
+      context.push(`\nRelated Topics (${neighbors.length}):`)
       context.push(neighbors.join('\n'))
     }
     
     // Add metadata
     if (topic.messages) {
-      context.push(`\nMessage Count: ${topic.messages}`)
+      context.push(`\nMessages: ${topic.messages}`)
     }
     
     if (topic.childTopicCount) {
