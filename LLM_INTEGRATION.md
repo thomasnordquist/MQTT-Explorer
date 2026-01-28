@@ -149,6 +149,19 @@ The neighboring topics context can be adjusted using the `LLM_NEIGHBORING_TOPICS
 - **API Integration**: OpenAI Chat Completions API (GPT-4o Mini by default)
 - **Context Generation**: Automatic extraction of topic metadata for relevant queries
 
+### Implementation
+
+The AI Assistant uses:
+
+- **OpenAI SDK**: Official `openai` package (v6.16.0) for reliable OpenAI API communication
+  - Automatic retry logic with exponential backoff
+  - Built-in timeout handling (30 seconds)
+  - TypeScript type safety
+  - Better error messages
+- **Axios**: Direct HTTP calls for Gemini API (Google doesn't provide official Node.js SDK)
+- **Model**: `gpt-5-mini` (latest OpenAI mini model, 400K context window)
+- **Architecture**: Server-side proxy - API keys never sent to browser
+
 ### Configuration Options
 
 The LLM service supports:
@@ -156,7 +169,7 @@ The LLM service supports:
 - **Custom API Endpoints**: Can be configured to use compatible APIs
 - **Model Selection**: Defaults to `gpt-5-mini` (latest OpenAI mini model)
 - **Conversation History**: Automatically manages context (keeps last 10 messages)
-- **Timeout Handling**: 30-second timeout for API requests
+- **Timeout Handling**: 30-second timeout for API requests with automatic retries
 - **Debug Mode**: View complete API request and response data via debug button
 
 ## Troubleshooting

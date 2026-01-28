@@ -7,6 +7,7 @@ import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import { body, validationResult } from 'express-validator'
 import axios from 'axios'
+import OpenAI from 'openai'
 import { AuthManager } from './AuthManager'
 import { ConnectionManager } from '../backend/src/index'
 import ConfigStorage from '../backend/src/ConfigStorage'
@@ -538,8 +539,14 @@ async function startServer() {
           },
         }
       } else {
-        // OpenAI API
+        // OpenAI API using official SDK
         const model = 'gpt-5-mini'
+        const openai = new OpenAI({
+          apiKey,
+          timeout: 30000,
+          maxRetries: 2, // SDK handles retries with exponential backoff
+        })
+
         const requestBody = {
           model,
           messages,
@@ -547,24 +554,14 @@ async function startServer() {
         }
 
         const startTime = Date.now()
-        const openaiResponse = await axios.post(
-          'https://api.openai.com/v1/chat/completions',
-          requestBody,
-          {
-            headers: {
-              Authorization: `Bearer ${apiKey}`,
-              'Content-Type': 'application/json',
-            },
-            timeout: 30000,
-          }
-        )
+        const openaiResponse = await openai.chat.completions.create(requestBody)
         const endTime = Date.now()
 
-        if (!openaiResponse.data.choices || openaiResponse.data.choices.length === 0) {
+        if (!openaiResponse.choices || openaiResponse.choices.length === 0) {
           throw new Error('No response from OpenAI')
         }
 
-        response = openaiResponse.data.choices[0].message.content
+        response = openaiResponse.choices[0].message.content || ''
 
         // Capture debug info
         debugInfo = {
@@ -574,7 +571,14 @@ async function startServer() {
             url: 'https://api.openai.com/v1/chat/completions',
             body: requestBody,
           },
-          response: openaiResponse.data,
+          response: {
+            id: openaiResponse.id,
+            model: openaiResponse.model,
+            created: openaiResponse.created,
+            choices: openaiResponse.choices,
+            usage: openaiResponse.usage,
+            system_fingerprint: openaiResponse.system_fingerprint,
+          },
           timing: {
             duration_ms: endTime - startTime,
             timestamp: new Date().toISOString(),
@@ -587,7 +591,14 @@ async function startServer() {
     } catch (error: any) {
       console.error('LLM RPC error:', error.message)
 
-      if (error.response?.status === 401 || error.response?.status === 403) {
+      // Handle OpenAI SDK errors
+      if (error.status === 401 || error.status === 403) {
+        throw new Error('Invalid API key configuration')
+      } else if (error.status === 429) {
+        throw new Error('Rate limit exceeded. Please try again later.')
+      }
+      // Handle axios errors (Gemini)
+      else if (error.response?.status === 401 || error.response?.status === 403) {
         throw new Error('Invalid API key configuration')
       } else if (error.response?.status === 429) {
         throw new Error('Rate limit exceeded. Please try again later.')
