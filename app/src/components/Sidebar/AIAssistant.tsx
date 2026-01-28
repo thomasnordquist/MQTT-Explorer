@@ -67,10 +67,15 @@ function AIAssistant(props: Props) {
   }, [messages])
 
   // Auto-generate questions when node changes or chat is expanded
+  // Clear chat when node changes
   useEffect(() => {
     const nodePath = node?.path?.()
     if (expanded && node && nodePath && nodePath !== previousNodePathRef.current && llmService.hasApiKey()) {
       previousNodePathRef.current = nodePath
+      
+      // Clear chat messages and error when switching to a new topic
+      setMessages([])
+      setError(null)
       setLoadingSuggestions(true)
 
       llmService
