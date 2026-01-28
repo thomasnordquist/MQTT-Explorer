@@ -17,6 +17,7 @@ jobs:
     env:
       TESTS_MQTT_BROKER_HOST: localhost
       TESTS_MQTT_BROKER_PORT: 1883
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
     steps:
       - name: Checkout code
