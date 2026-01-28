@@ -154,7 +154,7 @@ The neighboring topics context can be adjusted using the `LLM_NEIGHBORING_TOPICS
 The LLM service supports:
 
 - **Custom API Endpoints**: Can be configured to use compatible APIs
-- **Model Selection**: Defaults to `gpt-4o-mini` but can be customized
+- **Model Selection**: Defaults to `gpt-5-mini` but can be customized
 - **Conversation History**: Automatically manages context (keeps last 10 messages)
 - **Timeout Handling**: 30-second timeout for API requests
 
