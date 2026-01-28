@@ -27,6 +27,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ClearIcon from '@mui/icons-material/Clear'
 import PublishIcon from '@mui/icons-material/Publish'
+import BugReportIcon from '@mui/icons-material/BugReport'
 import { Base64Message } from '../../../../backend/src/Model/Base64Message'
 import { getLLMService, LLMMessage, MessageProposal, QuestionProposal } from '../../services/llmService'
 import { makePublishEvent, rendererEvents } from '../../eventBus'
@@ -54,6 +55,7 @@ function AIAssistant(props: Props) {
   const [error, setError] = useState<string | null>(null)
   const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([])
   const [loadingSuggestions, setLoadingSuggestions] = useState(false)
+  const [showDebug, setShowDebug] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const llmService = getLLMService()
   const previousNodePathRef = useRef<string>('')
@@ -209,15 +211,32 @@ function AIAssistant(props: Props) {
   return (
     <Box className={classes.root}>
       {/* Header */}
-      <Box className={classes.header} onClick={() => setExpanded(!expanded)}>
-        <Box className={classes.headerLeft}>
+      <Box className={classes.header}>
+        <Box className={classes.headerLeft} onClick={() => setExpanded(!expanded)} style={{ flex: 1, cursor: 'pointer' }}>
           <SmartToyIcon className={classes.icon} />
           <Typography variant="subtitle2" className={classes.title}>
             AI Assistant
           </Typography>
           <Chip label="Beta" size="small" color="primary" className={classes.betaChip} />
         </Box>
-        <Box className={classes.headerRight}>{expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}</Box>
+        <Box className={classes.headerRight}>
+          {expanded && messages.length > 0 && (
+            <IconButton
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation()
+                setShowDebug(!showDebug)
+              }}
+              title="Toggle debug view"
+              className={classes.iconButton}
+            >
+              <BugReportIcon fontSize="small" style={{ color: showDebug ? '#f50057' : 'inherit' }} />
+            </IconButton>
+          )}
+          <Box onClick={() => setExpanded(!expanded)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+            {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </Box>
+        </Box>
       </Box>
 
       {/* Chat Interface */}
@@ -352,6 +371,30 @@ function AIAssistant(props: Props) {
 
             <div ref={messagesEndRef} />
           </Box>
+
+          {/* Debug View */}
+          {showDebug && messages.length > 0 && (
+            <Paper className={classes.debugContainer} variant="outlined">
+              <Typography variant="caption" fontWeight="bold" color="textSecondary" gutterBottom>
+                Debug: Raw Messages
+              </Typography>
+              <Box className={classes.debugContent}>
+                <pre className={classes.debugPre}>
+                  {JSON.stringify(
+                    messages.map(msg => ({
+                      role: msg.role,
+                      content: msg.content,
+                      timestamp: msg.timestamp.toISOString(),
+                      proposals: msg.proposals?.length || 0,
+                      questionProposals: msg.questionProposals?.length || 0,
+                    })),
+                    null,
+                    2
+                  )}
+                </pre>
+              </Box>
+            </Paper>
+          )}
 
           {/* Input */}
           <Box className={classes.inputContainer}>
@@ -565,6 +608,24 @@ const styles = (theme: Theme) => ({
     '&:hover': {
       backgroundColor: theme.palette.secondary.dark,
     },
+  },
+  debugContainer: {
+    marginTop: theme.spacing(1),
+    padding: theme.spacing(1.5),
+    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.03)',
+    maxHeight: '200px',
+    overflow: 'auto',
+  },
+  debugContent: {
+    marginTop: theme.spacing(0.5),
+  },
+  debugPre: {
+    margin: 0,
+    fontSize: '0.75rem',
+    fontFamily: 'monospace',
+    whiteSpace: 'pre-wrap' as const,
+    wordBreak: 'break-word' as const,
+    color: theme.palette.text.secondary,
   },
 })
 
