@@ -21,6 +21,25 @@ interface Props {
   children?: any
 }
 
+function csvEscape(value: string): string {
+  // Normalize newlines and escape double quotes for CSV/text export
+  return value.replace(/\r\n|\r|\n/g, ' ').replace(/"/g, '""')
+}
+
+function downloadHistoryAsFile(props: Props) {
+  const filename = 'save.csv'
+  const elementsText = props.items.map((element) => (
+    csvEscape(element.key) + ';' + csvEscape(element.value) + ';\r\n'
+  ))
+  let element = document.createElement('a')
+  element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(elementsText.join('')))
+  element.setAttribute('download', filename)
+  element.style.display = 'none'
+  document.body.appendChild(element)
+  element.click()
+  document.body.removeChild(element)
+}
+
 function HistoryDrawer(props: Props) {
   const handleCtrlA = selectTextWithCtrlA({ targetSelector: 'pre' })
   const [expanded, setExpanded] = useState<boolean | undefined>(undefined)
@@ -39,6 +58,10 @@ function HistoryDrawer(props: Props) {
     props.onClick && props.onClick(index, event.target)
     event.preventDefault()
     event.stopPropagation()
+  }
+
+  const saveHistory = () => {
+    downloadHistoryAsFile(props)
   }
 
   function renderHistory() {
@@ -99,6 +122,24 @@ function HistoryDrawer(props: Props) {
         <div style={{ maxHeight: '230px', overflowY: 'scroll' }}>
           {expanded ? props.children : null}
           {expanded ? elements : null}
+        </div>
+        <div
+          style={{
+            backgroundColor: emphasize(props.theme.palette.background.default, 0.15),
+          }}
+        >
+          <Typography component={'span'} onClick={saveHistory} style={{ cursor: 'pointer', display: 'flex' }}>
+            <span style={{ flexGrow: 1 }}>
+              <Badge
+                classes={{ badge: props.classes.badge }}
+                invisible={true}
+                badgeContent={props.items.length}
+                color="primary"
+              >
+                Save history
+              </Badge>
+            </span>
+          </Typography>
         </div>
       </div>
     )
