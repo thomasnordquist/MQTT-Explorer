@@ -481,6 +481,7 @@ async function startServer() {
 
       // Call appropriate LLM provider
       let response: string
+      let debugInfo: any = {}
 
       if (provider === 'gemini') {
         // Gemini API
@@ -498,35 +499,57 @@ async function startServer() {
           contents[0].parts.unshift({ text: systemMsg.content })
         }
 
+        const requestBody = {
+          contents,
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 500,
+          },
+        }
+
+        const startTime = Date.now()
         const geminiResponse = await axios.post(
           `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-          {
-            contents,
-            generationConfig: {
-              temperature: 0.7,
-              maxOutputTokens: 500,
-            },
-          },
+          requestBody,
           {
             timeout: 30000,
           }
         )
+        const endTime = Date.now()
 
         if (!geminiResponse.data.candidates || geminiResponse.data.candidates.length === 0) {
           throw new Error('No response from Gemini')
         }
 
         response = geminiResponse.data.candidates[0].content.parts[0].text
+
+        // Capture debug info (remove API key from URL for security)
+        debugInfo = {
+          provider: 'gemini',
+          model,
+          request: {
+            url: `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+            body: requestBody,
+          },
+          response: geminiResponse.data,
+          timing: {
+            duration_ms: endTime - startTime,
+            timestamp: new Date().toISOString(),
+          },
+        }
       } else {
         // OpenAI API
-        const model = 'gpt-4o-mini'
+        const model = 'gpt-5-mini'
+        const requestBody = {
+          model,
+          messages,
+          max_completion_tokens: 500,
+        }
+
+        const startTime = Date.now()
         const openaiResponse = await axios.post(
           'https://api.openai.com/v1/chat/completions',
-          {
-            model,
-            messages,
-            max_completion_tokens: 500,
-          },
+          requestBody,
           {
             headers: {
               Authorization: `Bearer ${apiKey}`,
@@ -535,16 +558,32 @@ async function startServer() {
             timeout: 30000,
           }
         )
+        const endTime = Date.now()
 
         if (!openaiResponse.data.choices || openaiResponse.data.choices.length === 0) {
           throw new Error('No response from OpenAI')
         }
 
         response = openaiResponse.data.choices[0].message.content
+
+        // Capture debug info
+        debugInfo = {
+          provider: 'openai',
+          model,
+          request: {
+            url: 'https://api.openai.com/v1/chat/completions',
+            body: requestBody,
+          },
+          response: openaiResponse.data,
+          timing: {
+            duration_ms: endTime - startTime,
+            timestamp: new Date().toISOString(),
+          },
+        }
       }
 
-      // Return the response
-      return { response }
+      // Return the response with debug info
+      return { response, debugInfo }
     } catch (error: any) {
       console.error('LLM RPC error:', error.message)
 

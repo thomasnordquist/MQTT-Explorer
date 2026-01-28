@@ -66,10 +66,16 @@ export interface QuestionProposal {
   category?: string // 'analysis', 'control', 'troubleshooting', 'optimization'
 }
 
+export interface LLMResponse {
+  response: string
+  debugInfo?: any
+}
+
 export interface ParsedResponse {
   text: string
   proposals: MessageProposal[]
   questions: QuestionProposal[]
+  debugInfo?: any // Debug information from API call
 }
 
 export class LLMService {
@@ -404,7 +410,7 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
    * Send a message to the LLM and get a response
    * Messages are proxied through the backend server via WebSocket for security
    */
-  public async sendMessage(userMessage: string, topicContext?: string): Promise<string> {
+  public async sendMessage(userMessage: string, topicContext?: string): Promise<LLMResponse> {
     try {
       // Add topic context if provided
       let messageContent = userMessage
@@ -429,6 +435,7 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
       }
 
       const assistantMessage = result.response
+      const debugInfo = result.debugInfo
 
       // Add assistant response to history
       this.conversationHistory.push({
@@ -444,7 +451,10 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
         ]
       }
 
-      return assistantMessage
+      return {
+        response: assistantMessage,
+        debugInfo,
+      }
     } catch (error: unknown) {
       console.error('LLM Service Error:', error)
 

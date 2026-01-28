@@ -44,6 +44,7 @@ interface ChatMessage {
   timestamp: Date
   proposals?: MessageProposal[]
   questionProposals?: QuestionProposal[]
+  debugInfo?: any // API debug information
 }
 
 function AIAssistant(props: Props) {
@@ -121,19 +122,20 @@ function AIAssistant(props: Props) {
         // Generate topic context if available
         const topicContext = node ? llmService.generateTopicContext(node) : undefined
 
-        // Send to LLM
-        const response = await llmService.sendMessage(text, topicContext)
+        // Send to LLM - now returns { response, debugInfo }
+        const llmResponse = await llmService.sendMessage(text, topicContext)
 
         // Parse response for proposals and questions
-        const parsed = llmService.parseResponse(response)
+        const parsed = llmService.parseResponse(llmResponse.response)
 
-        // Add assistant response to UI with proposals and questions
+        // Add assistant response to UI with proposals, questions, and debug info
         const assistantMessage: ChatMessage = {
           role: 'assistant',
           content: parsed.text,
           timestamp: new Date(),
           proposals: parsed.proposals,
           questionProposals: parsed.questions,
+          debugInfo: llmResponse.debugInfo, // Store debug info
         }
         setMessages(prev => [...prev, assistantMessage])
       } catch (err: unknown) {
@@ -372,22 +374,52 @@ function AIAssistant(props: Props) {
             <div ref={messagesEndRef} />
           </Box>
 
-          {/* Debug View */}
+          {/* Debug View - Enhanced with API Traffic */}
           {showDebug && messages.length > 0 && (
             <Paper className={classes.debugContainer} variant="outlined">
               <Typography variant="caption" fontWeight="bold" color="textSecondary" gutterBottom>
-                Debug: Raw Messages
+                Debug: Complete API Traffic
               </Typography>
               <Box className={classes.debugContent}>
                 <pre className={classes.debugPre}>
                   {JSON.stringify(
-                    messages.map(msg => ({
-                      role: msg.role,
-                      content: msg.content,
-                      timestamp: msg.timestamp.toISOString(),
-                      proposals: msg.proposals?.length || 0,
-                      questionProposals: msg.questionProposals?.length || 0,
-                    })),
+                    {
+                      messages: messages.map((msg, idx) => ({
+                        index: idx,
+                        role: msg.role,
+                        content: msg.content.substring(0, 200) + (msg.content.length > 200 ? '...' : ''),
+                        timestamp: msg.timestamp.toISOString(),
+                        proposals: msg.proposals?.length || 0,
+                        questionProposals: msg.questionProposals?.length || 0,
+                        ...(msg.debugInfo && {
+                          apiDebug: {
+                            provider: msg.debugInfo.provider,
+                            model: msg.debugInfo.model,
+                            timing: msg.debugInfo.timing,
+                            request: {
+                              url: msg.debugInfo.request?.url,
+                              body: msg.debugInfo.request?.body,
+                            },
+                            response: {
+                              id: msg.debugInfo.response?.id,
+                              model: msg.debugInfo.response?.model,
+                              created: msg.debugInfo.response?.created,
+                              choices: msg.debugInfo.response?.choices,
+                              usage: msg.debugInfo.response?.usage,
+                              system_fingerprint: msg.debugInfo.response?.system_fingerprint,
+                            },
+                          },
+                        }),
+                      })),
+                      summary: {
+                        totalMessages: messages.length,
+                        messagesWithDebugInfo: messages.filter(m => m.debugInfo).length,
+                        lastApiCall: messages
+                          .filter(m => m.debugInfo)
+                          .pop()
+                          ?.debugInfo?.timing?.timestamp,
+                      },
+                    },
                     null,
                     2
                   )}
