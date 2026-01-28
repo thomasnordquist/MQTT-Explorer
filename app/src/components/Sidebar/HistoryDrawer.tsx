@@ -1,8 +1,8 @@
 import React, { useCallback, useState, useEffect, memo } from 'react'
 import { Badge, Typography } from '@mui/material'
-import { selectTextWithCtrlA } from '../../utils/handleTextSelectWithCtrlA'
 import { Theme, emphasize } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
+import { selectTextWithCtrlA } from '../../utils/handleTextSelectWithCtrlA'
 
 interface HistoryItem {
   key: string
@@ -81,7 +81,7 @@ function HistoryDrawer(props: Props) {
             borderBottom: expanded ? `1px solid ${emphasize(props.theme.palette.background.default, 0.2)}` : undefined,
           }}
         >
-          <Typography component={'span'} onClick={toggle} style={{ cursor: 'pointer', display: 'flex' }}>
+          <Typography component="span" onClick={toggle} style={{ cursor: 'pointer', display: 'flex' }}>
             <span style={{ flexGrow: 1 }}>
               <Badge
                 classes={{ badge: props.classes.badge }}

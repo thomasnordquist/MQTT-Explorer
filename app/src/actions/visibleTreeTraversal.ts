@@ -1,6 +1,6 @@
+import { Dispatch } from 'redux'
 import * as q from '../../../backend/src/Model'
 import { AppState } from '../reducers'
-import { Dispatch } from 'redux'
 import { selectTopic } from './Tree'
 import { SettingsState } from '../reducers/Settings'
 import { sortedNodes } from '../sortedNodes'
@@ -69,9 +69,8 @@ function nextVisibleElementInTree(
 ): q.TreeNode<TopicViewModel> | undefined {
   if (direction === 'next') {
     return findNextNodeDownward(settings, node)
-  } else {
-    return findNextNodeUpward(settings, node)
   }
+  return findNextNodeUpward(settings, node)
 }
 
 /** Not very efficient but easy to implement, complexity should not be an issue here  */
@@ -92,9 +91,8 @@ function findNextNodeUpward(
   const upwardNeighbor = neighborNodes[nodeIdx - 1]
   if (upwardNeighbor) {
     return lastVisibleChild(settings, upwardNeighbor)
-  } else {
-    return findNextNodeUpward(settings, parent)
   }
+  return findNextNodeUpward(settings, parent)
 }
 
 function lastVisibleChild(settings: SettingsState, treeNode: q.TreeNode<TopicViewModel>): q.TreeNode<TopicViewModel> {
@@ -132,7 +130,6 @@ function findNextNodeDownwardNeighbor(
   const downwardNeighbor = neighborNodes[nodeIdx + 1]
   if (downwardNeighbor) {
     return downwardNeighbor
-  } else {
-    return findNextNodeDownwardNeighbor(settings, parent)
   }
+  return findNextNodeDownwardNeighbor(settings, parent)
 }

@@ -1,15 +1,15 @@
-import * as q from '../../../../../backend/src/Model'
 import * as React from 'react'
 import ShowChart from '@mui/icons-material/ShowChart'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import * as q from '../../../../../backend/src/Model'
 import Copy from '../../helper/Copy'
 import DateFormatter from '../../helper/DateFormatter'
 import History from '../HistoryDrawer'
 import TopicPlot from '../../TopicPlot'
 import { isPlottable } from '../CodeDiff/util'
 import { TopicViewModel } from '../../../model/TopicViewModel'
-import { bindActionCreators } from 'redux'
 import { chartActions } from '../../../actions'
-import { connect } from 'react-redux'
 import CustomIconButton from '../../helper/CustomIconButton'
 import { MessageId } from '../MessageId'
 import { useSubscription } from '../../hooks/useSubscription'
@@ -65,7 +65,7 @@ export const MessageHistory: React.FC<Props> = props => {
   const history = node.messageHistory.toArray()
   let previousMessage: q.Message | undefined = node.message
   const historyElements = [...history].reverse().map((message, idx) => {
-    const value = node.message ? decodeMessage(message)?.message?.format()[0] ?? null : null
+    const value = node.message ? (decodeMessage(message)?.message?.format()[0] ?? null) : null
 
     const element = {
       value: value ?? '',
@@ -96,7 +96,7 @@ export const MessageHistory: React.FC<Props> = props => {
     return element
   })
 
-  const value = node.message ? decodeMessage(node.message)?.message?.format()[0] ?? null : null
+  const value = node.message ? (decodeMessage(node.message)?.message?.format()[0] ?? null) : null
 
   const isMessagePlottable = isPlottable(value)
   return (
@@ -122,10 +122,8 @@ export const MessageHistory: React.FC<Props> = props => {
   )
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: { charts: bindActionCreators(chartActions, dispatch) },
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: { charts: bindActionCreators(chartActions, dispatch) },
+})
 
 export default connect(null, mapDispatchToProps)(React.memo(MessageHistory))

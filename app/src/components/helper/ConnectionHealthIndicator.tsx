@@ -1,12 +1,12 @@
 import * as React from 'react'
 import DeviceHubOutlined from '@mui/icons-material/DeviceHubOutlined'
-import { AppState } from '../../reducers'
 import { connect } from 'react-redux'
-import { ConnectionHealth } from '../../reducers/Connection'
 import { green, orange, red } from '@mui/material/colors'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
 import { Tooltip } from '@mui/material'
+import { ConnectionHealth } from '../../reducers/Connection'
+import { AppState } from '../../reducers'
 
 const styles = (theme: Theme) => ({
   offline: {
@@ -59,11 +59,9 @@ class ConnectionHealthIndicator extends React.PureComponent<Props, {}> {
   }
 }
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    health: state.connection.health,
-    connected: state.connection.connected || state.connection.connecting,
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  health: state.connection.health,
+  connected: state.connection.connected || state.connection.connecting,
+})
 
 export default connect(mapStateToProps)(withStyles(styles)(ConnectionHealthIndicator) as any)

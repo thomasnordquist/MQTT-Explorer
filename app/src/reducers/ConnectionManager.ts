@@ -1,6 +1,6 @@
+import { Subscription } from 'mqtt-explorer-backend/src/DataSource/MqttSource'
 import { ConnectionOptions } from '../model/ConnectionOptions'
 import { createReducer } from './lib'
-import { Subscription } from '../../../backend/src/DataSource/MqttSource'
 
 export interface ConnectionManagerState {
   connections: { [s: string]: ConnectionOptions }
@@ -191,7 +191,7 @@ function deleteConnection(state: ConnectionManagerState, action: DeleteConnectio
 
 function updateConnection(state: ConnectionManagerState, action: UpdateConnection): ConnectionManagerState {
   let connection = state.connections[action.connectionId]
-  let changeSet = action.changeSet
+  let { changeSet } = action
 
   // Reset empty username to undefined
   if (changeSet.username !== undefined) {

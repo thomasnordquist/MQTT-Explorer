@@ -8,9 +8,9 @@ function TooltipComponent(props: { tooltip?: Tooltip }) {
   const { tooltip } = props
   return (
     <Popper
-      style={Boolean(tooltip) ? { transition: 'all 0.1s ease-out' } : undefined}
+      style={tooltip ? { transition: 'all 0.1s ease-out' } : undefined}
       open={Boolean(tooltip)}
-      transition={true}
+      transition
       placement="top"
       anchorEl={tooltip && tooltip.element}
     >
@@ -27,9 +27,7 @@ function TooltipComponent(props: { tooltip?: Tooltip }) {
                 padding: '4px',
                 marginTop: '-12px',
                 backgroundColor: fade(
-                  theme.palette.mode === 'light'
-                    ? theme.palette.background.paper
-                    : theme.palette.background.default,
+                  theme.palette.mode === 'light' ? theme.palette.background.paper : theme.palette.background.default,
                   0.7
                 ),
               }}

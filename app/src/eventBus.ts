@@ -3,13 +3,13 @@
  * Provides the correct rendererRpc and rendererEvents implementation based on runtime environment
  * - In browser mode: uses Socket.IO-based event bus
  * - In Electron mode: uses IPC-based event bus
- * 
+ *
  * This module uses dynamic imports to avoid bundling unused dependencies.
  */
 
-import { isBrowserMode } from './utils/browserMode'
 import type { Rpc } from '../../events/EventSystem/Rpc'
 import type { EventBusInterface } from '../../events/EventSystem/EventBusInterface'
+import { isBrowserMode } from './utils/browserMode'
 
 let rendererRpcInstance: Rpc<any> | null = null
 let rendererEventsInstance: EventBusInterface | null = null
@@ -106,25 +106,25 @@ export function getBackendEvents(): EventBusInterface {
 export const rendererRpc = new Proxy({} as Rpc<any>, {
   get(target, prop) {
     return getRendererRpc()[prop as keyof Rpc<any>]
-  }
+  },
 })
 
 export const rendererEvents = new Proxy({} as EventBusInterface, {
   get(target, prop) {
     return getRendererEvents()[prop as keyof EventBusInterface]
-  }
+  },
 })
 
 export const backendRpc = new Proxy({} as Rpc<any>, {
   get(target, prop) {
     return getBackendRpc()[prop as keyof Rpc<any>]
-  }
+  },
 })
 
 export const backendEvents = new Proxy({} as EventBusInterface, {
   get(target, prop) {
     return getBackendEvents()[prop as keyof EventBusInterface]
-  }
+  },
 })
 
 // Re-export all event definitions that are shared

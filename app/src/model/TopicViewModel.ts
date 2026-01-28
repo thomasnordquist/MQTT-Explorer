@@ -1,7 +1,7 @@
 import * as q from '../../../backend/src/Model'
 import { Destroyable } from '../../../backend/src/Model/Destroyable'
-import { MessageDecoder, decoders } from '../decoders'
 import { EventDispatcher } from '../../../events'
+import { MessageDecoder, decoders } from '../decoders'
 
 function findDecoder<T extends Destroyable>(node: q.TreeNode<T>): TopicDecoder | undefined {
   const decoder = decoders.find(
@@ -21,15 +21,22 @@ type TopicDecoder = { decoder: MessageDecoder; format: string | undefined }
 
 export class TopicViewModel implements Destroyable {
   private selected: boolean
+
   private expanded: boolean
+
   private owner: q.TreeNode<TopicViewModel> | undefined
+
   private _decoder?: TopicDecoder
+
   /**
    * Reference counter for useViewModel hook
    */
   private referenceCounter = 0
+
   public selectionChange = new EventDispatcher<void>()
+
   public expandedChange = new EventDispatcher<void>()
+
   public onDecoderChange = new EventDispatcher<TopicDecoder | undefined>()
 
   get decoder(): TopicDecoder | undefined {

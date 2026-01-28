@@ -1,13 +1,13 @@
 import 'mocha'
 import { expect } from 'chai'
 import { Browser, BrowserContext, ElectronApplication, Page, _electron as electron, chromium } from 'playwright'
+import type { MqttClient } from 'mqtt'
 import { createTestMock, stopTestMock } from './mock-mqtt-test'
 import { default as MockSparkplug } from './mock-sparkplugb'
 import { sleep } from './util'
 import { connectTo } from './scenarios/connect'
 import { searchTree, clearSearch } from './scenarios/searchTree'
 import { expandTopic } from './util/expandTopic'
-import type { MqttClient } from 'mqtt'
 
 /**
  * MQTT Explorer UI Tests
@@ -61,7 +61,7 @@ describe('MQTT Explorer UI Tests', function () {
         throw new Error('BROWSER_MODE_URL environment variable must be set when running in browser mode')
       }
       console.log(`Browser URL: ${browserUrl}`)
-      
+
       // Check if mobile viewport should be used
       const useMobileViewport = process.env.USE_MOBILE_VIEWPORT === 'true'
       console.log(`Mobile viewport: ${useMobileViewport}`)
@@ -76,14 +76,15 @@ describe('MQTT Explorer UI Tests', function () {
       const contextOptions: any = {
         permissions: ['clipboard-read', 'clipboard-write'],
       }
-      
+
       if (useMobileViewport) {
         // Use same viewport as mobile demo (Pixel 6)
         contextOptions.viewport = {
           width: 412,
           height: 914,
         }
-        contextOptions.userAgent = 'Mozilla/5.0 (Linux; Android 12; Pixel 6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36'
+        contextOptions.userAgent =
+          'Mozilla/5.0 (Linux; Android 12; Pixel 6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36'
         console.log('Using mobile viewport: 412x914 (Pixel 6)')
       } else {
         // Desktop viewport - ensure width > 768px so mobile UI doesn't activate
@@ -179,17 +180,15 @@ describe('MQTT Explorer UI Tests', function () {
       if (browser) {
         await browser.close()
       }
-    } else {
-      if (electronApp) {
-        await electronApp.close()
-      }
+    } else if (electronApp) {
+      await electronApp.close()
     }
 
     stopTestMock()
   })
 
   describe('Connection Management', () => {
-    it('should connect and expand livingroom/lamp topic', async function () {
+    it('should connect and expand livingroom/lamp topic', async () => {
       // Given: Connected to broker with topics loaded
       // When: Expand topic
       await expandTopic('livingroom/lamp', page)
@@ -204,7 +203,7 @@ describe('MQTT Explorer UI Tests', function () {
   })
 
   describe('Topic Tree Structure', () => {
-    it('should expand and display kitchen/coffee_maker with JSON payload', async function () {
+    it('should expand and display kitchen/coffee_maker with JSON payload', async () => {
       // Given: Connected to broker with kitchen/coffee_maker topic
       // When: Expand topic
       await expandTopic('kitchen/coffee_maker', page)
@@ -217,7 +216,7 @@ describe('MQTT Explorer UI Tests', function () {
       await page.screenshot({ path: 'test-screenshot-kitchen-json.png' })
     })
 
-    it('should expand nested topic livingroom/lamp/state', async function () {
+    it('should expand nested topic livingroom/lamp/state', async () => {
       // Given: Connected to broker with nested topics
       // When: Expand to nested topic
       await expandTopic('livingroom/lamp/state', page)
@@ -232,7 +231,7 @@ describe('MQTT Explorer UI Tests', function () {
   })
 
   describe('Search Functionality', () => {
-    it('should search for temperature and expand kitchen/temperature', async function () {
+    it('should search for temperature and expand kitchen/temperature', async () => {
       // Given: Connected to broker with temperature topics
       // When: Search and expand
       await searchTree('temp', page)
@@ -249,7 +248,7 @@ describe('MQTT Explorer UI Tests', function () {
       await page.screenshot({ path: 'test-screenshot-search-temp.png' })
     })
 
-    it('should search for lamp and expand kitchen/lamp', async function () {
+    it('should search for lamp and expand kitchen/lamp', async () => {
       // Given: Connected to broker with lamp topics
       // When: Search and expand
       await searchTree('kitchen/lamp', page)
@@ -268,7 +267,7 @@ describe('MQTT Explorer UI Tests', function () {
   })
 
   describe('Clipboard Operations', () => {
-    it('should copy topic path to clipboard in both Electron and browser modes', async function () {
+    it('should copy topic path to clipboard in both Electron and browser modes', async () => {
       // Given: A topic is selected
       await clearSearch(page)
       await sleep(1000)
@@ -318,7 +317,7 @@ describe('MQTT Explorer UI Tests', function () {
       await page.screenshot({ path: 'test-screenshot-copy-topic.png' })
     })
 
-    it('should copy message value to clipboard in both Electron and browser modes', async function () {
+    it('should copy message value to clipboard in both Electron and browser modes', async () => {
       // Given: A topic with a value is selected (reuse already expanded topic)
       // When: Copy value button is clicked (the second copy button in the value section)
       const copyButtons = page.getByTestId('copy-button')
@@ -363,7 +362,7 @@ describe('MQTT Explorer UI Tests', function () {
   })
 
   describe('File Save/Download Operations', () => {
-    it('should save/download message to file in both Electron and browser modes', async function () {
+    it('should save/download message to file in both Electron and browser modes', async () => {
       // Given: A topic with a message is already selected from previous test
       await sleep(500)
 

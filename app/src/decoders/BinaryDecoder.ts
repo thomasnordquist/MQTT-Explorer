@@ -37,7 +37,7 @@ export const BinaryDecoder: MessageDecoder<BinaryFormats> = {
     const [readNumber, bytesToRead] = decodingOption[format]
 
     const buf = input.toBuffer()
-    let str: String[] = []
+    const str: string[] = []
     if (buf.length % bytesToRead !== 0) {
       return {
         error: 'Data type does not align with message',

@@ -1,6 +1,7 @@
 import 'mocha'
 import { expect } from 'chai'
 import { ElectronApplication, Page, _electron as electron } from 'playwright'
+import type { MqttClient } from 'mqtt'
 import { createTestMock, stopTestMock } from './mock-mqtt-test'
 import { default as MockSparkplug } from './mock-sparkplugb'
 import { sleep, expandTopic } from './util'
@@ -15,7 +16,6 @@ import { showMenu } from './scenarios/showMenu'
 import { showAdvancedConnectionSettings } from './scenarios/showAdvancedConnectionSettings'
 import { showSparkPlugDecoding } from './scenarios/showSparkplugDecoding'
 import { disconnect } from './scenarios/disconnect'
-import type { MqttClient } from 'mqtt'
 
 /**
  * Comprehensive UI Test Suite for MQTT Explorer
@@ -153,7 +153,7 @@ describe('MQTT Explorer Comprehensive UI Tests', function () {
   })
 
   describe('Connection Management', () => {
-    it('should connect to MQTT broker successfully', async function () {
+    it('should connect to MQTT broker successfully', async () => {
       // Given: Application is connected (from before hook)
       // Then: Disconnect button should be visible (indicating connected state)
       const disconnectButton = page.locator('//button/span[contains(text(),"Disconnect")]')
@@ -166,7 +166,7 @@ describe('MQTT Explorer Comprehensive UI Tests', function () {
   })
 
   describe('Topic Tree Structure', () => {
-    it('should display the correct number of root topics from mock data', async function () {
+    it('should display the correct number of root topics from mock data', async () => {
       // Then: We should see expected root topics (livingroom, kitchen, garden, etc.)
       const rootTopics = ['livingroom', 'kitchen', 'garden']
       for (const topicName of rootTopics) {
@@ -181,7 +181,7 @@ describe('MQTT Explorer Comprehensive UI Tests', function () {
   })
 
   describe('Topic Navigation and Search', () => {
-    it('should search and filter topics containing "temp"', async function () {
+    it('should search and filter topics containing "temp"', async () => {
       // When: User searches for "temp"
       await searchTree('temp', page)
       await sleep(1000)
@@ -205,7 +205,7 @@ describe('MQTT Explorer Comprehensive UI Tests', function () {
   })
 
   describe('Message Visualization', () => {
-    it('Given a JSON message on topic actuality/showcase, should display formatted JSON', async function () {
+    it('Given a JSON message on topic actuality/showcase, should display formatted JSON', async () => {
       // showJsonPreview internally calls expandTopic, so we don't need to call it here
       await showJsonPreview(page)
       await sleep(1000)
@@ -213,7 +213,7 @@ describe('MQTT Explorer Comprehensive UI Tests', function () {
       await page.screenshot({ path: 'test-screenshot-json-display.png' })
     })
 
-    it('should show numeric plots for topics with numeric values', async function () {
+    it('should show numeric plots for topics with numeric values', async () => {
       // When: We navigate to a numeric topic and show plot
       await expandTopic('livingroom/temperature', page)
       await sleep(500)
@@ -226,7 +226,7 @@ describe('MQTT Explorer Comprehensive UI Tests', function () {
   })
 
   describe('Clipboard Operations', () => {
-    it('should copy topic path to clipboard', async function () {
+    it('should copy topic path to clipboard', async () => {
       // When: We copy topic to clipboard
       await expandTopic('livingroom/lamp/state', page)
       await sleep(500)
@@ -239,7 +239,7 @@ describe('MQTT Explorer Comprehensive UI Tests', function () {
   })
 
   describe('SparkplugB Support', () => {
-    it('Given SparkplugB messages, should decode and display the payload', async function () {
+    it('Given SparkplugB messages, should decode and display the payload', async () => {
       // When: We show SparkplugB decoding
       await showSparkPlugDecoding(page)
       await sleep(1000)
@@ -249,7 +249,7 @@ describe('MQTT Explorer Comprehensive UI Tests', function () {
   })
 
   describe('Settings and Configuration', () => {
-    it('should show settings menu', async function () {
+    it('should show settings menu', async () => {
       // When: We open settings menu
       await showMenu(page)
       await sleep(1000)
@@ -259,7 +259,7 @@ describe('MQTT Explorer Comprehensive UI Tests', function () {
   })
 
   describe('Retained Messages', () => {
-    it('Given retained messages on multiple topics, should display retained indicator', async function () {
+    it('Given retained messages on multiple topics, should display retained indicator', async () => {
       // When: We navigate to a topic with retained message
       await expandTopic('garden/pump/state', page)
       await sleep(500)
@@ -273,7 +273,7 @@ describe('MQTT Explorer Comprehensive UI Tests', function () {
   })
 
   describe('Special Topic Names and Characters', () => {
-    it('Given topic with MAC address format (01-80-C2-00-00-0F/LWT), should display correctly', async function () {
+    it('Given topic with MAC address format (01-80-C2-00-00-0F/LWT), should display correctly', async () => {
       // When: We look for the MAC address topic
       const macTopic = page.locator('span[data-test-topic="01-80-C2-00-00-0F"]').first()
       await macTopic.waitFor({ state: 'visible', timeout: 5000 })

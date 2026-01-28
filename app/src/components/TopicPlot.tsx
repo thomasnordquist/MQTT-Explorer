@@ -1,6 +1,6 @@
 import * as dotProp from 'dot-prop'
-import * as q from '../../../backend/src/Model'
 import * as React from 'react'
+import * as q from '../../../backend/src/Model'
 import PlotHistory from './Chart/Chart'
 import { toPlottableValue } from './Sidebar/CodeDiff/util'
 import { PlotCurveTypes } from '../reducers/Charts'

@@ -5,11 +5,11 @@ export async function showNumericPlot(browser: Page) {
   // On desktop, expandTopic will also select the topic (original behavior restored)
   // This shows the JSON properties in the details panel where chart icons are located
   await expandTopic('kitchen/coffee_maker', browser)
-  
+
   // Switch to Details tab to ensure ShowChart icons are visible
   await switchToDetailsTab(browser)
   await sleep(500)
-  
+
   let heater = await valuePreviewGuttersShowChartIcon('heater', browser)
   await moveToCenterOfElement(heater)
   await sleep(1000)
@@ -57,7 +57,7 @@ async function valuePreviewGuttersShowChartIcon(name: string, browser: Page) {
   const locator = browser
     .locator(`//*[contains(@data-test-type, "ShowChart")][contains(@data-test, "${name}")]`)
     .first()
-  
+
   await locator.waitFor({ state: 'visible', timeout: 30000 })
   return locator
 }

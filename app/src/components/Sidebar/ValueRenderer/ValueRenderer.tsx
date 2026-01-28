@@ -1,11 +1,11 @@
-import * as q from '../../../../../backend/src/Model'
 import React, { useMemo } from 'react'
-import CodeDiff from '../CodeDiff'
-import { AppState } from '../../../reducers'
 import { connect } from 'react-redux'
-import { ValueRendererDisplayMode } from '../../../reducers/Settings'
 import { Fade } from '@mui/material'
 import { Decoder } from '../../../../../backend/src/Model/Decoder'
+import * as q from '../../../../../backend/src/Model'
+import CodeDiff from '../CodeDiff'
+import { AppState } from '../../../reducers'
+import { ValueRendererDisplayMode } from '../../../reducers/Settings'
 import { useDecoder } from '../../hooks/useDecoder'
 import { TopicViewModel } from '../../../model/TopicViewModel'
 
@@ -64,7 +64,7 @@ function renderRawMode(
       {renderDiff(treeNode, compareWithPreviousMessage, currentStr, currentStr, undefined, currentType)}
       <Fade in={Boolean(compareStr)} timeout={400}>
         <div>
-          {Boolean(compareStr)
+          {compareStr
             ? renderDiff(treeNode, compareWithPreviousMessage, compareStr, compareStr, 'selected', compareType)
             : null}
         </div>
@@ -126,10 +126,8 @@ export const ValueRenderer: React.FC<Props> = ({ treeNode, compareWith: compare,
   )
 }
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    renderMode: state.settings.get('valueRendererDisplayMode'),
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  renderMode: state.settings.get('valueRendererDisplayMode'),
+})
 
 export default connect(mapStateToProps)(ValueRenderer)

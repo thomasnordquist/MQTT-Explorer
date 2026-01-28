@@ -1,7 +1,7 @@
 import { Server as SocketIOServer, Socket } from 'socket.io'
+import Debug from 'debug'
 import { Event } from '../Events'
 import { EventBusInterface } from './EventBusInterface'
-import Debug from 'debug'
 
 const debug = Debug('mqtt-explorer:socketio')
 const debugConnect = Debug('mqtt-explorer:socketio:connect')
@@ -17,6 +17,7 @@ interface SocketSubscription {
 
 export class SocketIOServerEventBus implements EventBusInterface {
   private io: SocketIOServer
+
   private clients: Map<string, Socket> = new Map() // socketId -> Socket
 
   // Global handlers that apply to ALL sockets (like RPC endpoints)
@@ -232,7 +233,7 @@ export class SocketIOServerEventBus implements EventBusInterface {
   }
 
   public emit<MessageType>(event: Event<MessageType>, msg: MessageType) {
-    const topic = event.topic
+    const { topic } = event
 
     // Check if this is an RPC response (contains /response/ in topic)
     if (topic.includes('/response/')) {

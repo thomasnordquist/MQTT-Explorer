@@ -11,8 +11,8 @@ import {
   Box,
   Divider,
 } from '@mui/material'
-import { rendererRpc, getAppVersion } from '../../../events'
 import FavoriteIcon from '@mui/icons-material/Favorite'
+import { rendererRpc, getAppVersion } from '../eventBus'
 
 // Fallback version if RPC call fails (e.g., in browser mode during initialization)
 const FALLBACK_VERSION = '0.4.0-beta.5'
@@ -24,20 +24,20 @@ interface AboutDialogProps {
 
 /**
  * About Dialog Component
- * 
+ *
  * This component displays application information including version, author, and license.
- * 
+ *
  * LICENSE NOTICE (CC-BY-ND-4.0):
  * This component is licensed under Creative Commons Attribution-NoDerivatives 4.0 International.
- * 
+ *
  * REQUIRED ATTRIBUTION:
  * - Author: Thomas Nordquist
  * - License: CC-BY-ND-4.0
- * 
+ *
  * RESTRICTIONS:
  * - BY (Attribution): You must give appropriate credit to the author
  * - ND (NoDerivatives): You may not create derivative works without permission
- * 
+ *
  * Removing or modifying this attribution violates the license terms.
  * For full license text: https://creativecommons.org/licenses/by-nd/4.0/legalcode
  */
@@ -68,15 +68,19 @@ export function AboutDialog(props: AboutDialogProps) {
         <Typography variant="body1" gutterBottom>
           <strong>Description:</strong> Explore your message queues
         </Typography>
-        
+
         <Divider sx={{ my: 2 }} />
-        
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }} data-testid="about-author">
-          <Avatar
-            src="https://github.com/thomasnordquist.png"
-            alt="Thomas Nordquist"
-            sx={{ width: 56, height: 56 }}
-          />
+
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            mb: 2,
+          }}
+          data-testid="about-author"
+        >
+          <Avatar src="https://github.com/thomasnordquist.png" alt="Thomas Nordquist" sx={{ width: 56, height: 56 }} />
           <Box>
             <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
               Thomas Nordquist

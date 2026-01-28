@@ -1,5 +1,5 @@
-import { createReducer } from './lib'
 import { Record, List } from 'immutable'
+import { createReducer } from './lib'
 import MoveUp from '../components/ChartPanel/ChartSettings/MoveUp'
 
 export type PlotCurveTypes = 'curve' | 'linear' | 'cubic_basis_spline' | 'step_after' | 'step_before'

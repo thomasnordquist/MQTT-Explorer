@@ -1,11 +1,11 @@
 import * as React from 'react'
 import Check from '@mui/icons-material/Check'
-import CustomIconButton from './CustomIconButton'
 import FileCopy from '@mui/icons-material/FileCopy'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { globalActions } from '../../actions'
 import copyTextFallback from 'copy-text-to-clipboard'
+import { globalActions } from '../../actions'
+import CustomIconButton from './CustomIconButton'
 
 async function copyToClipboard(text: string): Promise<boolean> {
   try {
@@ -75,12 +75,10 @@ class Copy extends React.PureComponent<Props, State> {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: {
-      global: bindActionCreators(globalActions, dispatch),
-    },
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: {
+    global: bindActionCreators(globalActions, dispatch),
+  },
+})
 
 export default connect(undefined, mapDispatchToProps)(Copy)

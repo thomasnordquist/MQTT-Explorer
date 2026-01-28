@@ -4,8 +4,11 @@ import { EventBusInterface } from './EventBusInterface'
 
 export class IpcMainEventBus implements EventBusInterface {
   private ipc: IpcMain
+
   private clients: Map<number, WebContents> = new Map() // webContentsId -> WebContents
+
   private connectionOwners: Map<string, number> = new Map() // connectionId -> webContentsId
+
   private currentClient: WebContents | undefined
 
   constructor(ipc: IpcMain) {
@@ -57,7 +60,7 @@ export class IpcMainEventBus implements EventBusInterface {
   }
 
   public emit<MessageType>(event: Event<MessageType>, msg: MessageType) {
-    const topic = event.topic
+    const { topic } = event
 
     // RPC responses go only to the requesting client
     if (topic.includes('/response/')) {

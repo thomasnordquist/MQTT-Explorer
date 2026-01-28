@@ -1,5 +1,5 @@
-import * as q from '../../../../backend/src/Model'
 import { useState, useEffect } from 'react'
+import * as q from '../../../../backend/src/Model'
 
 /**
  * If a node is not available when the plot is shown, keep polling until it has been created

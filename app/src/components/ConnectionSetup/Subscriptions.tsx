@@ -1,7 +1,5 @@
 import React, { useCallback, useState } from 'react'
 import Delete from '@mui/icons-material/Delete'
-import { connectionManagerActions } from '../../actions'
-import { ConnectionOptions } from '../../model/ConnectionOptions'
 import {
   IconButton,
   TableContainer,
@@ -16,6 +14,8 @@ import {
 import { bindActionCreators } from 'redux'
 import { withStyles } from '@mui/styles'
 import { connect } from 'react-redux'
+import { ConnectionOptions } from '../../model/ConnectionOptions'
+import { connectionManagerActions } from '../../actions'
 
 function Subscriptions(props: {
   classes: any
@@ -29,7 +29,7 @@ function Subscriptions(props: {
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell align="left" padding="checkbox" className={classes.tableTitleCell}></TableCell>
+            <TableCell align="left" padding="checkbox" className={classes.tableTitleCell} />
             <TableCell className={classes.tableTitleCell}>Topic</TableCell>
             <TableCell align="right" className={classes.tableTitleCell}>
               QoS
@@ -38,7 +38,7 @@ function Subscriptions(props: {
         </TableHead>
         <TableBody>
           {connection.subscriptions.map(subscription => (
-            <TableRow key={subscription.topic + '_qos_' + subscription.qos}>
+            <TableRow key={`${subscription.topic}_qos_${subscription.qos}`}>
               <TableCell align="right" className={classes.tableCell}>
                 <IconButton
                   onClick={() => managerActions.deleteSubscription(subscription, connection.id)}
@@ -62,11 +62,9 @@ function Subscriptions(props: {
   )
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    managerActions: bindActionCreators(connectionManagerActions, dispatch),
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  managerActions: bindActionCreators(connectionManagerActions, dispatch),
+})
 
 const styles = (theme: Theme) => ({
   tableCell: {
@@ -80,7 +78,7 @@ const styles = (theme: Theme) => ({
   },
   topicList: {
     height: '196px',
-    overflowY: 'scroll' as 'scroll',
+    overflowY: 'scroll' as const,
     margin: `${theme.spacing(1)}px ${theme.spacing(1)}px 0 ${theme.spacing(1)}px`,
     backgroundColor: theme.palette.background.default,
     width: 'auto',

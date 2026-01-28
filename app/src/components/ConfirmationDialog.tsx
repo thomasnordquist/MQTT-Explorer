@@ -1,6 +1,6 @@
 import React, { useRef, useCallback, memo } from 'react'
-import { ConfirmationRequest } from '../reducers/Global'
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material'
+import { ConfirmationRequest } from '../reducers/Global'
 import { KeyCodes } from '../utils/KeyCodes'
 
 function ConfirmationDialog(props: { confirmationRequests: Array<ConfirmationRequest> }) {
@@ -34,7 +34,7 @@ function ConfirmationDialog(props: { confirmationRequests: Array<ConfirmationReq
 
   return (
     <Dialog
-      open={true}
+      open
       onClose={reject}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"

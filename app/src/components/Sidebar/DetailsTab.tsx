@@ -1,11 +1,14 @@
-import * as q from '../../../../backend/src/Model'
 import React, { useCallback } from 'react'
 import { Box, Typography, IconButton, Chip, Tooltip, Button } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
-import { AppState } from '../../reducers'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import DeleteIcon from '@mui/icons-material/Delete'
+import DeleteSweepIcon from '@mui/icons-material/DeleteSweep'
+import Info from '@mui/icons-material/Info'
+import * as q from '../../../../backend/src/Model'
+import { AppState } from '../../reducers'
 import { sidebarActions, globalActions } from '../../actions'
 import Copy from '../helper/Copy'
 import Save from '../helper/Save'
@@ -15,9 +18,6 @@ import MessageHistory from './ValueRenderer/MessageHistory'
 import ActionButtons from './ValueRenderer/ActionButtons'
 import DeleteSelectedTopicButton from './ValueRenderer/DeleteSelectedTopicButton'
 import { useDecoder } from '../hooks/useDecoder'
-import DeleteIcon from '@mui/icons-material/Delete'
-import DeleteSweepIcon from '@mui/icons-material/DeleteSweep'
-import Info from '@mui/icons-material/Info'
 import SimpleBreadcrumb from './SimpleBreadcrumb'
 import AIAssistant from './AIAssistant'
 
@@ -25,6 +25,7 @@ interface Props {
   node?: q.TreeNode<any>
   classes: any
   compareMessage?: q.Message
+  connectionId?: string
   sidebarActions: typeof sidebarActions
   globalActions: typeof globalActions
 }
@@ -33,9 +34,10 @@ function DetailsTab(props: Props) {
   const { node, compareMessage, classes } = props
   const decodeMessage = useDecoder(node)
 
-  const getDecodedValue = useCallback(() => {
-    return node?.message && decodeMessage(node.message)?.message?.toUnicodeString()
-  }, [node, decodeMessage])
+  const getDecodedValue = useCallback(
+    () => node?.message && decodeMessage(node.message)?.message?.toUnicodeString(),
+    [node, decodeMessage]
+  )
 
   const getData = () => {
     if (node?.message && node.message.payload) {
@@ -70,7 +72,7 @@ function DetailsTab(props: Props) {
         <Typography variant="body2" color="textSecondary" align="center">
           Select a topic to view details
         </Typography>
-        
+
         {/* About Button - always show even when no topic selected */}
         <Box className={classes.aboutSection}>
           <Button
@@ -129,12 +131,7 @@ function DetailsTab(props: Props) {
               {node.message?.retain && (
                 <Chip label="Retained" size="small" variant="outlined" color="primary" className={classes.chip} />
               )}
-              <Chip
-                label={`QoS ${node.message?.qos ?? 0}`}
-                size="small"
-                variant="outlined"
-                className={classes.chip}
-              />
+              <Chip label={`QoS ${node.message?.qos ?? 0}`} size="small" variant="outlined" className={classes.chip} />
             </Box>
           </Box>
 
@@ -198,7 +195,7 @@ function DetailsTab(props: Props) {
       )}
 
       {/* AI Assistant - Always available when a node is selected */}
-      {node && <AIAssistant node={node} />}
+      {node && <AIAssistant node={node} connectionId={props.connectionId} />}
 
       {/* About Section - always visible at bottom */}
       <Box className={classes.aboutSection}>
@@ -219,7 +216,7 @@ function DetailsTab(props: Props) {
 const styles = (theme: Theme) => ({
   root: {
     display: 'flex',
-    flexDirection: 'column' as 'column',
+    flexDirection: 'column' as const,
     gap: theme.spacing(3),
     [theme.breakpoints.down('sm')]: {
       gap: theme.spacing(2),
@@ -227,7 +224,7 @@ const styles = (theme: Theme) => ({
   },
   emptyState: {
     display: 'flex',
-    flexDirection: 'column' as 'column',
+    flexDirection: 'column' as const,
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: '200px',
@@ -276,7 +273,7 @@ const styles = (theme: Theme) => ({
   },
   statItem: {
     display: 'flex',
-    flexDirection: 'column' as 'column',
+    flexDirection: 'column' as const,
     alignItems: 'center',
     padding: theme.spacing(1.5, 1),
     backgroundColor: theme.palette.action.hover,
@@ -286,7 +283,7 @@ const styles = (theme: Theme) => ({
   statLabel: {
     fontSize: '0.75rem',
     fontWeight: 500,
-    textTransform: 'uppercase' as 'uppercase',
+    textTransform: 'uppercase' as const,
     letterSpacing: '0.5px',
   },
   statValue: {
@@ -297,7 +294,7 @@ const styles = (theme: Theme) => ({
   // Value section
   valueSection: {
     display: 'flex',
-    flexDirection: 'column' as 'column',
+    flexDirection: 'column' as const,
     gap: theme.spacing(2),
   },
   metadataBar: {
@@ -305,7 +302,7 @@ const styles = (theme: Theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: theme.spacing(1),
-    flexWrap: 'wrap' as 'wrap',
+    flexWrap: 'wrap' as const,
     padding: theme.spacing(1),
     backgroundColor: theme.palette.action.hover,
     borderRadius: theme.shape.borderRadius,
@@ -314,7 +311,7 @@ const styles = (theme: Theme) => ({
     display: 'flex',
     gap: theme.spacing(1),
     alignItems: 'center',
-    flexWrap: 'wrap' as 'wrap',
+    flexWrap: 'wrap' as const,
   },
   metadataRight: {
     display: 'flex',
@@ -328,13 +325,13 @@ const styles = (theme: Theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: theme.spacing(1),
-    flexWrap: 'wrap' as 'wrap',
+    flexWrap: 'wrap' as const,
   },
   valueTitle: {
     fontWeight: 600,
     color: theme.palette.text.primary,
     fontSize: '0.875rem',
-    textTransform: 'uppercase' as 'uppercase',
+    textTransform: 'uppercase' as const,
     letterSpacing: '0.5px',
     flexShrink: 0,
   },
@@ -356,17 +353,13 @@ const styles = (theme: Theme) => ({
   },
 })
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    compareMessage: state.sidebar.get('compareMessage'),
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  compareMessage: state.sidebar.get('compareMessage'),
+})
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    sidebarActions: bindActionCreators(sidebarActions, dispatch),
-    globalActions: bindActionCreators(globalActions, dispatch),
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  sidebarActions: bindActionCreators(sidebarActions, dispatch),
+  globalActions: bindActionCreators(globalActions, dispatch),
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(DetailsTab))

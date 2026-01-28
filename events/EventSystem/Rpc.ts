@@ -1,6 +1,6 @@
+import { v4 } from 'uuid'
 import { Event } from '../Events'
 import { EventBusInterface } from './EventBusInterface'
-import { v4 } from 'uuid'
 
 export type RpcEvent<RequestType, ResponseType> = {
   topic: string
@@ -54,7 +54,7 @@ export class Rpc {
       } catch (e) {
         error = e
       }
-      const id = (request as any).id
+      const { id } = request as any
       console.log(`${event.topic}/response/${id}`, payload, error)
       this.participant.emit({ topic: `${event.topic}/response/${id}` }, { id, payload, error })
     })

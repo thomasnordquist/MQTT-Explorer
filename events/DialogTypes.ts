@@ -43,11 +43,7 @@ export interface SaveDialogOptions {
   nameFieldLabel?: string
   showsTagField?: boolean
   properties?: Array<
-    | 'showHiddenFiles'
-    | 'createDirectory'
-    | 'treatPackageAsDirectory'
-    | 'showOverwriteConfirmation'
-    | 'dontAddToRecent'
+    'showHiddenFiles' | 'createDirectory' | 'treatPackageAsDirectory' | 'showOverwriteConfirmation' | 'dontAddToRecent'
   >
   securityScopedBookmarks?: boolean
 }

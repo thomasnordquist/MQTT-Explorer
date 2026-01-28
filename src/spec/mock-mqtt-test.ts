@@ -30,19 +30,19 @@ export async function createTestMock(): Promise<mqtt.MqttClient> {
       connectTimeout: 10000,
       reconnectPeriod: 0, // Disable reconnect in tests
     })
-    
+
     client.once('connect', () => {
       console.log('Successfully connected to MQTT broker')
       mqttClient = client
       console.log(`Connected to MQTT broker at ${brokerUrl}`)
       resolve(client)
     })
-    
-    client.once('error', (err) => {
+
+    client.once('error', err => {
       console.error('MQTT connection error:', err.message)
       reject(new Error(`Failed to connect to MQTT broker: ${err.message}`))
     })
-    
+
     // Timeout after 15 seconds
     setTimeout(() => {
       if (!mqttClient) {

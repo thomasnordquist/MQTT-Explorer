@@ -1,11 +1,11 @@
 import React from 'react'
-import * as q from '../../../../backend/src/Model'
 import { Link } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
-import { treeActions } from '../../actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import * as q from '../../../../backend/src/Model'
+import { treeActions } from '../../actions'
 
 interface Props {
   node?: q.TreeNode<any>
@@ -15,7 +15,7 @@ interface Props {
 
 function SimpleBreadcrumb(props: Props) {
   const { node, classes, actions } = props
-  
+
   if (!node) {
     return null
   }
@@ -54,7 +54,7 @@ function SimpleBreadcrumb(props: Props) {
 const styles = (theme: Theme) => ({
   breadcrumbContainer: {
     display: 'flex',
-    flexWrap: 'wrap' as 'wrap',
+    flexWrap: 'wrap' as const,
     alignItems: 'center',
     gap: 0,
   },
@@ -63,7 +63,7 @@ const styles = (theme: Theme) => ({
     fontWeight: 500,
     color: theme.palette.text.primary,
     cursor: 'pointer',
-    textAlign: 'left' as 'left',
+    textAlign: 'left' as const,
     border: 'none',
     background: 'none',
     padding: 0,
@@ -74,14 +74,12 @@ const styles = (theme: Theme) => ({
   },
   separator: {
     color: theme.palette.text.secondary,
-    userSelect: 'none' as 'none',
+    userSelect: 'none' as const,
   },
 })
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: bindActionCreators(treeActions, dispatch),
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: bindActionCreators(treeActions, dispatch),
+})
 
 export default connect(null, mapDispatchToProps)(withStyles(styles)(SimpleBreadcrumb))

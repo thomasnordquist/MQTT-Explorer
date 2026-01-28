@@ -15,9 +15,9 @@ function connectMqtt(): Promise<mqtt.MqttClient> {
     const brokerHost = process.env.TESTS_MQTT_BROKER_HOST || '127.0.0.1'
     const brokerPort = process.env.TESTS_MQTT_BROKER_PORT || '1883'
     const brokerUrl = `mqtt://${brokerHost}:${brokerPort}`
-    
+
     console.log(`Connecting to MQTT broker at ${brokerUrl}`)
-    
+
     const client = mqtt.connect(brokerUrl, {
       username: '',
       password: '',

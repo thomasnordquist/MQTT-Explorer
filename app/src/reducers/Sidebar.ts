@@ -1,7 +1,7 @@
-import * as q from '../../../backend/src/Model'
 import { Action as ReduxAction } from 'redux'
-import { createReducer } from './lib'
 import { Record } from 'immutable'
+import * as q from '../../../backend/src/Model'
+import { createReducer } from './lib'
 
 interface SidebarModel {
   compareMessage?: q.Message

@@ -21,7 +21,7 @@ export interface ConnectionOptionsV0 {
   subscriptions: Array<string>
 }
 
-let migrations: Migration[] = [
+const migrations: Migration[] = [
   // iot.eclipse.org ha moved to mqtt.eclipse.org
   {
     from: undefined,
@@ -60,13 +60,11 @@ let migrations: Migration[] = [
   // Added QoS level to subscription options
   {
     from: undefined,
-    apply: (connection: ConnectionOptionsV0): ConnectionOptions => {
-      return {
-        ...connection,
-        configVersion: 1,
-        subscriptions: connection.subscriptions.map(topic => ({ topic, qos: 0 })),
-      }
-    },
+    apply: (connection: ConnectionOptionsV0): ConnectionOptions => ({
+      ...connection,
+      configVersion: 1,
+      subscriptions: connection.subscriptions.map(topic => ({ topic, qos: 0 })),
+    }),
   },
 ]
 
@@ -79,9 +77,9 @@ function isMigrationNecessary(connections: ConnectionDictionary): boolean {
 }
 
 function applyMigrations(connections: ConnectionDictionary): ConnectionDictionary {
-  let newConnectionDictionary: ConnectionDictionary = {}
+  const newConnectionDictionary: ConnectionDictionary = {}
   Object.keys(connections).forEach(key => {
-    let newConnection = connectionMigrator.applyMigrations(connections[key]) as any
+    const newConnection = connectionMigrator.applyMigrations(connections[key]) as any
     newConnectionDictionary[newConnection.id] = newConnection
   })
 

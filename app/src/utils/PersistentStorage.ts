@@ -1,6 +1,5 @@
-import { rendererRpc } from '../eventBus'
-
 import { storageStoreEvent, storageLoadEvent, storageClearEvent } from '../../../events/StorageEvents'
+import { rendererRpc } from '../eventBus'
 
 export interface StorageIdentifier<Model> {
   id: string

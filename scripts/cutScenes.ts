@@ -1,10 +1,11 @@
 #!/usr/bin/env tsx
 import * as fs from 'fs'
+// @ts-ignore - ffmpeg-concat doesn't have type definitions and is not required for build
+import concat from 'ffmpeg-concat'
 import { exec } from './util'
 import { Scene, SceneNames } from '../src/spec/SceneBuilder'
 
 // @ts-ignore - ffmpeg-concat doesn't have type definitions
-import concat from 'ffmpeg-concat'
 
 async function cutScenes(scenes: Array<Scene>) {
   for (const scene of scenes) {
@@ -24,6 +25,7 @@ type Transistions = 'none' | 'pixelize' | 'cube' | 'directionalWarp' | 'hexagona
 
 class TransitionBuilder {
   private scenes: Array<string> = []
+
   private transitions: Array<string> = []
 
   public startWith(scene: SceneNames): TransitionBuilder {

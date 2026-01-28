@@ -18,7 +18,7 @@ const applicationMenu: MenuItemConstructorOptions = {
       },
     },
     {
-      type: 'separator' as 'separator',
+      type: 'separator' as const,
     },
     {
       label: 'Dev Tools',

@@ -11,7 +11,9 @@ export interface Credentials {
 
 export class AuthManager {
   private credentialsPath: string
+
   private credentials: Credentials | undefined
+
   private skipAuth: boolean
 
   constructor(credentialsPath: string) {

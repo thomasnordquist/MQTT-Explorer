@@ -1,19 +1,19 @@
 import * as React from 'react'
-import * as q from '../../../../backend/src/Model'
-import CustomIconButton from '../helper/CustomIconButton'
 import Pause from '@mui/icons-material/PauseCircleFilled'
 import Resume from '@mui/icons-material/PlayArrow'
-import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { treeActions } from '../../actions'
 import { withStyles } from '@mui/styles'
 import { Theme } from '@mui/material/styles'
+import * as q from '../../../../backend/src/Model'
+import CustomIconButton from '../helper/CustomIconButton'
+import { treeActions } from '../../actions'
+import { AppState } from '../../reducers'
 
 const styles = (theme: Theme) => ({
   icon: {
     color: theme.palette.primary.contrastText,
-    verticalAlign: 'middle' as 'middle',
+    verticalAlign: 'middle' as const,
   },
   bufferStats: {
     minWidth: '8em',
@@ -31,6 +31,7 @@ interface Props {
 
 class PauseButton extends React.PureComponent<Props, { changes: number }> {
   private timer?: any
+
   constructor(props: Props) {
     super(props)
     this.state = { changes: 0 }
@@ -88,19 +89,15 @@ class PauseButton extends React.PureComponent<Props, { changes: number }> {
   }
 }
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    paused: state.tree.get('paused'),
-    tree: state.tree.get('tree'),
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  paused: state.tree.get('paused'),
+  tree: state.tree.get('tree'),
+})
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: {
-      tree: bindActionCreators(treeActions, dispatch),
-    },
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: {
+    tree: bindActionCreators(treeActions, dispatch),
+  },
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(PauseButton) as any)

@@ -1,17 +1,17 @@
-import { clickOn } from './'
 import { Page, Locator } from 'playwright'
+import { clickOn } from '.'
 
 /**
  * Selects a topic by clicking on its text (not the expand button)
  * On mobile, this will also switch to the Details tab automatically
- * 
+ *
  * @param path - Topic path like "mqtt/topic/name" or just "topicname"
  * @param browser - Playwright Page object
  */
 export async function selectTopic(path: string, browser: Page) {
   const topics = path.split('/')
   const topicName = topics[topics.length - 1] // Get the last topic in the path
-  
+
   console.log('selectTopic', topicName, 'from path', path)
 
   // Find the topic by its data-test-topic attribute

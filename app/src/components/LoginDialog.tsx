@@ -57,7 +57,15 @@ export function LoginDialog(props: LoginDialogProps) {
   const isDisabled = countdown !== undefined && countdown > 0
 
   return (
-    <Dialog open={props.open} disableEscapeKeyDown onClose={(event, reason) => { if (reason !== 'backdropClick') { /* Allow closing only via escape if needed */ } }}>
+    <Dialog
+      open={props.open}
+      disableEscapeKeyDown
+      onClose={(event, reason) => {
+        if (reason !== 'backdropClick') {
+          /* Allow closing only via escape if needed */
+        }
+      }}
+    >
       <DialogTitle>Login to MQTT Explorer</DialogTitle>
       <DialogContent>
         {props.error && (

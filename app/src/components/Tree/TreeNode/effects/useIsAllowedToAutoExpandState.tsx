@@ -1,5 +1,5 @@
-import { Props } from '..'
 import { useEffect, useState } from 'react'
+import { Props } from '..'
 
 export function useIsAllowedToAutoExpandState(props: Props): boolean {
   const { settings, treeNode, isRoot } = props
