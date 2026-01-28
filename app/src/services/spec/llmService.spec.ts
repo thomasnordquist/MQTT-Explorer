@@ -3,6 +3,386 @@ import 'mocha'
 import { LLMService, MessageProposal, QuestionProposal, ParsedResponse } from '../llmService'
 
 describe('LLMService', () => {
+  describe('buildTopicContext', () => {
+    let service: LLMService
+
+    beforeEach(() => {
+      service = new LLMService()
+    })
+
+    it('should build context with parent, siblings, children, and grandchildren topics', () => {
+      // Create a mock topic tree structure:
+      // home
+      //   ├── livingroom
+      //   │   ├── light
+      //   │   │   ├── set
+      //   │   │   ├── brightness
+      //   │   │   │   └── set
+      //   │   │   └── availability
+      //   │   ├── thermostat
+      //   │   └── motion
+      //   └── kitchen
+      //       └── sensor
+
+      const mockGrandchildSet: any = {
+        path: () => 'home/livingroom/light/brightness/set',
+        message: {
+          payload: {
+            format: () => ['50'],
+          },
+        },
+      }
+
+      const mockGrandchildBrightness: any = {
+        path: () => 'home/livingroom/light/brightness',
+        message: {
+          payload: {
+            format: () => ['75'],
+          },
+        },
+        edgeCollection: {
+          edges: [{ name: 'set', node: mockGrandchildSet }],
+        },
+      }
+
+      const mockChildSet: any = {
+        path: () => 'home/livingroom/light/set',
+        message: {
+          payload: {
+            format: () => ['{"state": "ON"}'],
+          },
+        },
+      }
+
+      const mockChildBrightness: any = {
+        path: () => 'home/livingroom/light/brightness',
+        message: {
+          payload: {
+            format: () => ['100'],
+          },
+        },
+        edgeCollection: {
+          edges: [{ name: 'set', node: mockGrandchildSet }],
+        },
+      }
+
+      const mockChildAvailability: any = {
+        path: () => 'home/livingroom/light/availability',
+        message: {
+          payload: {
+            format: () => ['online'],
+          },
+        },
+      }
+
+      const mockSiblingThermostat: any = {
+        path: () => 'home/livingroom/thermostat',
+        message: {
+          payload: {
+            format: () => ['21.5'],
+          },
+        },
+      }
+
+      const mockSiblingMotion: any = {
+        path: () => 'home/livingroom/motion',
+        message: {
+          payload: {
+            format: () => ['false'],
+          },
+        },
+      }
+
+      const mockCousinSensor: any = {
+        path: () => 'home/kitchen/sensor',
+        message: {
+          payload: {
+            format: () => ['{"temperature": 22}'],
+          },
+        },
+      }
+
+      const mockCousinParent: any = {
+        path: () => 'home/kitchen',
+        message: {
+          payload: {
+            format: () => ['kitchen_scene'],
+          },
+        },
+        edgeCollection: {
+          edges: [{ name: 'sensor', node: mockCousinSensor }],
+        },
+      }
+
+      const mockParent: any = {
+        path: () => 'home/livingroom',
+        message: {
+          payload: {
+            format: () => ['evening_scene'],
+          },
+        },
+        edgeCollection: {
+          edges: [
+            { name: 'light', node: null }, // Current topic (will be set below)
+            { name: 'thermostat', node: mockSiblingThermostat },
+            { name: 'motion', node: mockSiblingMotion },
+          ],
+        },
+      }
+
+      const mockGrandparent: any = {
+        path: () => 'home',
+        message: {
+          payload: {
+            format: () => ['home_automation'],
+          },
+        },
+        edgeCollection: {
+          edges: [
+            { name: 'livingroom', node: mockParent },
+            { name: 'kitchen', node: mockCousinParent },
+          ],
+        },
+      }
+
+      mockParent.parent = mockGrandparent
+
+      const mockCurrentTopic: any = {
+        path: () => 'home/livingroom/light',
+        type: 'json',
+        message: {
+          payload: {
+            format: () => ['{"state": "ON", "brightness": 100}'],
+          },
+          retain: true,
+        },
+        parent: mockParent,
+        edgeCollection: {
+          edges: [
+            { name: 'set', node: mockChildSet },
+            { name: 'brightness', node: mockChildBrightness },
+            { name: 'availability', node: mockChildAvailability },
+          ],
+        },
+      }
+
+      const context = service.generateTopicContext(mockCurrentTopic)
+
+      // Verify context structure
+      expect(context).to.be.a('string')
+      expect(context.length).to.be.greaterThan(0)
+
+      // Should include the main topic path
+      expect(context).to.include('Topic: home/livingroom/light')
+
+      // Should include the current value (escaped as single line)
+      expect(context).to.include('Value:')
+      expect(context).to.match(/Value:.*state.*ON/)
+      expect(context).to.match(/Value:.*brightness.*100/)
+
+      // Should include retained status
+      expect(context).to.include('Retained: true')
+
+      // Should include related topics section
+      expect(context).to.include('Related Topics')
+
+      // Priority 1: Should include parent value (for hierarchical context)
+      expect(context).to.include('home/livingroom:')
+      expect(context).to.include('evening_scene')
+
+      // Priority 2: Should include siblings
+      expect(context).to.include('home/livingroom/thermostat:')
+      expect(context).to.include('21.5')
+      expect(context).to.include('home/livingroom/motion:')
+      expect(context).to.include('false')
+
+      // Priority 3: Should include children
+      expect(context).to.include('home/livingroom/light/set:')
+      expect(context).to.include('home/livingroom/light/brightness:')
+      expect(context).to.include('home/livingroom/light/availability:')
+      expect(context).to.include('online')
+
+      // Priority 4: Should include grandchildren (2 levels deep)
+      expect(context).to.include('home/livingroom/light/brightness/set:')
+      expect(context).to.include('50')
+
+      // Verify all values are escaped to single-line format (no raw newlines)
+      const lines = context.split('\n')
+      for (const line of lines) {
+        if (line.includes('Value:') || line.includes(':')) {
+          // Values should be escaped, not contain actual newlines
+          expect(line).to.not.match(/[^\\]\n/)
+        }
+      }
+    })
+
+    it('should build LLM query structure with system prompt and context', () => {
+      // Create a simple mock topic
+      const mockParent: any = {
+        path: () => 'zigbee2mqtt',
+        message: {
+          payload: {
+            format: () => ['coordinator'],
+          },
+        },
+        edgeCollection: {
+          edges: [
+            {
+              name: 'bedroom_light',
+              node: {
+                path: () => 'zigbee2mqtt/bedroom_light',
+                message: {
+                  payload: {
+                    format: () => ['{"state": "OFF"}'],
+                  },
+                },
+              },
+            },
+          ],
+        },
+      }
+
+      const mockTopic: any = {
+        path: () => 'zigbee2mqtt/living_room_light',
+        type: 'json',
+        message: {
+          payload: {
+            format: () => ['{"state": "ON", "brightness": 255}'],
+          },
+        },
+        parent: mockParent,
+        edgeCollection: {
+          edges: [
+            {
+              name: 'set',
+              node: {
+                path: () => 'zigbee2mqtt/living_room_light/set',
+                message: {
+                  payload: {
+                    format: () => ['{}'],
+                  },
+                },
+              },
+            },
+            {
+              name: 'availability',
+              node: {
+                path: () => 'zigbee2mqtt/living_room_light/availability',
+                message: {
+                  payload: {
+                    format: () => ['online'],
+                  },
+                },
+              },
+            },
+          ],
+        },
+      }
+
+      // Build context
+      const context = service.generateTopicContext(mockTopic)
+
+      // Verify the query would contain:
+      // 1. Topic path
+      expect(context).to.include('Topic: zigbee2mqtt/living_room_light')
+
+      // 2. Current value (escaped as single line)
+      expect(context).to.include('Value:')
+      expect(context).to.match(/Value:.*state.*ON/)
+      expect(context).to.match(/Value:.*brightness.*255/)
+
+      // 3. Parent topic (hierarchy context)
+      expect(context).to.include('Related Topics')
+      expect(context).to.include('zigbee2mqtt:')
+      expect(context).to.include('coordinator')
+
+      // 4. Sibling topics
+      expect(context).to.include('zigbee2mqtt/bedroom_light:')
+      expect(context).to.match(/bedroom_light:.*state.*OFF/)
+
+      // 5. Child topics
+      expect(context).to.include('zigbee2mqtt/living_room_light/set:')
+      expect(context).to.include('zigbee2mqtt/living_room_light/availability:')
+      expect(context).to.include('online')
+
+      // Verify structure allows LLM to:
+      // - Understand this is a zigbee2mqtt device
+      // - See it's currently ON with full brightness
+      // - Know there's a /set topic for control
+      // - Know there's an availability topic showing online status
+      // - See sibling device (bedroom_light) is OFF
+    })
+
+    it('should respect token limit for neighboring topics', () => {
+      // Create a topic with many neighbors
+      const siblings: any[] = []
+      for (let i = 0; i < 100; i++) {
+        siblings.push({
+          name: `device_${i}`,
+          node: {
+            path: () => `home/devices/device_${i}`,
+            message: {
+              payload: {
+                format: () => [`{"status": "active", "value": ${i}}`],
+              },
+            },
+          },
+        })
+      }
+
+      const mockParent: any = {
+        path: () => 'home/devices',
+        message: {
+          payload: {
+            format: () => ['devices_group'],
+          },
+        },
+        edgeCollection: {
+          edges: siblings,
+        },
+      }
+
+      const mockTopic: any = {
+        path: () => 'home/devices/device_0',
+        message: {
+          payload: {
+            format: () => ['{"status": "active"}'],
+          },
+        },
+        parent: mockParent,
+      }
+
+      const context = service.generateTopicContext(mockTopic)
+
+      // Should include some neighbors but not all 100
+      expect(context).to.include('Related Topics')
+      expect(context).to.include('home/devices/device_')
+
+      // Verify context is within reasonable size (not unlimited)
+      // With 500 token limit and ~30 tokens per neighbor, expect ~15-20 neighbors max
+      const neighborCount = (context.match(/home\/devices\/device_\d+:/g) || []).length
+      expect(neighborCount).to.be.lessThan(30) // Should be limited, not all 100
+      expect(neighborCount).to.be.greaterThan(5) // Should include several neighbors
+    })
+
+    it('should handle topics with no neighbors gracefully', () => {
+      const mockTopic: any = {
+        path: () => 'standalone/topic',
+        message: {
+          payload: {
+            format: () => ['standalone_value'],
+          },
+        },
+      }
+
+      const context = service.generateTopicContext(mockTopic)
+
+      expect(context).to.include('Topic: standalone/topic')
+      expect(context).to.include('Value: standalone_value')
+      // Should not crash, but won't have "Related topics:" section if no neighbors
+    })
+  })
+
   describe('parseResponse', () => {
     let service: LLMService
 
