@@ -376,6 +376,11 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
           userMessage,
           fullMessage: messageContent
         })
+      } else {
+        // Debug: Log query without context
+        console.debug('[LLM] Query without context:', {
+          userMessage
+        })
       }
 
       // Add user message to history
@@ -413,7 +418,7 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
           }
         )
 
-        // Debug: Log the full response
+        // Debug: Log the full response (console.debug is only visible in DevTools, not in production)
         console.debug('[LLM] Gemini API response:', response.data)
 
         if (!response.data.candidates || response.data.candidates.length === 0) {
@@ -432,7 +437,7 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
           max_tokens: 500,
         })
 
-        // Debug: Log the full response
+        // Debug: Log the full response (console.debug is only visible in DevTools, not in production)
         console.debug('[LLM] OpenAI API response:', response.data)
 
         if (!response.data.choices || response.data.choices.length === 0) {
