@@ -180,6 +180,35 @@ The LLM service supports:
 - Try asking a simpler question
 - Verify OpenAI's service status
 
+### Response Not Showing in App
+
+If you see LLM logs showing a query and response but the response doesn't appear in the app:
+
+**Debugging Steps**:
+
+1. **Enable Debug Logging**: Open your browser's Developer Console (F12 or Ctrl+Shift+I) and look for `[LLM]` prefixed messages
+2. **Check Query Logs**: Look for `[LLM] Query with context:` to see the full query including topic context
+3. **Check Response Logs**: Look for `[LLM] OpenAI API response:` or `[LLM] Gemini API response:` to see the full API response
+4. **Check Extraction Logs**: Look for `[LLM] Extracted assistant message:` to see what message was extracted from the response
+5. **Verify Response Structure**: 
+   - For OpenAI: Check that `response.data.choices[0].message.content` exists
+   - For Gemini: Check that `response.data.candidates[0].content.parts[0].text` exists
+
+**Common Issues**:
+- If you see a response but no extracted message, the API response structure may have changed
+- If you see error logs like `[LLM] No choices in OpenAI response:`, the API may be returning an unexpected format
+- Empty or null responses from the API will trigger error messages in the console
+
+**Debug Example**:
+```javascript
+// Expected in browser console:
+[LLM] Query with context: { topicContext: "...", userMessage: "...", fullMessage: "..." }
+[LLM] OpenAI API response: { choices: [...], ... }
+[LLM] Extracted assistant message: "This is the AI's response..."
+```
+
+If the extracted message appears in logs but not in the UI, there may be an issue with the React component state management in `AIAssistant.tsx`.
+
 ## Limitations
 
 - Requires active internet connection
