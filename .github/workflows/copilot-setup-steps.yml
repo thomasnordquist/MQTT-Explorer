@@ -20,6 +20,12 @@ jobs:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
     steps:
+      - name: Persist Secrets to Agent Environment
+        run: |
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
+          echo "TESTS_MQTT_BROKER_HOST=localhost" >> $GITHUB_ENV
+          echo "TESTS_MQTT_BROKER_PORT=1883" >> $GITHUB_ENV
+
       - name: Checkout code
         uses: actions/checkout@v6
 
