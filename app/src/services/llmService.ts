@@ -370,6 +370,17 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
       let messageContent = userMessage
       if (topicContext) {
         messageContent = `Context:\n${topicContext}\n\nUser Question: ${userMessage}`
+        // Debug: Log the query with context
+        console.debug('[LLM] Query with context:', {
+          topicContext,
+          userMessage,
+          fullMessage: messageContent
+        })
+      } else {
+        // Debug: Log query without context
+        console.debug('[LLM] Query without context:', {
+          userMessage
+        })
       }
 
       // Add user message to history
@@ -407,11 +418,16 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
           }
         )
 
+        // Debug: Log the full response (console.debug is only visible in DevTools, not in production)
+        console.debug('[LLM] Gemini API response:', response.data)
+
         if (!response.data.candidates || response.data.candidates.length === 0) {
+          console.error('[LLM] No candidates in Gemini response:', response.data)
           throw new Error('No response from AI assistant')
         }
 
         assistantMessage = response.data.candidates[0].content.parts[0].text
+        console.debug('[LLM] Extracted assistant message:', assistantMessage)
       } else {
         // OpenAI API format
         const response = await this.axiosInstance.post('/chat/completions', {
@@ -421,11 +437,16 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
           max_tokens: 500,
         })
 
+        // Debug: Log the full response (console.debug is only visible in DevTools, not in production)
+        console.debug('[LLM] OpenAI API response:', response.data)
+
         if (!response.data.choices || response.data.choices.length === 0) {
+          console.error('[LLM] No choices in OpenAI response:', response.data)
           throw new Error('No response from AI assistant')
         }
 
         assistantMessage = response.data.choices[0].message.content
+        console.debug('[LLM] Extracted assistant message:', assistantMessage)
       }
       
       // Add assistant response to history
