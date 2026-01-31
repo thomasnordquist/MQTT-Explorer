@@ -1,7 +1,6 @@
 import * as diff from 'diff'
 import * as React from 'react'
-import Add from '@mui/icons-material/Add'
-import Remove from '@mui/icons-material/Remove'
+import ChartPreview from './ChartPreview'
 import { JsonPropertyLocation } from '../../../../../backend/src/JsonAstParser'
 import { Theme } from '@mui/material'
 import { withStyles } from '@mui/styles'
@@ -22,15 +21,22 @@ const style = (theme: Theme) => {
     verticalAlign: 'top',
     width: '12px',
     height: '12px',
-    marginTop: '2px',
+    marginTop: 0,
+    marginRight: '6px',
+    paddingTop: '2px',
     borderRadius: '50%',
+    fontSize: '16px',
+    display: 'inline-block',
+    textAlign: 'center' as 'center',
+    lineHeight: '12px',
   }
 
   return {
     icon,
     iconButton: {
       ...icon,
-      marginTop: '0px',
+      marginTop: '-3px',
+      marginRight: 0,
       width: '16px',
       height: '16px',
       padding: '2px',
@@ -62,10 +68,18 @@ function tokensForLine(change: diff.Change, line: number, props: Props) {
   ) : null
 
   if (change.added) {
-    return [chartPreview, <Add key="add" className={classes.icon} />]
-  }
-  if (change.removed) {
-    return [<Remove key="remove" className={classes.icon} />]
+    return [chartPreview, <span key="add" className={classes.icon}>+</span>]
+  } else if (change.removed) {
+    return [<span key="remove" className={classes.icon}>-</span>]
+  } else {
+    return [
+      chartPreview,
+      <div
+        key="placeholder"
+        style={{ width: '12px', display: 'inline-block' }}
+        dangerouslySetInnerHTML={{ __html: '&nbsp;' }}
+      />,
+    ]
   }
   return [
     chartPreview,
