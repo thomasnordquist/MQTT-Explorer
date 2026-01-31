@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+
 const inViewport = require('in-viewport')
 
 export function useAnimationToIndicateTopicUpdate(

@@ -1,11 +1,11 @@
 import * as React from 'react'
-import DateFormatter from '../helper/DateFormatter'
-import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Input, InputLabel, MenuItem, Select, Theme } from '@mui/material'
-import { settingsActions } from '../../actions'
 import { withStyles } from '@mui/styles'
+import { settingsActions } from '../../actions'
+import { AppState } from '../../reducers'
+import DateFormatter from '../helper/DateFormatter'
 
 function importAll(r: any) {
   r.keys().forEach(r)
@@ -63,19 +63,15 @@ function TimeLocaleSettings(props: Props) {
   )
 }
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    timeLocale: state.settings.get('timeLocale'),
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  timeLocale: state.settings.get('timeLocale'),
+})
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: {
-      settings: bindActionCreators(settingsActions, dispatch),
-    },
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: {
+    settings: bindActionCreators(settingsActions, dispatch),
+  },
+})
 
 const styles = (theme: Theme) => ({
   input: {

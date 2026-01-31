@@ -40,13 +40,13 @@ if (remoteDebuggingPort) {
 }
 
 app.whenReady().then(() => {
-  backendRpc.on(makeOpenDialogRpc(), async request => {
-    return dialog.showOpenDialog(BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0], request)
-  })
+  backendRpc.on(makeOpenDialogRpc(), async request =>
+    dialog.showOpenDialog(BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0], request)
+  )
 
-  backendRpc.on(makeSaveDialogRpc(), async request => {
-    return dialog.showSaveDialog(BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0], request)
-  })
+  backendRpc.on(makeSaveDialogRpc(), async request =>
+    dialog.showSaveDialog(BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0], request)
+  )
 
   backendRpc.on(getAppVersion, async () => app.getVersion())
 
@@ -63,14 +63,14 @@ app.whenReady().then(() => {
   })
 
   // Certificate upload handler - works for both Electron and browser mode via IPC
-  backendRpc.on(RpcEvents.uploadCertificate, async ({ filename, data }) => {
+  backendRpc.on(RpcEvents.uploadCertificate, async ({ filename, data }) =>
     // In Electron, we just return the data as-is since it's already read
     // The client will use it directly
-    return {
+    ({
       name: filename,
       data,
-    }
-  })
+    })
+  )
 })
 
 autoUpdater.logger = log

@@ -1,8 +1,8 @@
 import React, { useCallback, useState, ChangeEvent, MouseEvent, useRef, useEffect, useMemo } from 'react'
-import { ChartParameters } from '../../../reducers/Charts'
 import { Menu, TextField, Typography } from '@mui/material'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { ChartParameters } from '../../../reducers/Charts'
 import { chartActions } from '../../../actions'
 import { KeyCodes } from '../../../utils/KeyCodes'
 
@@ -50,7 +50,7 @@ function RangeSettings(props: Props) {
     () => (
       <Menu
         style={{ textAlign: 'center' }}
-        keepMounted={true}
+        keepMounted
         anchorEl={props.anchorEl}
         open={props.open}
         onClose={props.onClose}
@@ -62,7 +62,7 @@ function RangeSettings(props: Props) {
             inputProps={{
               ref: rangeFromRef,
             }}
-            autoFocus={true}
+            autoFocus
             style={{ marginTop: '0' }}
             label="from"
             value={rangeFrom}
@@ -87,13 +87,11 @@ function RangeSettings(props: Props) {
   )
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: {
-      chart: bindActionCreators(chartActions, dispatch),
-    },
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: {
+    chart: bindActionCreators(chartActions, dispatch),
+  },
+})
 
 export default connect(undefined, mapDispatchToProps)(RangeSettings)
 

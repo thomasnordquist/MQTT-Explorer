@@ -1,10 +1,10 @@
-import * as q from '../../../../../backend/src/Model'
 import React, { useEffect, useState, useMemo } from 'react'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
+import * as q from '../../../../../backend/src/Model'
 import TreeNode from '.'
 import { SettingsState } from '../../../reducers/Settings'
 import { sortedNodes } from '../../../sortedNodes'
-import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
 import { TopicViewModel } from '../../../model/TopicViewModel'
 import { treeActions } from '../../../actions'
 
@@ -49,18 +49,16 @@ function TreeNodeSubnodes(props: Props) {
 
   return useMemo(() => {
     const nodes = sortedNodes(props.settings, props.treeNode).slice(0, alreadyAdded)
-    const listItems = nodes.map(node => {
-      return (
-        <TreeNode
-          key={`${node.hash()}-${props.filter}`}
-          treeNode={node}
-          lastUpdate={node.lastUpdate}
-          selectTopicAction={props.selectTopicAction}
-          settings={props.settings}
-          actions={props.actions}
-        />
-      )
-    })
+    const listItems = nodes.map(node => (
+      <TreeNode
+        key={`${node.hash()}-${props.filter}`}
+        treeNode={node}
+        lastUpdate={node.lastUpdate}
+        selectTopicAction={props.selectTopicAction}
+        settings={props.settings}
+        actions={props.actions}
+      />
+    ))
 
     return <span className={props.classes.list}>{listItems}</span>
   }, [alreadyAdded, props.treeNode.lastUpdate, props.theme, props.settings])
@@ -68,8 +66,8 @@ function TreeNodeSubnodes(props: Props) {
 
 const styles = (theme: Theme) => ({
   list: {
-    display: 'block' as 'block',
-    clear: 'both' as 'both',
+    display: 'block' as const,
+    clear: 'both' as const,
     marginLeft: theme.spacing(1.5),
   },
 })

@@ -1,13 +1,13 @@
 import React, { useCallback, useState, useRef } from 'react'
-import ClearAdornment from '../helper/ClearAdornment'
 import Search from '@mui/icons-material/Search'
-import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { InputBase } from '@mui/material'
-import { settingsActions } from '../../actions'
 import { alpha as fade, Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
+import { settingsActions } from '../../actions'
+import { AppState } from '../../reducers'
+import ClearAdornment from '../helper/ClearAdornment'
 import { useGlobalKeyEventHandler } from '../../effects/useGlobalKeyEventHandler'
 import { KeyCodes } from '../../utils/KeyCodes'
 
@@ -28,7 +28,7 @@ function SearchBar(props: {
     // On mobile, switch to Topics tab when search is focused
     if (typeof window !== 'undefined' && window.innerWidth <= 768) {
       if ((window as any).switchToTopicsTab) {
-        (window as any).switchToTopicsTab()
+        ;(window as any).switchToTopicsTab()
       }
     }
   }, [])
@@ -90,24 +90,20 @@ function SearchBar(props: {
   )
 }
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    topicFilter: state.settings.get('topicFilter'),
-    hasConnection: Boolean(state.connection.connectionId),
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  topicFilter: state.settings.get('topicFilter'),
+  hasConnection: Boolean(state.connection.connectionId),
+})
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: {
-      settings: bindActionCreators(settingsActions, dispatch),
-    },
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: {
+    settings: bindActionCreators(settingsActions, dispatch),
+  },
+})
 
 const styles = (theme: Theme) => ({
   search: {
-    position: 'relative' as 'relative',
+    position: 'relative' as const,
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
     '&:hover': {
@@ -122,21 +118,21 @@ const styles = (theme: Theme) => ({
       maxWidth: '30%',
 
       marginLeft: theme.spacing(4),
-      width: 'auto' as 'auto',
+      width: 'auto' as const,
     },
     [theme.breakpoints.up(750)]: {
       marginLeft: theme.spacing(4),
-      width: 'auto' as 'auto',
+      width: 'auto' as const,
     },
   },
   searchIcon: {
     width: theme.spacing(6),
     height: '100%',
-    position: 'absolute' as 'absolute',
-    pointerEvents: 'none' as 'none',
-    display: 'flex' as 'flex',
-    alignItems: 'center' as 'center',
-    justifyContent: 'center' as 'center',
+    position: 'absolute' as const,
+    pointerEvents: 'none' as const,
+    display: 'flex' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
   },
   inputRoot: {
     color: `${theme.palette.common.white} !important`, // Ensure white text color with high specificity

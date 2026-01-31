@@ -1,5 +1,5 @@
-import { clickOn } from './'
 import { Page, Locator } from 'playwright'
+import { clickOn } from '.'
 
 // Time to wait after clicking a topic for the tree to expand and render children
 // Increased to 1000ms to handle sequential test execution where UI might be slower
@@ -18,7 +18,7 @@ export async function expandTopic(path: string, browser: Page) {
   const isMobileViewport = viewport && viewport.width <= 768
 
   // Expand each level of the topic tree one at a time
-  // Strategy: 
+  // Strategy:
   // - Desktop: Click topic text (selects + expands, original behavior)
   // - Mobile: Click expand button only (doesn't select, mobile-specific behavior)
   for (let i = 0; i < topics.length; i += 1) {
@@ -69,10 +69,10 @@ export async function expandTopic(path: string, browser: Page) {
         // Navigate to the parent span (TreeNodeTitle container) and find the expander
         const parentSpan = topicLocator.locator('..')
         const expandButton = parentSpan.locator('span.expander, span[class*="expander"]')
-        
+
         const expandButtonCount = await expandButton.count()
         const isLastTopic = i === topics.length - 1
-        
+
         // Only click expand button if it exists (topics with children)
         // Topics without children don't have an expand button
         if (expandButtonCount > 0) {
@@ -85,7 +85,7 @@ export async function expandTopic(path: string, browser: Page) {
           // Check if already expanded (▼ means expanded, ▶ means collapsed)
           const buttonText = await expandButton.textContent()
           const isCollapsed = buttonText?.includes('▶')
-          
+
           if (isCollapsed) {
             console.log(`Expanding topic: ${topicName}`)
             // Click the expand button to expand this level
@@ -104,27 +104,27 @@ export async function expandTopic(path: string, browser: Page) {
       } else {
         // DESKTOP: Click the topic text (original behavior - selects + expands)
         console.log(`Clicking topic text to expand: ${topicName}`)
-        
+
         // Scroll into view
         await topicLocator.scrollIntoViewIfNeeded()
         await new Promise(resolve => setTimeout(resolve, 200))
-        
+
         // Check if topic has children that can be expanded
         const parentSpan = topicLocator.locator('..')
         const expandButton = parentSpan.locator('span.expander, span[class*="expander"]')
-        const hasExpandButton = await expandButton.count() > 0
+        const hasExpandButton = (await expandButton.count()) > 0
         const isLastTopic = i === topics.length - 1
-        
+
         if (hasExpandButton) {
           // Check if already expanded
           const buttonText = await expandButton.textContent()
           const isCollapsed = buttonText?.includes('▶')
-          
+
           if (isCollapsed) {
             console.log(`Topic ${topicName} is collapsed, clicking to expand`)
             // Click the topic text - on desktop this selects AND toggles expansion
             await clickOn(topicLocator, 1, 0, 'left', false)
-            
+
             // Give the UI time to expand and render child topics
             await new Promise(resolve => setTimeout(resolve, TREE_EXPANSION_DELAY_MS))
           } else {

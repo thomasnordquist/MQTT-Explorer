@@ -1,6 +1,6 @@
 import * as q from '../../../backend/src/Model'
+import { MqttOptions } from 'mqtt-explorer-backend/src/DataSource/DataSource'
 import { createReducer } from './lib'
-import { MqttOptions } from '../../../backend/src/DataSource'
 import { TopicViewModel } from '../model/TopicViewModel'
 
 export type ConnectionHealth = 'offline' | 'online' | 'connecting'

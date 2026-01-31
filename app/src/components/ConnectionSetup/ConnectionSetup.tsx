@@ -1,19 +1,20 @@
 import * as React from 'react'
-import ConnectionSettings from './ConnectionSettings'
-const ConnectionSettingsAny = ConnectionSettings as any
-import ProfileList from './ProfileList'
-import MobileConnectionSelector from './MobileConnectionSelector'
-import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { connectionManagerActions } from '../../actions'
-import { ConnectionOptions, toMqttConnection } from '../../model/ConnectionOptions'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
 import { Modal, Paper, Toolbar, Typography, Collapse } from '@mui/material'
+import ConnectionSettings from './ConnectionSettings'
+import ProfileList from './ProfileList'
+import MobileConnectionSelector from './MobileConnectionSelector'
+import { AppState } from '../../reducers'
+import { connectionManagerActions } from '../../actions'
+import { ConnectionOptions, toMqttConnection } from '../../model/ConnectionOptions'
 import AdvancedConnectionSettings from './AdvancedConnectionSettings'
-const AdvancedConnectionSettingsAny = AdvancedConnectionSettings as any
 import Certificates from './Certificates'
+
+const ConnectionSettingsAny = ConnectionSettings as any
+const AdvancedConnectionSettingsAny = AdvancedConnectionSettings as any
 const CertificatesAny = Certificates as any
 
 interface Props {
@@ -60,7 +61,7 @@ class ConnectionSetup extends React.PureComponent<Props, {}> {
     const mqttConnection = connection && toMqttConnection(connection)
     return (
       <div>
-        <Modal open={visible} disableAutoFocus={true}>
+        <Modal open={visible} disableAutoFocus>
           <Paper className={classes.root}>
             <div className={classes.left}>
               <ProfileList />
@@ -90,7 +91,7 @@ const connectionHeight = '440px'
 const styles = (theme: Theme) => ({
   title: {
     color: theme.palette.text.primary,
-    whiteSpace: 'nowrap' as 'nowrap',
+    whiteSpace: 'nowrap' as const,
   },
   toolbarContent: {
     width: '100%',
@@ -103,7 +104,7 @@ const styles = (theme: Theme) => ({
     flex: 1,
     // Hide on mobile - connection selector will take its place
     [theme.breakpoints.down('md')]: {
-      display: 'none' as 'none',
+      display: 'none' as const,
     },
   },
   root: {
@@ -111,29 +112,29 @@ const styles = (theme: Theme) => ({
     minWidth: '800px',
     maxWidth: '850px',
     height: connectionHeight,
-    outline: 'none' as 'none',
-    display: 'flex' as 'flex',
+    outline: 'none' as const,
+    display: 'flex' as const,
     // Mobile responsive adjustments
     [theme.breakpoints.down('md')]: {
       minWidth: '95vw',
       maxWidth: '95vw',
       height: '85vh',
       margin: '7.5vh auto 0 auto',
-      flexDirection: 'column' as 'column',
+      flexDirection: 'column' as const,
     },
   },
   left: {
-    borderRightStyle: 'dotted' as 'dotted',
+    borderRightStyle: 'dotted' as const,
     borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
     paddingTop: theme.spacing(2),
     flex: 3,
-    overflow: 'hidden' as 'hidden',
+    overflow: 'hidden' as const,
     backgroundColor: theme.palette.background.default,
     color: theme.palette.text.primary,
-    overflowY: 'auto' as 'auto',
+    overflowY: 'auto' as const,
     // Mobile: hide profile list to save space
     [theme.breakpoints.down('md')]: {
-      display: 'none' as 'none',
+      display: 'none' as const,
     },
   },
   right: {
@@ -144,35 +145,31 @@ const styles = (theme: Theme) => ({
     // Mobile: enable scrolling
     [theme.breakpoints.down('md')]: {
       borderRadius: `${theme.shape.borderRadius}px`,
-      overflowY: 'auto' as 'auto',
+      overflowY: 'auto' as const,
     },
   },
   connectionUri: {
     width: '27em',
-    textOverflow: 'ellipsis' as 'ellipsis',
-    whiteSpace: 'nowrap' as 'nowrap',
-    overflow: 'hidden' as 'hidden',
+    textOverflow: 'ellipsis' as const,
+    whiteSpace: 'nowrap' as const,
+    overflow: 'hidden' as const,
     color: theme.palette.text.secondary,
     fontSize: '0.9em',
     marginLeft: theme.spacing(4),
   },
 })
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    visible: !state.connection.connected,
-    showAdvancedSettings: state.connectionManager.showAdvancedSettings,
-    showCertificateSettings: state.connectionManager.showCertificateSettings,
-    connection: state.connectionManager.selected
-      ? state.connectionManager.connections[state.connectionManager.selected]
-      : undefined,
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  visible: !state.connection.connected,
+  showAdvancedSettings: state.connectionManager.showAdvancedSettings,
+  showCertificateSettings: state.connectionManager.showCertificateSettings,
+  connection: state.connectionManager.selected
+    ? state.connectionManager.connections[state.connectionManager.selected]
+    : undefined,
+})
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: bindActionCreators(connectionManagerActions, dispatch),
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: bindActionCreators(connectionManagerActions, dispatch),
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ConnectionSetup) as any)

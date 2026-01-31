@@ -1,9 +1,10 @@
 import React, { ChangeEvent, MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { bindActionCreators } from 'redux'
 import { Button, Menu, TextField, Typography } from '@mui/material'
+import { connect } from 'react-redux'
 import { chartActions } from '../../../actions'
 import { ChartParameters } from '../../../reducers/Charts'
-import { connect } from 'react-redux'
+
 const parseDuration = require('parse-duration')
 
 interface Props {
@@ -51,25 +52,23 @@ function TimeRangeSettings(props: Props) {
     return (
       <Menu
         style={{ textAlign: 'center' }}
-        keepMounted={true}
+        keepMounted
         anchorEl={props.anchorEl}
         open={props.open}
         onClose={props.onClose}
       >
         <Typography>Chart data within a time interval</Typography>
         <div style={{ padding: '0 16px', width: '275px', textAlign: 'center' }}>
-          {ranges.map(r => {
-            return (
-              <Button
-                style={{ margin: '4px', textTransform: 'none' }}
-                variant="contained"
-                key={r}
-                onClick={createRangeHandler(r)}
-              >
-                {r}
-              </Button>
-            )
-          })}
+          {ranges.map(r => (
+            <Button
+              style={{ margin: '4px', textTransform: 'none' }}
+              variant="contained"
+              key={r}
+              onClick={createRangeHandler(r)}
+            >
+              {r}
+            </Button>
+          ))}
         </div>
         <Typography style={{ fontSize: '0.75em' }}>
           <i>Limited to 500 data points</i>
@@ -88,12 +87,10 @@ function TimeRangeSettings(props: Props) {
   }, [value, props.open])
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: {
-      chart: bindActionCreators(chartActions, dispatch),
-    },
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: {
+    chart: bindActionCreators(chartActions, dispatch),
+  },
+})
 
 export default connect(undefined, mapDispatchToProps)(TimeRangeSettings)

@@ -1,14 +1,14 @@
 import * as React from 'react'
-import CertificateFileSelection from './CertificateFileSelection'
-import BrowserCertificateFileSelection from './BrowserCertificateFileSelection'
 import Undo from '@mui/icons-material/Undo'
 import { bindActionCreators } from 'redux'
 import { Button, Grid } from '@mui/material'
 import { connect } from 'react-redux'
-import { connectionManagerActions } from '../../actions'
-import { ConnectionOptions } from '../../model/ConnectionOptions'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
+import { connectionManagerActions } from '../../actions'
+import { ConnectionOptions } from '../../model/ConnectionOptions'
+import BrowserCertificateFileSelection from './BrowserCertificateFileSelection'
+import CertificateFileSelection from './CertificateFileSelection'
 import { isBrowserMode } from '../../utils/browserMode'
 
 // Use browser or desktop file selection based on mode
@@ -48,9 +48,9 @@ class Certificates extends React.PureComponent<Props, State> {
     const { classes } = this.props
     return (
       <div>
-        <form noValidate={true} autoComplete="off">
-          <Grid container={true} spacing={3}>
-            <Grid item={true} xs={12} className={classes.gridPadding}>
+        <form noValidate autoComplete="off">
+          <Grid container spacing={3}>
+            <Grid item xs={12} className={classes.gridPadding}>
               <CertSelector
                 connection={this.props.connection}
                 certificate={this.props.connection.selfSignedCertificate}
@@ -58,7 +58,7 @@ class Certificates extends React.PureComponent<Props, State> {
                 certificateType="selfSignedCertificate"
               />
             </Grid>
-            <Grid item={true} xs={12} className={classes.gridPadding}>
+            <Grid item xs={12} className={classes.gridPadding}>
               <CertSelector
                 connection={this.props.connection}
                 certificate={this.props.connection.clientCertificate}
@@ -66,7 +66,7 @@ class Certificates extends React.PureComponent<Props, State> {
                 certificateType="clientCertificate"
               />
             </Grid>
-            <Grid item={true} xs={12} className={classes.gridPadding}>
+            <Grid item xs={12} className={classes.gridPadding}>
               <CertSelector
                 connection={this.props.connection}
                 certificate={this.props.connection.clientKey}
@@ -74,7 +74,7 @@ class Certificates extends React.PureComponent<Props, State> {
                 certificateType="clientKey"
               />
             </Grid>
-            <Grid item={true} xs={2} className={classes.gridPadding}>
+            <Grid item xs={2} className={classes.gridPadding}>
               <br />
               <Button
                 variant="contained"
@@ -91,11 +91,9 @@ class Certificates extends React.PureComponent<Props, State> {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    managerActions: bindActionCreators(connectionManagerActions, dispatch),
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  managerActions: bindActionCreators(connectionManagerActions, dispatch),
+})
 
 const styles = (theme: Theme) => ({
   fullWidth: {

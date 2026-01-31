@@ -1,13 +1,13 @@
 import * as React from 'react'
-import ClearAdornment from '../helper/ClearAdornment'
 import Lock from '@mui/icons-material/Lock'
 import { bindActionCreators } from 'redux'
 import { Button, Theme, Tooltip, Typography } from '@mui/material'
+import { connect } from 'react-redux'
+import { withStyles } from '@mui/styles'
 import { CertificateParameters, ConnectionOptions } from '../../model/ConnectionOptions'
 import { CertificateTypes } from '../../actions/ConnectionManager'
-import { connect } from 'react-redux'
 import { connectionManagerActions } from '../../actions'
-import { withStyles } from '@mui/styles'
+import ClearAdornment from '../helper/ClearAdornment'
 
 function CertificateFileSelection(props: {
   certificateType: CertificateTypes
@@ -56,21 +56,19 @@ function ClearCertificate(props: { classes: any; certificate?: CertificateParame
   )
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: {
-      connectionManager: bindActionCreators(connectionManagerActions, dispatch),
-    },
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: {
+    connectionManager: bindActionCreators(connectionManagerActions, dispatch),
+  },
+})
 
 const styles = (theme: Theme) => ({
   certificateName: {
     width: '100%',
     height: 'calc(1em + 4px)',
-    overflow: 'hidden' as 'hidden',
-    whiteSpace: 'nowrap' as 'nowrap',
-    textOverflow: 'ellipsis' as 'ellipsis',
+    overflow: 'hidden' as const,
+    whiteSpace: 'nowrap' as const,
+    textOverflow: 'ellipsis' as const,
     color: theme.palette.text.secondary,
   },
   button: {

@@ -1,13 +1,14 @@
-import * as q from '../../../../backend/src/Model'
 import React from 'react'
-import TreeNode from './TreeNode'
-import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import * as q from '../../../../backend/src/Model'
+import TreeNode from './TreeNode'
+import { AppState } from '../../reducers'
 import { KeyCodes } from '../../utils/KeyCodes'
 import { SettingsState } from '../../reducers/Settings'
 import { TopicViewModel } from '../../model/TopicViewModel'
 import { treeActions } from '../../actions'
+
 const MovingAverage = require('moving-average')
 
 const averagingTimeInterval = 10 * 1000
@@ -16,7 +17,7 @@ const average = MovingAverage(averagingTimeInterval)
 // Mobile viewport breakpoint - matches CSS media queries in ContentView
 const MOBILE_BREAKPOINT = 768
 
-declare var window: any
+declare let window: any
 
 interface Props {
   actions: typeof treeActions
@@ -57,19 +58,23 @@ function useArrowKeyEventHandler(actions: typeof treeActions) {
 
 class TreeComponent extends React.PureComponent<Props, State> {
   private updateTimer?: any
+
   private resizeTimer?: any
+
   private perf: number = 0
+
   private renderTime = 0
 
   constructor(props: any) {
     super(props)
-    this.state = { 
+    this.state = {
       lastUpdate: 0,
       isMobile: typeof window !== 'undefined' && window.innerWidth <= MOBILE_BREAKPOINT,
     }
   }
 
   private keyEventHandler = useArrowKeyEventHandler(this.props.actions)
+
   private performanceCallback = (ms: number) => {
     average.push(Date.now(), ms)
   }
@@ -189,7 +194,7 @@ class TreeComponent extends React.PureComponent<Props, State> {
     const treeNode = (
       <TreeNode
         key={tree.hash()}
-        isRoot={true}
+        isRoot
         treeNode={tree}
         name={this.props.host}
         collapsed={false}
@@ -202,32 +207,22 @@ class TreeComponent extends React.PureComponent<Props, State> {
 
     return (
       <div style={style} tabIndex={0} onKeyDown={this.keyEventHandler}>
-        {isMobile ? (
-          <div style={{ scrollSnapAlign: 'start', minWidth: '100%' }}>
-            {treeNode}
-          </div>
-        ) : (
-          treeNode
-        )}
+        {isMobile ? <div style={{ scrollSnapAlign: 'start', minWidth: '100%' }}>{treeNode}</div> : treeNode}
       </div>
     )
   }
 }
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    tree: state.tree.get('tree'),
-    paused: state.tree.get('paused'),
-    filter: state.tree.get('filter'),
-    host: state.connection.host,
-    settings: state.settings,
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  tree: state.tree.get('tree'),
+  paused: state.tree.get('paused'),
+  filter: state.tree.get('filter'),
+  host: state.connection.host,
+  settings: state.settings,
+})
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: bindActionCreators(treeActions, dispatch),
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: bindActionCreators(treeActions, dispatch),
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(TreeComponent)

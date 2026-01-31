@@ -1,11 +1,11 @@
 import React from 'react'
-import * as q from '../../../../../backend/src/Model'
 import Button from '@mui/material/Button'
 import { withStyles } from '@mui/styles'
 import { Theme } from '@mui/material/styles'
-import { treeActions } from '../../../actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import * as q from '../../../../../backend/src/Model'
+import { treeActions } from '../../../actions'
 import { TopicViewModel } from '../../../model/TopicViewModel'
 
 interface Props {
@@ -18,7 +18,7 @@ interface Props {
 
 const styles = (theme: Theme) => ({
   button: {
-    textTransform: 'none' as 'none',
+    textTransform: 'none' as const,
     padding: '3px 5px 3px 5px',
     minWidth: '30px',
   },
@@ -61,10 +61,8 @@ class Topic extends React.PureComponent<Props, {}> {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: bindActionCreators(treeActions, dispatch),
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: bindActionCreators(treeActions, dispatch),
+})
 
 export default connect(null, mapDispatchToProps)(withStyles(styles, { withTheme: true })(Topic) as any)

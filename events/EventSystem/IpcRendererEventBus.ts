@@ -1,10 +1,11 @@
+import { IpcRenderer } from 'electron'
 import { CallbackStore } from './CallbackStore'
 import { EventBusInterface } from './EventBusInterface'
 import { Event } from '../Events'
-import { IpcRenderer } from 'electron'
 
 export class IpcRendererEventBus implements EventBusInterface {
   private ipc: IpcRenderer
+
   private callbacks: Array<CallbackStore> = []
 
   constructor(ipc: IpcRenderer) {

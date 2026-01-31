@@ -6,9 +6,9 @@
  * you can now use: Events.connectionState(id)
  */
 
+import { UpdateInfo } from 'builder-util-runtime'
 import { Base64MessageDTO } from '../backend/src/Model/Base64Message'
 import { DataSourceState, MqttOptions } from '../backend/src/DataSource'
-import { UpdateInfo } from 'builder-util-runtime'
 import { RpcEvent } from './EventSystem/Rpc'
 
 export type EventV2<MessageType> = {
@@ -36,6 +36,7 @@ export const RpcEvents = {
   openDialog: { topic: 'openDialog' } as RpcEvent<OpenDialogOptionsV2, OpenDialogReturnValueV2>,
   saveDialog: { topic: 'saveDialog' } as RpcEvent<SaveDialogOptionsV2, SaveDialogReturnValueV2>,
   uploadCertificate: { topic: 'uploadCertificate' } as RpcEvent<CertificateUploadRequest, CertificateUploadResponse>,
+  llmChat: { topic: 'llm/chat' } as RpcEvent<LlmChatRequest, LlmChatResponse>,
 }
 
 // Type definitions
@@ -60,6 +61,19 @@ export interface CertificateUploadRequest {
 export interface CertificateUploadResponse {
   name: string
   data: string // base64 encoded
+}
+
+// LLM Chat RPC types
+export interface LlmChatRequest {
+  messages: Array<{
+    role: 'system' | 'user' | 'assistant'
+    content: string
+  }>
+  topicContext?: string
+}
+
+export interface LlmChatResponse {
+  response: string
 }
 
 // Dialog types (browser-compatible versions)

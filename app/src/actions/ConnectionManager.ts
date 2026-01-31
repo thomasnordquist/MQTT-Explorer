@@ -1,3 +1,7 @@
+import { Dispatch } from 'redux'
+import * as path from 'path'
+import { Subscription } from 'mqtt-explorer-backend/src/DataSource/MqttSource'
+import { makeOpenDialogRpc } from '../../../events/OpenDialogRequest'
 import { AppState } from '../reducers'
 import { clearLegacyConnectionOptions, loadLegacyConnectionOptions } from '../model/LegacyConnectionSettings'
 import {
@@ -7,14 +11,10 @@ import {
   CertificateParameters,
 } from '../model/ConnectionOptions'
 import { default as persistentStorage, StorageIdentifier } from '../utils/PersistentStorage'
-import { Dispatch } from 'redux'
 import { showError } from './Global'
-import * as path from 'path'
 import { ActionTypes, Action } from '../reducers/ConnectionManager'
-import { Subscription } from '../../../backend/src/DataSource/MqttSource'
 import { connectionsMigrator } from './migrations/Connection'
 import { rendererRpc, readFromFile } from '../eventBus'
-import { makeOpenDialogRpc } from '../../../events/OpenDialogRequest'
 
 export interface ConnectionDictionary {
   [s: string]: ConnectionOptions

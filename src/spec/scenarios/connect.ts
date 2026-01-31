@@ -1,5 +1,5 @@
-import { clickOn, setTextInInput } from '../util'
 import { Page } from 'playwright'
+import { clickOn, setTextInInput } from '../util'
 
 export async function connectTo(host: string, browser: Page) {
   await setTextInInput('Host', host, browser)

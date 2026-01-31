@@ -23,6 +23,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Persist Secrets to Agent Environment
+        run: |
+          echo "export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" > .env.llm-tests
+          echo "export RUN_LLM_TESTS=true" >> .env.llm-tests
+          chmod 600 .env.llm-tests
+          echo "✅ Created .env.llm-tests file"
+          ls -la .env.llm-tests
+
       - name: Install system dependencies
         run: |
           sudo apt-get update

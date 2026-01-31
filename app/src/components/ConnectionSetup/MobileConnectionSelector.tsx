@@ -1,12 +1,12 @@
 import * as React from 'react'
 import Add from '@mui/icons-material/Add'
-import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { connectionManagerActions } from '../../actions'
 import { IconButton, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
+import { connectionManagerActions } from '../../actions'
+import { AppState } from '../../reducers'
 
 const styles = (theme: Theme) => ({
   container: {
@@ -51,9 +51,8 @@ class MobileConnectionSelector extends React.PureComponent<Props, {}> {
     this.props.actions.createConnection()
   }
 
-  private getConnectionDisplayName = (connection: { name?: string; host?: string }) => {
-    return connection.name || connection.host || 'Unnamed Connection'
-  }
+  private getConnectionDisplayName = (connection: { name?: string; host?: string }) =>
+    connection.name || connection.host || 'Unnamed Connection'
 
   public render() {
     const { classes, connections, currentConnectionId, isConnected, currentActiveConnectionId } = this.props
@@ -110,7 +109,7 @@ class MobileConnectionSelector extends React.PureComponent<Props, {}> {
 }
 
 const mapStateToProps = (state: AppState) => {
-  const connectionManager = state.connectionManager
+  const { connectionManager } = state
   const connections =
     connectionManager && connectionManager.connections
       ? Object.values(connectionManager.connections).map(conn => ({
@@ -128,11 +127,9 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: bindActionCreators(connectionManagerActions, dispatch),
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: bindActionCreators(connectionManagerActions, dispatch),
+})
 
 // Using 'as any' here is consistent with other Material-UI + Redux connected components
 // in this codebase (see ConnectionSettings.tsx, ProfileList/index.tsx, ChartPanel/index.tsx)

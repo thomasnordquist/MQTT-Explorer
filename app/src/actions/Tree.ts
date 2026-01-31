@@ -1,13 +1,14 @@
+import { AnyAction, Dispatch } from 'redux'
+import { batchActions } from 'redux-batched-actions'
+import debounce from 'lodash.debounce'
 import * as q from '../../../backend/src/Model'
 import { ActionTypes } from '../reducers/Tree'
 import { ActionTypes as SidebarActionTypes } from '../reducers/Sidebar'
-import { AnyAction, Dispatch } from 'redux'
 import { AppState } from '../reducers'
-import { batchActions } from 'redux-batched-actions'
-import { globalActions } from './'
+import { globalActions } from '.'
 import { setTopic } from './Publish'
 import { TopicViewModel } from '../model/TopicViewModel'
-import debounce from 'lodash.debounce'
+
 export { clearTopic } from './clearTopic'
 
 export { moveSelectionUpOrDownwards, moveInward, moveOutward } from './visibleTreeTraversal'

@@ -23,7 +23,7 @@ function PublishTab(props: Props) {
           Send messages to MQTT topics
         </Typography>
       </Box>
-      
+
       <React.Suspense fallback={<div>Loading...</div>}>
         <Publish connectionId={props.connectionId} />
       </React.Suspense>
@@ -34,7 +34,7 @@ function PublishTab(props: Props) {
 const styles = (theme: Theme) => ({
   root: {
     display: 'flex',
-    flexDirection: 'column' as 'column',
+    flexDirection: 'column' as const,
     gap: theme.spacing(2),
   },
   header: {
@@ -44,7 +44,7 @@ const styles = (theme: Theme) => ({
     fontWeight: 600,
     color: theme.palette.text.primary,
     fontSize: '0.875rem',
-    textTransform: 'uppercase' as 'uppercase',
+    textTransform: 'uppercase' as const,
     letterSpacing: '0.5px',
     marginBottom: theme.spacing(0.5),
   },

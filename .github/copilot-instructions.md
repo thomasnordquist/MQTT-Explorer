@@ -7,12 +7,31 @@
 3. **Evaluate after every session**: Consider whether the instructions need updates based on what you learned
 4. **Concise and useful**: All information must be actionable, current, and concise
 
+## Code Formatting and Linting
+
+**Before committing code, always run:**
+- `yarn lint:prettier:fix` - Format all TypeScript files with Prettier
+- `yarn lint:fix` - Fix ESLint and Prettier issues
+
+**Check code quality:**
+- `yarn lint` - Check Prettier, ESLint, and spell checking
+- `yarn lint:prettier` - Check Prettier formatting only
+- `yarn lint:eslint` - Check ESLint only
+
 ## Test Commands
 
 **Unit tests:**
 - `yarn test` - All unit tests (app + backend)
 - `yarn test:app` - Frontend tests only
 - `yarn test:backend` - Backend tests only
+
+**LLM integration tests:**
+- Requires API key (OpenAI or Gemini)
+- **Setup**: Run `./scripts/setup-llm-env.sh` to create `.env.llm-tests` from injected secrets
+- **Usage**: `source .env.llm-tests && ./scripts/run-llm-tests.sh`
+- **Note**: The `.env.llm-tests` file must be sourced to get the LLM access token before running tests
+- Tests make real API calls and cost ~$0.01-$0.05 per run
+- See `app/src/services/spec/README.md` for details
 
 **Integration tests:**
 - `yarn test:ui` - Browser tests (requires `yarn build` first)

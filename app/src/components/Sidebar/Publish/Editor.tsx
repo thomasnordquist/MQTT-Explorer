@@ -9,7 +9,6 @@ import 'ace-builds/src-noconflict/snippets/json'
 import 'ace-builds/src-noconflict/snippets/xml'
 import 'ace-builds/src-noconflict/mode-text'
 import 'ace-builds/src-noconflict/theme-monokai'
-import 'react-ace'
 
 function Editor(props: {
   editorMode: string
@@ -32,11 +31,11 @@ function Editor(props: {
       name="UNIQUE_ID_OF_DIV"
       width="100%"
       height="200px"
-      enableSnippets={true}
-      enableBasicAutocompletion={true}
-      enableLiveAutocompletion={true}
+      enableSnippets
+      enableBasicAutocompletion
+      enableLiveAutocompletion
       showPrintMargin={false}
-      showGutter={true}
+      showGutter
       value={props.value}
       onChange={props.onChange}
       setOptions={editorOptions}

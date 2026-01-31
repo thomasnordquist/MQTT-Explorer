@@ -1,10 +1,10 @@
-import QosSelect from './QosPublishOption'
 import React from 'react'
 import { Checkbox, FormControlLabel, Tooltip } from '@mui/material'
-import { publishActions } from '../../../actions'
 import { bindActionCreators } from 'redux'
-import { AppState } from '../../../reducers'
 import { connect } from 'react-redux'
+import { publishActions } from '../../../actions'
+import { AppState } from '../../../reducers'
+import QosSelect from './QosPublishOption'
 
 export function RetainSwitch(props: { retain: boolean; actions: typeof publishActions }) {
   const labelStyle = { margin: '0 8px 0 8px' }
@@ -29,16 +29,12 @@ export function RetainSwitch(props: { retain: boolean; actions: typeof publishAc
   )
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: bindActionCreators(publishActions, dispatch),
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: bindActionCreators(publishActions, dispatch),
+})
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    retain: state.publish.retain,
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  retain: state.publish.retain,
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(RetainSwitch)

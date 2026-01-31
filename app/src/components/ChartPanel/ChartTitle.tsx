@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { ChartParameters } from '../../reducers/Charts'
 import { Typography } from '@mui/material'
 import { withStyles } from '@mui/styles'
 import { Theme } from '@mui/material/styles'
+import { ChartParameters } from '../../reducers/Charts'
 
 function ChartTitle(props: { parameters: ChartParameters; classes: any }) {
   const { classes, parameters } = props
@@ -13,7 +13,7 @@ function ChartTitle(props: { parameters: ChartParameters; classes: any }) {
       </Typography>
       <br />
       <Typography variant="caption" className={classes.topic}>
-        {parameters.dotPath ? parameters.topic : <span dangerouslySetInnerHTML={{ __html: '&nbsp;' }}></span>}
+        {parameters.dotPath ? parameters.topic : <span dangerouslySetInnerHTML={{ __html: '&nbsp;' }} />}
       </Typography>
     </div>
   )
@@ -21,10 +21,10 @@ function ChartTitle(props: { parameters: ChartParameters; classes: any }) {
 
 const styles = (theme: Theme) => ({
   topic: {
-    wordBreak: 'break-all' as 'break-all',
-    whiteSpace: 'nowrap' as 'nowrap',
-    overflow: 'hidden' as 'hidden',
-    textOverflow: 'ellipsis' as 'ellipsis',
+    wordBreak: 'break-all' as const,
+    whiteSpace: 'nowrap' as const,
+    overflow: 'hidden' as const,
+    textOverflow: 'ellipsis' as const,
   },
 })
 

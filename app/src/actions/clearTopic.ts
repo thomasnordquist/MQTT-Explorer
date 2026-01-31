@@ -1,6 +1,6 @@
+import { Dispatch } from 'redux'
 import * as q from '../../../backend/src/Model'
 import { AppState } from '../reducers'
-import { Dispatch } from 'redux'
 import { makePublishEvent, rendererEvents } from '../eventBus'
 import { moveSelectionUpOrDownwards } from './visibleTreeTraversal'
 import { globalActions } from '.'
@@ -45,7 +45,7 @@ export const clearTopic =
           topic: path,
           payload: null,
           retain: true,
-          qos: 0 as 0,
+          qos: 0 as const,
           messageId: undefined,
         }
         // Rate limit deletion

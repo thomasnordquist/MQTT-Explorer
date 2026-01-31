@@ -1,14 +1,14 @@
-import * as q from '../../../../backend/src/Model'
 import React, { useState, useEffect, useCallback } from 'react'
-import { AppState } from '../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { globalActions, settingsActions, sidebarActions } from '../../actions'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
+import { Tabs, Tab, Box, useMediaQuery, useTheme } from '@mui/material'
+import * as q from '../../../../backend/src/Model'
+import { globalActions, settingsActions, sidebarActions } from '../../actions'
 import { TopicViewModel } from '../../model/TopicViewModel'
 import { usePollingToFetchTreeNode } from '../helper/usePollingToFetchTreeNode'
-import { Tabs, Tab, Box, useMediaQuery, useTheme } from '@mui/material'
+import { AppState } from '../../reducers'
 import DetailsTab from './DetailsTab'
 import PublishTab from './PublishTab'
 
@@ -63,7 +63,7 @@ function SidebarNew(props: Props) {
     return (
       <div id="Sidebar" className={classes.root}>
         <Box className={classes.mobileContent}>
-          <DetailsTab node={node} />
+          <DetailsTab node={node} connectionId={props.connectionId} />
         </Box>
       </div>
     )
@@ -85,10 +85,10 @@ function SidebarNew(props: Props) {
           <Tab label="Publish" className={classes.tab} />
         </Tabs>
       </Box>
-      
+
       <Box className={classes.tabContent}>
         <Box sx={{ display: tabValue === 0 ? 'block' : 'none' }}>
-          <DetailsTab node={node} />
+          <DetailsTab node={node} connectionId={props.connectionId} />
         </Box>
         <Box sx={{ display: tabValue === 1 ? 'block' : 'none' }}>
           <PublishTab connectionId={props.connectionId} />
@@ -106,18 +106,16 @@ const mapStateToProps = (state: AppState) => {
   }
 }
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: bindActionCreators(sidebarActions, dispatch),
-    globalActions: bindActionCreators(globalActions, dispatch),
-    settingsActions: bindActionCreators(settingsActions, dispatch),
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: bindActionCreators(sidebarActions, dispatch),
+  globalActions: bindActionCreators(globalActions, dispatch),
+  settingsActions: bindActionCreators(settingsActions, dispatch),
+})
 
 const styles = (theme: Theme) => ({
   root: {
     display: 'flex',
-    flexDirection: 'column' as 'column',
+    flexDirection: 'column' as const,
     height: '100%',
     width: '100%',
   },
@@ -132,19 +130,19 @@ const styles = (theme: Theme) => ({
     minHeight: '48px',
     fontSize: '14px',
     fontWeight: 500,
-    textTransform: 'none' as 'none',
+    textTransform: 'none' as const,
     padding: theme.spacing(1.5, 2),
   },
   tabContent: {
     flex: 1,
-    overflowY: 'auto' as 'auto',
-    overflowX: 'hidden' as 'hidden',
+    overflowY: 'auto' as const,
+    overflowX: 'hidden' as const,
     padding: theme.spacing(2),
   },
   mobileContent: {
     flex: 1,
-    overflowY: 'auto' as 'auto',
-    overflowX: 'hidden' as 'hidden',
+    overflowY: 'auto' as const,
+    overflowX: 'hidden' as const,
     padding: theme.spacing(2),
   },
 })

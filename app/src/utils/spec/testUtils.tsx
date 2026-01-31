@@ -1,6 +1,6 @@
 /**
  * Generic test utilities for React component testing
- * 
+ *
  * This file provides a reusable testing setup that can be used across all component tests.
  * It includes:
  * - Custom render function with theme and Redux providers
@@ -27,15 +27,17 @@ mockResizeObserver()
 export function mockResizeObserver() {
   const MockResizeObserver = class ResizeObserver {
     observe() {}
+
     unobserve() {}
+
     disconnect() {}
   } as any
-  
+
   if (typeof global.ResizeObserver === 'undefined') {
     global.ResizeObserver = MockResizeObserver
   }
   if (typeof window !== 'undefined' && typeof window.ResizeObserver === 'undefined') {
-    (window as any).ResizeObserver = MockResizeObserver
+    ;(window as any).ResizeObserver = MockResizeObserver
   }
 }
 
@@ -66,8 +68,8 @@ const defaultTheme = createTheme({
 /**
  * Default Redux store for testing
  */
-const createTestStore = (initialState = {}) => {
-  return configureStore({
+const createTestStore = (initialState = {}) =>
+  configureStore({
     reducer: {
       // Add minimal reducers as needed
       charts: (state = { charts: [] }) => state,
@@ -75,7 +77,6 @@ const createTestStore = (initialState = {}) => {
     },
     preloadedState: initialState,
   })
-}
 
 /**
  * Custom render options
@@ -89,11 +90,11 @@ interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
 
 /**
  * Custom render function that wraps components with necessary providers
- * 
+ *
  * @example
  * ```tsx
  * import { renderWithProviders } from '../utils/spec/testUtils'
- * 
+ *
  * describe('MyComponent', () => {
  *   it('renders correctly', () => {
  *     const { getByText } = renderWithProviders(<MyComponent />)
@@ -115,27 +116,25 @@ export function renderWithProviders(
   let Wrapper: React.FC<{ children: React.ReactNode }>
 
   if (withRedux && withTheme) {
-    Wrapper = ({ children }) => (
-      <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          {children}
-        </ThemeProvider>
-      </Provider>
-    )
+    Wrapper = function ({ children }) {
+      return (
+        <Provider store={store}>
+          <ThemeProvider theme={theme}>{children}</ThemeProvider>
+        </Provider>
+      )
+    }
   } else if (withRedux) {
-    Wrapper = ({ children }) => (
-      <Provider store={store}>
-        {children}
-      </Provider>
-    )
+    Wrapper = function ({ children }) {
+      return <Provider store={store}>{children}</Provider>
+    }
   } else if (withTheme) {
-    Wrapper = ({ children }) => (
-      <ThemeProvider theme={theme}>
-        {children}
-      </ThemeProvider>
-    )
+    Wrapper = function ({ children }) {
+      return <ThemeProvider theme={theme}>{children}</ThemeProvider>
+    }
   } else {
-    Wrapper = ({ children }) => <>{children}</>
+    Wrapper = function ({ children }) {
+      return <>{children}</>
+    }
   }
 
   return render(ui, { wrapper: Wrapper, ...renderOptions })
@@ -155,9 +154,7 @@ export function createMockChartData(count: number = 10): Array<{ x: number; y: n
 /**
  * Helper to wait for async operations
  */
-export const waitFor = async (ms: number = 100) => {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
+export const waitFor = async (ms: number = 100) => new Promise(resolve => setTimeout(resolve, ms))
 
 /**
  * Re-export everything from @testing-library/react for convenience

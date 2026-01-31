@@ -25,6 +25,11 @@ app/.webpack-cache
 # Temporary files
 /tmp
 
+# Environment files with secrets
+.env
+.env.*
+!.env.example
+
 # Demo video artifacts
 scenes.json
 scenes-mobile.json

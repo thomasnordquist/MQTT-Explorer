@@ -27,10 +27,8 @@ const DeleteSelectedTopicButton = (props: {
     [props.actions.sidebar.clearRetainedTopic]
   )
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: { sidebar: bindActionCreators(sidebarActions, dispatch) },
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: { sidebar: bindActionCreators(sidebarActions, dispatch) },
+})
 
 export default connect(undefined, mapDispatchToProps)(DeleteSelectedTopicButton)

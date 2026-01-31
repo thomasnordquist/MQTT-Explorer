@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from 'react'
-import * as q from '../../../../../backend/src/Model'
 import ClickAwayListener from '@mui/material/ClickAwayListener'
 import Grow from '@mui/material/Grow'
 import Button from '@mui/material/Button'
@@ -8,10 +7,11 @@ import Popper from '@mui/material/Popper'
 import MenuItem from '@mui/material/MenuItem'
 import MenuList from '@mui/material/MenuList'
 import WarningRounded from '@mui/icons-material/WarningRounded'
-import { MessageDecoder, decoders } from '../../../decoders'
 import { Tooltip } from '@mui/material'
+import * as q from '../../../../../backend/src/Model'
+import { MessageDecoder, decoders } from '../../../decoders'
 
-export const TopicTypeButton = (props: { node?: q.TreeNode<any> }) => {
+export function TopicTypeButton(props: { node?: q.TreeNode<any> }) {
   const { node } = props
   if (!node || !node.message || !node.message.payload) {
     return null
@@ -87,9 +87,10 @@ export const TopicTypeButton = (props: { node?: q.TreeNode<any> }) => {
 }
 
 function DecoderStatus({ node, decoder, format }: { node: q.TreeNode<any>; decoder: MessageDecoder; format: string }) {
-  const decoded = useMemo(() => {
-    return node.message?.payload && decoder.decode(node.message?.payload, format)
-  }, [node.message, decoder, format])
+  const decoded = useMemo(
+    () => node.message?.payload && decoder.decode(node.message?.payload, format),
+    [node.message, decoder, format]
+  )
 
   return decoded?.error ? (
     <Tooltip title={decoded.error}>

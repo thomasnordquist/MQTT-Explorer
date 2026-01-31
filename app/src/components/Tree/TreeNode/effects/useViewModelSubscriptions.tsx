@@ -1,5 +1,5 @@
-import * as q from '../../../../../../backend/src/Model'
 import React, { useCallback } from 'react'
+import * as q from 'TEMP_BACKENDsrc/Model/Model'
 import { TopicViewModel } from '../../../../model/TopicViewModel'
 import { useSubscription } from '../../../hooks/useSubscription'
 import { useViewModel } from './useViewModel'

@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { TextField, MenuItem, Tooltip } from '@mui/material'
-import { QoS } from '../../../backend/src/DataSource/MqttSource'
+import { QoS } from 'mqtt-explorer-backend/src/DataSource/MqttSource'
 
 export function QosSelect(props: { selected: QoS; onChange: (value: QoS) => void; label?: string }) {
-  const tooltipStyle = { textAlign: 'center' as 'center', width: '100%' }
+  const tooltipStyle = { textAlign: 'center' as const, width: '100%' }
   const itemStyle = { padding: '0' }
 
   const onChangeQos = React.useCallback(
@@ -19,7 +19,7 @@ export function QosSelect(props: { selected: QoS; onChange: (value: QoS) => void
 
   return (
     <TextField
-      select={true}
+      select
       label={props.label}
       value={props.selected}
       margin="normal"

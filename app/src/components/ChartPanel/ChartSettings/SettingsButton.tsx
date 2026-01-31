@@ -1,7 +1,7 @@
 import * as React from 'react'
+import MoreVertIcon from '@mui/icons-material/Settings'
 import ChartSettings from '.'
 import CustomIconButton from '../../helper/CustomIconButton'
-import MoreVertIcon from '@mui/icons-material/Settings'
 import { ChartParameters } from '../../../reducers/Charts'
 
 export function SettingsButton(props: {

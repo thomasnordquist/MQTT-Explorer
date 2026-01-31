@@ -1,10 +1,10 @@
 import * as React from 'react'
-import PersistentStorage from '../utils/PersistentStorage'
 import SentimentDissatisfied from '@mui/icons-material/SentimentDissatisfied'
 import Warning from '@mui/icons-material/Warning'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
 import { Button, Modal, Paper, Toolbar, Typography } from '@mui/material'
+import PersistentStorage from '../utils/PersistentStorage'
 
 interface State {
   error?: Error
@@ -19,6 +19,7 @@ class ErrorBoundary extends React.PureComponent<Props, State> {
   public static getDerivedStateFromError(error: Error) {
     return { error }
   }
+
   constructor(props: Props) {
     super(props)
     this.state = {}
@@ -45,7 +46,7 @@ class ErrorBoundary extends React.PureComponent<Props, State> {
 
     const { classes } = this.props
     return (
-      <Modal open={true} disableAutoFocus={true}>
+      <Modal open disableAutoFocus>
         <Paper className={classes.root}>
           <Toolbar style={{ padding: '0' }}>
             <Typography className={classes.title} variant="h6" color="inherit">
@@ -101,17 +102,17 @@ const styles = (theme: Theme) => ({
   title: {
     color: theme.palette.text.primary,
     margin: '0',
-    textAlign: 'center' as 'center',
+    textAlign: 'center' as const,
   },
   textColor: {
     color: theme.palette.text.primary,
-    userSelect: 'all' as 'all',
+    userSelect: 'all' as const,
   },
   centered: {
-    textAlign: 'center' as 'center',
+    textAlign: 'center' as const,
   },
   buttonPositioning: {
-    textAlign: 'center' as 'center',
+    textAlign: 'center' as const,
     marginTop: theme.spacing(2),
   },
 })

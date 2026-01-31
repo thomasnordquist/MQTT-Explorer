@@ -1,17 +1,18 @@
-import ConnectionItem from './ConnectionItem'
-const ConnectionItemAny = ConnectionItem as any
 import React from 'react'
-import { AddButton } from './AddButton'
-import { AppState } from '../../../reducers'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { connectionManagerActions } from '../../../actions'
-import { ConnectionOptions } from '../../../model/ConnectionOptions'
-import { KeyCodes } from '../../../utils/KeyCodes'
 import { List } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
+import ConnectionItem from './ConnectionItem'
+import { AddButton } from './AddButton'
+import { AppState } from '../../../reducers'
+import { connectionManagerActions } from '../../../actions'
+import { ConnectionOptions } from '../../../model/ConnectionOptions'
+import { KeyCodes } from '../../../utils/KeyCodes'
 import { useGlobalKeyEventHandler } from '../../../effects/useGlobalKeyEventHandler'
+
+const ConnectionItemAny = ConnectionItem as any
 
 interface Props {
   classes: any
@@ -62,21 +63,17 @@ const styles = (theme: Theme) => ({
   list: {
     marginTop: theme.spacing(1),
     height: `calc(100% - ${theme.spacing(6)})`,
-    overflowY: 'auto' as 'auto',
+    overflowY: 'auto' as const,
   },
 })
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    actions: bindActionCreators(connectionManagerActions, dispatch),
-  }
-}
+const mapDispatchToProps = (dispatch: any) => ({
+  actions: bindActionCreators(connectionManagerActions, dispatch),
+})
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    connections: state.connectionManager.connections,
-    selected: state.connectionManager.selected,
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  connections: state.connectionManager.connections,
+  selected: state.connectionManager.selected,
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ProfileList) as any)

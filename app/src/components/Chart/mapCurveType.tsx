@@ -1,5 +1,5 @@
-import { PlotCurveTypes } from '../../reducers/Charts'
 import * as d3Shape from 'd3-shape'
+import { PlotCurveTypes } from '../../reducers/Charts'
 
 export function mapCurveType(type: PlotCurveTypes | undefined) {
   switch (type) {

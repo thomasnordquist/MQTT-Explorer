@@ -1,5 +1,5 @@
-import { createReducer } from './lib'
 import { Record } from 'immutable'
+import { createReducer } from './lib'
 
 export enum TopicOrder {
   none = 'none',
@@ -56,9 +56,7 @@ const initialState = Record<SettingsStateModel>({
   topicFilter: undefined,
 })
 
-const setTheme = (theme: 'light' | 'dark') => (state: SettingsState) => {
-  return state.set('theme', theme)
-}
+const setTheme = (theme: 'light' | 'dark') => (state: SettingsState) => state.set('theme', theme)
 
 const reducerActions: {
   [s: string]: (state: SettingsState, action: Actions) => SettingsState

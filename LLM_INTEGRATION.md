@@ -30,18 +30,11 @@ The AI Assistant can help you:
 
 ### Setting Up Your API Key
 
-#### Via UI (Browser/Electron)
+The AI Assistant uses a **backend proxy architecture** for security. API keys are configured server-side only and are never exposed to the frontend.
 
-1. Click the ⚙️ settings icon in the AI Assistant panel
-2. Select your preferred provider (OpenAI or Gemini)
-3. Enter your API key
-4. Click "Save"
+#### For Server/Docker Deployments
 
-Your API key is stored locally in your browser's localStorage and is never sent to MQTT Explorer's servers.
-
-#### Via Environment Variables (Server Mode)
-
-For server deployments, you can configure the AI Assistant using environment variables:
+Configure the AI Assistant using environment variables:
 
 ```bash
 # Provider selection (optional, defaults to 'openai')
@@ -52,14 +45,26 @@ export OPENAI_API_KEY=sk-...        # For OpenAI
 export GEMINI_API_KEY=AIza...       # For Gemini
 export LLM_API_KEY=...              # Generic fallback for either provider
 
-# Token limit for neighboring topics context (optional, defaults to 100)
-export LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT=100
+# Token limit for neighboring topics context (optional, defaults to 500)
+# Increased from 100 to 500 for better device relationship and hierarchy detection
+export LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT=500
+
+# Start the server
+node dist/src/server.js
 ```
+
+**Architecture**:
+- Backend reads API keys from environment variables
+- Backend proxies all LLM API requests via WebSocket RPC (`llm/chat` event)
+- Frontend only receives an availability flag (no credentials)
+- API keys never leave the server
+- Communication happens over the existing WebSocket connection
 
 **Environment Variable Priority:**
 1. Provider-specific keys (`OPENAI_API_KEY`, `GEMINI_API_KEY`) are checked first
 2. Generic `LLM_API_KEY` is used as fallback
-3. UI-configured keys in localStorage are used if no environment variables are set
+
+**Note**: If no LLM environment variables are set, the AI Assistant feature will be completely hidden from all users.
 
 ### Getting API Keys
 
@@ -68,7 +73,7 @@ export LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT=100
 1. Visit [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 2. Sign up or log in to your OpenAI account
 3. Create a new API key
-4. Copy the key and paste it into MQTT Explorer's configuration dialog or set `OPENAI_API_KEY` environment variable
+4. Set `OPENAI_API_KEY` environment variable on your server
 
 **Note**: Using the AI Assistant will consume OpenAI API credits based on your usage. Please review OpenAI's pricing at [https://openai.com/pricing](https://openai.com/pricing).
 
@@ -114,11 +119,11 @@ The AI Assistant provides contextual suggestions based on the selected topic:
 The AI Assistant automatically includes relevant context with your questions:
 
 - **Current Topic**: The selected topic path and its current value (with preview for large payloads)
-- **Neighboring Topics**: Related topics (siblings and children) with their values, limited to 100 tokens by default
+- **Neighboring Topics**: Related topics with hierarchical context (parent, siblings, children, grandchildren, cousins), limited to 500 tokens by default (increased from 100 for better device relationship detection)
 - **Topic Metadata**: Message count, subtopic count, and retained status
 - **Smart Truncation**: Large values and topic lists are intelligently truncated to stay within token limits
 
-The neighboring topics context can be adjusted using the `LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT` environment variable for server deployments.
+The neighboring topics context can be adjusted using the `LLM_NEIGHBORING_TOPICS_TOKEN_LIMIT` environment variable. We recommend 500-1000 tokens for production deployments to enable better multi-device and room-level automation proposals.
 
 ## Privacy & Security
 
@@ -141,17 +146,31 @@ The neighboring topics context can be adjusted using the `LLM_NEIGHBORING_TOPICS
 
 - **Frontend**: React component with Material-UI styling
 - **Service Layer**: Singleton LLM service for API communication
-- **API Integration**: OpenAI Chat Completions API (GPT-3.5-turbo by default)
+- **API Integration**: OpenAI Chat Completions API (GPT-4o Mini by default)
 - **Context Generation**: Automatic extraction of topic metadata for relevant queries
+
+### Implementation
+
+The AI Assistant uses:
+
+- **OpenAI SDK**: Official `openai` package (v6.16.0) for reliable OpenAI API communication
+  - Automatic retry logic with exponential backoff
+  - Built-in timeout handling (30 seconds)
+  - TypeScript type safety
+  - Better error messages
+- **Axios**: Direct HTTP calls for Gemini API (Google doesn't provide official Node.js SDK)
+- **Model**: `gpt-5-mini` (latest OpenAI mini model, 400K context window)
+- **Architecture**: Server-side proxy - API keys never sent to browser
 
 ### Configuration Options
 
 The LLM service supports:
 
 - **Custom API Endpoints**: Can be configured to use compatible APIs
-- **Model Selection**: Defaults to `gpt-3.5-turbo` but can be customized
+- **Model Selection**: Defaults to `gpt-5-mini` (latest OpenAI mini model)
 - **Conversation History**: Automatically manages context (keeps last 10 messages)
-- **Timeout Handling**: 30-second timeout for API requests
+- **Timeout Handling**: 30-second timeout for API requests with automatic retries
+- **Debug Mode**: View complete API request and response data via debug button
 
 ## Troubleshooting
 

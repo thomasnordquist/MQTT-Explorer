@@ -1,11 +1,11 @@
-import * as q from '../../../../../backend/src/Model'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Theme } from '@mui/material/styles'
+import { withStyles } from '@mui/styles'
+import * as q from '../../../../../backend/src/Model'
 import TreeNodeSubnodes from './TreeNodeSubnodes'
 import TreeNodeTitle from './TreeNodeTitle'
 import { SettingsState } from '../../../reducers/Settings'
 import { styles } from './styles'
-import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
 import { TopicViewModel } from '../../../model/TopicViewModel'
 import { treeActions } from '../../../actions'
 import { useAnimationToIndicateTopicUpdate } from './effects/useAnimationToIndicateTopicUpdate'
@@ -61,16 +61,16 @@ function TreeNodeComponent(props: Props) {
   const didClickTitle = React.useCallback(
     (event: React.MouseEvent) => {
       event.stopPropagation()
-      
+
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
-      
+
       if (isMobile) {
         // Mobile: Only select the topic (no toggle)
         // Expanding is handled by the separate expand button click
         didSelectTopic()
         // Switch to details tab on mobile after selecting a topic
         if (typeof window !== 'undefined' && (window as any).switchToDetailsTab) {
-          (window as any).switchToDetailsTab()
+          ;(window as any).switchToDetailsTab()
         }
       } else {
         // Desktop: Original behavior - select AND toggle (click anywhere works)

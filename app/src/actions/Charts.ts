@@ -1,7 +1,7 @@
+import { Dispatch } from 'redux'
 import { Action, ActionTypes, ChartParameters } from '../reducers/Charts'
 import { AppState } from '../reducers'
 import { default as persistentStorage, StorageIdentifier } from '../utils/PersistentStorage'
-import { Dispatch } from 'redux'
 import { showError, showNotification } from './Global'
 
 interface ConnectionViewState {
@@ -16,7 +16,7 @@ const connectionViewStateIdentifier: StorageIdentifier<ConnectionViewStateDictio
 }
 
 export const loadCharts = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
-  const connectionId = getState().connection.connectionId
+  const { connectionId } = getState().connection
   if (!connectionId) {
     return
   }
@@ -40,7 +40,7 @@ export const loadCharts = () => async (dispatch: Dispatch<any>, getState: () => 
 }
 
 export const saveCharts = () => async (dispatch: Dispatch<any>, getState: () => AppState) => {
-  const connectionId = getState().connection.connectionId
+  const { connectionId } = getState().connection
   if (!connectionId) {
     return
   }
@@ -110,9 +110,7 @@ export const moveChartUp =
     dispatch(saveCharts())
   }
 
-export const setCharts = (charts: Array<ChartParameters>): Action => {
-  return {
-    charts,
-    type: ActionTypes.CHARTS_SET,
-  }
-}
+export const setCharts = (charts: Array<ChartParameters>): Action => ({
+  charts,
+  type: ActionTypes.CHARTS_SET,
+})

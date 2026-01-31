@@ -20,41 +20,41 @@ function MobileTabs(props: Props) {
 
   return (
     <Box className={props.classes.root} role="navigation" aria-label="Mobile navigation tabs">
-      <Tabs 
-        value={props.value} 
+      <Tabs
+        value={props.value}
         onChange={handleChange}
         variant="fullWidth"
         indicatorColor="primary"
         textColor="primary"
         aria-label="Topics, Details, Publish and Charts tabs"
       >
-        <Tab 
+        <Tab
           icon={<AccountTreeIcon />}
-          label="Topics" 
+          label="Topics"
           data-testid="mobile-tab-topics"
           aria-label="View topics tree"
           id="mobile-tab-0"
           aria-controls="mobile-tabpanel-0"
         />
-        <Tab 
+        <Tab
           icon={<InfoIcon />}
-          label="Details" 
+          label="Details"
           data-testid="mobile-tab-details"
           aria-label="View topic details"
           id="mobile-tab-1"
           aria-controls="mobile-tabpanel-1"
         />
-        <Tab 
+        <Tab
           icon={<SendIcon />}
-          label="Publish" 
+          label="Publish"
           data-testid="mobile-tab-publish"
           aria-label="Publish messages"
           id="mobile-tab-2"
           aria-controls="mobile-tabpanel-2"
         />
-        <Tab 
+        <Tab
           icon={<ShowChartIcon />}
-          label="Charts" 
+          label="Charts"
           data-testid="mobile-tab-charts"
           aria-label="View charts"
           id="mobile-tab-3"
@@ -69,7 +69,7 @@ const styles = (theme: Theme) => ({
   root: {
     borderBottom: `1px solid ${theme.palette.divider}`,
     backgroundColor: theme.palette.background.paper,
-    position: 'relative' as 'relative',
+    position: 'relative' as const,
     zIndex: 1,
     minHeight: '56px', // Touch-friendly tab height
     '& .MuiTab-root': {
@@ -77,7 +77,7 @@ const styles = (theme: Theme) => ({
       fontSize: '16px', // Prevent iOS zoom
       fontWeight: 500,
       padding: theme.spacing(1.5, 2),
-      textTransform: 'none' as 'none', // Better readability
+      textTransform: 'none' as const, // Better readability
       '&:active': {
         opacity: 0.7, // Touch feedback
       },

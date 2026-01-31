@@ -122,6 +122,31 @@ yarn test:backend
 yarn test
 ```
 
+### LLM Testing
+
+The AI Assistant feature includes comprehensive tests to validate proposal quality and LLM integration.
+
+**Offline tests** (default - no API key needed):
+```bash
+yarn test:app
+```
+
+**Live LLM integration tests** (requires API key):
+```bash
+# Set your API key
+export OPENAI_API_KEY=sk-your-key-here
+# Or use Gemini
+export GEMINI_API_KEY=your-key-here
+
+# Opt-in to live tests
+export RUN_LLM_TESTS=true
+
+# Run tests
+yarn test:app
+```
+
+For detailed LLM testing documentation, see [app/src/services/spec/README.md](app/src/services/spec/README.md).
+
 ### Integration & UI Tests
 
 **UI test suite** - Independent, deterministic browser tests:

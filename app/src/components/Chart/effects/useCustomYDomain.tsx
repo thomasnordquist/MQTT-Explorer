@@ -1,5 +1,5 @@
-import { Props } from '../Chart'
 import { useMemo } from 'react'
+import { Props } from '../Chart'
 import { Point } from '../Model'
 
 function defaultFor(a: number | undefined, b: number) {
@@ -8,7 +8,7 @@ function defaultFor(a: number | undefined, b: number) {
 
 export function useCustomYDomain(props: Props) {
   return useMemo(() => {
-    const data = props.data
+    const { data } = props
     const calculatedDomain = domainForData(data)
     const yDomain: [number, number] = props.range
       ? [defaultFor(props.range[0], calculatedDomain[0]), defaultFor(props.range[1], calculatedDomain[1])]

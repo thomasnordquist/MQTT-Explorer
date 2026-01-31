@@ -24,7 +24,7 @@ import { selectTopic } from './util/selectTopic'
 
 /**
  * Mobile Demo Video - Pixel 6 viewport
- * 
+ *
  * This demo showcases MQTT Explorer running in a mobile browser viewport
  * simulating a Google Pixel 6 (412x915px portrait mode)
  */
@@ -66,8 +66,8 @@ async function doStuff() {
     args: [
       '--no-sandbox',
       '--disable-dev-shm-usage',
-      '--app=http://localhost:3000',  // App mode - no browser UI
-      '--window-size=412,914',  // Match the mobile viewport size
+      '--app=http://localhost:3000', // App mode - no browser UI
+      '--window-size=412,914', // Match the mobile viewport size
       '--window-position=0,0',
       '--disable-features=TranslateUI',
       '--no-first-run',
@@ -87,7 +87,8 @@ async function doStuff() {
     deviceScaleFactor: 2.625,
     isMobile: true,
     hasTouch: true,
-    userAgent: 'Mozilla/5.0 (Linux; Android 12; Pixel 6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 12; Pixel 6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36',
   })
 
   const page = await context.newPage()
@@ -99,17 +100,17 @@ async function doStuff() {
 
   // Print the title
   console.log(await page.title())
-  
+
   // Try to capture a screenshot (may fail in headed mode, but that's ok)
   try {
     await page.screenshot({ path: 'intro-mobile.png' })
   } catch (error) {
     console.log('Screenshot skipped (headed mode)')
   }
-  
+
   // Direct console to Node terminal
   page.on('console', console.log)
-  
+
   // Enable the fake mouse pointer for visual cursor tracking
   await createFakeMousePointer(page)
 
@@ -145,7 +146,7 @@ async function doStuff() {
   await page.locator('//label[contains(text(), "Host")]/..//input').waitFor({ timeout: 10000 })
 
   const scenes = new SceneBuilder()
-  
+
   await scenes.record('mobile_intro', async () => {
     await showText('MQTT Explorer on Mobile', 2000, page, 'middle')
     await sleep(2500)
@@ -170,7 +171,7 @@ async function doStuff() {
       console.log('Tree nodes not found, continuing...')
     })
     await sleep(1000)
-    
+
     try {
       // Expand topics using the expandTopic utility
       // On mobile, this clicks expand buttons (▶/▼) to navigate the tree
@@ -181,14 +182,14 @@ async function doStuff() {
     } catch (error) {
       console.log('Topic expansion failed, continuing...', error)
     }
-    
+
     await hideText(page)
   })
 
   await scenes.record('mobile_view_message', async () => {
     await showText('Tap Topic to View Details', 1500, page, 'top')
     await sleep(1000)
-    
+
     try {
       // Select a topic by clicking its text
       // On mobile, this will switch to the Details tab automatically
@@ -200,7 +201,7 @@ async function doStuff() {
     } catch (error) {
       console.log('Topic selection failed, continuing...', error)
     }
-    
+
     await hideText(page)
   })
 
@@ -219,7 +220,7 @@ async function doStuff() {
   await scenes.record('mobile_json_view', async () => {
     await showText('JSON Message Formatting', 1500, page, 'top')
     await sleep(1000)
-    
+
     try {
       // Navigate back to Topics tab to show tree navigation
       const topicsTab = page.locator('button:has-text("TOPICS"), button:has-text("Topics")')
@@ -228,19 +229,19 @@ async function doStuff() {
         await topicsTab.click()
         await sleep(1000)
       }
-      
+
       // Expand and select kitchen/coffee_maker to show JSON
       await expandTopic('kitchen/coffee_maker', page)
       await sleep(1000)
       await selectTopic('kitchen/coffee_maker', page)
       await sleep(2000)
-      
+
       await showText('JSON Payload View', 1000, page, 'top')
       await sleep(1500)
     } catch (error) {
       console.log('JSON view navigation failed, continuing...', error)
     }
-    
+
     await hideText(page)
   })
 
@@ -276,7 +277,7 @@ async function doStuff() {
     console.log('Forced quit')
     process.exit(0)
   }, 10 * 1000)
-  
+
   stopMqtt()
   console.log('Stopped mqtt client')
 

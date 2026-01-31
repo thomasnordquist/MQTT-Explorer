@@ -1,11 +1,11 @@
-import { CodeBlockColors, CodeBlockColorsBraceMonokai } from '../CodeBlockColors'
 import { Theme } from '@mui/material'
+import { CodeBlockColors, CodeBlockColorsBraceMonokai } from '../CodeBlockColors'
 
 export const style = (theme: Theme) => {
   const codeBlockColors = theme.palette.mode === 'light' ? CodeBlockColors : CodeBlockColorsBraceMonokai
   const codeBaseStyle = {
     font: "12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
-    display: 'inline-grid' as 'inline-grid',
+    display: 'inline-grid' as const,
     margin: '0',
     padding: '1px 0 0 0',
   }
@@ -17,7 +17,7 @@ export const style = (theme: Theme) => {
       backgroundColor: codeBlockColors.gutters,
     },
     line: {
-      lineHeight: 'normal' as 'normal',
+      lineHeight: 'normal' as const,
       paddingLeft: '4px',
       width: '100%',
       height: '16px',
@@ -32,7 +32,7 @@ export const style = (theme: Theme) => {
       ...codeBaseStyle,
       width: '33px',
       backgroundColor: codeBlockColors.gutters,
-      userSelect: 'none' as 'none',
+      userSelect: 'none' as const,
     },
     codeBlock: {
       ...codeBaseStyle,

@@ -1,7 +1,7 @@
-import { MqttOptions } from '../../../backend/src/DataSource'
 import { v4 } from 'uuid'
-import { Subscription } from '../../../backend/src/DataSource/MqttSource'
+import { Subscription } from 'mqtt-explorer-backend/src/DataSource/MqttSource'
 import sha1 from 'sha1'
+import { MqttOptions } from 'mqtt-explorer-backend/src/DataSource/DataSource'
 
 export interface CertificateParameters {
   name: string

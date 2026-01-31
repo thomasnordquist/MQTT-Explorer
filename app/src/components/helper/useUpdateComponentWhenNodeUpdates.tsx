@@ -1,5 +1,5 @@
-import * as q from '../../../../backend/src/Model'
 import { useEffect, useState } from 'react'
+import * as q from '../../../../backend/src/Model'
 
 export function useUpdateComponentWhenNodeUpdates(node?: q.TreeNode<any>): number {
   const [lastUpdate, setLastUpdate] = useState(0)

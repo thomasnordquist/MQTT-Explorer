@@ -1,14 +1,15 @@
-import * as q from '../../../../backend/src/Model'
 import React, { useMemo } from 'react'
-import { AppState } from '../../reducers'
-import { Base64Message } from '../../../../backend/src/Model/Base64Message'
 import { connect } from 'react-redux'
 import { Theme } from '@mui/material/styles'
 import { withStyles } from '@mui/styles'
-import { TopicViewModel } from '../../model/TopicViewModel'
 import { Typography } from '@mui/material'
+import * as q from '../../../../backend/src/Model'
+import { Base64Message } from '../../../../backend/src/Model/Base64Message'
+import { TopicViewModel } from '../../model/TopicViewModel'
+import { AppState } from '../../reducers'
 import { usePollingToFetchTreeNode } from '../helper/usePollingToFetchTreeNode'
 import { useUpdateComponentWhenNodeUpdates } from '../helper/useUpdateComponentWhenNodeUpdates'
+
 const abbreviate = require('number-abbreviate')
 
 interface Stats {
@@ -37,7 +38,7 @@ function BrokerStatistics(props: Props) {
   useUpdateComponentWhenNodeUpdates(sysTopic)
 
   return useMemo(() => {
-    if (!Boolean(sysTopic)) {
+    if (!sysTopic) {
       return null
     }
 
@@ -96,11 +97,9 @@ function BrokerStatistics(props: Props) {
   }, [sysTopic && sysTopic.lastUpdate, props.classes])
 }
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    tree: state.connection.tree,
-  }
-}
+const mapStateToProps = (state: AppState) => ({
+  tree: state.connection.tree,
+})
 
 export default withStyles(styles)(connect(mapStateToProps)(BrokerStatistics))
 

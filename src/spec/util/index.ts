@@ -46,7 +46,7 @@ export async function setTextInInput(name: string, text: string, browser: Page) 
     `//div[contains(@class, 'MuiTextField')]//label[contains(text(), "${name}")]/..//input`,
     `//input[@name="${name.toLowerCase()}"]`,
   ]
-  
+
   let input: Locator | null = null
   for (const selector of selectors) {
     const locator = browser.locator(selector)
@@ -56,7 +56,7 @@ export async function setTextInInput(name: string, text: string, browser: Page) 
       break
     }
   }
-  
+
   if (!input) {
     throw new Error(`Could not find input for label "${name}"`)
   }
@@ -88,8 +88,8 @@ export async function moveToCenterOfElement(element: Locator) {
     await runJavascript(js, element.page())
     // IMPORTANT: Wait for animation to complete before returning
     // The animation duration + a small buffer for frame rendering
-    await sleep(duration, true)  // Use required=true to ensure we actually wait
-    await sleep(100, true)  // Extra buffer for the last frame
+    await sleep(duration, true) // Use required=true to ensure we actually wait
+    await sleep(100, true) // Extra buffer for the last frame
   } catch (error) {
     // window.demo.moveMouse might not be available in all test environments
     // This is fine - we'll proceed with the click anyway
@@ -138,7 +138,12 @@ export async function clickOn(
     }
   }
   // Click happens after simulated cursor has reached its destination
-  await element.click({ delay, button, force, clickCount: clicks })
+  await element.click({
+    delay,
+    button,
+    force,
+    clickCount: clicks,
+  })
   await sleep(50)
 }
 
