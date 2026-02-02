@@ -4,7 +4,8 @@ import { amber } from '@mui/material/colors'
 const baseTheme = {
   typography: {
     allVariants: {
-      userSelect: 'none',
+      // Removed userSelect: 'none' to allow text selection in components
+      // Individual components can still disable selection if needed
     },
     body1: {
       fontSize: '0.9rem',

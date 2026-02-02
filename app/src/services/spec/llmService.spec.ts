@@ -679,4 +679,483 @@ Both actions and questions provided.`
       expect(hasKey).to.be.true
     })
   })
+
+  describe('Tool Execution', () => {
+    let service: LLMService
+
+    beforeEach(() => {
+      service = new LLMService()
+    })
+
+    // Create a mock topic tree for testing
+    function createMockTopicTree(): any {
+      const mockMessage = (value: string, timestamp?: number) => ({
+        payload: {
+          format: () => [value],
+          toString: () => value,
+        },
+        timestamp: timestamp || Date.now(),
+        retain: false,
+      })
+
+      const mockMessageHistory = (messages: any[]) => ({
+        getAll: () => messages,
+      })
+
+      // Create root node
+      const root: any = {
+        path: () => 'home',
+        message: mockMessage('root'),
+        messages: 1,
+        childTopicCount: () => 1,
+        type: 'string',
+        edgeCollection: {
+          edges: [],
+        },
+      }
+
+      // Create living room node
+      const livingRoom: any = {
+        path: () => 'home/livingroom',
+        message: mockMessage('living room'),
+        messages: 5,
+        childTopicCount: () => 2,
+        type: 'string',
+        parent: root,
+        messageHistory: mockMessageHistory([
+          { payload: { toString: () => '20' }, timestamp: Date.now() - 3000 },
+          { payload: { toString: () => '21' }, timestamp: Date.now() - 2000 },
+          { payload: { toString: () => '22' }, timestamp: Date.now() - 1000 },
+        ]),
+        edgeCollection: {
+          edges: [],
+        },
+      }
+
+      // Create lamp node
+      const lamp: any = {
+        path: () => 'home/livingroom/lamp',
+        message: mockMessage('{"state":"ON","brightness":80}'),
+        messages: 10,
+        childTopicCount: () => 0,
+        type: 'json',
+        parent: livingRoom,
+        messageHistory: mockMessageHistory([
+          { payload: { toString: () => '{"state":"OFF"}' }, timestamp: Date.now() - 5000 },
+          { payload: { toString: () => '{"state":"ON","brightness":50}' }, timestamp: Date.now() - 3000 },
+          { payload: { toString: () => '{"state":"ON","brightness":80}' }, timestamp: Date.now() - 1000 },
+        ]),
+      }
+
+      // Create sensor node
+      const sensor: any = {
+        path: () => 'home/livingroom/sensor',
+        message: mockMessage('{"temperature":22.5,"humidity":45}'),
+        messages: 100,
+        childTopicCount: () => 0,
+        type: 'json',
+        parent: livingRoom,
+      }
+
+      // Wire up edges
+      livingRoom.edgeCollection.edges = [
+        { name: 'lamp', node: lamp },
+        { name: 'sensor', node: sensor },
+      ]
+
+      root.edgeCollection.edges = [{ name: 'livingroom', node: livingRoom }]
+
+      return root
+    }
+
+    describe('findTopicNode', () => {
+      it('should find topic node by exact path', () => {
+        const root = createMockTopicTree()
+        const found = (service as any).findTopicNode('home/livingroom/lamp', root)
+        expect(found).to.not.be.null
+        expect(found?.path()).to.equal('home/livingroom/lamp')
+      })
+
+      it('should return null for non-existent path', () => {
+        const root = createMockTopicTree()
+        const found = (service as any).findTopicNode('home/nonexistent', root)
+        expect(found).to.be.null
+      })
+    })
+
+    describe('findRootNode', () => {
+      it('should find root node from deeply nested node', () => {
+        const root = createMockTopicTree()
+        // Get the lamp node (deeply nested)
+        const lamp = (service as any).findTopicNode('home/livingroom/lamp', root)
+        expect(lamp).to.not.be.null
+        
+        // Find root from lamp node
+        const foundRoot = (service as any).findRootNode(lamp)
+        expect(foundRoot).to.not.be.null
+        expect(foundRoot?.path()).to.equal('home')
+        expect(foundRoot).to.equal(root)
+      })
+
+      it('should return null for undefined node', () => {
+        const foundRoot = (service as any).findRootNode(undefined)
+        expect(foundRoot).to.be.null
+      })
+
+      it('should return node itself if it has no parent (is root)', () => {
+        const root = createMockTopicTree()
+        const foundRoot = (service as any).findRootNode(root)
+        expect(foundRoot).to.equal(root)
+      })
+    })
+
+    describe('queryTopicHistory', () => {
+      it('should query topic history with limit', () => {
+        const root = createMockTopicTree()
+        const result = (service as any).queryTopicHistory('home/livingroom/lamp', 3, root)
+        
+        expect(result).to.be.a('string')
+        expect(result).to.include('{"state":"OFF"}')
+        expect(result).to.include('{"state":"ON","brightness":50}')
+        expect(result).to.include('{"state":"ON","brightness":80}')
+      })
+
+      it('should handle topic not found', () => {
+        const root = createMockTopicTree()
+        const result = (service as any).queryTopicHistory('home/nonexistent', 10, root)
+        
+        expect(result).to.include('Topic not found')
+      })
+
+      it('should limit history to 200 tokens', () => {
+        const root = createMockTopicTree()
+        const result = (service as any).queryTopicHistory('home/livingroom/lamp', 20, root)
+        
+        // Should be limited to ~800 characters (200 tokens * 4)
+        expect(result.length).to.be.lessThan(1000)
+      })
+    })
+
+    describe('getTopic', () => {
+      it('should get topic details', () => {
+        const root = createMockTopicTree()
+        const result = (service as any).getTopic('home/livingroom/lamp', root)
+        
+        expect(result).to.include('Topic: home/livingroom/lamp')
+        expect(result).to.include('Value:')
+        expect(result).to.include('Messages:')
+      })
+
+      it('should handle topic not found', () => {
+        const root = createMockTopicTree()
+        const result = (service as any).getTopic('home/nonexistent', root)
+        
+        expect(result).to.include('Topic not found')
+      })
+    })
+
+    describe('listChildren', () => {
+      it('should list child topics', () => {
+        const root = createMockTopicTree()
+        const result = (service as any).listChildren('home/livingroom', 10, root)
+        
+        expect(result).to.include('Child topics')
+        expect(result).to.include('home/livingroom/lamp')
+        expect(result).to.include('home/livingroom/sensor')
+      })
+
+      it('should handle no children', () => {
+        const root = createMockTopicTree()
+        const result = (service as any).listChildren('home/livingroom/lamp', 10, root)
+        
+        expect(result).to.include('No child topics found')
+      })
+
+      it('should limit to 200 tokens', () => {
+        const root = createMockTopicTree()
+        const result = (service as any).listChildren('home/livingroom', 50, root)
+        
+        // Should be limited to ~800 characters
+        expect(result.length).to.be.lessThan(1000)
+      })
+    })
+
+    describe('listParents', () => {
+      it('should list parent hierarchy', () => {
+        const root = createMockTopicTree()
+        const result = (service as any).listParents('home/livingroom/lamp', root)
+        
+        expect(result).to.include('Parent hierarchy')
+        expect(result).to.include('home')
+        expect(result).to.include('home/livingroom')
+        expect(result).to.include('home/livingroom/lamp (current)')
+      })
+
+      it('should handle root level topic', () => {
+        const root = createMockTopicTree()
+        const result = (service as any).listParents('home', root)
+        
+        expect(result).to.include('No parent topics')
+        expect(result).to.include('root level')
+      })
+
+      it('should limit to 100 tokens', () => {
+        const root = createMockTopicTree()
+        const result = (service as any).listParents('home/livingroom/lamp', root)
+        
+        // Should be limited to ~400 characters (100 tokens * 4)
+        expect(result.length).to.be.lessThan(500)
+      })
+    })
+
+    describe('executeTool', () => {
+      it('should execute query_topic_history tool', async () => {
+        const root = createMockTopicTree()
+        const toolCall = {
+          id: 'call_123',
+          name: 'query_topic_history',
+          arguments: '{"topic":"home/livingroom/lamp","limit":3}',
+        }
+
+        const result = await (service as any).executeTool(toolCall, root)
+        
+        expect(result.tool_call_id).to.equal('call_123')
+        expect(result.name).to.equal('query_topic_history')
+        expect(result.content).to.be.a('string')
+        expect(result.content).to.include('state')
+      })
+
+      it('should execute get_topic tool', async () => {
+        const root = createMockTopicTree()
+        const toolCall = {
+          id: 'call_456',
+          name: 'get_topic',
+          arguments: '{"topic":"home/livingroom/sensor"}',
+        }
+
+        const result = await (service as any).executeTool(toolCall, root)
+        
+        expect(result.tool_call_id).to.equal('call_456')
+        expect(result.name).to.equal('get_topic')
+        expect(result.content).to.include('Topic: home/livingroom/sensor')
+      })
+
+      it('should execute list_children tool', async () => {
+        const root = createMockTopicTree()
+        const toolCall = {
+          id: 'call_789',
+          name: 'list_children',
+          arguments: '{"topic":"home/livingroom","limit":10}',
+        }
+
+        const result = await (service as any).executeTool(toolCall, root)
+        
+        expect(result.tool_call_id).to.equal('call_789')
+        expect(result.name).to.equal('list_children')
+        expect(result.content).to.include('lamp')
+        expect(result.content).to.include('sensor')
+      })
+
+      it('should execute list_parents tool', async () => {
+        const root = createMockTopicTree()
+        const toolCall = {
+          id: 'call_abc',
+          name: 'list_parents',
+          arguments: '{"topic":"home/livingroom/lamp"}',
+        }
+
+        const result = await (service as any).executeTool(toolCall, root)
+        
+        expect(result.tool_call_id).to.equal('call_abc')
+        expect(result.name).to.equal('list_parents')
+        expect(result.content).to.include('Parent hierarchy')
+      })
+
+      it('should handle unknown tool', async () => {
+        const root = createMockTopicTree()
+        const toolCall = {
+          id: 'call_xyz',
+          name: 'unknown_tool',
+          arguments: '{}',
+        }
+
+        const result = await (service as any).executeTool(toolCall, root)
+        
+        expect(result.content).to.include('Unknown tool')
+      })
+
+      it('should handle invalid arguments', async () => {
+        const root = createMockTopicTree()
+        const toolCall = {
+          id: 'call_error',
+          name: 'get_topic',
+          arguments: 'invalid json',
+        }
+
+        const result = await (service as any).executeTool(toolCall, root)
+        
+        expect(result.content).to.include('Error executing tool')
+      })
+    })
+  })
+
+  describe('parseResponse', () => {
+    let service: LLMService
+
+    beforeEach(() => {
+      service = new LLMService()
+    })
+
+    it('should parse question proposals with backticks format', () => {
+      const response = `Here is some text.
+
+\`\`\`question-proposal
+{
+  "question": "What is the temperature?",
+  "category": "analysis"
+}
+\`\`\`
+
+\`\`\`question-proposal
+{
+  "question": "How do I turn it off?",
+  "category": "control"
+}
+\`\`\`
+
+More text here.`
+
+      const result = service.parseResponse(response)
+
+      expect(result.questions).to.have.length(2)
+      expect(result.questions[0].question).to.equal('What is the temperature?')
+      expect(result.questions[0].category).to.equal('analysis')
+      expect(result.questions[1].question).to.equal('How do I turn it off?')
+      expect(result.questions[1].category).to.equal('control')
+      expect(result.text).to.include('Here is some text')
+      expect(result.text).to.include('More text here')
+      expect(result.text).not.to.include('```question-proposal')
+    })
+
+    it('should parse question proposals without backticks (bare JSON)', () => {
+      const response = `Here is some analysis.
+
+{"question": "What devices are connected?", "category": "analysis"}
+
+{"question": "Can I automate this?", "category": "optimization"}
+
+That's all.`
+
+      const result = service.parseResponse(response)
+
+      expect(result.questions).to.have.length(2)
+      expect(result.questions[0].question).to.equal('What devices are connected?')
+      expect(result.questions[0].category).to.equal('analysis')
+      expect(result.questions[1].question).to.equal('Can I automate this?')
+      expect(result.questions[1].category).to.equal('optimization')
+      expect(result.text).to.include('Here is some analysis')
+      expect(result.text).to.include("That's all")
+      expect(result.text).not.to.include('{"question"')
+    })
+
+    it('should parse question proposals without category', () => {
+      const response = `Some text.
+
+{"question": "What is this?"}
+
+End.`
+
+      const result = service.parseResponse(response)
+
+      expect(result.questions).to.have.length(1)
+      expect(result.questions[0].question).to.equal('What is this?')
+      expect(result.questions[0].category).to.be.undefined
+    })
+
+    it('should handle mixed format (backticks and bare JSON)', () => {
+      const response = `Text here.
+
+\`\`\`question-proposal
+{
+  "question": "First question?",
+  "category": "analysis"
+}
+\`\`\`
+
+{"question": "Second question?", "category": "control"}
+
+Done.`
+
+      const result = service.parseResponse(response)
+
+      expect(result.questions).to.have.length(2)
+      expect(result.questions[0].question).to.equal('First question?')
+      expect(result.questions[1].question).to.equal('Second question?')
+    })
+
+    it('should parse message proposals with backticks', () => {
+      const response = `You can turn off the light.
+
+\`\`\`proposal
+{
+  "topic": "home/light/set",
+  "payload": "OFF",
+  "qos": 0,
+  "description": "Turn off the light"
+}
+\`\`\``
+
+      const result = service.parseResponse(response)
+
+      expect(result.proposals).to.have.length(1)
+      expect(result.proposals[0].topic).to.equal('home/light/set')
+      expect(result.proposals[0].payload).to.equal('OFF')
+      expect(result.proposals[0].description).to.equal('Turn off the light')
+      expect(result.text).not.to.include('```proposal')
+    })
+
+    it('should handle response with no proposals or questions', () => {
+      const response = 'This is a simple response with no proposals.'
+
+      const result = service.parseResponse(response)
+
+      expect(result.questions).to.have.length(0)
+      expect(result.proposals).to.have.length(0)
+      expect(result.text).to.equal('This is a simple response with no proposals.')
+    })
+
+    it('should handle malformed JSON gracefully', () => {
+      const response = `Some text.
+
+{"question": "Valid question?", "category": "analysis"}
+
+{invalid json here}
+
+{"question": "Another valid?"}
+
+Done.`
+
+      const result = service.parseResponse(response)
+
+      // Should parse the valid questions and skip the invalid one
+      expect(result.questions).to.have.length(2)
+      expect(result.questions[0].question).to.equal('Valid question?')
+      expect(result.questions[1].question).to.equal('Another valid?')
+    })
+
+    it('should remove bare JSON from display text', () => {
+      const response = `Here is the answer: The device is working fine.
+
+{"question": "Is it secure?", "category": "troubleshooting"}
+
+You can check the logs for more details.`
+
+      const result = service.parseResponse(response)
+
+      expect(result.text).to.include('The device is working fine')
+      expect(result.text).to.include('You can check the logs')
+      expect(result.text).not.to.include('{"question"')
+      expect(result.text).not.to.include('"Is it secure?"')
+    })
+  })
 })

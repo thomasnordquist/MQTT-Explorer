@@ -70,10 +70,25 @@ export interface LlmChatRequest {
     content: string
   }>
   topicContext?: string
+  toolResults?: Array<{
+    tool_call_id: string
+    name: string
+    content: string
+  }>
+}
+
+export interface LlmToolCall {
+  id: string
+  type: 'function'
+  function: {
+    name: string
+    arguments: string
+  }
 }
 
 export interface LlmChatResponse {
   response: string
+  toolCalls?: LlmToolCall[]
 }
 
 // Dialog types (browser-compatible versions)

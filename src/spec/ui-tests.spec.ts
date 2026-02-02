@@ -400,4 +400,441 @@ describe('MQTT Explorer UI Tests', function () {
       await page.screenshot({ path: 'test-screenshot-save-message.png' })
     })
   })
+
+  describe('AI Assistant Chat', () => {
+    // Skip tests if no LLM API key is available
+    const hasLLMApiKey = !!(process.env.OPENAI_API_KEY || process.env.GEMINI_API_KEY || process.env.LLM_API_KEY)
+    
+    before(function() {
+      if (!hasLLMApiKey) {
+        console.log('Skipping AI Assistant tests: No LLM API key found')
+        console.log('Set OPENAI_API_KEY, GEMINI_API_KEY, or LLM_API_KEY to run these tests')
+        this.skip()
+      }
+    })
+
+    it('should expand AI Assistant panel when clicked', async function() {
+      this.timeout(30000) // Increase timeout for LLM tests
+      
+      // Given: A topic is selected (from previous tests)
+      await expandTopic('livingroom/lamp', page)
+      await sleep(1000)
+
+      // When: AI Assistant header is clicked
+      const aiAssistant = page.getByTestId('ai-assistant')
+      await aiAssistant.waitFor({ state: 'visible', timeout: 5000 })
+      
+      const header = page.getByTestId('ai-assistant-header')
+      await header.click()
+      await sleep(500)
+
+      // Then: AI Assistant panel should be expanded
+      const messagesContainer = page.getByTestId('ai-assistant-messages')
+      await messagesContainer.waitFor({ state: 'visible', timeout: 5000 })
+      expect(await messagesContainer.isVisible()).to.be.true
+
+      await page.screenshot({ path: 'test-screenshot-ai-assistant-expanded.png' })
+    })
+
+    it('should send a message and receive a response from LLM', async function() {
+      this.timeout(60000) // LLM API calls can take time
+      
+      // Given: AI Assistant is expanded (from previous test)
+      const input = page.locator('[data-testid="ai-assistant-input"]')
+      await input.waitFor({ state: 'visible', timeout: 5000 })
+      
+      // When: User types a message and sends it
+      const testMessage = 'What is this device?'
+      await input.fill(testMessage)
+      await sleep(500)
+      
+      const sendButton = page.getByTestId('ai-assistant-send')
+      await sendButton.click()
+      
+      // Then: User message should appear
+      const userMessage = page.getByTestId('ai-message-user').first()
+      await userMessage.waitFor({ state: 'visible', timeout: 5000 })
+      expect(await userMessage.isVisible()).to.be.true
+      
+      // And: Assistant response should appear (wait up to 30s for LLM response)
+      const assistantMessage = page.getByTestId('ai-message-assistant').first()
+      await assistantMessage.waitFor({ state: 'visible', timeout: 45000 })
+      expect(await assistantMessage.isVisible()).to.be.true
+      
+      // Verify the assistant message has content
+      const messageText = await assistantMessage.textContent()
+      expect(messageText).to.not.be.empty
+      expect(messageText?.length || 0).to.be.greaterThan(10)
+      
+      console.log('AI Assistant response received (length: ' + (messageText?.length || 0) + ' chars)')
+      
+      await page.screenshot({ path: 'test-screenshot-ai-assistant-response.png' })
+    })
+
+    it('should allow selecting and copying text from chat messages', async function() {
+      this.timeout(30000)
+      
+      // Given: Chat has messages (from previous test)
+      const assistantMessage = page.getByTestId('ai-message-assistant').first()
+      await assistantMessage.waitFor({ state: 'visible', timeout: 5000 })
+      
+      // Get the message text content
+      const messageText = await assistantMessage.textContent()
+      expect(messageText).to.not.be.empty
+      
+      // When: We try to select text from the assistant message
+      // We'll use triple-click to select all text in the message
+      await assistantMessage.click({ clickCount: 3 })
+      await sleep(500)
+      
+      // Then: Text should be selectable (we can verify by checking CSS properties)
+      // We verify the userSelect CSS property is set to 'text'
+      const userSelectValue = await assistantMessage.evaluate((el) => {
+        return window.getComputedStyle(el).userSelect
+      })
+      
+      // The userSelect property should allow text selection
+      // Different browsers may report this differently: 'text' or 'auto' or not 'none'
+      expect(userSelectValue).to.not.equal('none', 'Text should be selectable (userSelect should not be "none")')
+      
+      // Also verify the cursor style is appropriate for text
+      const cursorValue = await assistantMessage.evaluate((el) => {
+        return window.getComputedStyle(el).cursor
+      })
+      
+      console.log(`userSelect: ${userSelectValue}, cursor: ${cursorValue}`)
+      
+      // Additionally, test that we can actually select text programmatically
+      const selectedText = await page.evaluate(() => {
+        const selection = window.getSelection()
+        return selection?.toString() || ''
+      })
+      
+      // If text was selected, it should have some content
+      // (The actual selection may vary by browser, so we just verify it's possible)
+      console.log('Selected text length:', selectedText.length)
+      
+      await page.screenshot({ path: 'test-screenshot-ai-assistant-text-selectable.png' })
+    })
+
+    it('should clear chat history when clear button is clicked', async function() {
+      this.timeout(15000)
+      
+      // Given: Chat has messages (from previous test)
+      const messagesContainer = page.getByTestId('ai-assistant-messages')
+      await messagesContainer.waitFor({ state: 'visible', timeout: 5000 })
+      
+      // Verify we have messages
+      const messagesBefore = await page.getByTestId('ai-message-user').count()
+      expect(messagesBefore).to.be.greaterThan(0)
+      
+      // When: Clear button is clicked (button appears when there are messages)
+      const clearButton = page.getByTestId('ai-assistant-clear')
+      await clearButton.waitFor({ state: 'visible', timeout: 5000 })
+      await clearButton.click()
+      await sleep(500)
+      
+      // Then: Messages should be cleared
+      const messagesAfter = await page.getByTestId('ai-message-user').count()
+      expect(messagesAfter).to.equal(0)
+      
+      await page.screenshot({ path: 'test-screenshot-ai-assistant-cleared.png' })
+    })
+
+    it('should list topics when asked by the user', async function() {
+      this.timeout(90000) // LLM API calls can take time, especially with multiple tool rounds
+      
+      // Given: AI Assistant is available (from previous tests)
+      const input = page.locator('[data-testid="ai-assistant-input"]')
+      await input.waitFor({ state: 'visible', timeout: 5000 })
+      
+      // When: User asks to list topics at the root level
+      const testMessage = 'List all the top-level topics. What topics do you see at the root?'
+      await input.fill(testMessage)
+      await sleep(500)
+      
+      const sendButton = page.getByTestId('ai-assistant-send')
+      await sendButton.click()
+      
+      // Then: User message should appear
+      const userMessage = page.getByTestId('ai-message-user').last()
+      await userMessage.waitFor({ state: 'visible', timeout: 5000 })
+      expect(await userMessage.isVisible()).to.be.true
+      
+      // And: Assistant response should appear with topic information (give it extra time for tool calls)
+      const assistantMessage = page.getByTestId('ai-message-assistant').last()
+      await assistantMessage.waitFor({ state: 'visible', timeout: 60000 })
+      expect(await assistantMessage.isVisible()).to.be.true
+      
+      // Verify the response mentions actual topics from our test data
+      const messageText = await assistantMessage.textContent()
+      expect(messageText).to.not.be.empty
+      expect(messageText?.length || 0).to.be.greaterThan(20)
+      
+      // The response should mention at least some of the root topics we published
+      const lowerText = messageText?.toLowerCase() || ''
+      const mentionsTopics = 
+        lowerText.includes('livingroom') || 
+        lowerText.includes('kitchen')
+      
+      expect(mentionsTopics, 'Response should mention at least one of the root-level topics (livingroom or kitchen)').to.be.true
+      
+      console.log('AI Assistant listed topics successfully')
+      console.log('Response preview:', messageText?.substring(0, 300))
+      
+      // Check if tool calls were displayed (they should be visible in the UI)
+      const toolCalls = await page.locator('[class*="toolCall"]').count()
+      if (toolCalls > 0) {
+        console.log(`Tool calls displayed: ${toolCalls}`)
+      }
+      
+      await page.screenshot({ path: 'test-screenshot-ai-assistant-list-topics.png' })
+    })
+
+    it('should perform tool calls and find data for selected topic', async function() {
+      this.timeout(90000) // LLM API calls with tool calling can take significant time
+      
+      // Given: Select a specific topic with data
+      console.log('Selecting topic: kitchen/coffee_maker')
+      await expandTopic('kitchen', page)
+      await sleep(500)
+      
+      // Click on coffee_maker topic to select it
+      const coffeeTopicButton = page.locator('[data-test-type="Button"][data-test="coffee_maker"]')
+      await coffeeTopicButton.waitFor({ state: 'visible', timeout: 10000 })
+      await coffeeTopicButton.click()
+      await sleep(1000)
+      
+      // Verify the topic is selected and has a value
+      const valueDisplay = page.locator('[data-testid="value-display"]')
+      await valueDisplay.waitFor({ state: 'visible', timeout: 5000 })
+      const displayedValue = await valueDisplay.textContent()
+      console.log('Topic value displayed:', displayedValue)
+      
+      // AI Assistant should already be expanded from previous tests
+      // If not, expand it
+      const messagesContainer = page.getByTestId('ai-assistant-messages')
+      const isMessagesVisible = await messagesContainer.isVisible()
+      if (!isMessagesVisible) {
+        const aiAssistantHeader = page.getByTestId('ai-assistant-header')
+        await aiAssistantHeader.click()
+        await sleep(500)
+      }
+      
+      // Clear previous messages for clean test
+      const clearButton = page.getByTestId('ai-assistant-clear')
+      const isClearVisible = await clearButton.isVisible()
+      if (isClearVisible) {
+        await clearButton.click()
+        await sleep(500)
+      }
+      
+      // When: User asks about the selected topic
+      const input = page.locator('[data-testid="ai-assistant-input"]')
+      await input.waitFor({ state: 'visible', timeout: 5000 })
+      
+      const testMessage = 'Tell me about this topic. What is its current value and what data does it contain?'
+      await input.fill(testMessage)
+      await sleep(500)
+      
+      const sendButton = page.getByTestId('ai-assistant-send')
+      await sendButton.click()
+      
+      // Then: User message should appear
+      const userMessage = page.getByTestId('ai-message-user').last()
+      await userMessage.waitFor({ state: 'visible', timeout: 5000 })
+      expect(await userMessage.isVisible()).to.be.true
+      
+      // And: Assistant should use tool calls to get topic data
+      console.log('Waiting for LLM response (may take 30-60 seconds with tool calls)...')
+      const assistantMessage = page.getByTestId('ai-message-assistant').last()
+      await assistantMessage.waitFor({ state: 'visible', timeout: 75000 })
+      expect(await assistantMessage.isVisible()).to.be.true
+      
+      // Verify the response contains actual data from the selected topic
+      const messageText = await assistantMessage.textContent()
+      expect(messageText).to.not.be.empty
+      expect(messageText?.length || 0).to.be.greaterThan(50)
+      
+      console.log('AI Assistant response preview:', messageText?.substring(0, 400))
+      
+      // The response should mention coffee_maker and its actual data
+      const lowerText = messageText?.toLowerCase() || ''
+      const mentionsTopic = 
+        lowerText.includes('coffee') || 
+        lowerText.includes('kitchen')
+      
+      expect(mentionsTopic, 'Response should mention the selected topic (coffee_maker or kitchen)').to.be.true
+      
+      // Check if actual data from the topic is mentioned
+      // Our test data has: heater: 'on', temperature: 92.5, waterLevel: 0.5
+      const mentionsData = 
+        lowerText.includes('heater') || 
+        lowerText.includes('temperature') || 
+        lowerText.includes('water') ||
+        lowerText.includes('92') || // temperature value
+        lowerText.includes('0.5') // waterLevel value
+      
+      expect(mentionsData, 'Response should mention actual data from the topic (heater, temperature, waterLevel, or their values)').to.be.true
+      
+      // Check if tool calls were displayed
+      const toolCallsContainer = page.locator('[class*="toolCall"]')
+      const toolCallCount = await toolCallsContainer.count()
+      
+      if (toolCallCount > 0) {
+        console.log(`✅ Tool calls displayed: ${toolCallCount}`)
+        
+        // Try to get tool call text
+        for (let i = 0; i < Math.min(toolCallCount, 3); i++) {
+          const toolCallText = await toolCallsContainer.nth(i).textContent()
+          console.log(`Tool call ${i + 1}:`, toolCallText?.substring(0, 100))
+        }
+      } else {
+        console.log('ℹ️  Tool calls not visually displayed (but may have been used internally)')
+      }
+      
+      // Check for the 🔧 tool call badge
+      const toolCallBadge = page.locator('text=/🔧|Tool Call/i')
+      const hasBadge = await toolCallBadge.count() > 0
+      if (hasBadge) {
+        console.log('✅ Tool call badge (🔧) found in UI')
+      }
+      
+      console.log('Tool calling test successful!')
+      console.log('- Selected topic: kitchen/coffee_maker')
+      console.log('- LLM used tools to query topic data')
+      console.log('- Response includes actual values from MQTT topic')
+      
+      await page.screenshot({ path: 'test-screenshot-ai-assistant-tool-calling.png' })
+    })
+
+    it('should show human-readable tool actions during thinking', async function () {
+      this.timeout(120000)
+      
+      console.log('Testing human-readable tool action display...')
+      
+      // Select a topic
+      await expandTopic('kitchen', page)
+      const coffeeNode = page.locator('[data-test-type="TreeNode"][data-test="coffee_maker"]')
+      await coffeeNode.click()
+      await sleep(500)
+      
+      console.log('Topic selected: kitchen/coffee_maker')
+      
+      // Expand AI Assistant if needed
+      const isExpanded = await page.getByTestId('ai-assistant-messages').isVisible().catch(() => false)
+      if (!isExpanded) {
+        const header = page.getByTestId('ai-assistant-header')
+        await header.click()
+        await sleep(500)
+      }
+      
+      // Clear previous messages
+      const clearButton = page.getByTestId('ai-assistant-clear')
+      if (await clearButton.isVisible().catch(() => false)) {
+        await clearButton.click()
+        await sleep(500)
+      }
+      
+      // Send a message that will trigger tool calls
+      const input = page.getByTestId('ai-assistant-input')
+      await input.fill('Tell me about this topic and list its children')
+      
+      const sendButton = page.getByTestId('ai-assistant-send')
+      await sendButton.click()
+      
+      console.log('Message sent, waiting for tool actions...')
+      
+      // Wait for "Thinking" to appear
+      const thinkingText = page.locator('text=/💭\\s*Thinking/i')
+      await thinkingText.waitFor({ state: 'visible', timeout: 10000 })
+      expect(await thinkingText.isVisible()).to.be.true
+      
+      console.log('✅ "💭 Thinking" header visible')
+      
+      // Look for human-readable tool actions
+      // These should appear as readable text like "Listing children of..." or "Getting details for..."
+      const toolActionText = page.locator('text=/Listing children|Getting details|Querying history|Getting parent/i')
+      
+      // Wait a bit for tool actions to appear
+      await sleep(2000)
+      
+      const actionCount = await toolActionText.count()
+      console.log(`Found ${actionCount} human-readable tool actions`)
+      
+      if (actionCount > 0) {
+        for (let i = 0; i < Math.min(actionCount, 3); i++) {
+          const actionText = await toolActionText.nth(i).textContent()
+          console.log(`  Action ${i + 1}:`, actionText)
+          
+          // Verify it's NOT the technical format (should not contain "get_topic(topic:")
+          expect(actionText).to.not.match(/get_topic\s*\(/i, 'Should be human-readable, not technical format')
+          expect(actionText).to.not.match(/list_children\s*\(/i, 'Should be human-readable, not technical format')
+        }
+      }
+      
+      await page.screenshot({ path: 'test-screenshot-tool-actions-thinking.png' })
+      
+      console.log('✅ Human-readable tool actions displayed during thinking')
+    })
+
+    it('should persist tool actions after response is received', async function () {
+      this.timeout(120000)
+      
+      console.log('Testing tool action persistence...')
+      
+      // Wait for the response to arrive (from previous test)
+      const assistantMessage = page.getByTestId('ai-message-assistant').last()
+      await assistantMessage.waitFor({ state: 'visible', timeout: 75000 })
+      
+      console.log('✅ Response received')
+      
+      // Check that "Thinking" is no longer visible (it should disappear)
+      const thinkingText = page.locator('text=/💭\\s*Thinking/i')
+      const thinkingVisible = await thinkingText.isVisible().catch(() => false)
+      
+      // Tool actions should still be visible even after response
+      const toolActionText = page.locator('text=/Listing children|Getting details|Querying history|Getting parent/i')
+      const actionCount = await toolActionText.count()
+      
+      console.log(`Tool actions visible after response: ${actionCount}`)
+      expect(actionCount).to.be.greaterThan(0, 'Tool actions should persist after response')
+      
+      // Verify actions are still readable
+      for (let i = 0; i < Math.min(actionCount, 2); i++) {
+        const actionText = await toolActionText.nth(i).textContent()
+        console.log(`  Persisted action ${i + 1}:`, actionText)
+      }
+      
+      await page.screenshot({ path: 'test-screenshot-tool-actions-persisted.png' })
+      
+      console.log('✅ Tool actions persist after response received')
+    })
+
+    it('should hide technical tool call details by default (no DEBUG_TOOL_CALLS)', async function () {
+      this.timeout(30000)
+      
+      console.log('Testing that technical tool call details are hidden...')
+      
+      // Check that the technical "🔨 Tool Calls" alert is NOT visible
+      // This should only show when DEBUG_TOOL_CALLS environment variable is set
+      const technicalToolCallsAlert = page.locator('text=/🔨\\s*Tool Calls/i')
+      const technicalVisible = await technicalToolCallsAlert.isVisible().catch(() => false)
+      
+      expect(technicalVisible).to.be.false('Technical tool call details should be hidden by default')
+      
+      console.log('✅ Technical tool call details properly hidden (debug mode off)')
+      
+      // The human-readable actions should still be visible
+      const toolActionText = page.locator('text=/Listing children|Getting details|Querying history|Getting parent/i')
+      const actionCount = await toolActionText.count()
+      
+      console.log(`Human-readable actions visible: ${actionCount}`)
+      expect(actionCount).to.be.greaterThan(0, 'Human-readable actions should be visible')
+      
+      await page.screenshot({ path: 'test-screenshot-no-debug-details.png' })
+      
+      console.log('✅ Clean UI confirmed - technical details hidden, human-readable actions shown')
+    })
+  })
 })

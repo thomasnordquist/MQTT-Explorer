@@ -28,6 +28,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ClearIcon from '@mui/icons-material/Clear'
 import PublishIcon from '@mui/icons-material/Publish'
 import BugReportIcon from '@mui/icons-material/BugReport'
+import BuildIcon from '@mui/icons-material/Build'
 import { Base64Message } from '../../../../backend/src/Model/Base64Message'
 import { getLLMService, LLMMessage, MessageProposal, QuestionProposal } from '../../services/llmService'
 import { makePublishEvent, rendererEvents } from '../../eventBus'
@@ -45,6 +46,215 @@ interface ChatMessage {
   proposals?: MessageProposal[]
   questionProposals?: QuestionProposal[]
   debugInfo?: any // API debug information
+  toolCalls?: Array<{
+    id: string
+    name: string
+    arguments: string
+    result?: string
+  }>
+}
+
+// Helper to get readable name for tool
+const getReadableName = (toolName: string): string => {
+  switch (toolName) {
+    case 'list_children':
+      return 'List Topics'
+    case 'get_topic':
+      return 'Get Details'
+    case 'query_topic_history':
+      return 'Query History'
+    case 'list_parents':
+      return 'Get Parents'
+    default:
+      return toolName
+  }
+}
+
+// Compact individual tool call chip component
+function ToolCallChip({ toolCall, classes }: { toolCall: {id: string, name: string, arguments: string, result?: string}, classes: any }) {
+  const [expanded, setExpanded] = useState(false)
+
+  const getShortLabel = (): string => {
+    try {
+      const args = JSON.parse(toolCall.arguments)
+      const topic = args.topic || args.topicPath || ''
+      const shortTopic = topic.split('/').pop() || topic || 'root'
+      const readableName = getReadableName(toolCall.name)
+      
+      switch (toolCall.name) {
+        case 'list_children':
+          return `📋 ${readableName}: ${shortTopic}`
+        case 'get_topic':
+          return `📄 ${readableName}: ${shortTopic}`
+        case 'query_topic_history':
+          return `📜 ${readableName}: ${shortTopic}`
+        case 'list_parents':
+          return `📁 ${readableName}: ${shortTopic}`
+        default:
+          return `🔧 ${readableName}`
+      }
+    } catch {
+      return `🔧 ${getReadableName(toolCall.name)}`
+    }
+  }
+
+  return (
+    <Box sx={{ display: 'inline-block', mr: 0.5, mb: 0.5 }}>
+      <Chip
+        label={getShortLabel()}
+        size="small"
+        variant="outlined"
+        onClick={() => setExpanded(!expanded)}
+        sx={{
+          fontSize: '0.7rem',
+          height: '22px',
+          cursor: 'pointer',
+          '& .MuiChip-label': {
+            px: 1,
+            py: 0.25,
+          },
+        }}
+      />
+      <Collapse in={expanded}>
+        <Paper 
+          variant="outlined" 
+          sx={{ 
+            mt: 0.5, 
+            p: 1, 
+            maxWidth: '300px',
+            backgroundColor: 'background.default',
+          }}
+        >
+          <Typography variant="caption" sx={{ display: 'block', fontWeight: 'bold', mb: 0.5 }}>
+            {getReadableName(toolCall.name)}
+          </Typography>
+          <Typography variant="caption" sx={{ display: 'block', fontFamily: 'monospace', fontSize: '0.65rem', color: 'text.secondary', mb: 0.5, wordBreak: 'break-all' }}>
+            {toolCall.arguments}
+          </Typography>
+          {toolCall.result && (
+            <>
+              <Typography variant="caption" sx={{ display: 'block', fontWeight: 'bold', mt: 0.5, mb: 0.25 }}>
+                Result:
+              </Typography>
+              <Typography variant="caption" sx={{ display: 'block', fontFamily: 'monospace', fontSize: '0.65rem', color: 'text.secondary', maxHeight: '100px', overflow: 'auto', wordBreak: 'break-all' }}>
+                {toolCall.result}
+              </Typography>
+            </>
+          )}
+        </Paper>
+      </Collapse>
+    </Box>
+  )
+}
+
+// Display all tool calls as individual compact chips
+function ToolCallsDisplay({ toolCalls, classes }: { toolCalls: Array<{id: string, name: string, arguments: string, result?: string}>, classes: any }) {
+  if (toolCalls.length === 0) {
+    return null
+  }
+
+  return (
+    <Box sx={{ mt: 0.5, mb: 0.5, display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+      {toolCalls.map((toolCall, idx) => (
+        <ToolCallChip key={toolCall.id || idx} toolCall={toolCall} classes={classes} />
+      ))}
+    </Box>
+  )
+}
+
+// Helper function to merge tool calls with results (not used yet, but prepared for future)
+function ToolCallsDisplayOld({ toolCalls, classes }: { toolCalls: Array<{id: string, name: string, arguments: string, result?: string}>, classes: any }) {
+  const [expanded, setExpanded] = useState(false)
+
+  if (toolCalls.length === 0) {
+    return null
+  }
+
+  const getHumanReadableAction = (toolCall: {name: string, arguments: string}): string => {
+    try {
+      const args = JSON.parse(toolCall.arguments)
+      const topic = args.topic || args.topicPath || ''
+      
+      switch (toolCall.name) {
+        case 'list_children':
+          return `Listing children of ${topic || 'root'}`
+        case 'get_topic':
+          return `Getting details for ${topic}`
+        case 'query_topic_history':
+          const limit = args.limit || 10
+          return `Querying history for ${topic} (last ${limit} messages)`
+        case 'list_parents':
+          return `Getting parent hierarchy for ${topic}`
+        default:
+          return `Executing ${toolCall.name}`
+      }
+    } catch {
+      return `Executing ${toolCall.name}`
+    }
+  }
+
+  return (
+    <Box sx={{ mt: 1, mb: 1 }}>
+      <Card 
+        variant="outlined" 
+        sx={{ 
+          cursor: 'pointer',
+          backgroundColor: 'action.hover',
+          '&:hover': {
+            backgroundColor: 'action.selected',
+          }
+        }}
+        onClick={() => setExpanded(!expanded)}
+      >
+        <CardContent sx={{ py: 1, px: 2, '&:last-child': { pb: 1 } }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography variant="caption" sx={{ fontWeight: 'medium', display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <BuildIcon fontSize="small" />
+              {toolCalls.length} tool call{toolCalls.length > 1 ? 's' : ''} made
+            </Typography>
+            <IconButton size="small" sx={{ ml: 1 }}>
+              {expanded ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
+            </IconButton>
+          </Box>
+          
+          <Collapse in={expanded}>
+            <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+              {toolCalls.map((toolCall, idx) => {
+                let parsedArgs
+                try {
+                  parsedArgs = JSON.parse(toolCall.arguments)
+                } catch {
+                  parsedArgs = toolCall.arguments
+                }
+                
+                return (
+                  <Box key={idx} sx={{ pl: 1, borderLeft: '2px solid', borderColor: 'divider' }}>
+                    <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary' }}>
+                      {getHumanReadableAction(toolCall)}
+                    </Typography>
+                    <Typography variant="caption" sx={{ display: 'block', fontFamily: 'monospace', fontSize: '0.7rem', color: 'text.disabled' }}>
+                      <strong>{toolCall.name}(</strong>
+                      {typeof parsedArgs === 'object' ? (
+                        Object.entries(parsedArgs).map(([key, value], i, arr) => (
+                          <span key={key}>
+                            <em>{key}</em>: <code>{JSON.stringify(value)}</code>
+                            {i < arr.length - 1 ? ', ' : ''}
+                          </span>
+                        ))
+                      ) : (
+                        <code>{parsedArgs}</code>
+                      )}
+                      <strong>)</strong>
+                    </Typography>
+                  </Box>
+                )
+              })}
+            </Box>
+          </Collapse>
+        </CardContent>
+      </Card>
+    </Box>
+  )
 }
 
 function AIAssistant(props: Props) {
@@ -57,6 +267,7 @@ function AIAssistant(props: Props) {
   const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([])
   const [loadingSuggestions, setLoadingSuggestions] = useState(false)
   const [showDebug, setShowDebug] = useState(false)
+  const [pendingToolCalls, setPendingToolCalls] = useState<Array<{id: string, name: string, arguments: string}>>([])
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const llmService = getLLMService()
   const previousNodePathRef = useRef<string>('')
@@ -109,6 +320,7 @@ function AIAssistant(props: Props) {
       setInputValue('')
       setError(null)
       setLoading(true)
+      setPendingToolCalls([]) // Clear previous pending tool calls
 
       // Add user message to UI
       const userMessage: ChatMessage = {
@@ -122,19 +334,37 @@ function AIAssistant(props: Props) {
         // Generate topic context if available
         const topicContext = node ? llmService.generateTopicContext(node) : undefined
 
-        // Send to LLM - now returns { response, debugInfo }
-        const llmResponse = await llmService.sendMessage(text, topicContext)
+        // Send to LLM - now returns { response, toolCalls, debugInfo }
+        // Pass node for tool execution
+        const llmResponse = await llmService.sendMessage(text, topicContext, node, (toolCalls) => {
+          // Callback to show tool calls while they're being executed
+          if (toolCalls && toolCalls.length > 0) {
+            setPendingToolCalls(toolCalls.map(tc => ({
+              id: tc.id,
+              name: tc.function?.name || tc.name,
+              arguments: tc.function?.arguments || tc.arguments
+            })))
+          }
+        })
+
+        // Clear pending tool calls now that we have the response
+        setPendingToolCalls([])
 
         // Parse response for proposals and questions
         const parsed = llmService.parseResponse(llmResponse.response)
 
-        // Add assistant response to UI with proposals, questions, and debug info
+        // Add assistant response to UI with proposals, questions, tool calls, and debug info
         const assistantMessage: ChatMessage = {
           role: 'assistant',
           content: parsed.text,
           timestamp: new Date(),
           proposals: parsed.proposals,
           questionProposals: parsed.questions,
+          toolCalls: llmResponse.toolCalls?.map(tc => ({
+            id: tc.id,
+            name: tc.function?.name || tc.name,
+            arguments: tc.function?.arguments || tc.arguments,
+          })),
           debugInfo: llmResponse.debugInfo, // Store debug info
         }
         setMessages(prev => [...prev, assistantMessage])
@@ -143,6 +373,7 @@ function AIAssistant(props: Props) {
         console.error('AI Assistant error:', err)
         console.error('Error details:', error)
         setError(error.message || 'Failed to get response from AI assistant')
+        setPendingToolCalls([]) // Clear on error
       } finally {
         setLoading(false)
       }
@@ -213,10 +444,15 @@ function AIAssistant(props: Props) {
   }
 
   return (
-    <Box className={classes.root}>
+    <Box className={classes.root} data-testid="ai-assistant">
       {/* Header */}
       <Box className={classes.header}>
-        <Box className={classes.headerLeft} onClick={() => setExpanded(!expanded)} style={{ flex: 1, cursor: 'pointer' }}>
+        <Box 
+          className={classes.headerLeft} 
+          onClick={() => setExpanded(!expanded)} 
+          style={{ flex: 1, cursor: 'pointer' }}
+          data-testid="ai-assistant-header"
+        >
           <SmartToyIcon className={classes.icon} />
           <Typography variant="subtitle2" className={classes.title}>
             AI Assistant
@@ -237,7 +473,11 @@ function AIAssistant(props: Props) {
               <BugReportIcon fontSize="small" style={{ color: showDebug ? '#f50057' : 'inherit' }} />
             </IconButton>
           )}
-          <Box onClick={() => setExpanded(!expanded)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+          <Box 
+            onClick={() => setExpanded(!expanded)} 
+            style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+            data-testid="ai-assistant-toggle"
+          >
             {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           </Box>
         </Box>
@@ -275,7 +515,7 @@ function AIAssistant(props: Props) {
           )}
 
           {/* Messages */}
-          <Box className={classes.messages}>
+          <Box className={classes.messages} data-testid="ai-assistant-messages">
             {messages.length === 0 && !error && (
               <Box className={classes.emptyState}>
                 <SmartToyIcon className={classes.emptyIcon} />
@@ -287,7 +527,10 @@ function AIAssistant(props: Props) {
 
             {messages.map((msg, idx) => (
               <Box key={idx}>
-                <Box className={msg.role === 'user' ? classes.userMessage : classes.assistantMessage}>
+                <Box 
+                  className={msg.role === 'user' ? classes.userMessage : classes.assistantMessage}
+                  data-testid={`ai-message-${msg.role}`}
+                >
                   <Typography variant="body2" className={classes.messageText}>
                     {msg.content}
                   </Typography>
@@ -334,11 +577,11 @@ function AIAssistant(props: Props) {
                   </Box>
                 )}
 
-                {/* Render question proposals if any */}
+                {/* Render question proposals (now action suggestions) if any */}
                 {msg.questionProposals && msg.questionProposals.length > 0 && (
                   <Box className={classes.questionProposalsContainer}>
                     <Typography variant="caption" color="textSecondary" gutterBottom>
-                      Follow-up questions:
+                      💡 Suggestions:
                     </Typography>
                     <Box className={classes.suggestionChips}>
                       {msg.questionProposals.map((qProposal, qIdx) => (
@@ -361,6 +604,12 @@ function AIAssistant(props: Props) {
                     </Box>
                   </Box>
                 )}
+
+                {/* Render tool calls if any - Always visible, expandable for debug details */}
+                {msg.toolCalls && msg.toolCalls.length > 0 && (
+                  <ToolCallsDisplay toolCalls={msg.toolCalls} classes={classes} />
+                )}
+
               </Box>
             ))}
 
@@ -371,6 +620,14 @@ function AIAssistant(props: Props) {
                   Thinking...
                 </Typography>
               </Box>
+            )}
+
+            {/* Tool Calls - Always visible below Thinking, clickable to expand */}
+            {pendingToolCalls.length > 0 && (
+              <ToolCallsDisplay 
+                toolCalls={pendingToolCalls} 
+                classes={classes}
+              />
             )}
 
             <div ref={messagesEndRef} />
@@ -441,7 +698,12 @@ function AIAssistant(props: Props) {
           {/* Input */}
           <Box className={classes.inputContainer}>
             {messages.length > 0 && (
-              <IconButton size="small" onClick={handleClearChat} className={classes.clearButton}>
+              <IconButton 
+                size="small" 
+                onClick={handleClearChat} 
+                className={classes.clearButton}
+                data-testid="ai-assistant-clear"
+              >
                 <ClearIcon fontSize="small" />
               </IconButton>
             )}
@@ -456,12 +718,14 @@ function AIAssistant(props: Props) {
               className={classes.input}
               multiline
               maxRows={3}
+              inputProps={{ 'data-testid': 'ai-assistant-input' }}
             />
             <IconButton
               color="primary"
               onClick={() => handleSendMessage()}
               disabled={!inputValue.trim() || loading}
               className={classes.sendButton}
+              data-testid="ai-assistant-send"
             >
               <SendIcon />
             </IconButton>
@@ -580,6 +844,8 @@ const styles = (theme: Theme) => ({
   messageText: {
     whiteSpace: 'pre-wrap' as const,
     wordBreak: 'break-word' as const,
+    userSelect: 'text' as const, // Allow text selection and copying
+    cursor: 'text' as const,
   },
   messageTime: {
     display: 'block',
@@ -651,6 +917,13 @@ const styles = (theme: Theme) => ({
       backgroundColor: theme.palette.secondary.dark,
     },
   },
+  pendingToolChip: {
+    marginTop: theme.spacing(0.5),
+    fontSize: '0.7rem',
+    fontFamily: 'monospace',
+    backgroundColor: theme.palette.info.light + '30',
+    borderColor: theme.palette.info.main,
+  },
   debugContainer: {
     marginTop: theme.spacing(1),
     padding: theme.spacing(1.5),
@@ -668,6 +941,33 @@ const styles = (theme: Theme) => ({
     whiteSpace: 'pre-wrap' as const,
     wordBreak: 'break-word' as const,
     color: theme.palette.text.secondary,
+  },
+  toolCallsContainer: {
+    marginTop: theme.spacing(1),
+    marginLeft: theme.spacing(6),
+  },
+  toolCallAlert: {
+    backgroundColor: theme.palette.info.light + '20',
+    borderLeft: `3px solid ${theme.palette.info.main}`,
+  },
+  toolCall: {
+    marginTop: theme.spacing(0.5),
+    padding: theme.spacing(0.5),
+    backgroundColor: theme.palette.background.default,
+    borderRadius: theme.shape.borderRadius,
+    fontFamily: 'monospace',
+    fontSize: '0.75rem',
+    '& code': {
+      color: theme.palette.info.dark,
+      fontWeight: 500,
+    },
+    '& em': {
+      color: theme.palette.text.secondary,
+      fontStyle: 'normal',
+    },
+    '& strong': {
+      color: theme.palette.text.primary,
+    },
   },
 })
 
