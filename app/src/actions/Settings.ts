@@ -45,12 +45,12 @@ export const storeSettings = () => async (dispatch: Dispatch<any>, getState: () 
 
 export const setAutoExpandLimit =
   (autoExpandLimit: number = 0) =>
-  (dispatch: Dispatch<any>) => {
-    dispatch({
-      autoExpandLimit,
-      type: ActionTypes.SETTINGS_SET_AUTO_EXPAND_LIMIT,
-    })
-  }
+    (dispatch: Dispatch<any>) => {
+      dispatch({
+        autoExpandLimit,
+        type: ActionTypes.SETTINGS_SET_AUTO_EXPAND_LIMIT,
+      })
+    }
 
 export const setTimeLocale = (timeLocale: string) => (dispatch: Dispatch<any>) => {
   dispatch({
@@ -86,13 +86,13 @@ export const toggleHighlightTopicUpdates = () => (dispatch: Dispatch<any>) => {
 
 export const setTopicOrder =
   (topicOrder: TopicOrder = TopicOrder.none) =>
-  (dispatch: Dispatch<any>) => {
-    dispatch({
-      topicOrder,
-      type: ActionTypes.SETTINGS_SET_TOPIC_ORDER,
-    })
-    dispatch(storeSettings())
-  }
+    (dispatch: Dispatch<any>) => {
+      dispatch({
+        topicOrder,
+        type: ActionTypes.SETTINGS_SET_TOPIC_ORDER,
+      })
+      dispatch(storeSettings())
+    }
 
 export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, getState: () => AppState) => {
   const { tree } = getState().connection
@@ -107,10 +107,13 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
     return
   }
 
-  const topicFilter = filterStr.toLowerCase()
+  const topicFilter = filterStr
+  // code heavily inspired by https://stackoverflow.com/a/32402438
+  const escapeRegex = (str: string) => str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1')
+  const reTopicFilter = new RegExp(topicFilter.split('+').map(escapeRegex).join('[^/]+'))
 
   const nodeFilter = (node: q.TreeNode<TopicViewModel>): boolean => {
-    const topicMatches = node.path().toLowerCase().indexOf(topicFilter) !== -1
+    const topicMatches = node.path().search(reTopicFilter) !== -1
     if (topicMatches) {
       return true
     }
@@ -128,7 +131,8 @@ export const filterTopics = (filterStr: string) => (dispatch: Dispatch<any>, get
     .filter(nodeFilter)
     .map((node: q.TreeNode<TopicViewModel>) => {
       const clone = node.unconnectedClone()
-      q.TreeNodeFactory.insertNodeAtPosition(node.path().split('/'), clone)
+      const edgeNames = node.path().replace(reTopicFilter, filterStr).split('/')
+      q.TreeNodeFactory.insertNodeAtPosition(edgeNames, clone)
       return clone.firstNode()
     })
     .reduce((a: q.TreeNode<TopicViewModel>, b: q.TreeNode<TopicViewModel>) => {
