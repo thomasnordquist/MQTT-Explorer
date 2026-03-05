@@ -37,7 +37,7 @@
     "dot-prop": "5.3.0",
     "events": "3.3.0",
     "get-value": "3.0.1",
-    "immutable": "4.3.7",
+    "immutable": "4.3.8",
     "in-viewport": "3.6.0",
     "js-base64": "3.7.8",
     "json-to-ast": "2.1.0",
