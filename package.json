@@ -154,7 +154,7 @@
     "electron-log": "5.4.3",
     "electron-updater": "6.7.3",
     "express": "5.2.1",
-    "express-rate-limit": "8.2.1",
+    "express-rate-limit": "8.3.0",
     "express-validator": "7.3.1",
     "fs-extra": "11.3.3",
     "helmet": "8.1.0",
