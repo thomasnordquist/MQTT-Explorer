@@ -28,7 +28,7 @@
     "@visx/tooltip": "3.3.0",
     "@visx/xychart": "3.10.2",
     "ace-builds": "1.4.11",
-    "axios": "1.13.2",
+    "axios": "1.15.2",
     "compare-versions": "6.1.1",
     "copy-text-to-clipboard": "3.2.0",
     "d3": "7.9.0",
