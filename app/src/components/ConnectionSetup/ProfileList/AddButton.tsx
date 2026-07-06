@@ -2,7 +2,7 @@ import * as React from 'react'
 import Add from '@mui/icons-material/Add'
 import { Fab } from '@mui/material'
 import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../../utils/withStyles'
 
 const styles = (theme: Theme) => ({
   addButton: {

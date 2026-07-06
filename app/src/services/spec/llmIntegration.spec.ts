@@ -73,7 +73,7 @@ You can include multiple proposals if there are multiple relevant actions.`
         {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`,
+            Authorization: `Bearer ${apiKey}`,
           },
           timeout: 30000,
         }
@@ -88,9 +88,7 @@ You can include multiple proposals if there are multiple relevant actions.`
         {
           contents: [
             {
-              parts: [
-                { text: `${systemMessage}\n\n${messageContent}` },
-              ],
+              parts: [{ text: `${systemMessage}\n\n${messageContent}` }],
             },
           ],
           generationConfig: {
@@ -152,7 +150,9 @@ function validateProposalStructure(proposal: MessageProposal, context: string = 
   expect(proposal.topic, `${context}: topic should be a string`).to.be.a('string').and.have.length.greaterThan(0)
   expect(proposal.payload, `${context}: payload should be a string`).to.be.a('string')
   expect(proposal.qos, `${context}: qos should be 0, 1, or 2`).to.be.oneOf([0, 1, 2])
-  expect(proposal.description, `${context}: description should be a string`).to.be.a('string').and.have.length.greaterThan(0)
+  expect(proposal.description, `${context}: description should be a string`)
+    .to.be.a('string')
+    .and.have.length.greaterThan(0)
 }
 
 describe('LLM Integration Tests (Live API)', function () {
@@ -200,10 +200,11 @@ Related Topics (2):
       // Should propose at least one action
       expect(proposals.length).to.be.greaterThan(0, 'LLM should propose at least one action')
 
-      const turnOnProposal = proposals.find(p => 
-        p.topic.includes('zigbee2mqtt') && 
-        p.topic.includes('/set') &&
-        (p.payload.toLowerCase().includes('on') || JSON.stringify(p.payload).toLowerCase().includes('on'))
+      const turnOnProposal = proposals.find(
+        p =>
+          p.topic.includes('zigbee2mqtt') &&
+          p.topic.includes('/set') &&
+          (p.payload.toLowerCase().includes('on') || JSON.stringify(p.payload).toLowerCase().includes('on'))
       )
 
       expect(turnOnProposal).to.exist.and.not.be.undefined
@@ -244,10 +245,7 @@ Related Topics (1):
 
       expect(proposals.length).to.be.greaterThan(0, 'LLM should propose at least one action')
 
-      const turnOnProposal = proposals.find(p => 
-        p.topic.includes('homeassistant') && 
-        p.topic.includes('/set')
-      )
+      const turnOnProposal = proposals.find(p => p.topic.includes('homeassistant') && p.topic.includes('/set'))
 
       expect(turnOnProposal).to.exist.and.not.be.undefined
 
@@ -279,16 +277,16 @@ Related Topics (2):
 
       expect(proposals.length).to.be.greaterThan(0, 'LLM should propose at least one action')
 
-      const turnOnProposal = proposals.find(p => 
-        p.topic.startsWith('cmnd/')
-      )
+      const turnOnProposal = proposals.find(p => p.topic.startsWith('cmnd/'))
 
       expect(turnOnProposal).to.exist.and.not.be.undefined
 
       if (turnOnProposal) {
         expect(turnOnProposal.topic).to.match(/^cmnd\//, 'Topic should start with cmnd/')
-        expect(turnOnProposal.payload).to.be.oneOf(['ON', 'OFF', 'TOGGLE', '1', '0'], 
-          'Tasmota payload should be a simple command')
+        expect(turnOnProposal.payload).to.be.oneOf(
+          ['ON', 'OFF', 'TOGGLE', '1', '0'],
+          'Tasmota payload should be a simple command'
+        )
         expect(turnOnProposal.qos).to.be.oneOf([0, 1, 2])
         expect(turnOnProposal.description).to.be.a('string').and.have.length.greaterThan(0)
         console.log('[TEST] Tasmota proposal validated successfully:', turnOnProposal)
@@ -340,16 +338,16 @@ Value: OFF
       const proposals = parseProposals(response)
       expect(proposals.length).to.be.greaterThan(0)
 
-      proposals.forEach((proposal) => {
+      proposals.forEach(proposal => {
         // Description should be in imperative form (command)
-        expect(proposal.description).to.match(/^(Turn|Set|Toggle|Switch|Change|Adjust|Control)/i,
-          'Description should start with an action verb')
+        expect(proposal.description).to.match(
+          /^(Turn|Set|Toggle|Switch|Change|Adjust|Control)/i,
+          'Description should start with an action verb'
+        )
 
         // Description should be clear and concise
-        expect(proposal.description.length).to.be.lessThan(100,
-          'Description should be under 100 characters')
-        expect(proposal.description.length).to.be.greaterThan(5,
-          'Description should be meaningful')
+        expect(proposal.description.length).to.be.lessThan(100, 'Description should be under 100 characters')
+        expect(proposal.description.length).to.be.greaterThan(5, 'Description should be meaningful')
 
         console.log('[TEST] Description validated:', proposal.description)
       })
@@ -367,7 +365,7 @@ Value: {"state": "OFF"}
       const zigbeeProposals = parseProposals(zigbeeResponse)
 
       expect(zigbeeProposals.length).to.be.greaterThan(0)
-      
+
       const zigbeeProposal = zigbeeProposals[0]
       expect(() => JSON.parse(zigbeeProposal.payload)).to.not.throw('zigbee2mqtt payload should be valid JSON')
       console.log('[TEST] zigbee2mqtt proposal:', zigbeeProposal)
@@ -389,9 +387,14 @@ Value: OFF
       // Accept both formats
       const isSimpleString = ['ON', 'OFF', 'TOGGLE', '1', '0'].includes(tasmotaProposal.payload)
       const isValidJSON = (() => {
-        try { JSON.parse(tasmotaProposal.payload); return true } catch { return false }
+        try {
+          JSON.parse(tasmotaProposal.payload)
+          return true
+        } catch {
+          return false
+        }
       })()
-      
+
       expect(isSimpleString || isValidJSON).to.be.true
       console.log('[TEST] Tasmota proposal:', tasmotaProposal)
     })
@@ -424,10 +427,12 @@ Messages: 1000
           expect(proposal.description).to.be.a('string')
         })
       }
-      
+
       // The response should acknowledge this is a sensor
-      expect(response.toLowerCase()).to.match(/sensor|temperature|read|monitor|value/,
-        'Response should acknowledge sensor nature')
+      expect(response.toLowerCase()).to.match(
+        /sensor|temperature|read|monitor|value/,
+        'Response should acknowledge sensor nature'
+      )
     })
 
     it('should handle complex nested topic structures', async () => {
@@ -447,9 +452,8 @@ Related Topics (1):
 
       const proposal = proposals[0]
       // Should handle deep nesting correctly
-      expect(proposal.topic.split('/')).to.have.length.greaterThan(3,
-        'Should maintain deep topic structure')
-      
+      expect(proposal.topic.split('/')).to.have.length.greaterThan(3, 'Should maintain deep topic structure')
+
       // Should include the full path
       expect(proposal.topic).to.include('home/rooms/livingroom')
       console.log('[TEST] Complex topic proposal:', proposal)
@@ -468,12 +472,11 @@ Related Topics (1):
       const response = await callLLM('Control this device', topicContext)
 
       const proposals = parseProposals(response)
-      
+
       if (proposals.length > 0) {
         const proposal = proposals[0]
         // Should preserve hyphens, underscores, numbers
-        expect(proposal.topic).to.match(/^[a-zA-Z0-9/_-]+$/,
-          'Topic should only contain valid MQTT characters')
+        expect(proposal.topic).to.match(/^[a-zA-Z0-9/_-]+$/, 'Topic should only contain valid MQTT characters')
         console.log('[TEST] Special character topic proposal:', proposal)
       }
     })
@@ -514,13 +517,13 @@ Related Topics (2):
       }
 
       console.log('[TEST] Extracted questions:', questions.length)
-      
+
       if (questions.length > 0) {
         questions.forEach((q, index) => {
           console.log(`[TEST] Question ${index + 1}:`, q)
           expect(q.question).to.be.a('string').and.have.length.greaterThan(5)
           expect(q.question).to.match(/\?$/, 'Question should end with ?')
-          
+
           if (q.category) {
             expect(q.category).to.be.oneOf(['analysis', 'control', 'troubleshooting', 'optimization'])
           }
@@ -528,8 +531,10 @@ Related Topics (2):
       }
 
       // The response should be relevant to the device type
-      expect(response.toLowerCase()).to.match(/light|brightness|control|device/,
-        'Response should be relevant to the topic')
+      expect(response.toLowerCase()).to.match(
+        /light|brightness|control|device/,
+        'Response should be relevant to the topic'
+      )
     })
 
     it('should provide informative responses about sensor data', async () => {
@@ -545,9 +550,11 @@ Messages: 1000
       console.log('[TEST] LLM Response length:', response.length)
 
       // Response should mention temperature or sensor
-      expect(response.toLowerCase()).to.match(/temperature|sensor|value|reading|data/,
-        'Response should discuss sensor data')
-      
+      expect(response.toLowerCase()).to.match(
+        /temperature|sensor|value|reading|data/,
+        'Response should discuss sensor data'
+      )
+
       console.log('[TEST] Sensor analysis response preview:', response.substring(0, 200))
     })
   })

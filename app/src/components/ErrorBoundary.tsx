@@ -2,7 +2,7 @@ import * as React from 'react'
 import SentimentDissatisfied from '@mui/icons-material/SentimentDissatisfied'
 import Warning from '@mui/icons-material/Warning'
 import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../utils/withStyles'
 import { Button, Modal, Paper, Toolbar, Typography } from '@mui/material'
 import PersistentStorage from '../utils/PersistentStorage'
 

@@ -1,13 +1,14 @@
-import FileAsync from 'lowdb/adapters/FileAsync'
+import { JSONFilePreset } from 'lowdb/node'
 import fs from 'fs-extra'
-import lowdb from 'lowdb'
 import path from 'path'
 import { Rpc } from '../../events/EventSystem/Rpc'
 import { storageClearEvent, storageLoadEvent, storageStoreEvent } from '../../events/StorageEvents'
 
+type StorageData = Record<string, unknown>
+
 export default class ConfigStorage {
   private file: string
-  private database: any
+  private database: Awaited<ReturnType<typeof JSONFilePreset<StorageData>>> | null = null
   private rpc: Rpc
 
   constructor(file: string, rpc: Rpc) {
@@ -20,9 +21,8 @@ export default class ConfigStorage {
 
     // Ensure that Settings dir exists
     await fs.mkdirp(pathInfo.dir)
-    const adapter = new FileAsync(this.file)
     if (!this.database) {
-      this.database = await lowdb(adapter)
+      this.database = await JSONFilePreset<StorageData>(this.file, {})
     }
 
     return this.database
@@ -31,13 +31,16 @@ export default class ConfigStorage {
   public async init() {
     this.rpc.on(storageStoreEvent, async event => {
       const db = await this.getDb()
-      await db.set(event.store, event.data).write()
+      await db.read()
+      db.data[event.store] = event.data
+      await db.write()
       return
     })
 
     this.rpc.on(storageLoadEvent, async event => {
       const db = await this.getDb()
-      const data = await db.get(event.store).value()
+      await db.read()
+      const data = db.data[event.store]
       return {
         data,
         store: event.store,
@@ -46,10 +49,11 @@ export default class ConfigStorage {
 
     this.rpc.on(storageClearEvent, async event => {
       const db = await this.getDb()
-      const keys = await db.keys().value()
-      for (const key of keys) {
-        await db.unset(key).write()
+      await db.read()
+      for (const key of Object.keys(db.data)) {
+        delete db.data[key]
       }
+      await db.write()
     })
   }
 }

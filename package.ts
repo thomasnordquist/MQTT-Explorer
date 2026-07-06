@@ -1,7 +1,7 @@
 import * as builder from 'electron-builder'
 import * as fs from 'fs'
 import * as path from 'path'
-import * as dotProp from 'dot-prop'
+import { setProperty } from 'dot-prop'
 
 const linuxAppImage: builder.CliOptions = {
   x64: true,
@@ -58,12 +58,9 @@ const winAppx: builder.CliOptions = {
 }
 
 const mac: builder.CliOptions = {
-  x64: true,
-  ia32: false,
-  armv7l: false,
-  arm64: true,
   projectDir: './build/clean',
-  publish: 'always',
+  publish: process.env.GH_TOKEN ? 'always' : 'never',
+  universal: true,
 }
 
 async function executeBuild() {
@@ -104,10 +101,15 @@ async function buildWithOptions(options: builder.CliOptions, buildInfo: BuildInf
   const packageJsonStr = fs.readFileSync(jsonLocation).toString()
 
   const packageJson = JSON.parse(fs.readFileSync(jsonLocation).toString())
+  const projectRoot = path.resolve(options.projectDir || '.')
+
+  // electron-builder 26+ requires hook paths inside the project directory
+  setProperty(packageJson, 'build.afterPack', path.join(projectRoot, 'dist/scripts/afterPack.js'))
+  setProperty(packageJson, 'build.afterSign', path.join(projectRoot, 'dist/scripts/notarize.js'))
 
   // AppX must have a different name since the store name is already taken (but not used)
   if (buildInfo.package === 'appx') {
-    dotProp.set(packageJson, 'build.productName', 'MQTT-Explorer')
+    setProperty(packageJson, 'build.productName', 'MQTT-Explorer')
   }
 
   if (buildInfo.platform === 'mac') {
@@ -116,18 +118,18 @@ async function buildWithOptions(options: builder.CliOptions, buildInfo: BuildInf
       buildInfo.package === 'mas'
         ? 'res/MQTT_Explorer_Store_Distribution_Profile.provisionprofile'
         : 'res/MQTTExplorerdmg.provisionprofile'
-    dotProp.set(packageJson, 'build.mac.provisioningProfile', provisioningProfile)
+    setProperty(packageJson, 'build.mac.provisioningProfile', provisioningProfile)
 
     // Set different entitlements for MAS vs DMG builds
     if (buildInfo.package === 'mas') {
       // MAS builds use the same sandboxed entitlements for parent and child processes
-      dotProp.set(packageJson, 'build.mac.entitlements', 'res/entitlements.mas.plist')
-      dotProp.set(packageJson, 'build.mac.entitlementsInherit', 'res/entitlements.mas.plist')
+      setProperty(packageJson, 'build.mac.entitlements', 'res/entitlements.mas.plist')
+      setProperty(packageJson, 'build.mac.entitlementsInherit', 'res/entitlements.mas.plist')
     } else {
       // DMG builds use different entitlements for notarization
       // Parent app has network permissions, child processes have minimal permissions
-      dotProp.set(packageJson, 'build.mac.entitlements', 'res/entitlements.mac.plist')
-      dotProp.set(packageJson, 'build.mac.entitlementsInherit', 'res/entitlements.mac.inherit.plist')
+      setProperty(packageJson, 'build.mac.entitlements', 'res/entitlements.mac.plist')
+      setProperty(packageJson, 'build.mac.entitlementsInherit', 'res/entitlements.mac.inherit.plist')
     }
   }
 

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Typography } from '@mui/material'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../utils/withStyles'
 import { Theme } from '@mui/material/styles'
 import { ChartParameters } from '../../reducers/Charts'
 

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../utils/withStyles'
 
 const cursor = require('./cursor.png')
 

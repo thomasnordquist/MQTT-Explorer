@@ -7,7 +7,7 @@ cache:
   - '%LOCALAPPDATA%\electron-builder\cache'
 
 install:
-  - ps: Install-Product node 19
+  - ps: Install-Product node 24
 
 build_script:
   - yarn install --frozen-lockfile

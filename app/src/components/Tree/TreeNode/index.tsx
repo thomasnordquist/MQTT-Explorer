@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../../utils/withStyles'
 import * as q from '../../../../../backend/src/Model'
 import TreeNodeSubnodes from './TreeNodeSubnodes'
 import TreeNodeTitle from './TreeNodeTitle'
