@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { InputLabel, Switch, Theme, Tooltip } from '@mui/material'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../utils/withStyles'
 
 const sha1 = require('sha1')
 

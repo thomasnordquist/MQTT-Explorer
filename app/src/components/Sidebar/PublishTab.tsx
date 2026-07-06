@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Typography } from '@mui/material'
 import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../utils/withStyles'
 
 const Publish = React.lazy(() => import('./Publish/Publish'))
 

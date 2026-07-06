@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Tabs, Tab, Box } from '@mui/material'
 import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../utils/withStyles'
 import AccountTreeIcon from '@mui/icons-material/AccountTree'
 import InfoIcon from '@mui/icons-material/Info'
 import SendIcon from '@mui/icons-material/Send'

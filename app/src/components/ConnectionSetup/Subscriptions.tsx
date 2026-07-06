@@ -12,7 +12,7 @@ import {
   Theme,
 } from '@mui/material'
 import { bindActionCreators } from 'redux'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../utils/withStyles'
 import { connect } from 'react-redux'
 import { ConnectionOptions } from '../../model/ConnectionOptions'
 import { connectionManagerActions } from '../../actions'

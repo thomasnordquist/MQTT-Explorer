@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect, memo } from 'react'
 import { Badge, Typography } from '@mui/material'
 import { Theme, emphasize } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../utils/withStyles'
 import { selectTextWithCtrlA } from '../../utils/handleTextSelectWithCtrlA'
 
 interface HistoryItem {

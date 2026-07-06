@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { connect } from 'react-redux'
 import { ListItem, Typography } from '@mui/material'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../../utils/withStyles'
 import { Theme } from '@mui/material/styles'
 import { bindActionCreators } from 'redux'
 import { toMqttConnection, ConnectionOptions } from '../../../model/ConnectionOptions'

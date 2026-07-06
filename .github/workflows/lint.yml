@@ -32,7 +32,6 @@ jobs:
       
       - name: Run ESLint
         run: yarn lint:eslint
-        continue-on-error: true  # Allow failures for now due to existing issues
       
       - name: Run Spellcheck
         run: yarn lint:spellcheck

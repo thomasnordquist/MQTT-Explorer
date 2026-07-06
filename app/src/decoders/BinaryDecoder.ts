@@ -4,16 +4,7 @@ import { DecoderEnvelope } from './DecoderEnvelope'
 import { MessageDecoder } from './MessageDecoder'
 
 type BinaryFormats =
-  | 'int8'
-  | 'int16'
-  | 'int32'
-  | 'int64'
-  | 'uint8'
-  | 'uint16'
-  | 'uint32'
-  | 'uint64'
-  | 'float'
-  | 'double'
+  'int8' | 'int16' | 'int32' | 'int64' | 'uint8' | 'uint16' | 'uint32' | 'uint64' | 'float' | 'double'
 
 /**
  * Binary decode primitive binary data type and arrays of these

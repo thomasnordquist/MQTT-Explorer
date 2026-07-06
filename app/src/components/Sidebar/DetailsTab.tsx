@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { Box, Typography, IconButton, Chip, Tooltip, Button } from '@mui/material'
 import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../utils/withStyles'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import DeleteIcon from '@mui/icons-material/Delete'
