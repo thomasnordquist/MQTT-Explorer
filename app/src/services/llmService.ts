@@ -435,7 +435,7 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
         role: 'user',
         content: messageContent,
       })
-      
+
       console.log('LLM Service: User message added to history')
       console.log('Message content length:', messageContent.length, 'characters')
       console.log('Message preview:', messageContent.substring(0, 300) + '...')
@@ -457,7 +457,7 @@ Help users understand their MQTT data, troubleshoot issues, optimize their autom
 
       const assistantMessage = result.response
       const debugInfo = result.debugInfo
-      
+
       console.log('LLM Service: Assistant message length:', assistantMessage.length)
       console.log('LLM Service: Debug info:', debugInfo)
 

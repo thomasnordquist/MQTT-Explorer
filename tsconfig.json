@@ -5,16 +5,15 @@
     "strictNullChecks": true,
     "outDir": "./dist",
     "strict": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "sourceRoot": "src/",
     "target": "ES2020",
     "lib": ["ES2020", "dom"],
     "sourceMap": true,
     "types": ["node"],
     "skipLibCheck": true,
-    "esModuleInterop": true,
-    "downlevelIteration": true
+    "esModuleInterop": true
   },
   "include": [
     "src/electron.ts",
