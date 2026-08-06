@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
 import { connect, Provider } from 'react-redux'
-import { ThemeProvider } from '@mui/material/styles'
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles'
 import { ThemeProvider as LegacyThemeProvider } from '@mui/styles'
 import App from './components/App'
 import Demo from './components/Demo'
@@ -15,12 +15,16 @@ import './autoConnectHandler' // Initialize auto-connect handling
 function ApplicationRenderer(props: { theme: 'light' | 'dark' }) {
   const theme = props.theme === 'light' ? themes.lightTheme : themes.darkTheme
   return (
-    <ThemeProvider theme={theme}>
-      <LegacyThemeProvider theme={theme}>
-        <App />
-        <Demo />
-      </LegacyThemeProvider>
-    </ThemeProvider>
+    // injectFirst puts emotion's styles before the JSS (@mui/styles) ones, so
+    // legacy withStyles/makeStyles rules keep overriding component defaults.
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <LegacyThemeProvider theme={theme}>
+          <App />
+          <Demo />
+        </LegacyThemeProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   )
 }
 
