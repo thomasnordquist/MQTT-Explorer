@@ -95,7 +95,7 @@ function ChartPanel(props: Props) {
 
     return (
       <CSSTransition key={key} timeout={{ enter: 500, exit: 500 }} classNames="example" nodeRef={nodeRef}>
-        <Grid item xs={mapWidth(chartParameters.width, spacing)} ref={nodeRef}>
+        <Grid size={mapWidth(chartParameters.width, spacing)} ref={nodeRef}>
           <ChartWithTreeNode tree={props.tree} parameters={chartParameters} />
         </Grid>
       </CSSTransition>
