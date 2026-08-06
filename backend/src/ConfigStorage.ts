@@ -1,13 +1,15 @@
-import FileAsync from 'lowdb/adapters/FileAsync'
 import fs from 'fs-extra'
-import lowdb from 'lowdb'
 import path from 'path'
+import { Low } from 'lowdb'
+import { JSONFile } from 'lowdb/node'
 import { Rpc } from '../../events/EventSystem/Rpc'
 import { storageClearEvent, storageLoadEvent, storageStoreEvent } from '../../events/StorageEvents'
 
+type StorageData = Record<string, unknown>
+
 export default class ConfigStorage {
   private file: string
-  private database: any
+  private database?: Low<StorageData>
   private rpc: Rpc
 
   constructor(file: string, rpc: Rpc) {
@@ -15,14 +17,15 @@ export default class ConfigStorage {
     this.rpc = rpc
   }
 
-  private async getDb() {
+  private async getDb(): Promise<Low<StorageData>> {
     const pathInfo = path.parse(this.file)
 
     // Ensure that Settings dir exists
     await fs.mkdirp(pathInfo.dir)
-    const adapter = new FileAsync(this.file)
     if (!this.database) {
-      this.database = await lowdb(adapter)
+      this.database = new Low<StorageData>(new JSONFile(this.file), {})
+      await this.database.read()
+      this.database.data = this.database.data ?? {}
     }
 
     return this.database
@@ -31,13 +34,14 @@ export default class ConfigStorage {
   public async init() {
     this.rpc.on(storageStoreEvent, async event => {
       const db = await this.getDb()
-      await db.set(event.store, event.data).write()
+      db.data[event.store] = event.data
+      await db.write()
       return
     })
 
     this.rpc.on(storageLoadEvent, async event => {
       const db = await this.getDb()
-      const data = await db.get(event.store).value()
+      const data = db.data[event.store]
       return {
         data,
         store: event.store,
@@ -46,10 +50,8 @@ export default class ConfigStorage {
 
     this.rpc.on(storageClearEvent, async event => {
       const db = await this.getDb()
-      const keys = await db.keys().value()
-      for (const key of keys) {
-        await db.unset(key).write()
-      }
+      db.data = {}
+      await db.write()
     })
   }
 }

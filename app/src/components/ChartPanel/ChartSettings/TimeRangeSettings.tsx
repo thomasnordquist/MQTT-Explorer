@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { chartActions } from '../../../actions'
 import { ChartParameters } from '../../../reducers/Charts'
 
-const parseDuration = require('parse-duration')
+import parseDuration from 'parse-duration'
 
 interface Props {
   actions: { chart: typeof chartActions }

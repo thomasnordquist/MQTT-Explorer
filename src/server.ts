@@ -466,7 +466,7 @@ async function startServer() {
         console.log('Topic context length:', topicContext.length, 'characters')
         console.log('Topic context preview:', topicContext.substring(0, 200) + '...')
       }
-      
+
       // Log the last user message to verify context is included
       const lastUserMessage = messages?.filter((m: any) => m.role === 'user').slice(-1)[0]
       if (lastUserMessage) {
@@ -476,7 +476,7 @@ async function startServer() {
         console.log('Content preview:', lastUserMessage.content.substring(0, 500))
       }
       console.log('='.repeat(80) + '\n')
-      
+
       // Get LLM configuration from environment
       const envProvider = process.env.LLM_PROVIDER
       let provider: 'openai' | 'gemini' = 'openai'
@@ -660,7 +660,7 @@ async function startServer() {
       console.log('Response length:', response.length)
       console.log('Has debugInfo:', !!debugInfo)
       console.log('='.repeat(80) + '\n')
-      
+
       return { response, debugInfo }
     } catch (error: any) {
       console.error('\n' + '='.repeat(80))

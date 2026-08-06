@@ -1,4 +1,4 @@
-import * as dotProp from 'dot-prop'
+import { getProperty } from 'dot-prop'
 import * as React from 'react'
 import * as q from '../../../backend/src/Model'
 import PlotHistory from './Chart/Chart'
@@ -6,7 +6,7 @@ import { toPlottableValue } from './Sidebar/CodeDiff/util'
 import { PlotCurveTypes } from '../reducers/Charts'
 import { DecoderFunction, useDecoder } from './hooks/useDecoder'
 
-const parseDuration = require('parse-duration')
+import parseDuration from 'parse-duration'
 
 interface Props {
   node?: q.TreeNode<any>
@@ -50,7 +50,7 @@ function nodeDotPathToHistory(
         json = decoded ? JSON.parse(decoded.toUnicodeString()) : {}
       } catch (ignore) {}
 
-      const value = dotProp.get(json, dotPath)
+      const value = getProperty(json, dotPath)
 
       return { x: message.received.getTime(), y: toPlottableValue(value) }
     })
@@ -59,7 +59,7 @@ function nodeDotPathToHistory(
 
 function TopicPlot(props: Props) {
   const decodeMessage = useDecoder(props.node)
-  const startOffset = props.timeInterval ? parseDuration(props.timeInterval) : undefined
+  const startOffset = (props.timeInterval ? parseDuration(props.timeInterval) : undefined) ?? undefined
   const data = React.useMemo(() => {
     if (!props.node) {
       return []
