@@ -1,0 +1,32 @@
+{{- if and .Values.networkPolicy.enabled (eq .Values.networkPolicy.flavor "kubernetes") }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "mqtt-explorer.fullname" . }}
+  namespace: {{ include "mqtt-explorer.namespace" . }}
+  labels:
+    {{- include "mqtt-explorer.labels" . | nindent 4 }}
+spec:
+  {{- with .Values.networkPolicy.egress }}
+  egress:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.networkPolicy.ingress }}
+  ingress:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  policyTypes:
+    {{- if .Values.networkPolicy.policyTypes }}
+    {{- toYaml .Values.networkPolicy.policyTypes | nindent 4 }}
+    {{- else }}
+    {{- if .Values.networkPolicy.egress }}
+    - Egress
+    {{- end }}
+    {{- if .Values.networkPolicy.ingress }}
+    - Ingress
+    {{- end }}
+    {{- end }}
+  podSelector:
+    matchLabels:
+      {{- include "mqtt-explorer.selectorLabels" . | nindent 6 }}
+{{- end }}

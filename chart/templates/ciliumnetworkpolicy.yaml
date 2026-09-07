@@ -1,0 +1,32 @@
+{{- if and .Values.networkPolicy.enabled (eq .Values.networkPolicy.flavor "cilium") }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: {{ include "mqtt-explorer.fullname" . }}
+  namespace: {{ include "mqtt-explorer.namespace" . }}
+  labels:
+    {{- include "mqtt-explorer.labels" . | nindent 4 }}
+spec:
+  endpointSelector:
+    matchLabels:
+      k8s:app.kubernetes.io/name: {{ include "mqtt-explorer.name" . | quote }}
+      k8s:app.kubernetes.io/instance: {{ .Release.Name | quote }}
+  {{- with .Values.networkPolicy.cilium.egress }}
+  egress:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.networkPolicy.cilium.enableDefaultDeny }}
+  enableDefaultDeny:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.networkPolicy.cilium.ingress }}
+  ingress:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- $hasIngress := gt (len (default (list) .Values.networkPolicy.cilium.ingress)) 0 }}
+{{- $hasEgress := gt (len (default (list) .Values.networkPolicy.cilium.egress)) 0 }}
+{{- $hasDefaultDeny := gt (len (default (dict) .Values.networkPolicy.cilium.enableDefaultDeny)) 0 }}
+{{- if not (or $hasIngress $hasEgress $hasDefaultDeny) }}
+{{- fail "networkPolicy.cilium requires ingress, egress, or enableDefaultDeny" }}
+{{- end }}
+{{- end }}

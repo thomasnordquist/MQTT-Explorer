@@ -1,0 +1,387 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "mqtt-explorer values",
+  "type": "object",
+  "definitions": {
+    "stringMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "probe": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "initialDelaySeconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "periodSeconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "timeoutSeconds": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "successThreshold": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "failureThreshold": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "enabled",
+        "path",
+        "initialDelaySeconds",
+        "periodSeconds",
+        "timeoutSeconds",
+        "successThreshold",
+        "failureThreshold"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "nameOverride": {
+      "type": "string"
+    },
+    "fullnameOverride": {
+      "type": "string"
+    },
+    "namespaceOverride": {
+      "type": "string"
+    },
+    "replicaCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "strategy": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["Recreate", "RollingUpdate"]
+        }
+      },
+      "required": ["type"],
+      "additionalProperties": false
+    },
+    "image": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tag": {
+          "type": "string"
+        },
+        "pullPolicy": {
+          "type": "string",
+          "enum": ["Always", "IfNotPresent", "Never"]
+        }
+      },
+      "required": ["repository", "pullPolicy"],
+      "additionalProperties": false
+    },
+    "imagePullSecrets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["name"],
+        "additionalProperties": false
+      }
+    },
+    "deploymentAnnotations": {
+      "$ref": "#/definitions/stringMap"
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["ClusterIP", "NodePort", "LoadBalancer"]
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "targetPort": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "annotations": {
+          "$ref": "#/definitions/stringMap"
+        }
+      },
+      "required": ["type", "port", "targetPort", "annotations"],
+      "additionalProperties": false
+    },
+    "ingress": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "className": {
+          "type": "string"
+        },
+        "annotations": {
+          "$ref": "#/definitions/stringMap"
+        },
+        "hosts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "host": {
+                "type": "string",
+                "minLength": 1
+              },
+              "paths": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "pattern": "^/"
+                    },
+                    "pathType": {
+                      "type": "string",
+                      "enum": ["ImplementationSpecific", "Exact", "Prefix"]
+                    }
+                  },
+                  "required": ["path", "pathType"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["host", "paths"],
+            "additionalProperties": false
+          }
+        },
+        "tls": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "required": ["enabled", "className", "annotations", "hosts", "tls"],
+      "additionalProperties": false
+    },
+    "env": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean"]
+      }
+    },
+    "secretEnv": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean"]
+      }
+    },
+    "extraEnv": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "extraVolumeMounts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "persistence": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "existingClaim": {
+          "type": "string"
+        },
+        "annotations": {
+          "$ref": "#/definitions/stringMap"
+        },
+        "accessModes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "size": {
+          "type": "string",
+          "minLength": 1
+        },
+        "storageClass": {
+          "type": "string"
+        },
+        "mountPath": {
+          "type": "string",
+          "pattern": "^/"
+        }
+      },
+      "required": ["enabled", "existingClaim", "annotations", "accessModes", "size", "storageClass", "mountPath"],
+      "additionalProperties": false
+    },
+    "podAnnotations": {
+      "$ref": "#/definitions/stringMap"
+    },
+    "podLabels": {
+      "$ref": "#/definitions/stringMap"
+    },
+    "podSecurityContext": {
+      "type": "object"
+    },
+    "containerSecurityContext": {
+      "type": "object"
+    },
+    "resources": {
+      "type": "object"
+    },
+    "probes": {
+      "type": "object",
+      "properties": {
+        "startup": {
+          "$ref": "#/definitions/probe"
+        },
+        "liveness": {
+          "$ref": "#/definitions/probe"
+        },
+        "readiness": {
+          "$ref": "#/definitions/probe"
+        }
+      },
+      "required": ["startup", "liveness", "readiness"],
+      "additionalProperties": false
+    },
+    "nodeSelector": {
+      "$ref": "#/definitions/stringMap"
+    },
+    "tolerations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "affinity": {
+      "type": "object"
+    },
+    "extraVolumes": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "networkPolicy": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "flavor": {
+          "type": "string",
+          "enum": ["kubernetes", "cilium"]
+        },
+        "policyTypes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["Ingress", "Egress"]
+          }
+        },
+        "ingress": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "egress": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "cilium": {
+          "type": "object",
+          "properties": {
+            "ingress": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "egress": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "enableDefaultDeny": {
+              "type": "object"
+            }
+          },
+          "required": ["ingress", "egress", "enableDefaultDeny"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["enabled", "flavor", "policyTypes", "ingress", "egress", "cilium"],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "nameOverride",
+    "fullnameOverride",
+    "namespaceOverride",
+    "replicaCount",
+    "strategy",
+    "image",
+    "imagePullSecrets",
+    "deploymentAnnotations",
+    "service",
+    "ingress",
+    "env",
+    "secretEnv",
+    "extraEnv",
+    "extraVolumeMounts",
+    "persistence",
+    "podAnnotations",
+    "podLabels",
+    "podSecurityContext",
+    "containerSecurityContext",
+    "resources",
+    "probes",
+    "nodeSelector",
+    "tolerations",
+    "affinity",
+    "extraVolumes",
+    "networkPolicy"
+  ],
+  "additionalProperties": false
+}

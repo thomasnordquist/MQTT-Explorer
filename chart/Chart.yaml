@@ -1,0 +1,22 @@
+apiVersion: v2
+name: mqtt-explorer
+description: Deploy MQTT Explorer browser mode on Kubernetes.
+type: application
+version: 0.1.0
+appVersion: 0.4.0-beta.5
+annotations:
+  artifacthub.io/license: CC-BY-SA-4.0
+  artifacthub.io/links: |
+    - name: Source code
+      url: https://github.com/thomasnordquist/MQTT-Explorer
+      icon: https://github.com/favicon.ico
+    - name: Browser mode documentation
+      url: https://github.com/thomasnordquist/MQTT-Explorer/blob/master/DOCKER.md
+  artifacthub.io/images: |
+    - name: mqtt-explorer
+      image: ghcr.io/thomasnordquist/mqtt-explorer:latest
+keywords:
+  - mqtt
+  - explorer
+  - websocket
+  - browser
