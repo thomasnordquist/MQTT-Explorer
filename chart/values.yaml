@@ -1,0 +1,164 @@
+# Overrides the chart name used in resource names and labels.
+nameOverride: ""
+# Fully overrides the generated release resource name.
+fullnameOverride: ""
+# Overrides the Helm release namespace for chart resources.
+namespaceOverride: ""
+
+# Number of MQTT Explorer pods.
+replicaCount: 1
+
+strategy:
+  # Deployment strategy: Recreate avoids PVC attach conflicts with single-replica RWO storage.
+  type: Recreate
+
+image:
+  # Container image repository.
+  repository: ghcr.io/thomasnordquist/mqtt-explorer
+  # Container image tag.
+  tag: latest
+  # Kubernetes image pull policy.
+  pullPolicy: IfNotPresent
+
+# Optional image pull secrets.
+imagePullSecrets: []
+
+# Annotations added to the Deployment resource.
+deploymentAnnotations: {}
+
+service:
+  # Kubernetes Service type.
+  type: ClusterIP
+  # Service port exposed to clients.
+  port: 3000
+  # Container port serving the web UI and Socket.IO endpoint.
+  targetPort: 3000
+  # Additional annotations for the Service.
+  annotations: {}
+
+ingress:
+  # Creates an Ingress resource for MQTT Explorer.
+  enabled: false
+  # Optional ingress class name.
+  className: ""
+  # Additional annotations for the Ingress resource.
+  annotations: {}
+  hosts:
+    - host: mqtt-explorer.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# Environment variables added directly to the container.
+env:
+  NODE_ENV: production
+  PORT: "3000"
+
+# Sensitive environment variables rendered into a Kubernetes Secret and injected into the container.
+# Typical keys include MQTT_EXPLORER_USERNAME, MQTT_EXPLORER_PASSWORD, OPENAI_API_KEY, GEMINI_API_KEY,
+# LLM_API_KEY, LLM_PROVIDER, ALLOWED_ORIGINS, MQTT_EXPLORER_SKIP_AUTH, UPGRADE_INSECURE_REQUESTS.
+secretEnv: {}
+
+# Additional complete Kubernetes environment variable entries.
+extraEnv: []
+
+# Additional container volumeMount entries.
+extraVolumeMounts: []
+
+persistence:
+  # Mounts persistent storage at /app/data for credentials, settings, and uploaded files.
+  enabled: true
+  # Existing PVC name. Leave empty to let the chart create one.
+  existingClaim: ""
+  # Additional annotations for the PVC.
+  annotations: {}
+  # PVC access modes.
+  accessModes:
+    - ReadWriteOnce
+  # Requested PVC size.
+  size: 1Gi
+  # Optional storage class. Leave empty to use the cluster default.
+  storageClass: ""
+  # Mount path inside the container.
+  mountPath: /app/data
+
+# Annotations added to the pod.
+podAnnotations: {}
+# Labels added to the pod.
+podLabels: {}
+
+# Pod-level security context.
+podSecurityContext:
+  fsGroup: 1001
+  runAsNonRoot: true
+  runAsUser: 1001
+  runAsGroup: 1001
+
+# Container-level security context.
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
+# Kubernetes resource requests and limits.
+resources: {}
+
+probes:
+  startup:
+    # Enables the HTTP startup probe.
+    enabled: true
+    path: /
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 12
+  liveness:
+    # Enables the HTTP liveness probe.
+    enabled: true
+    path: /
+    initialDelaySeconds: 15
+    periodSeconds: 20
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
+  readiness:
+    # Enables the HTTP readiness probe.
+    enabled: true
+    path: /
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
+
+# Node selector for pod scheduling.
+nodeSelector: {}
+# Tolerations for pod scheduling.
+tolerations: []
+# Affinity and anti-affinity rules.
+affinity: {}
+
+# Additional pod volumes.
+extraVolumes: []
+
+networkPolicy:
+  # Creates a network policy for the MQTT Explorer pods.
+  enabled: false
+  # Policy implementation: kubernetes or cilium.
+  flavor: kubernetes
+  # Explicit Kubernetes policy types; inferred from ingress/egress when empty.
+  policyTypes: []
+  # Kubernetes NetworkPolicy ingress rules.
+  ingress: []
+  # Kubernetes NetworkPolicy egress rules.
+  egress: []
+  cilium:
+    # Cilium ingress rules.
+    ingress: []
+    # Cilium egress rules.
+    egress: []
+    # Cilium default-deny settings.
+    enableDefaultDeny: {}

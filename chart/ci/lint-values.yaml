@@ -1,0 +1,14 @@
+secretEnv:
+  MQTT_EXPLORER_USERNAME: admin
+  MQTT_EXPLORER_PASSWORD: lint-password
+
+persistence:
+  enabled: false
+
+ingress:
+  enabled: true
+  hosts:
+    - host: mqtt-explorer.example.test
+      paths:
+        - path: /
+          pathType: Prefix
