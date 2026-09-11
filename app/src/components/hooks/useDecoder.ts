@@ -16,9 +16,17 @@ export type DecoderFunction = (message: q.Message) => DecoderEnvelope | undefine
  */
 export function useDecoder(treeNode: q.TreeNode<TopicViewModel> | undefined): DecoderFunction {
   const viewModel = useViewModel(treeNode)
-  const [decoder, setDecoder] = useState(viewModel?.decoder)
 
-  useSubscription(viewModel?.onDecoderChange, setDecoder)
+  // The decoder is READ on every render rather than seeded into state. `viewModel.decoder` is a
+  // lazy getter that detects a decoder from the topic on first access and caches it, and a
+  // `useState` initial value is only honoured on the first render — so seeding from it captured
+  // whatever was there at mount (undefined, before the view model existed) and never looked again.
+  // The subscription now exists only to re-render when a format is chosen by hand.
+  const [, setOverrideGeneration] = useState(0)
+  const rerenderOnOverride = useCallback(() => setOverrideGeneration(n => n + 1), [])
+  useSubscription(viewModel?.onDecoderChange, rerenderOnOverride)
+
+  const decoder = viewModel?.decoder
 
   return useCallback(
     message =>
