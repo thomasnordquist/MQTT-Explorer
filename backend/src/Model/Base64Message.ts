@@ -51,6 +51,16 @@ export class Base64Message {
     return Buffer.from(this.base64Message, 'base64')
   }
 
+  /**
+   * The payload bytes, without depending on `Buffer`.
+   *
+   * `toBuffer()` is fine under Electron and throws in browser mode, where nothing polyfills
+   * `Buffer` — so anything that runs in the renderer and wants octets should use this instead.
+   */
+  public toUint8Array(): Uint8Array {
+    return Base64.toUint8Array(this.base64Message)
+  }
+
   public static fromString(str: string) {
     return new Base64Message(Base64.encode(str))
   }
