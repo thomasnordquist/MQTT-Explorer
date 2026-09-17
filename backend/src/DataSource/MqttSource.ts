@@ -16,6 +16,7 @@ export interface MqttOptions {
   certificateAuthority?: string
   clientCertificate?: string
   clientKey?: string
+  will?: MqttWill
 }
 
 export interface Subscription {
@@ -24,6 +25,13 @@ export interface Subscription {
 }
 
 export type QoS = 0 | 1 | 2
+
+export interface MqttWill {
+  topic: string
+  payload: string
+  qos: QoS
+  retain: boolean
+}
 
 export class MqttSource implements DataSource<MqttOptions> {
   public stateMachine: DataSourceStateMachine = new DataSourceStateMachine()
@@ -57,6 +65,7 @@ export class MqttSource implements DataSource<MqttOptions> {
       ca: options.certificateAuthority ? Buffer.from(options.certificateAuthority, 'base64') : undefined,
       cert: options.clientCertificate ? Buffer.from(options.clientCertificate, 'base64') : undefined,
       key: options.clientKey ? Buffer.from(options.clientKey, 'base64') : undefined,
+      will: options.will,
     } as any)
 
     this.client = client

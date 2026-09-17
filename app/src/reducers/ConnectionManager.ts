@@ -7,6 +7,7 @@ export interface ConnectionManagerState {
   selected?: string
   showAdvancedSettings: boolean
   showCertificateSettings: boolean
+  showWillSettings: boolean
 }
 
 const initialState: ConnectionManagerState = {
@@ -14,6 +15,7 @@ const initialState: ConnectionManagerState = {
   selected: undefined,
   showAdvancedSettings: false,
   showCertificateSettings: false,
+  showWillSettings: false,
 }
 
 export type Action =
@@ -24,6 +26,7 @@ export type Action =
   | DeleteConnection
   | ToggleAdvancedSettings
   | ToggleCertificateSettings
+  | ToggleWillSettings
   | DeleteSubscription
   | AddSubscription
 
@@ -35,6 +38,7 @@ export enum ActionTypes {
   CONNECTION_MANAGER_DELETE_CONNECTION = 'CONNECTION_MANAGER_DELETE_CONNECTION',
   CONNECTION_MANAGER_TOGGLE_ADVANCED_SETTINGS = 'CONNECTION_MANAGER_TOGGLE_ADVANCED_SETTINGS',
   CONNECTION_MANAGER_TOGGLE_CERTIFICATE_SETTINGS = 'CONNECTION_MANAGER_TOGGLE_CERTIFICATE_SETTINGS',
+  CONNECTION_MANAGER_TOGGLE_WILL_SETTINGS = 'CONNECTION_MANAGER_TOGGLE_WILL_SETTINGS',
   CONNECTION_MANAGER_ADD_SUBSCRIPTION = 'CONNECTION_MANAGER_ADD_SUBSCRIPTION',
   CONNECTION_MANAGER_DELETE_SUBSCRIPTION = 'CONNECTION_MANAGER_DELETE_SUBSCRIPTION',
 }
@@ -85,6 +89,17 @@ export interface ToggleCertificateSettings {
   type: ActionTypes.CONNECTION_MANAGER_TOGGLE_CERTIFICATE_SETTINGS
 }
 
+export interface ToggleWillSettings {
+  type: ActionTypes.CONNECTION_MANAGER_TOGGLE_WILL_SETTINGS
+}
+
+function toggleWillSettings(state: ConnectionManagerState): ConnectionManagerState {
+  return {
+    ...state,
+    showWillSettings: !state.showWillSettings,
+  }
+}
+
 export const connectionManagerReducer = createReducer(initialState, {
   CONNECTION_MANAGER_SET_CONNECTIONS: setConnections,
   CONNECTION_MANAGER_SELECT_CONNECTION: selectConnection,
@@ -93,6 +108,7 @@ export const connectionManagerReducer = createReducer(initialState, {
   CONNECTION_MANAGER_DELETE_CONNECTION: deleteConnection,
   CONNECTION_MANAGER_TOGGLE_ADVANCED_SETTINGS: toggleAdvancedSettings,
   CONNECTION_MANAGER_TOGGLE_CERTIFICATE_SETTINGS: toggleCertificateSettings,
+  CONNECTION_MANAGER_TOGGLE_WILL_SETTINGS: toggleWillSettings,
   CONNECTION_MANAGER_DELETE_SUBSCRIPTION: deleteSubscription,
   CONNECTION_MANAGER_ADD_SUBSCRIPTION: addSubscription,
 })

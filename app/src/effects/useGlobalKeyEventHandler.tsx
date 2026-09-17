@@ -4,9 +4,13 @@ import { KeyCodes } from '../utils/KeyCodes'
 export function useGlobalKeyEventHandler(
   key: KeyCodes | undefined,
   callback: (event: KeyboardEvent) => void,
-  dependencies?: Array<any>
+  enabled = true
 ) {
   useEffect(() => {
+    if (!enabled) {
+      return undefined
+    }
+
     function handleKeyEvent(event: KeyboardEvent) {
       if (key === undefined) {
         callback(event)
@@ -20,5 +24,5 @@ export function useGlobalKeyEventHandler(
     return function cleanup() {
       document.removeEventListener('keydown', handleKeyEvent, false)
     }
-  }, dependencies)
+  }, [callback, enabled, key])
 }

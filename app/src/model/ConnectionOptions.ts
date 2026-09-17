@@ -1,5 +1,5 @@
 import { v4 } from 'uuid'
-import { Subscription } from 'mqtt-explorer-backend/src/DataSource/MqttSource'
+import { MqttWill, Subscription } from 'mqtt-explorer-backend/src/DataSource/MqttSource'
 import sha1 from 'sha1'
 import { MqttOptions } from 'mqtt-explorer-backend/src/DataSource/DataSource'
 
@@ -27,11 +27,18 @@ export interface ConnectionOptions {
   clientKey?: CertificateParameters
   clientId?: string
   subscriptions: Array<Subscription>
+  will?: MqttWill
+}
+
+const maximumMqttLengthPrefixedFieldSize = 65_535
+
+function utf8ByteLength(value: string): number {
+  return new TextEncoder().encode(value).byteLength
 }
 
 export function toMqttConnection(options: ConnectionOptions): MqttOptions | undefined {
   if (options.type !== 'mqtt') {
-    return
+    return undefined
   }
 
   return {
@@ -45,7 +52,41 @@ export function toMqttConnection(options: ConnectionOptions): MqttOptions | unde
     certificateAuthority: options.selfSignedCertificate ? options.selfSignedCertificate.data : undefined,
     clientCertificate: options.clientCertificate ? options.clientCertificate.data : undefined,
     clientKey: options.clientKey ? options.clientKey.data : undefined,
+    will: options.will,
   }
+}
+
+export function getWillTopicError(will?: MqttWill): string | undefined {
+  if (!will) {
+    return undefined
+  }
+  if (will.topic.length === 0) {
+    return 'Last Will topic is required.'
+  }
+  if (will.topic.includes('+') || will.topic.includes('#')) {
+    return 'Last Will topic cannot contain MQTT wildcards (+ or #).'
+  }
+  if (will.topic.includes('\u0000')) {
+    return 'Last Will topic cannot contain a null character.'
+  }
+  if (utf8ByteLength(will.topic) > maximumMqttLengthPrefixedFieldSize) {
+    return 'Last Will topic must be 65,535 UTF-8 bytes or fewer.'
+  }
+  return undefined
+}
+
+export function getWillPayloadError(will?: MqttWill): string | undefined {
+  if (!will) {
+    return undefined
+  }
+  if (utf8ByteLength(will.payload) > maximumMqttLengthPrefixedFieldSize) {
+    return 'Last Will payload must be 65,535 UTF-8 bytes or fewer.'
+  }
+  return undefined
+}
+
+export function getWillError(will?: MqttWill): string | undefined {
+  return getWillTopicError(will) || getWillPayloadError(will)
 }
 
 function generateClientId() {

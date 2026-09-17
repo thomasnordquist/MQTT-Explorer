@@ -18,6 +18,7 @@ import { useGlobalKeyEventHandler } from '../../effects/useGlobalKeyEventHandler
 import ConnectButton from './ConnectButton'
 
 interface Props {
+  active: boolean
   connection: ConnectionOptions
   classes: { [s: string]: string }
   actions: typeof connectionActions
@@ -31,6 +32,7 @@ const protocols = ['mqtt', 'ws']
 
 function ConnectionSettings(props: Props) {
   const [showPassword, setShowPassword] = useState(false)
+  const { active } = props
 
   const handleDelete = useCallback(async () => {
     const confirmed = await props.globalActions.requestConfirmation(
@@ -60,7 +62,7 @@ function ConnectionSettings(props: Props) {
   }, [props.connection, props.connecting])
 
   useGlobalKeyEventHandler(KeyCodes.escape, props.actions.disconnect)
-  useGlobalKeyEventHandler(KeyCodes.enter, toggleConnect, [props.connecting])
+  useGlobalKeyEventHandler(KeyCodes.enter, toggleConnect, active)
 
   const handleClickShowPassword = useCallback(() => {
     setShowPassword(!showPassword)
