@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react'
+import React, { memo, useCallback, useMemo, useRef } from 'react'
 import { useResizeDetector } from 'react-resize-detector'
 import { emphasize, useTheme } from '@mui/material/styles'
 import { XYChart, Axis, Grid, LineSeries, GlyphSeries } from '@visx/xychart'
@@ -31,6 +31,17 @@ export default memo((props: Props) => {
   const { width = 300, ref } = useResizeDetector()
   const chartContainerRef = React.useRef<HTMLDivElement>(null)
 
+  // Screen position of the pointer, updated on every move. The tooltip is anchored to a
+  // stable virtual element that reads from this ref, so the Popper instance is reused
+  // instead of being re-created on each pointer move.
+  const pointerPosition = useRef({ x: 0, y: 0 })
+  const pointerAnchor = useMemo(
+    () => ({
+      getBoundingClientRect: () => new DOMRect(pointerPosition.current.x, pointerPosition.current.y, 0, 0),
+    }),
+    []
+  )
+
   const hintFormatter = React.useCallback(
     (point: any) => [
       { title: <b>Time</b>, value: <DateFormatter timeFirst date={new Date(point.x)} /> },
@@ -46,14 +57,21 @@ export default memo((props: Props) => {
   }, [])
 
   const showTooltip = React.useCallback(
-    (point: Point) => {
+    (point: Point, event?: React.PointerEvent | React.FocusEvent) => {
+      if (event && 'clientX' in event) {
+        pointerPosition.current = { x: event.clientX, y: event.clientY }
+        setHoveredPoint(point)
+        setTooltip({ point, value: hintFormatter(point), element: pointerAnchor })
+        return
+      }
+      // Keyboard focus or missing event: fall back to anchoring on the chart itself
       if (!chartContainerRef.current) {
         return
       }
       setHoveredPoint(point)
       setTooltip({ point, value: hintFormatter(point), element: chartContainerRef.current })
     },
-    [hintFormatter]
+    [hintFormatter, pointerAnchor]
   )
 
   const paletteColor = theme.palette.mode === 'light' ? theme.palette.secondary.dark : theme.palette.primary.light
@@ -136,10 +154,10 @@ export default memo((props: Props) => {
               stroke={color}
               strokeWidth={2}
               curve={mapCurveType(props.interpolation)}
-              onPointerMove={datum => {
-                if (datum && datum.datum) {
-                  const point = datum.datum as Point
-                  showTooltip(point)
+              onPointerMove={params => {
+                // visx types this handler as a union with a plain SVG pointer handler
+                if ('datum' in params && params.datum) {
+                  showTooltip(params.datum as Point, params.event)
                 }
               }}
             />

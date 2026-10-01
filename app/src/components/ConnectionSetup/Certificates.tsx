@@ -50,7 +50,7 @@ class Certificates extends React.PureComponent<Props, State> {
       <div>
         <form noValidate autoComplete="off">
           <Grid container spacing={3}>
-            <Grid item xs={12} className={classes.gridPadding}>
+            <Grid size={12} className={classes.gridPadding}>
               <CertSelector
                 connection={this.props.connection}
                 certificate={this.props.connection.selfSignedCertificate}
@@ -58,7 +58,7 @@ class Certificates extends React.PureComponent<Props, State> {
                 certificateType="selfSignedCertificate"
               />
             </Grid>
-            <Grid item xs={12} className={classes.gridPadding}>
+            <Grid size={12} className={classes.gridPadding}>
               <CertSelector
                 connection={this.props.connection}
                 certificate={this.props.connection.clientCertificate}
@@ -66,7 +66,7 @@ class Certificates extends React.PureComponent<Props, State> {
                 certificateType="clientCertificate"
               />
             </Grid>
-            <Grid item xs={12} className={classes.gridPadding}>
+            <Grid size={12} className={classes.gridPadding}>
               <CertSelector
                 connection={this.props.connection}
                 certificate={this.props.connection.clientKey}
@@ -74,7 +74,7 @@ class Certificates extends React.PureComponent<Props, State> {
                 certificateType="clientKey"
               />
             </Grid>
-            <Grid item xs={2} className={classes.gridPadding}>
+            <Grid size={2} className={classes.gridPadding}>
               <br />
               <Button
                 variant="contained"

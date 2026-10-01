@@ -3,10 +3,18 @@ export interface Point {
   y: number
 }
 
+/**
+ * Minimal virtual element accepted by MUI's Popper as an anchor.
+ * Lets the tooltip follow an arbitrary screen position such as the pointer.
+ */
+export interface TooltipAnchor {
+  getBoundingClientRect: () => DOMRect
+}
+
 export interface Tooltip {
   value: Array<TooltipRows>
   point: Point
-  element: Element | null
+  element: Element | TooltipAnchor | null
 }
 
 export interface TooltipRows {

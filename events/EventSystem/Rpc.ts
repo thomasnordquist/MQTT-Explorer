@@ -6,6 +6,24 @@ export type RpcEvent<RequestType, ResponseType> = {
   topic: string
 }
 
+/** Rebuild an Error from whatever shape the serialized rejection arrived in */
+function toError(value: unknown): Error {
+  if (value instanceof Error) {
+    return value
+  }
+  if (typeof value === 'string') {
+    return new Error(value)
+  }
+  if (value && typeof value === 'object' && typeof (value as any).message === 'string') {
+    const error = new Error((value as any).message)
+    if (typeof (value as any).name === 'string') {
+      error.name = (value as any).name
+    }
+    return error
+  }
+  return new Error(JSON.stringify(value))
+}
+
 export class Rpc {
   constructor(private participant: EventBusInterface) {}
 
@@ -23,7 +41,7 @@ export class Rpc {
       const callback = (result: { id: string; payload: RpcResponse; error: unknown }) => {
         this.participant.unsubscribe(responseEvent as any, callback)
         if (result.error) {
-          reject(result.error)
+          reject(toError(result.error))
         } else {
           resolve(result.payload)
         }
@@ -36,7 +54,7 @@ export class Rpc {
         setTimeout(() => {
           reject(new Error(`Did not respond to ${event.topic} within ${timeout}ms`))
           this.participant.unsubscribe(responseEvent as any, callback)
-        }, 10000)
+        }, timeout)
       }
     })
   }
@@ -52,7 +70,8 @@ export class Rpc {
       try {
         payload = await handler((request as any).payload)
       } catch (e) {
-        error = e
+        // Errors are JSON-serialized on the way to the caller; a bare Error would arrive as {}
+        error = e instanceof Error ? { name: e.name, message: e.message } : e
       }
       const { id } = request as any
       console.log(`${event.topic}/response/${id}`, payload, error)

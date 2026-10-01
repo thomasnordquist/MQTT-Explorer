@@ -41,6 +41,10 @@ yarn build
 yarn start
 ```
 
+To package a `.app` bundle on macOS without an Apple signing identity and install it in
+`/Applications`, see [docs/MACOS_LOCAL_BUILD.md](docs/MACOS_LOCAL_BUILD.md). It also covers a
+macOS Local Network permission trap that makes local builds fail with `EHOSTUNREACH`.
+
 ### Browser Mode (Web Application)
 
 MQTT Explorer can also run as a web application served by a Node.js server:

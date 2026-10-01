@@ -72,7 +72,7 @@ function ConnectionSettings(props: Props) {
 
   function renderBasePathInput() {
     return (
-      <Grid item xs={4}>
+      <Grid size={4}>
         <TextField
           label="Basepath"
           className={props.classes.textField}
@@ -172,7 +172,7 @@ function ConnectionSettings(props: Props) {
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <form className={classes.container} noValidate autoComplete="off" style={{ flex: 1, overflow: 'auto' }}>
         <Grid container spacing={2}>
-          <Grid item xs={5}>
+          <Grid size={5}>
             <TextField
               autoFocus
               label="Name"
@@ -186,7 +186,7 @@ function ConnectionSettings(props: Props) {
               }}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid size={4}>
             <ToggleSwitch
               label="Validate certificate"
               classes={classes}
@@ -194,13 +194,11 @@ function ConnectionSettings(props: Props) {
               toggle={toggleCertValidation}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid size={3}>
             <ToggleSwitch label="Encryption (tls)" classes={classes} value={connection.encryption} toggle={toggleTls} />
           </Grid>
-          <Grid item xs={2}>
-            {renderProtocols()}
-          </Grid>
-          <Grid item xs={7}>
+          <Grid size={2}>{renderProtocols()}</Grid>
+          <Grid size={7}>
             <TextField
               label="Host"
               className={classes.textField}
@@ -214,7 +212,7 @@ function ConnectionSettings(props: Props) {
               }}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid size={3}>
             <TextField
               label="Port"
               className={classes.textField}
@@ -231,7 +229,7 @@ function ConnectionSettings(props: Props) {
             />
           </Grid>
           {requiresBasePath() ? renderBasePathInput() : null}
-          <Grid item xs={requiresBasePath() ? 4 : 6}>
+          <Grid size={requiresBasePath() ? 4 : 6}>
             <TextField
               label="Username"
               className={classes.textField}
@@ -245,7 +243,7 @@ function ConnectionSettings(props: Props) {
               }}
             />
           </Grid>
-          <Grid item xs={requiresBasePath() ? 4 : 6}>
+          <Grid size={requiresBasePath() ? 4 : 6}>
             <TextField
               label="Password"
               className={classes.textField}

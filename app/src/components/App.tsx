@@ -39,11 +39,28 @@ class App extends React.PureComponent<Props, {}> {
   }
 
   private renderNotification() {
+    const describeError = (value: unknown): string => {
+      if (value instanceof Error) {
+        return value.message || value.name
+      }
+      if (value && typeof value === 'object' && typeof (value as any).message === 'string') {
+        return (value as any).message
+      }
+      try {
+        return JSON.stringify(value)
+      } catch {
+        return String(value)
+      }
+    }
     const message = this.props.error || this.props.notification
     const isError = message === this.props.error
     if (message) {
-      // Guard in case someone ever calls showError with an error instead of a string
-      const str = typeof message === 'string' ? message : JSON.stringify(message)
+      // Guard in case someone ever calls showError with an error instead of a string.
+      // JSON.stringify(new Error(..)) yields "{}" because message/stack are not enumerable.
+      const str = typeof message === 'string' ? message : describeError(message)
+      if (typeof message !== 'string') {
+        console.error('Notification received a non-string error', message)
+      }
       return (
         <Notification
           message={str}

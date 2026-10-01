@@ -45,7 +45,7 @@ const ConnectionSettings = memo((props: Props) => {
     <div>
       <form className={classes.container} noValidate autoComplete="off">
         <Grid container spacing={3}>
-          <Grid item xs={8} className={classes.gridPadding}>
+          <Grid size={8} className={classes.gridPadding}>
             <TextField
               className={`${classes.fullWidth} advanced-connection-settings-topic-input`}
               label="Topic"
@@ -55,12 +55,12 @@ const ConnectionSettings = memo((props: Props) => {
               onChange={updateSubscription}
             />
           </Grid>
-          <Grid item xs={2} className={classes.gridPadding}>
+          <Grid size={2} className={classes.gridPadding}>
             <div className={classes.qos}>
               <QosSelect label="QoS" selected={qos} onChange={setQos} />
             </div>
           </Grid>
-          <Grid item xs={2} className={classes.gridPadding}>
+          <Grid size={2} className={classes.gridPadding}>
             <Button
               className={classes.button}
               color="secondary"
@@ -71,10 +71,10 @@ const ConnectionSettings = memo((props: Props) => {
               <Add /> Add
             </Button>
           </Grid>
-          <Grid item xs={12} style={{ padding: 0 }}>
+          <Grid size={12} style={{ padding: 0 }}>
             <SubscriptionsAny connection={props.connection} />
           </Grid>
-          <Grid item xs={7} className={classes.gridPadding}>
+          <Grid size={7} className={classes.gridPadding}>
             <TextField
               className={classes.fullWidth}
               label="MQTT Client ID"
@@ -83,7 +83,7 @@ const ConnectionSettings = memo((props: Props) => {
               onChange={handleChange('clientId')}
             />
           </Grid>
-          <Grid item xs={3} className={classes.gridPadding}>
+          <Grid size={3} className={classes.gridPadding}>
             <div>
               <Tooltip title="Manage tls connection certificates" placement="top">
                 <Button
@@ -96,7 +96,7 @@ const ConnectionSettings = memo((props: Props) => {
               </Tooltip>
             </div>
           </Grid>
-          <Grid item xs={2} className={classes.gridPadding}>
+          <Grid size={2} className={classes.gridPadding}>
             <Button
               variant="contained"
               className={classes.button}

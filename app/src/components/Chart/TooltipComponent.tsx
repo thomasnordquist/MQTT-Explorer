@@ -6,11 +6,16 @@ import { Tooltip } from './Model'
 function TooltipComponent(props: { tooltip?: Tooltip }) {
   const theme = useTheme()
   const { tooltip } = props
+
+  // Note: Popper's `transition` prop must not be used here. It requires a render-function child
+  // that wires up TransitionProps; with plain JSX children Popper never leaves its "exited" state
+  // and never positions itself. The Fade/Grow below provide the enter animation instead.
+  // Popper re-measures the anchor on every render, so a virtual anchor that follows the pointer
+  // is picked up automatically.
   return (
     <Popper
-      style={tooltip ? { transition: 'all 0.1s ease-out' } : undefined}
+      style={{ pointerEvents: 'none', ...(tooltip ? { transition: 'all 0.1s ease-out' } : {}) }}
       open={Boolean(tooltip)}
-      transition
       placement="top"
       anchorEl={tooltip && tooltip.element}
     >
