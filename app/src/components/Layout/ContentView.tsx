@@ -10,6 +10,7 @@ import { ChartParameters } from '../../reducers/Charts'
 import { Sidebar } from '../Sidebar'
 import MobileTabs from './MobileTabs'
 import PublishTab from '../Sidebar/PublishTab'
+import { loadLayoutSize, storeLayoutSize } from '../../utils/LayoutStorage'
 
 // Type cast to any to work around React 18 compatibility issues with react-split-pane 0.1.x
 const ReactSplitPane = ReactSplitPaneImport as any
@@ -27,7 +28,12 @@ function ContentView(props: Props) {
   const [isMobile, setIsMobile] = React.useState(() => typeof window !== 'undefined' && window.innerWidth <= 768)
   const [mobileTab, setMobileTab] = React.useState(0) // 0 = topics, 1 = details, 2 = publish, 3 = charts
   const [height, setHeight] = React.useState<string | number>('100%')
-  const [sidebarWidth, setSidebarWidth] = React.useState<string | number>(isMobile ? '100%' : '40%')
+  const [sidebarWidth, setSidebarWidth] = React.useState<string | number>(() => {
+    if (isMobile) {
+      return '100%'
+    }
+    return loadLayoutSize('sidebarWidth') || '40%'
+  })
   const [detectedHeight, setDetectedHeight] = React.useState(0)
   const [detectedSidebarWidth, setDetectedSidebarWidth] = React.useState(0)
 
@@ -72,8 +78,11 @@ function ContentView(props: Props) {
   const closeSidebarCompletelyIfItSitsOnTheEdge = React.useCallback(() => {
     if (detectedSidebarWidth < 30) {
       setSidebarWidth('0%')
+    } else {
+      // A closed sidebar is not remembered, so it is always visible after a restart
+      storeLayoutSize('sidebarWidth', sidebarWidth)
     }
-  }, [detectedSidebarWidth])
+  }, [detectedSidebarWidth, sidebarWidth])
 
   // Open chart panel on start and when a new chart is added but the panel is closed
   React.useEffect(() => {

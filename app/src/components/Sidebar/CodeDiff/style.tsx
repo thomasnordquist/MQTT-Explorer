@@ -24,9 +24,24 @@ export const style = (theme: Theme) => {
     },
     codeWrapper: {
       display: 'flex',
-      maxHeight: '15em',
+      height: '15em',
+      minHeight: '5em',
       overflow: 'auto',
       backgroundColor: `${codeBlockColors.background}`,
+    },
+    resizeHandle: {
+      height: '8px',
+      cursor: 'ns-resize',
+      backgroundColor: codeBlockColors.gutters,
+      borderTop: '1px solid rgba(128, 128, 128, 0.4)',
+      backgroundImage:
+        'linear-gradient(rgba(128, 128, 128, 0.7), rgba(128, 128, 128, 0.7)), linear-gradient(rgba(128, 128, 128, 0.7), rgba(128, 128, 128, 0.7))',
+      backgroundSize: '30px 1px',
+      backgroundPosition: 'center 2px, center 5px',
+      backgroundRepeat: 'no-repeat',
+      '&:hover': {
+        backgroundColor: 'rgba(128, 128, 128, 0.3)',
+      },
     },
     gutters: {
       ...codeBaseStyle,
