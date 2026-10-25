@@ -36,7 +36,7 @@ export class Rpc {
         setTimeout(() => {
           reject(new Error(`Did not respond to ${event.topic} within ${timeout}ms`))
           this.participant.unsubscribe(responseEvent as any, callback)
-        }, 10000)
+        }, timeout)
       }
     })
   }
