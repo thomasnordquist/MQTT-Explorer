@@ -41,6 +41,22 @@ yarn build
 yarn start
 ```
 
+### Build a macOS app for your own Mac
+
+To get a double-clickable `.app` for local use (Apple Silicon), without signing certificates or publishing:
+
+```bash
+npm install -g yarn
+yarn
+scripts/build-mac-local.sh
+```
+
+The app is written to `build/mac-arm64/MQTT Explorer.app`. The script builds the project, packages it with `electron-builder --mac dir --arm64 --publish never`, then re-signs the bundle ad-hoc with the `disable-library-validation` entitlement. Without that step the app aborts at launch with a dyld "different Team IDs" error.
+
+Use `scripts/build-mac-local.sh --skip-build` to only re-sign an existing build.
+
+The result only runs on the Mac that built it. Release builds (`yarn package mac`) need a Developer ID certificate and notarization, see [macOS Notarization](#macos-notarization).
+
 ### Browser Mode (Web Application)
 
 MQTT Explorer can also run as a web application served by a Node.js server:
