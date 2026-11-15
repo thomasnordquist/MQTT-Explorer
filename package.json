@@ -155,7 +155,7 @@
   },
   "dependencies": {
     "about-window": "1.15.2",
-    "axios": "1.13.2",
+    "axios": "1.21.1",
     "bcryptjs": "3.0.3",
     "debug": "4.4.3",
     "dot-prop": "9.0.0",
