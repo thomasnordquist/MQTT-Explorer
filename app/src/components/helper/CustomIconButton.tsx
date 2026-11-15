@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { IconButton, Tooltip } from '@mui/material'
 import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../utils/withStyles'
 
 interface Props {
   onClick: any

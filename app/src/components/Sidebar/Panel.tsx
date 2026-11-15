@@ -1,7 +1,7 @@
 import React from 'react'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import { Accordion, AccordionDetails, AccordionSummary, Typography, Theme } from '@mui/material'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../utils/withStyles'
 
 const styles = (theme: Theme) => ({
   summary: { minHeight: '0' },

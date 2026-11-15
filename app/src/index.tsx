@@ -2,7 +2,6 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
 import { connect, Provider } from 'react-redux'
 import { ThemeProvider } from '@mui/material/styles'
-import { ThemeProvider as LegacyThemeProvider } from '@mui/styles'
 import App from './components/App'
 import Demo from './components/Demo'
 import { AppState } from './reducers'
@@ -16,10 +15,8 @@ function ApplicationRenderer(props: { theme: 'light' | 'dark' }) {
   const theme = props.theme === 'light' ? themes.lightTheme : themes.darkTheme
   return (
     <ThemeProvider theme={theme}>
-      <LegacyThemeProvider theme={theme}>
-        <App />
-        <Demo />
-      </LegacyThemeProvider>
+      <App />
+      <Demo />
     </ThemeProvider>
   )
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from '@mui/material'
 import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../utils/withStyles'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as q from '../../../../backend/src/Model'

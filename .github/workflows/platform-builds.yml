@@ -53,4 +53,13 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      - name: Verify macOS universal binary
+        if: matrix.build.task == 'mac' && steps.semantic.outputs.new_release_published == 'true'
+        run: |
+          APP_PATH=$(find build/clean/build/mac-universal -name 'MQTT Explorer.app' -maxdepth 1 | head -1)
+          if [ -z "$APP_PATH" ]; then
+            APP_PATH=$(find build/clean/build -name 'MQTT Explorer.app' -path '*universal*' | head -1)
+          fi
+          echo "Checking $APP_PATH"
+          lipo -archs "$APP_PATH/Contents/MacOS/MQTT Explorer"
   

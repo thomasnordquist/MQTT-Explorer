@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../../utils/withStyles'
 import * as q from '../../../../../backend/src/Model'
 import TreeNode from '.'
 import { SettingsState } from '../../../reducers/Settings'

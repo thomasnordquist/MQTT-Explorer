@@ -18,7 +18,7 @@ RUN mkdir -p /etc/mosquitto/conf.d && \
 
 # Install Playwright and browsers
 # This ensures Playwright browsers are pre-installed in the container
-RUN npm install -g playwright@1.57.0 && \
+RUN npm install -g playwright@1.61.1 && \
     npx playwright install --with-deps chromium
 
 CMD /bin/bash

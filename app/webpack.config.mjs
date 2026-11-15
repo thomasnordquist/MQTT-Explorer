@@ -34,7 +34,7 @@ export default {
       automaticNameDelimiter: '~',
       cacheGroups: {
         vendors: {
-          test: /[\\/]node_modules[\\/](react|react-dom|@material-ui|popper\.js|react|react-redux|prop-types|jss|redux|scheduler|react-transition-group)[\\/]/,
+          test: /[\\/]node_modules[\\/](react|react-dom|@mui|popper\.js|react-redux|prop-types|redux|scheduler|react-transition-group)[\\/]/,
           name: 'vendors',
           chunks: 'all',
           priority: -10,

@@ -1,6 +1,6 @@
 import React from 'react'
 import Button from '@mui/material/Button'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../../utils/withStyles'
 import { Theme } from '@mui/material/styles'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { connect } from 'react-redux'
 import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../utils/withStyles'
 import { Typography } from '@mui/material'
 import * as q from '../../../../backend/src/Model'
 import { Base64Message } from '../../../../backend/src/Model/Base64Message'

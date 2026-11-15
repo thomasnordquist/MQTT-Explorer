@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { IconButton, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../utils/withStyles'
 import { connectionManagerActions } from '../../actions'
 import { AppState } from '../../reducers'
 

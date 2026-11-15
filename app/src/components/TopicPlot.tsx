@@ -1,4 +1,4 @@
-import * as dotProp from 'dot-prop'
+import { getProperty } from 'dot-prop'
 import * as React from 'react'
 import * as q from '../../../backend/src/Model'
 import PlotHistory from './Chart/Chart'
@@ -50,7 +50,7 @@ function nodeDotPathToHistory(
         json = decoded ? JSON.parse(decoded.toUnicodeString()) : {}
       } catch (ignore) {}
 
-      const value = dotProp.get(json, dotPath)
+      const value = getProperty(json, dotPath)
 
       return { x: message.received.getTime(), y: toPlottableValue(value) }
     })

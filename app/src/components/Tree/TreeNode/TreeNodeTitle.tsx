@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
 import { Theme } from '@mui/material/styles'
-import { withStyles } from '@mui/styles'
+import { withStyles } from '../../../utils/withStyles'
 import * as q from '../../../../../backend/src/Model'
 import { TopicViewModel } from '../../../model/TopicViewModel'
 import { useDecoder } from '../../hooks/useDecoder'

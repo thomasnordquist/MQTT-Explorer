@@ -1,0 +1,5 @@
+---
+engines:
+  eslint-8:
+    exclude_paths:
+      - "eslint.config.mjs"
